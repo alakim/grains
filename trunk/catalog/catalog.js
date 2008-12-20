@@ -115,13 +115,14 @@ function Catalog(items){
 		},
 		
 		showSubCloud: function(coll){var _=this;
-			var html = [];
+			var htmlSelected = [];
 			
 			each(_.selectedTags, function(t){
-				html.push("<span class=\"selected pointer link\" onclick=\"Catalog.delTag("+_.ID+",'"+t+"')\">"+t+"</span>");
+				htmlSelected.push("<span class=\"selected pointer link\" onclick=\"Catalog.delTag("+_.ID+",'"+t+"')\">"+t+"</span>");
 			});
 			
-			html = [html.join("&amp;")];
+			htmlSelected = htmlSelected.join("&amp;");
+			
 			
 			var subcloud = {};
 			each(coll, function(itm){
@@ -151,12 +152,17 @@ function Catalog(items){
 				return hSelected[t.nm]!=1;
 			});
 			
+			var html = [];
+			var htmlSuper = [];
 			each(subColl, function(t){
-				html.push(" <span class=\"link pointer\" onclick=\"Catalog.addTag("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+subcloud[t.nm]+"]</span>");
+				if(t.count==coll.length)
+					htmlSuper.push(" <span class=\"link pointer\" onclick=\"Catalog.show("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+_.tags[t.nm].items.length+"]</span>");
+				else
+					html.push(" <span class=\"link pointer\" onclick=\"Catalog.addTag("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+subcloud[t.nm]+"]</span>");
 			});
 			
 			
-			$(_.subCloudPanelID).innerHTML = html.join("");
+			$(_.subCloudPanelID).innerHTML = htmlSuper.join("") + htmlSelected + html.join("");
 		},
 		
 		showResult: function(tagID){var _=this;
