@@ -1,5 +1,6 @@
-function Catalog(items){
+function Catalog(tagTree, items){
 	this.items = items;
+	this.tagTree = tagTree;
 	
 	this.ID = Catalog.instances.length;
 	Catalog.instances.push(this);
@@ -152,15 +153,26 @@ function Catalog(items){
 				return hSelected[t.nm]!=1;
 			});
 			
+			var superColl = [];
 			var html = [];
-			var htmlSuper = [];
 			each(subColl, function(t){
 				if(t.count==coll.length)
-					htmlSuper.push(" <span class=\"link pointer\" onclick=\"Catalog.show("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+_.tags[t.nm].items.length+"]</span>");
+					superColl.push(t);
 				else
 					html.push(" <span class=\"link pointer\" onclick=\"Catalog.addTag("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+subcloud[t.nm]+"]</span>");
 			});
 			
+			superColl = superColl.sort(function(x, y){
+				xmetric = _.tags[x.nm].items.length;
+				ymetric = _.tags[y.nm].items.length;
+				return xmetric>ymetric?-1
+					:xmetric<ymetric? 1
+					:0;
+			});
+			var htmlSuper = [];
+			each(superColl, function(t){
+				htmlSuper.push(" <span class=\"link pointer\" onclick=\"Catalog.show("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+_.tags[t.nm].items.length+"]</span>");
+			});
 			
 			$(_.subCloudPanelID).innerHTML = htmlSuper.join("") + htmlSelected + html.join("");
 		},
