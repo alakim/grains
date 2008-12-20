@@ -1,6 +1,5 @@
-function Catalog(facets, items){
+function Catalog(items){
 	this.items = items;
-	this.facets = facets;
 	
 	this.ID = Catalog.instances.length;
 	Catalog.instances.push(this);
@@ -69,38 +68,17 @@ function Catalog(facets, items){
 		statisticsPanelID:"stats",
 		
 		selectedTags:[],
-		tagPaths:{},
 
 		init: function(){var _=this;
-			_.buildTagPaths();
-			
 			_.tags = [];
 			
 			each(_.items, function(itm){
-				each(itm.tags, function(t){
-					if(_.tagPaths[t]){
-						each(_.tagPaths[t], function(step){itm.tags.push(step);});
-					}
-				});
 				each(itm.tags, function(t){
 					if(!_.tags[t])
 						_.tags[t] = {items:[]};
 					_.tags[t].items.push(itm);
 				});
 			});
-		},
-		
-		buildTagPaths: function(){var _=this;
-			function setPath(path, subTree){
-				for(var k in subTree){
-					_.tagPaths[k] = path;
-					setPath(path.length?path+","+k:k, subTree[k]);
-				}
-			}
-			setPath("", _.facets);
-			for(var k in _.tagPaths){
-				_.tagPaths[k] = _.tagPaths[k].split(",");
-			}
 		},
 		
 		display: function(){var _=this;
