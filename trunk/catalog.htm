@@ -47,9 +47,30 @@
 <script type="text/javascript">
 
 var catalog = new Catalog(
-	[
+	{
+		"computers":{
+			"программирование":{
+				"Ruby":{}
+			},
+			"system":{
+				"Windows":{},
+				"Linux":{},
+			},
+			"администрирование":{},
+			"semantic web":{},
+			"XML":{
+				"XPath":{},
+				"XPointer":{}
+			}
+		},
 		
-	],
+		"church":{
+			"старообрядчество":{},
+			"Псалтирь":{}
+		},
+		
+		
+	},
 	[
 		{url:"store/computers/mpz.pdf", label:"Зюбин В.Е. Программирование Информационно-управляющих систем на основе конечных автоматов", tags:[ "computers", "программирование", "конечные автоматы", "учебник"]},
 	
@@ -85,7 +106,7 @@ var catalog = new Catalog(
 		{url:"store/computers/WF/ProfessionalWF_Chapter6_Kitta_Wrox.pdf", label:"Professional WF Chapter 6", tags:[ "computers", ".NET", "WF", "workflow"]},
 		{url:"store/computers/WF/EssentialWindowsWorkflowFoundation-ch03.pdf", label:"Shukla, Schmidt. Essential Windows Workflow Foundation - ch03", tags:[ "computers", ".NET", "WF", "workflow"]},
 	
-		{url:"store/computers/ruby_notes.pdf", label:"Язык Ruby. Учебное пособие.", tags:[ "computers", "Ruby", "программирование", "учебник"]},
+		{url:"store/computers/ruby_notes.pdf", label:"Язык Ruby. Учебное пособие.", tags:[ "Ruby", "учебник"]},
 		{url:"store/computers/JavaProgLang.pdf", label:"Арнольд К., Гослинг Дж. Язык программирования Java", tags:[ "computers", "программирование", "Java", "учебник"]},
 		{url:"store/computers/PdfHack.djvu", label:"Взломы PDF", tags:[ "computers", "PDF", "взлом"]},
 		{url:"store/computers/WindowsXpFileFormats.djvu", label:"Форматы файлов Windows XP", tags:[ "computers", "system", "Windows", "форматы", "стандарты"]},
