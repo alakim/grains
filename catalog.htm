@@ -46,14 +46,6 @@
 <script type="text/javascript" src="catalog/catalog.js"></script>
 <script type="text/javascript">
 
-var todo = [
-	{description: "во вторичном облаке распознавать теги, количество элементов для которых равно количеству элементов в результатах поиска (т.к. эти теги приложены ко всем элементам). Такие теги надо показывать отдельно, как теги верхнего уровня. Переход по ним, возможно, должен сбрасывать текущее условие."},
-	{description: "добавить неявные теги. Например, если прописан тег \"программирование\", то тег \"computers\" прописывать уже не обязательно. Он будет добавлен неявно."},
-	{description:"сделать поиск книги по названию (использовать регулярные выражения)"},
-	{description: "сделать поиск тега в основном облаке по названию"},
-	{description:"синонимия тегов"}
-];
-
 var catalog = new Catalog([
 	{url:"store/computers/mpz.pdf", label:"Зюбин В.Е. Программирование Информационно-управляющих систем на основе конечных автоматов", tags:[ "computers", "программирование", "конечные автоматы", "учебник"]},
 
@@ -166,15 +158,6 @@ var catalog = new Catalog([
 
 function init(){
 	catalog.display();
-	
-	if(todo.length){
-		var html = [];
-		for(var i=0; i<todo.length; i++){
-			var el = todo[i];
-			html.push("<li style=\"margin-bottom:3px;\">"+el.description+"</li>");
-		}
-		document.body.innerHTML+="<div style=\"color:#888888; border:1px solid #fa8800; padding:3px;\"><ul>"+html.join("")+"</ul></div>";
-	}
 }
 </script>
 </head>
