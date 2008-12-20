@@ -195,7 +195,7 @@ function Catalog(tagTree, items){
 				each(itm.tags, function(t){
 					title.push(t);
 				});
-				html.push("<p><a href=\""+itm.url+"\" title=\""+title.join(", ")+"\">"+itm.label+"</a></p>");
+				html.push("<p>[<span class=\"link pointer\" onclick=\"Catalog.setConditions("+_.ID+", '"+title.join(",")+"')\">like this</span>] <a href=\""+itm.url+"\" title=\""+title.join(", ")+"\">"+itm.label+"</a></p>");
 			});
 			$(_.outPanelID).innerHTML = html.join("");
 		},
@@ -207,6 +207,10 @@ function Catalog(tagTree, items){
 		
 		delTag: function(tagID){var _=this;
 			_.selectedTags = remove(_.selectedTags, tagID);
+			_.showResult();
+		},
+		setConditions: function(tags){var _=this;
+			_.selectedTags = tags.split(",");
 			_.showResult();
 		}
 	}
@@ -224,6 +228,9 @@ function Catalog(tagTree, items){
 		},
 		delTag: function(catID, tagID){
 			Catalog.getInstance(catID).delTag(tagID);
+		},
+		setConditions: function(catID, tags){
+			Catalog.getInstance(catID).setConditions(tags);
 		}
 	});
 })();
