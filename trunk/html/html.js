@@ -41,6 +41,14 @@ var Html = {};
 				return "<"+name+a.join("")+(Html.xhtmlMode? "/>":">");
 			else
 				return "<"+name+a.join("")+">"+h.join("")+"</"+name+">";
+		},
+		
+		apply: function(coll, F){
+			var h = [];
+			each(coll, function(el){
+				h.push(F(el));
+			});
+			return h.join("");
 		}
 	});
 	

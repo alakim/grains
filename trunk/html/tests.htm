@@ -60,6 +60,35 @@ new JSUnit.Test("Картинки", "Верстка").run = function(){
 	}
 }
 
+new JSUnit.Test("Таблица", "Шаблоны").run = function(){
+	with(Html){
+		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
+		this.assert(
+			table(
+				apply(data, function(el){
+					return tr(td(el.nm), td(el.nr))
+				})
+			),
+			"<table><tr><td>abc</td><td>1</td></tr><tr><td>def</td><td>2</td></tr></table>"
+		);
+	}
+}
+
+new JSUnit.Test("Таблица с заголовком", "Шаблоны").run = function(){
+	with(Html){
+		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
+		this.assert(
+			table({border:0, cellpadding:3, cellspacing:0},
+				tr(th("Name"), th("Number")),
+				apply(data, function(el){
+					return tr(td(el.nm), td(el.nr))
+				})
+			),
+			"<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\"><tr><th>Name</th><th>Number</th></tr><tr><td>abc</td><td>1</td></tr><tr><td>def</td><td>2</td></tr></table>"
+		);
+	}
+}
+
 </script>
 </head>
 <body onload="JSUnit.init()">
