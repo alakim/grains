@@ -22,7 +22,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
-		version: "1.1.14",
+		version: "1.2.15",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){
@@ -53,6 +53,6 @@ var Html = {};
 		}
 	});
 	
-	defineTags(["div", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "th", "td", "input", "textarea", "pre"]);
+	defineTags(["div", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "th", "td", "input", "textarea", "pre", "select", "option"]);
 	defineSelfClosingTags(["img", "hr", "br"]);
 })();
