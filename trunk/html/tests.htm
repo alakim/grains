@@ -89,6 +89,20 @@ new JSUnit.Test("Таблица с заголовком", "Шаблоны").run = function(){
 	}
 }
 
+new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
+	with(Html){
+		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
+		this.assert(
+			div(
+				apply(data, function(el, i){
+					return p((i+1)+". "+el.nm);
+				})
+			),
+			"<div><p>1. abc</p><p>2. def</p></div>"
+		)
+	}
+}
+
 </script>
 </head>
 <body onload="JSUnit.init()">

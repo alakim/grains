@@ -22,7 +22,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
-		version: "1.0.13",
+		version: "1.1.14",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){
@@ -46,8 +46,8 @@ var Html = {};
 		
 		apply: function(coll, F){
 			var h = [];
-			each(coll, function(el){
-				h.push(F(el));
+			each(coll, function(el, i){
+				h.push(F(el, i));
 			});
 			return h.join("");
 		}
