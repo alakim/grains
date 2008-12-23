@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Html Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="html.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля Html", "Configuration").run = function(){
+	this.assert(typeof(Html), "object");
+}
+
+new JSUnit.Test("Простая верстка", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			div(
+				p("abc"),
+				p("def")
+			),
+			"<div><p>abc</p><p>def</p></div>"
+		);
+	}
+}
+
+new JSUnit.Test("Простая верстка с атрибутами", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			div({
+					"class":"panel",
+					width:200
+				},
+				p("abc")
+			),
+			"<div class=\"panel\" width=\"200\"><p>abc</p></div>"
+		);
+	}
+}
+
+
+</script>
+</head>
+<body onload="JSUnit.init()">
+	<h1>Html Unit Tests</h1>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
