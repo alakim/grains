@@ -34,6 +34,31 @@ new JSUnit.Test("Простая верстка с атрибутами", "Верстка").run = function(){
 	}
 }
 
+new JSUnit.Test("Простая таблица", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			table({border:0, cellpadding:0, cellspacing:0},
+				tr(td("11"), td("12")),
+				tr(td("21"), td("22"))
+			),
+			"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>11</td><td>12</td></tr><tr><td>21</td><td>22</td></tr></table>"
+		);
+	}
+}
+
+new JSUnit.Test("Картинки", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			div(
+				hr(),
+				img({src:"null.gif", width:"10px"}),
+				br(),
+				p("abc")
+			),
+			"<div><hr/><img src=\"null.gif\" width=\"10px\"/><br/><p>abc</p></div>"
+		);
+	}
+}
 
 </script>
 </head>
