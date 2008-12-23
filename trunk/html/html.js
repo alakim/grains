@@ -22,6 +22,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
+		version: "1.0.13",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){

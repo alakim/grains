@@ -1,0 +1,35 @@
+<html>
+<style>
+	body{
+		font-family:arial, sans-serif;
+		font-size:14px;
+	}
+	li{
+		margin-top:3px;
+	}
+</style>
+<head>
+	<script type="text/javascript" src="../tools/jsDoc.js"></script>
+	<script type="text/javascript" src="html.js"></script>
+	
+	<script type="text/javascript">
+		new Documentation("Html", "Модуль для формирования HTML-кода в функциональном стиле", [
+			{type:"const", name:"version", dsc:"Текущая версия модуля"},
+			{type:"attribute", name:"xhtmlMode", dsc:"Предписывает использовать синтаксис закрытия пустых тегов в стиле XHTML. По умолчанию - true."},
+			{type:"method", name:"tag", dsc:"Формирует тег с произвольным именем. Аргументы: name - имя тега; content - содержимое тега - коллекция, включающая описания атрибутов(задаются в виде JSON-структур) и внутренние элементы; selfClosing (необязательный) - указывает, что данный тег не требует закрывающего тега (по умолчанию - false). Возвращает соответствующий фрагмент HTML-кода"},
+			{type:"method", name:"apply", dsc:"Применяет шаблон к элементам заданной коллекции. Аргументы: coll - коллекция элементов данных: F - функция, реализующая шаблон отображения (должна возвращать соответствующий фрагмент HTML-кода)."}
+		]);
+		
+		
+		function init(){
+			Documentation.show();
+			document.getElementById("vrs").innerHTML = Html.version;
+		}
+	</script>
+	
+</head>
+<body onload="init()">
+	<h1>Html module documentation</h1>
+	<p>Html v.<span id="vrs"></span></p>
+</body>
+</html>
