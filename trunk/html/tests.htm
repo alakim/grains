@@ -74,6 +74,22 @@ new JSUnit.Test("Таблица", "Шаблоны").run = function(){
 	}
 }
 
+new JSUnit.Test("Таблица с раскрашенными строками", "Шаблоны").run = function(){
+	with(Html){
+		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}, {nm:"ghi", nr:3}];
+		this.assert(
+			table(
+				apply(data, function(el, i){
+					return tr(i%2?null:{"class":"even"},
+						td(el.nm), td(el.nr)
+					)
+				})
+			),
+			"<table><tr class=\"even\"><td>abc</td><td>1</td></tr><tr><td>def</td><td>2</td></tr><tr class=\"even\"><td>ghi</td><td>3</td></tr></table>"
+		);
+	}
+}
+
 new JSUnit.Test("Таблица с заголовком", "Шаблоны").run = function(){
 	with(Html){
 		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
