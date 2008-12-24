@@ -138,6 +138,18 @@ new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 		)
 	}
 }
+new JSUnit.Test("Итерация", "Шаблоны").run = function(){
+	with(Html){
+		this.assert(
+			div(
+				times(2, function(i){
+					return span(i);
+				})
+			),
+			"<div><span>1</span><span>2</span></div>"
+		);
+	}
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;

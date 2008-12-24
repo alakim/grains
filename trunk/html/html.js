@@ -24,7 +24,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
-		version: "1.3.17",
+		version: "1.4.18",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){
@@ -51,6 +51,13 @@ var Html = {};
 			each(coll, function(el, i){
 				h.push(F(el, i));
 			});
+			return h.join("");
+		},
+		
+		times: function(count, F){
+			var h = [];
+			for(var i=0; i<count; i++)
+				h.push(F(i+1));
 			return h.join("");
 		}
 	});
