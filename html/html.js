@@ -4,6 +4,7 @@ var Html = {};
 	function extend(o,s){for(var k in s){o[k] = s[k];}}
 	
 	function each(coll, F){
+		if(!coll) return;
 		if(coll.length)
 			for(var i=0; i<coll.length;i++) F(coll[i], i);
 		else
@@ -23,7 +24,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
-		version: "1.3.16",
+		version: "1.3.17",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){
