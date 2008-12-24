@@ -88,6 +88,26 @@ new JSUnit.Test("Таблица с заголовком", "Шаблоны").run = function(){
 		);
 	}
 }
+new JSUnit.Test("Таблица с источником данных в структуре", "Шаблоны").run = function(){
+	with(Html){
+		var data = {
+			"John":22,
+			"Phill":33,
+			"George":44
+		};
+		this.assert(
+			table(
+				apply(data, function(val, nm){
+					return tr(
+						td(nm),
+						td(val)
+					);
+				})
+			),
+			"<table><tr><td>John</td><td>22</td></tr><tr><td>Phill</td><td>33</td></tr><tr><td>George</td><td>44</td></tr></table>"
+		);
+	}
+}
 
 new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 	with(Html){
@@ -103,10 +123,15 @@ new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 	}
 }
 
+function init(){
+	document.getElementById("versionPanel").innerHTML = Html.version;
+	JSUnit.init();
+}
 </script>
 </head>
-<body onload="JSUnit.init()">
+<body onload="init()">
 	<h1>Html Unit Tests</h1>
+	<p>Html v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>
 	<div id="out"></div>
 </body>

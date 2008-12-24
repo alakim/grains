@@ -4,9 +4,10 @@ var Html = {};
 	function extend(o,s){for(var k in s){o[k] = s[k];}}
 	
 	function each(coll, F){
-		for(var i=0; i<coll.length;i++){
-			F(coll[i], i);
-		}
+		if(coll.length)
+			for(var i=0; i<coll.length;i++) F(coll[i], i);
+		else
+			for(var k in coll) F(coll[k], k);
 	}
 	
 	function defineTags(tags){
@@ -22,7 +23,7 @@ var Html = {};
 	}
 	
 	extend(Html, {
-		version: "1.2.15",
+		version: "1.3.16",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing){
@@ -30,9 +31,9 @@ var Html = {};
 			var a = [];
 			each(content, function(el){
 				if(typeof(el)=="object"){
-					for(var k in el){
-						a.push(" "+k+"=\""+el[k]+"\"");
-					}
+					each(el, function(val, nm){
+						a.push(" "+nm+"=\""+val+"\"");
+					});
 				}
 				else
 					h.push(el);
