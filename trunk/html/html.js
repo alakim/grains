@@ -23,27 +23,39 @@ var Html = {};
 		});
 	}
 	
+	function defineNotEmptyTags(tags){
+		each(tags, function(t){
+			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments, false, true);");
+		});
+	}
+	
 	extend(Html, {
-		version: "1.4.18",
+		version: "1.4.19",
 		xhtmlMode: true,
 		
-		tag: function(name, content, selfClosing){
+		tag: function(name, content, selfClosing, notEmpty){
 			var h = [];
 			var a = [];
 			each(content, function(el){
-				if(typeof(el)=="object"){
+				if(typeof(el)!="object")
+					h.push(el);
+				else{
 					each(el, function(val, nm){
 						a.push(" "+nm+"=\""+val+"\"");
 					});
 				}
-				else
-					h.push(el);
 			});
+			
+			h = h.join("");
+			if(h.match(/^\s+$/i))
+				h = "";
+			if(notEmpty && h.length==0)
+				h = "&nbsp;";
 			
 			if(selfClosing && h.length==0)
 				return "<"+name+a.join("")+(Html.xhtmlMode? "/>":">");
 			else
-				return "<"+name+a.join("")+">"+h.join("")+"</"+name+">";
+				return "<"+name+a.join("")+">"+h+"</"+name+">";
 		},
 		
 		apply: function(coll, F){
@@ -62,6 +74,7 @@ var Html = {};
 		}
 	});
 	
-	defineTags(["div", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "th", "td", "input", "textarea", "pre", "select", "option"]);
+	defineTags(["div", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "textarea", "pre", "select", "option"]);
 	defineSelfClosingTags(["img", "hr", "br"]);
+	defineNotEmptyTags(["th", "td"]);
 })();

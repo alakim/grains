@@ -46,6 +46,19 @@ new JSUnit.Test("Простая таблица", "Верстка").run = function(){
 	}
 }
 
+new JSUnit.Test("Таблица с пустыми ячейками", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			table(
+				tr(th("ss"), th("  ")),
+				tr(td("11"), td("   ")),
+				tr(td(), td("22"))
+			),
+			"<table><tr><th>ss</th><th>&nbsp;</th></tr><tr><td>11</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>22</td></tr></table>"
+		)
+	}
+}
+
 new JSUnit.Test("Картинки", "Верстка").run = function(){
 	with(Html){
 		this.assert(
@@ -138,6 +151,7 @@ new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 		)
 	}
 }
+
 new JSUnit.Test("Итерация", "Шаблоны").run = function(){
 	with(Html){
 		this.assert(
@@ -150,7 +164,6 @@ new JSUnit.Test("Итерация", "Шаблоны").run = function(){
 		);
 	}
 }
-
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;
 	JSUnit.init();
