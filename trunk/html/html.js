@@ -21,7 +21,7 @@ var Html = {};
 	function defineNotEmptyTags(tags){defineTags(tags, false, true)}
 	
 	extend(Html, {
-		version: "1.4.20",
+		version: "1.4.21",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing, notEmpty){
@@ -65,7 +65,7 @@ var Html = {};
 		}
 	});
 	
-	defineTags(["div", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "textarea", "pre", "select", "option"]);
+	defineTags(["div", "a", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "textarea", "pre", "select", "option", "h1", "h2", "h3", "h4", "h5", "h6"]);
 	defineSelfClosingTags(["img", "hr", "br"]);
 	defineNotEmptyTags(["th", "td"]);
 })();
