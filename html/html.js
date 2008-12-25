@@ -11,26 +11,17 @@ var Html = {};
 			for(var k in coll) F(coll[k], k);
 	}
 	
-	function defineTags(tags){
+	function defineTags(tags, selfClosing, notEmpty){
 		each(tags, function(t){
-			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments);");
+			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments,"+(selfClosing?"true":"false")+","+(notEmpty?"true":"false")+");");
 		});
 	}
 	
-	function defineSelfClosingTags(tags){
-		each(tags, function(t){
-			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments, true);");
-		});
-	}
-	
-	function defineNotEmptyTags(tags){
-		each(tags, function(t){
-			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments, false, true);");
-		});
-	}
+	function defineSelfClosingTags(tags){defineTags(tags, true, false);}
+	function defineNotEmptyTags(tags){defineTags(tags, false, true)}
 	
 	extend(Html, {
-		version: "1.4.19",
+		version: "1.4.20",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing, notEmpty){
