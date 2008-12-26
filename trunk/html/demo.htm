@@ -136,7 +136,7 @@ function quasiXslt(){
 	with(Html){
 		// выбирает шаблон в зависимости от имени элемента
 		function applyTemplates(collection){
-			return apply(collection, function(el){
+			return Html.apply(collection, function(el){
 				return templates[el[0]](el);
 			});
 		}
