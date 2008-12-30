@@ -189,21 +189,26 @@ function Catalog(items){
 			});
 			
 			_.showSubCloud(coll);
-			
 			with(Html){
-				$(_.outPanelID).innerHTML = apply(coll, function(itm){
-					var ttitle = itm.tags.join(",");
-					return p(
-						"[",
-						span({"class":"link pointer", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
-							"like this"
-						),
-						"]",
-						a({href:itm.url, title:ttitle},
-							itm.label
-						)
-					);
-				});
+				$(_.outPanelID).innerHTML = table({border:0},
+					apply(coll, function(itm){
+						var ttitle = itm.tags.join(",");
+						return tr(
+							td({"class":"tagsColumn", width:"30%"},
+								span({"class":"link pointer", style:"margin:0px;", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
+									apply(itm.tags, function(itag, i){
+										return (i>0?", ":"") + itag;
+									})
+								)
+							),
+							td(
+								a({href:itm.url, title:ttitle},
+									Catalog.itemTitleTemplate(itm)
+								)
+							)
+						);
+					})
+				);
 			}
 		},
 		
@@ -223,8 +228,12 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"2.0.23",
+		version:"2.1.25",
 		instances:[],
+		
+		itemTitleTemplate: function(itm){with(Html){
+			return itm.label;
+		}},
 		
 		getInstance: function(id){return Catalog.instances[id];},
 		
