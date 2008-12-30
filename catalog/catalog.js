@@ -1,3 +1,6 @@
+if(typeof(Html)!="object")
+	throw("Html module required!");
+
 function Catalog(items){
 	this.items = items;
 	
@@ -83,8 +86,6 @@ function Catalog(items){
 		
 		display: function(){var _=this;
 			
-			
-			var html = [];
 			var coll = [];
 			for(var k in _.tags){var t = _.tags[k];
 				coll.push(k);
@@ -98,36 +99,34 @@ function Catalog(items){
 					:0;
 			});
 			
-			each(coll, function(tname){
-				html.push(" <span class=\"link pointer\" onclick=\"Catalog.show("+_.ID+",'"+tname+"')\">"+tname+"["+_.tags[tname].items.length+"]</span>");
-			});
-			
-			function renderBody(){
-				var html = [];
-				html.push("<p style=\"text-align:right;\" id=\""+_.statisticsPanelID+"\">Total:"+_.items.length+" items, "+coll.length+" tags</p>");
-				html.push("<div id=\""+_.cloudPanelID+"\"></div>");
-				html.push("<div id=\""+_.subCloudPanelID+"\"></div>");
-				html.push("<div id=\""+_.outPanelID+"\"></div>");
-				document.body.innerHTML = html.join("");
+			with(Html){
+				document.body.innerHTML = div(
+					p({style:"text-align:right;", id:_.statisticsPanelID},
+						"Total:", _.items.length, " items",
+						", ", coll.length, " tags"
+					),
+					div({id:_.cloudPanelID},
+						apply(coll, function(tname){
+							return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+tname+"')"},
+								tname,"[",_.tags[tname].items.length,"]"
+							);
+						})
+					),
+					div({id:_.subCloudPanelID}),
+					div({id:_.outPanelID})
+				);
 			}
-			renderBody();
-			$(_.cloudPanelID).innerHTML = html.join("");
 		},
 		
-		showSubCloud: function(coll){var _=this;
-			var htmlSelected = [];
-			
-			each(_.selectedTags, function(t){
-				htmlSelected.push("<span class=\"selected pointer link\" onclick=\"Catalog.delTag("+_.ID+",'"+t+"')\">"+t+"</span>");
+		showSubCloud: function(coll){with(Html){var _=this;
+			var htmlSelected = apply(_.selectedTags, function(t){
+				return span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t);
 			});
-			
-			htmlSelected = htmlSelected.join("&amp;");
 			
 			
 			var subcloud = {};
 			each(coll, function(itm){
 				each(itm.tags, function(t){
-					//if(t!=tagID)
 					subcloud[t] = subcloud[t]?subcloud[t]+1:1;
 				});
 			});
@@ -174,7 +173,7 @@ function Catalog(items){
 			});
 			
 			$(_.subCloudPanelID).innerHTML = htmlSuper.join("") + htmlSelected + html.join("");
-		},
+		}},
 		
 		showResult: function(tagID){var _=this;
 			if(tagID)
@@ -215,6 +214,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
+		version:"2.0.23",
 		instances:[],
 		
 		getInstance: function(id){return Catalog.instances[id];},
