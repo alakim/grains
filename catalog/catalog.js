@@ -152,12 +152,13 @@ function Catalog(items){
 			});
 			
 			var superColl = [];
-			var html = [];
-			each(subColl, function(t){
+			
+			var html = apply(subColl, function(t){
 				if(t.count==coll.length)
 					superColl.push(t);
-				else
-					html.push(" <span class=\"link pointer\" onclick=\"Catalog.addTag("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+subcloud[t.nm]+"]</span>");
+				return span({"class":"link pointer", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
+					t.nm, "[", subcloud[t.nm], "]"
+				);
 			});
 			
 			superColl = superColl.sort(function(x, y){
@@ -167,12 +168,14 @@ function Catalog(items){
 					:xmetric<ymetric? 1
 					:0;
 			});
-			var htmlSuper = [];
-			each(superColl, function(t){
-				htmlSuper.push(" <span class=\"link pointer\" onclick=\"Catalog.show("+_.ID+",'"+t.nm+"')\">"+t.nm+"["+_.tags[t.nm].items.length+"]</span>");
+			
+			var htmlSuper = apply(superColl, function(t){
+				return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+t.nm+"')"},
+					t.nm, "[" ,_.tags[t.nm].items.length, "]"
+				);
 			});
 			
-			$(_.subCloudPanelID).innerHTML = htmlSuper.join("") + htmlSelected + html.join("");
+			$(_.subCloudPanelID).innerHTML = htmlSuper + htmlSelected + html;
 		}},
 		
 		showResult: function(tagID){var _=this;
@@ -187,15 +190,21 @@ function Catalog(items){
 			
 			_.showSubCloud(coll);
 			
-			var html = [];
-			each(coll, function(itm){
-				var title=[];
-				each(itm.tags, function(t){
-					title.push(t);
+			with(Html){
+				$(_.outPanelID).innerHTML = apply(coll, function(itm){
+					var ttitle = itm.tags.join(",");
+					return p(
+						"[",
+						span({"class":"link pointer", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
+							"like this"
+						),
+						"]",
+						a({href:itm.url, title:ttitle},
+							itm.label
+						)
+					);
 				});
-				html.push("<p>[<span class=\"link pointer\" onclick=\"Catalog.setConditions("+_.ID+", '"+title.join(",")+"')\">like this</span>] <a href=\""+itm.url+"\" title=\""+title.join(", ")+"\">"+itm.label+"</a></p>");
-			});
-			$(_.outPanelID).innerHTML = html.join("");
+			}
 		},
 		
 		addTag: function(tagID){var _=this;
