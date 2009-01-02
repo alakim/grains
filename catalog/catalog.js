@@ -110,8 +110,8 @@ function Catalog(items){
 					div({id:_.cloudPanelID},
 						apply(coll, function(tname){
 							return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+tname+"')"},
-								tname,"[",_.tags[tname].items.length,"]"
-							);
+								tname.replace(/\s+/, "&nbsp;"),"[",_.tags[tname].items.length,"]"
+							)+" ";
 						})
 					),
 					div({id:_.subCloudPanelID}),
@@ -123,7 +123,7 @@ function Catalog(items){
 		
 		showSubCloud: function(coll){with(Html){var _=this;
 			var htmlSelected = apply(_.selectedTags, function(t, i){
-				return (i>0?"&amp;":"") + span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t.replace(/\s+/g, "&nbsp;"));
+				return (i>0?"&amp;":"") + span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t.replace(/\s+/g, "&nbsp;"))+" ";
 			});
 			
 			
@@ -162,8 +162,8 @@ function Catalog(items){
 					return "";
 				}
 				return span({"class":"link pointer", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
-					t.nm, "[", subcloud[t.nm], "]"
-				);
+					t.nm.replace(/\s+/,"&nbsp;"), "[", subcloud[t.nm], "]"
+				)+" ";
 			});
 			
 			superColl = superColl.sort(function(x, y){
@@ -177,7 +177,7 @@ function Catalog(items){
 			var htmlSuper = apply(superColl, function(t){
 				return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+t.nm+"')"},
 					t.nm, "[" ,_.tags[t.nm].items.length, "]"
-				);
+				)+" ";
 			});
 			
 			$(_.subCloudPanelID).innerHTML = htmlSuper + htmlSelected + html;
@@ -259,7 +259,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"2.3.30",
+		version:"2.3.31",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
