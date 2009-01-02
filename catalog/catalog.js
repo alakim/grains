@@ -195,27 +195,31 @@ function Catalog(items){
 			
 			_.showSubCloud(coll);
 			with(Html){
-				$(_.outPanelID).innerHTML = table({border:0},
-					apply(coll, function(itm){
-						var ttitle = itm.tags.join(",");
-						return tr(
-							td({"class":"tagsColumn", width:"30%"},
-								span({"class":"link pointer", style:"margin:0px;", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
-									apply(itm.tags, function(itag, i){
-										return (i>0?", ":"") + itag;
-									})
+				$(_.outPanelID).innerHTML = 
+				div(
+					div(coll.length, " item", (coll.length.toString().match(/1$/)?"":"s")," found"),
+					table({border:0},
+						apply(coll, function(itm){
+							var ttitle = itm.tags.join(",");
+							return tr(
+								td({"class":"tagsColumn", width:"30%"},
+									span({"class":"link pointer", style:"margin:0px;", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
+										apply(itm.tags, function(itag, i){
+											return (i>0?", ":"") + itag;
+										})
+									)
+								),
+								td(
+									a({href:itm.url, title:ttitle},
+										Catalog.itemTitleTemplate(itm)
+									)
+								),
+								td({"class":"details"},
+									Catalog.itemDetailsTemplate(itm)
 								)
-							),
-							td(
-								a({href:itm.url, title:ttitle},
-									Catalog.itemTitleTemplate(itm)
-								)
-							),
-							td({"class":"details"},
-								Catalog.itemDetailsTemplate(itm)
-							)
-						);
-					})
+							);
+						})
+					)
 				);
 			}
 		},
@@ -255,7 +259,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"2.2.29",
+		version:"2.3.30",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
