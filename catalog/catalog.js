@@ -68,6 +68,7 @@ function Catalog(items){
 		cloudPanelID:"cloud",
 		subCloudPanelID:"cloud2",
 		outPanelID:"out",
+		errorPanelID:"errors",
 		statisticsPanelID:"stats",
 		
 		selectedTags:[],
@@ -103,7 +104,8 @@ function Catalog(items){
 				document.body.innerHTML = div(
 					p({style:"text-align:right;", id:_.statisticsPanelID},
 						"Total:", _.items.length, " items",
-						", ", coll.length, " tags"
+						", ", coll.length, " tags",
+						span({"class":"link pointer", onclick:"Catalog.checkData("+_.ID+")"}, "check data")
 					),
 					div({id:_.cloudPanelID},
 						apply(coll, function(tname){
@@ -113,7 +115,8 @@ function Catalog(items){
 						})
 					),
 					div({id:_.subCloudPanelID}),
-					div({id:_.outPanelID})
+					div({id:_.outPanelID}),
+					div({id:_.errorPanelID})
 				);
 			}
 		},
@@ -229,11 +232,30 @@ function Catalog(items){
 		setConditions: function(tags){var _=this;
 			_.selectedTags = tags.split(",");
 			_.showResult();
+		},
+		
+		checkData: function(){var _=this;
+			$(_.errorPanelID).innerHTML = "";
+			var errorsFound = false;
+			var urls = {};
+			each(_.items, function(itm){
+				if(urls[itm.url]!=null){
+					errorsFound = true;
+					_.displayDataError(itm);
+				}
+				urls[itm.url] = 1;
+			});
+			if(!errorsFound)
+				$(_.errorPanelID).innerHTML = Html.div({style:"fond-weight:bold; color:#008800;"}, "Ошибок не обнаружено");
+		},
+		
+		displayDataError: function(itm){var _=this;
+			$(_.errorPanelID).innerHTML += Html.div({style:"color:red"}, "Обнаружены дубликаты элемента ", itm.url);
 		}
 	}
 	
 	extend(Catalog, {
-		version:"2.1.25",
+		version:"2.2.29",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
@@ -260,6 +282,9 @@ function Catalog(items){
 		},
 		setConditions: function(catID, tags){
 			Catalog.getInstance(catID).setConditions(tags);
+		},
+		checkData: function(catID){
+			Catalog.getInstance(catID).checkData();
 		}
 	});
 })();
