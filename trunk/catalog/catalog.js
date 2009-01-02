@@ -207,6 +207,9 @@ function Catalog(items){
 								a({href:itm.url, title:ttitle},
 									Catalog.itemTitleTemplate(itm)
 								)
+							),
+							td({"class":"details"},
+								Catalog.itemDetailsTemplate(itm)
 							)
 						);
 					})
@@ -233,9 +236,16 @@ function Catalog(items){
 		version:"2.1.25",
 		instances:[],
 		
-		itemTitleTemplate: function(itm){with(Html){
+		itemTitleTemplate: function(itm){
 			return itm.label;
-		}},
+		},
+		
+		itemDetailsTemplate:function(itm){
+			return itm.description?itm.description
+				:itm.dsc?itm.dsc
+				:itm.details?itm.details
+				:null;
+		},
 		
 		getInstance: function(id){return Catalog.instances[id];},
 		
