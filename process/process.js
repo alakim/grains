@@ -1,18 +1,10 @@
-function Process(F, next){var _=this;
-	_.F = F;
-	_.next = next;
-	Process.instances.push(_);
-	_.pid = Process.instances.length;
-	if(next && next.registerParent)
-		next.registerParent(_);
+function Process(F, next){
+	this.F = F;
+	Process.registerInstance(this, next);
 }
 
-function Synchronization(next){var _=this;
-	_.next = next;
-	if(next.registerParent)
-		next.registerParent(_);
-	Process.instances.push(_);
-	_.pid = Process.instances.length;
+function Synchronization(next){
+	Process.registerInstance(this, next);
 }
 
 (function(){
@@ -49,7 +41,14 @@ function Synchronization(next){var _=this;
 	
 	extend(Process, {
 		instances:[],
-		getInstance: function(idx){return Process.instances[idx];}
+		getInstance: function(idx){return Process.instances[idx];},
+		registerInstance: function(inst, next){var _=inst;
+			Process.instances.push(_);
+			_.pid = Process.instances.length;
+			_.next = next;
+			if(next && next.registerParent)
+				next.registerParent(_);
+		}
 	});
 	
 	Synchronization.prototype = {
