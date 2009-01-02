@@ -119,8 +119,8 @@ function Catalog(items){
 		},
 		
 		showSubCloud: function(coll){with(Html){var _=this;
-			var htmlSelected = apply(_.selectedTags, function(t){
-				return span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t);
+			var htmlSelected = apply(_.selectedTags, function(t, i){
+				return (i>0?"&amp;":"") + span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t.replace(/\s+/g, "&nbsp;"));
 			});
 			
 			
@@ -154,8 +154,10 @@ function Catalog(items){
 			var superColl = [];
 			
 			var html = apply(subColl, function(t){
-				if(t.count==coll.length)
+				if(t.count==coll.length){
 					superColl.push(t);
+					return "";
+				}
 				return span({"class":"link pointer", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
 					t.nm, "[", subcloud[t.nm], "]"
 				);
