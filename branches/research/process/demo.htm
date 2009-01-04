@@ -1,0 +1,85 @@
+<html>
+<head>
+<style type="text/css">
+#out{
+	background-color:#000022;
+	color:#fafaff;
+	font-family:courier, monospace;
+	font-size:10px;
+	padding:5px;
+	margin:5px;
+	width:500px;
+	height:200px;
+}
+</style>
+<script type="text/javascript" src="process.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function write(msg){$("out").innerHTML+=msg;}
+function writeLine(msg){write(msg+"<br>")}
+function cls(){$("out").innerHTML = "";}
+
+function process1(){
+	cls();
+	writeLine("process 1 starting");
+	
+	var proc = new Process(function(){
+		writeLine("process 1 executed");
+	});
+	proc.start();
+}
+
+function twoProcesses(){
+	cls();
+	writeLine("start...");
+	
+	var sync = new Synchronization(function(){
+		writeLine("synchronized...");
+	});
+	
+	var proc1 = new Process(function(){
+		writeLine("proc 1");
+	}, sync);
+	
+	var proc2 = new Process(function(){
+		writeLine("proc 2");
+	}, sync);
+	
+	proc1.start();
+	proc2.start();
+}
+
+function twoWebServices(){
+	var srvMul = function(x, y, onload){
+		window.setTimeout(onload(x*y), 500);
+	};
+	
+	var srvAdd = function(x, y, onload){
+		window.setTimeout(onload(x+y), 1000);
+	};
+	
+	cls();
+	writeLine("start...");
+	
+	var sync = new Synchronization(function(){
+		writeLine("synchronized...");
+	});
+	
+	var proc1 = new Process(function(){
+	}, sync);
+}
+
+</script>
+</head>
+<body>
+<h1>Process Demo Page</h1>
+<p>
+	<button onclick="process1()">Process 1</button>
+	<button onclick="twoProcesses()">two processes</button>
+	<button onclick="twoWebServices()">two web services</button>
+</p>
+
+<div id="out"></div>
+</body>
+</html>
