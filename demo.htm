@@ -49,6 +49,27 @@ function twoProcesses(){
 	proc1.start();
 	proc2.start();
 }
+
+function twoWebServices(){
+	var srvMul = function(x, y, onload){
+		window.setTimeout(onload(x*y), 500);
+	};
+	
+	var srvAdd = function(x, y, onload){
+		window.setTimeout(onload(x+y), 1000);
+	};
+	
+	cls();
+	writeLine("start...");
+	
+	var sync = new Synchronization(function(){
+		writeLine("synchronized...");
+	});
+	
+	var proc1 = new Process(function(){
+	}, sync);
+}
+
 </script>
 </head>
 <body>
@@ -56,6 +77,7 @@ function twoProcesses(){
 <p>
 	<button onclick="process1()">Process 1</button>
 	<button onclick="twoProcesses()">two processes</button>
+	<button onclick="twoWebServices()">two web services</button>
 </p>
 
 <div id="out"></div>
