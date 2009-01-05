@@ -41,11 +41,14 @@ function srvMul(x, y, onload){
 	window.setTimeout(function(){onload(x*y);}, 800);
 }
 
-var sync = {
-	processes:{
-		srvAdd:false,
-		srvMul:false,
-	},
+function Synchronization(pids){var _=this;
+	each(pids, function(pid){
+		_.processes[pid] = false;
+	});
+}
+
+Synchronization.prototype = {
+	processes:{},
 	data:{},
 	start: function(pid, data){var _=this;
 		_.processes[pid] = true;
@@ -76,6 +79,8 @@ function startServMul(x, y){
 }
 
 function startServices(){
+	var sync = new Synchronization(["srvAdd", "srvMul"]);
+	
 	srvAdd(3, 2, function(res){
 		sync.start("srvAdd", res);
 	});
