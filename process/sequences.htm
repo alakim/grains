@@ -87,14 +87,21 @@ Parallel.prototype = {
 extend(Parallel.prototype, Base.prototype);
 
 function Process(){var _=this;
-	Base(arguments, _);
+	Process.instances.push(_);
+	_.pid = Process.instances.length;
 }
 
 Process.prototype = {
-	
+	pid:null,
+	run: function(){
+	}
 };
 
-extend(Process.prototype, Base.prototype);
+extend(Process, {
+		instances:[],
+		getInstance: function(pid){return Process.instances[pid];}
+});
+
 
 function startSequences(){
 	var proc1 = new Process();
