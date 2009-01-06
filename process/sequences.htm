@@ -1,0 +1,131 @@
+<html>
+<head>
+<style type="text/css">
+#out{
+	background-color:#000022;
+	color:#fafaff;
+	font-family:courier, monospace;
+	font-size:10px;
+	padding:5px;
+	margin:5px;
+	width:500px;
+	height:200px;
+}
+</style>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function write(msg){$("out").innerHTML+=msg;}
+function writeLine(msg){write(msg+"<br>")}
+function cls(){$("out").innerHTML = "";}
+
+function each(coll, F){
+	if(coll.length){
+		for(var i=0; i<coll.length; i++){
+			F(coll[i], i);
+		}
+	}
+	else{
+		for(var k in coll){
+			F(coll[k], k);
+		}
+	}
+}
+
+function extend(o, s){for(var k in s)o[k] = s[k];}
+
+function srvAdd(x, y, onload){
+	window.setTimeout(function(){onload(x+y);}, 500);
+}
+
+function srvMul(x, y, onload){
+	window.setTimeout(function(){onload(x*y);}, 800);
+}
+
+function startServAdd(x, y){
+	srvAdd(x, y, function(res){
+		writeLine(x+"+"+y+"="+res);
+	});
+}
+
+function startServMul(x, y){
+	srvMul(x, y, function(res){
+		writeLine(x+"*"+y+"="+res);
+	});
+}
+
+function Base(args, inst){
+	each(args, function(arg){
+		inst.processes.push(arg);
+	});
+}
+
+Base.prototype = {
+	processes:[],
+	run: function(){
+	}
+}
+
+function Sequence(){var _=this;
+	Base(arguments, _);
+}
+
+Sequence.prototype = {
+	
+};
+
+extend(Sequence.prototype, Base.prototype);
+
+function Parallel(){var _=this;
+	Base(arguments, _);
+}
+
+Parallel.prototype = {
+	
+};
+
+extend(Parallel.prototype, Base.prototype);
+
+function Process(){var _=this;
+	Base(arguments, _);
+}
+
+Process.prototype = {
+	
+};
+
+extend(Process.prototype, Base.prototype);
+
+function startSequences(){
+	var proc1 = new Process();
+	var proc2 = new Process();
+	var proc3 = new Process();
+	var proc4 = new Process();
+	var proc5 = new Process();
+	
+	var main = new Sequence(
+		proc1, 
+		proc2, 
+		new Parallel(
+			proc3, 
+			proc4
+		),
+		proc5
+	);
+	main.run();
+}
+
+</script>
+</head>
+<body>
+<h1>Sequences Demo Page</h1>
+<p>
+	<button onclick="startSequences()">start sequences</button>
+	<button onclick="startServAdd(3, 2)">add(3,2)</button>
+	<button onclick="startServMul(3, 2)">mul(3,2)</button>
+	<button onclick="cls()">clear screen</button>
+</p>
+
+<div id="out"></div>
+</body>
+</html>
