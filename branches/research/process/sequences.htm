@@ -13,6 +13,8 @@
 }
 </style>
 <script type="text/javascript">
+
+// стандартные функции
 function $(id){return document.getElementById(id);}
 
 function write(msg){$("out").innerHTML+=msg;}
@@ -34,6 +36,7 @@ function each(coll, F){
 
 function extend(o, s){for(var k in s)o[k] = s[k];}
 
+// модели асинхронных сервисов (например, веб-сервисов)
 function srvAdd(x, y, onload){
 	window.setTimeout(function(){onload(x+y);}, 500);
 }
@@ -42,6 +45,7 @@ function srvMul(x, y, onload){
 	window.setTimeout(function(){onload(x*y);}, 800);
 }
 
+// демонстрация использования сервисов
 function startServAdd(x, y){
 	srvAdd(x, y, function(res){
 		writeLine(x+"+"+y+"="+res);
@@ -54,6 +58,7 @@ function startServMul(x, y){
 	});
 }
 
+// эскиз структуры классов 
 function Base(args, inst){
 	each(args, function(arg){
 		inst.processes.push(arg);
@@ -106,7 +111,10 @@ extend(Process, {
 });
 
 
+// Демонстрационные функции
+
 function startSequences(){
+	// эскиз описания схемы бизнес-процесса
 	var proc1 = new Process(srvAdd);
 	var proc2 = new Process(srvMul);
 	var proc3 = new Process(srvAdd);
@@ -126,6 +134,7 @@ function startSequences(){
 }
 
 function simpleSequence(){
+	// простая последовательность, реализованная стандартными средствами javascript
 	var x = 1, y = 2, z = 3;
 	var res;
 	var main = function(){
@@ -140,6 +149,7 @@ function simpleSequence(){
 }
 
 function singleProcess(){
+	// эскиз запуска одиночного процесса.
 	var res;
 	var p = new Process(function(){
 		srvAdd(2, 3, function(r){
@@ -147,6 +157,7 @@ function singleProcess(){
 			writeLine(res);
 		});
 	});
+	// что-то кривовато как-то. Как-то не так должно быть...
 	
 	p.run();
 }
