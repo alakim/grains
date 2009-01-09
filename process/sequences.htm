@@ -86,14 +86,17 @@ Parallel.prototype = {
 
 extend(Parallel.prototype, Base.prototype);
 
-function Process(){var _=this;
+function Process(F){var _=this;
 	Process.instances.push(_);
 	_.pid = Process.instances.length;
+	_.F = F;
 }
 
 Process.prototype = {
 	pid:null,
+	F:null,
 	run: function(){
+		this.F();
 	}
 };
 
@@ -104,11 +107,11 @@ extend(Process, {
 
 
 function startSequences(){
-	var proc1 = new Process();
-	var proc2 = new Process();
-	var proc3 = new Process();
-	var proc4 = new Process();
-	var proc5 = new Process();
+	var proc1 = new Process(srvAdd);
+	var proc2 = new Process(srvMul);
+	var proc3 = new Process(srvAdd);
+	var proc4 = new Process(srvMul);
+	var proc5 = new Process(srvAdd);
 	
 	var main = new Sequence(
 		proc1, 
@@ -122,12 +125,40 @@ function startSequences(){
 	main.run();
 }
 
+function simpleSequence(){
+	var x = 1, y = 2, z = 3;
+	var res;
+	var main = function(){
+		srvAdd(x, y, function(r1){
+			srvMul(r1, z, function(r2){
+				res = r2;
+				writeLine((res==9?"OK":"Failure")+": "+res);
+			});
+		})
+	}
+	main();
+}
+
+function singleProcess(){
+	var res;
+	var p = new Process(function(){
+		srvAdd(2, 3, function(r){
+			res = r;
+			writeLine(res);
+		});
+	});
+	
+	p.run();
+}
+
 </script>
 </head>
 <body>
 <h1>Sequences Demo Page</h1>
 <p>
 	<button onclick="startSequences()">start sequences</button>
+	<button onclick="simpleSequence()">simple sequence</button>
+	<button onclick="singleProcess()">single process</button>
 	<button onclick="startServAdd(3, 2)">add(3,2)</button>
 	<button onclick="startServMul(3, 2)">mul(3,2)</button>
 	<button onclick="cls()">clear screen</button>
