@@ -1,0 +1,103 @@
+<html>
+<head>
+<style type="text/css">
+#out{
+	background-color:#000022;
+	color:#fafaff;
+	font-family:courier, monospace;
+	font-size:10px;
+	padding:5px;
+	margin:5px;
+	width:500px;
+	height:200px;
+}
+#cnv{
+	border:1px solid #888888;
+	padding:5px;
+	margin:5px;
+	width:500px;
+	height:200px;
+}
+</style>
+<script type="text/javascript" src="lib/std.js"></script>
+<script type="text/javascript" src="lib/raphael.js"></script>
+
+<script type="text/javascript">
+// Animation class definition
+function Animation(F, maxPrm, duration){var _=this;
+	_.F = F;
+	_.maxPrm = maxPrm;
+	_.duration = duration;
+	_.count = duration/_.interval;
+	_.step = maxPrm/_.count;
+}
+
+Animation.prototype = {
+	interval:50,
+	run: function(){var _=this;
+		var intr = setInterval(function(){
+			_.F(_.step);
+			_.count--;
+			if(_.count<0)
+				clearInterval(intr);
+		}, _.interval);
+	}
+};
+</script>
+
+<script type="text/javascript">
+
+var circle;
+
+function move(){
+	circle.translate(10,10);
+}
+
+function animation_1(){
+	var count = 0;
+	(function(){
+		circle.translate(1,1);
+		count++;
+		if(count<14)
+			setTimeout(arguments.callee, 40);
+	})();
+}
+
+function animation_2(){
+	var count = 0;
+	var intrv = setInterval(function(){
+		circle.translate(1,1);
+		count++;
+		if(count>15)
+			clearInterval(intrv);
+	}, 40);
+}
+
+function animation_3(){
+	new Animation(
+		function(step){circle.translate(step,step);}, 
+		20, 1500
+	).run();
+}
+
+function init(){
+	var paper = Raphael("cnv", 100, 200);
+	
+	circle = paper.circle(30, 30, 10).attr("fill", "#ff0000").attr("stroke","#0000ff");
+}
+</script>
+</head>
+<body onload="init()">
+<h1>Animations Demo Page</h1>
+<p>
+	<button onclick="move()">move circle</button>
+	<button onclick="animation_1()">circle animation 1</button>
+	<button onclick="animation_2()">circle animation 2</button>
+	<button onclick="animation_3()">circle animation 3</button>
+	<button onclick="cls()">clear screen</button>
+</p>
+<div id="cnv">
+</div>
+<div id="out"></div>
+</body>
+</html>
