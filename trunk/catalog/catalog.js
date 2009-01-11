@@ -70,8 +70,12 @@ function Catalog(items){
 		outPanelID:"out",
 		errorPanelID:"errors",
 		statisticsPanelID:"stats",
+		highlightFieldID:"highlight",
+		
+		reHighlight:null,
 		
 		selectedTags:[],
+		history:{},
 
 		init: function(){var _=this;
 			_.tags = [];
@@ -86,7 +90,25 @@ function Catalog(items){
 		},
 		
 		display: function(){var _=this;
-			
+			with(Html){
+				document.body.innerHTML = div(
+					p({style:"text-align:right;"},
+						span({id:_.statisticsPanelID}),
+						input({type:"text", id:_.highlightFieldID}),
+						button({onclick:"Catalog.highlightStrings("+_.ID+")"}, "найти"),
+						" ",
+						span({"class":"link pointer", onclick:"Catalog.checkData("+_.ID+")"}, "check data")
+					),
+					div({id:_.cloudPanelID}),
+					div({id:_.subCloudPanelID}),
+					div({id:_.outPanelID}),
+					div({id:_.errorPanelID})
+				);
+			}
+			_.showCloud();
+		},
+		
+		showCloud: function(){var _=this;with(Html){
 			var coll = [];
 			for(var k in _.tags){var t = _.tags[k];
 				coll.push(k);
@@ -100,26 +122,18 @@ function Catalog(items){
 					:0;
 			});
 			
-			with(Html){
-				document.body.innerHTML = div(
-					p({style:"text-align:right;", id:_.statisticsPanelID},
-						"Total:", _.items.length, " items",
-						", ", coll.length, " tags",
-						span({"class":"link pointer", onclick:"Catalog.checkData("+_.ID+")"}, "check data")
-					),
-					div({id:_.cloudPanelID},
-						apply(coll, function(tname){
-							return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+tname+"')"},
-								tname.replace(/\s+/, "&nbsp;"),"[",_.tags[tname].items.length,"]"
-							)+" ";
-						})
-					),
-					div({id:_.subCloudPanelID}),
-					div({id:_.outPanelID}),
-					div({id:_.errorPanelID})
-				);
-			}
-		},
+			$(_.statisticsPanelID).innerHTML = span(
+				"Total:", _.items.length, " items",
+				", ", coll.length, " tags "
+			);
+			
+			$(_.cloudPanelID).innerHTML = apply(coll, function(tname){
+				var mt = tname.match(_.reHighlight);
+				return span({"class":"link pointer", style:mt?"background-color:#ffff00;":"", onclick:"Catalog.show("+_.ID+",'"+tname+"')"},
+					tname.replace(/\s+/, "&nbsp;"),"[",_.tags[tname].items.length,"]"
+				)+" ";
+			});
+		}},
 		
 		showSubCloud: function(coll){with(Html){var _=this;
 			var htmlSelected = apply(_.selectedTags, function(t, i){
@@ -161,7 +175,8 @@ function Catalog(items){
 					superColl.push(t);
 					return "";
 				}
-				return span({"class":"link pointer", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
+				var mt = t.nm.match(_.reHighlight);
+				return span({"class":"link pointer", style:mt?"background-color:#ffff00;":"", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
 					t.nm.replace(/\s+/,"&nbsp;"), "[", subcloud[t.nm], "]"
 				)+" ";
 			});
@@ -175,12 +190,16 @@ function Catalog(items){
 			});
 			
 			var htmlSuper = apply(superColl, function(t){
-				return span({"class":"link pointer", onclick:"Catalog.show("+_.ID+",'"+t.nm+"')"},
+				var mt = t.nm.match(_.reHighlight);
+				return span({"class":"link pointer", style:mt?"background-color:#ffff00;":"", onclick:"Catalog.show("+_.ID+",'"+t.nm+"')"},
 					t.nm, "[" ,_.tags[t.nm].items.length, "]"
 				)+" ";
 			});
 			
-			$(_.subCloudPanelID).innerHTML = htmlSuper + htmlSelected + html;
+			$(_.subCloudPanelID).innerHTML = div(
+				_.history?button({onclick:"Catalog.historyBack("+_.ID+")"}, "&lt;&lt;"):"",
+				" ", htmlSuper, htmlSelected, html
+			);
 		}},
 		
 		showResult: function(tagID){var _=this;
@@ -227,15 +246,18 @@ function Catalog(items){
 		addTag: function(tagID){var _=this;
 			_.selectedTags.push(tagID);
 			_.showResult();
+			_.addToHistory();
 		},
 		
 		delTag: function(tagID){var _=this;
 			_.selectedTags = remove(_.selectedTags, tagID);
 			_.showResult();
+			_.addToHistory();
 		},
 		setConditions: function(tags){var _=this;
 			_.selectedTags = tags.split(",");
 			_.showResult();
+			_.addToHistory();
 		},
 		
 		checkData: function(){var _=this;
@@ -267,11 +289,36 @@ function Catalog(items){
 			});
 			if(!errorsFound)
 				$(_.errorPanelID).innerHTML = Html.div({style:"fond-weight:bold; color:#008800;"}, "Ошибок не обнаружено");
+		},
+		
+		highlightStrings: function(){var _=this;
+			_.reHighlight = new RegExp($(_.highlightFieldID).value, "ig");
+			_.showCloud();
+		},
+		
+		addToHistory: function(){var _=this;
+			if(!_.history)
+				_.history = {};
+			if(_.history.tags){
+				var nd = {tags:_.selectedTags.join(","), prev:_.history};
+				_.history = nd;
+			}
+			else
+				_.history.tags = _.selectedTags.join(",");
+		},
+		
+		historyBack: function(){var _=this;
+			if(!_.history)
+				return;
+			_.history = _.history.prev;
+			if(_.history && _.history.tags)
+				_.selectedTags = _.history.tags.split(",");
+				_.showResult();
 		}
 	}
 	
 	extend(Catalog, {
-		version:"2.3.31",
+		version:"3.1.49",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
@@ -301,6 +348,12 @@ function Catalog(items){
 		},
 		checkData: function(catID){
 			Catalog.getInstance(catID).checkData();
+		},
+		historyBack: function(catID){
+			Catalog.getInstance(catID).historyBack();
+		},
+		highlightStrings: function(catID){
+			Catalog.getInstance(catID).highlightStrings();
 		}
 	});
 })();
