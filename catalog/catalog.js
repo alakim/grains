@@ -239,22 +239,34 @@ function Catalog(items){
 		},
 		
 		checkData: function(){var _=this;
+			function displayDuplicate(itm){
+				$(_.errorPanelID).innerHTML += Html.div({style:"color:red"}, "Обнаружены дубликаты элемента ", itm.url);
+			}
+			function displayVariant(t){
+				$(_.errorPanelID).innerHTML+=Html.div({style:"color:#ff00aa;"}, "Обнаружены разные варианты написания тега \"", t, "\"");
+			}
 			$(_.errorPanelID).innerHTML = "";
 			var errorsFound = false;
 			var urls = {};
+			var tags = {};
 			each(_.items, function(itm){
 				if(urls[itm.url]!=null){
 					errorsFound = true;
-					_.displayDataError(itm);
+					displayDuplicate(itm);
 				}
 				urls[itm.url] = 1;
+				each(itm.tags, function(t){
+					var tL = t.toLowerCase();
+					if(tags[tL]==null)
+						tags[tL] = t;
+					else if(tags[tL]!=t){
+						errorsFound = true;
+						displayVariant(t);
+					}
+				});
 			});
 			if(!errorsFound)
 				$(_.errorPanelID).innerHTML = Html.div({style:"fond-weight:bold; color:#008800;"}, "Ошибок не обнаружено");
-		},
-		
-		displayDataError: function(itm){var _=this;
-			$(_.errorPanelID).innerHTML += Html.div({style:"color:red"}, "Обнаружены дубликаты элемента ", itm.url);
 		}
 	}
 	
