@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Fuzzy Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="fuzzy.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля Fuzzy", "Configuration").run = function(){
+	this.assert(typeof(Fuzzy), "object");
+}
+
+new JSUnit.Test("And Test", "Operations").run = function(){
+	this.assert(Fuzzy.and(0.4, 0.2), 0.2);
+	this.assert(Fuzzy.and(true, 0.2), 0.2);
+	this.assert(Fuzzy.and(0.4, false), 0);
+}
+
+new JSUnit.Test("Or Test", "Operations").run = function(){
+	this.assert(Fuzzy.or(0.4, 0.2), 0.4);
+	this.assert(Fuzzy.or(true, 0.2), 1);
+	this.assert(Fuzzy.or(0.4, false), 0.4);
+}
+
+new JSUnit.Test("Fuzzy values", "Operations").run = function(){
+	this.assert(Fuzzy.getFuzzyValue(true), 1);
+	this.assert(Fuzzy.getFuzzyValue(false), 0);
+	this.assert(Fuzzy.getFuzzyValue("0.2"), 0.2);
+	this.assert(Fuzzy.getFuzzyValue(0.2), 0.2);
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = Fuzzy.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Fuzzy Unit Tests</h1>
+	<p>Fuzzy v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
