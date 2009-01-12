@@ -3,7 +3,7 @@ if(typeof(Html)!="object")
 
 function Catalog(items){
 	this.items = items;
-	
+	this.history = [];
 	this.ID = Catalog.instances.length;
 	Catalog.instances.push(this);
 	this.init();
@@ -75,7 +75,6 @@ function Catalog(items){
 		reHighlight:null,
 		
 		selectedTags:[],
-		history:{},
 
 		init: function(){var _=this;
 			_.tags = [];
@@ -197,7 +196,8 @@ function Catalog(items){
 			});
 			
 			$(_.subCloudPanelID).innerHTML = div(
-				_.history?button({onclick:"Catalog.historyBack("+_.ID+")"}, "&lt;&lt;"):"",
+				_.history.length,
+				_.history.length>-1?button({onclick:"Catalog.historyBack("+_.ID+")"}, "&lt;&lt;"):"",
 				" ", htmlSuper, htmlSelected, html
 			);
 		}},
@@ -297,28 +297,21 @@ function Catalog(items){
 		},
 		
 		addToHistory: function(){var _=this;
-			if(!_.history)
-				_.history = {};
-			if(_.history.tags){
-				var nd = {tags:_.selectedTags.join(","), prev:_.history};
-				_.history = nd;
-			}
-			else
-				_.history.tags = _.selectedTags.join(",");
+			_.history.push(_.selectedTags.join(","));
 		},
 		
 		historyBack: function(){var _=this;
-			if(!_.history)
+			_.history.pop();
+			var prev = _.history[_.history.length-1];
+			if(!prev || !prev.length)
 				return;
-			_.history = _.history.prev;
-			if(_.history && _.history.tags)
-				_.selectedTags = _.history.tags.split(",");
-				_.showResult();
+			_.selectedTags = prev.split(",");
+			_.showResult();
 		}
 	}
 	
 	extend(Catalog, {
-		version:"3.1.49",
+		version:"3.1.50",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
