@@ -20,6 +20,13 @@ new JSUnit.Test("Or Test", "Operations").run = function(){
 	this.assert(Fuzzy.or(0.4, false), 0.4);
 }
 
+new JSUnit.Test("Not Test", "Operations").run = function(){
+	this.assert(Fuzzy.not(0.4), 0.6);
+	this.assert(Fuzzy.not(false), 1);
+	this.assert(Fuzzy.not(true), 0);
+	this.assert(Fuzzy.not(0.1), 0.9);
+}
+
 new JSUnit.Test("Fuzzy values", "Operations").run = function(){
 	this.assert(Fuzzy.getFuzzyValue(true), 1);
 	this.assert(Fuzzy.getFuzzyValue(false), 0);

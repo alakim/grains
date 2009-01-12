@@ -5,7 +5,7 @@ var Fuzzy = {};
 	
 	var _ = Fuzzy;
 	extend(_, {
-		version: "1.0.51",
+		version: "1.1.52",
 		
 		and: function(x, y){
 			return Math.min(_.getFuzzyValue(x),_.getFuzzyValue(y));
@@ -13,6 +13,10 @@ var Fuzzy = {};
 		
 		or: function(x, y){
 			return Math.max(_.getFuzzyValue(x),_.getFuzzyValue(y));
+		},
+		
+		not: function(x){
+			return 1 - _.getFuzzyValue(x);
 		},
 		
 		getFuzzyValue: function(x){
