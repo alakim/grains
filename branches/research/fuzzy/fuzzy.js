@@ -5,18 +5,18 @@ var Fuzzy = {};
 	
 	var _ = Fuzzy;
 	extend(_, {
-		version: "1.2.53",
+		version: "1.3.54",
 		
 		and: function(x, y){
-			return Math.min(_.getFuzzyValue(x),_.getFuzzyValue(y));
+			return Math.min(_.truth(x),_.truth(y));
 		},
 		
 		or: function(x, y){
-			return Math.max(_.getFuzzyValue(x),_.getFuzzyValue(y));
+			return Math.max(_.truth(x),_.truth(y));
 		},
 		
 		not: function(x){
-			return 1 - _.getFuzzyValue(x);
+			return 1 - _.truth(x);
 		},
 		
 		functions: {
@@ -33,6 +33,26 @@ var Fuzzy = {};
 						:x<vMin? 1
 						:(x-vMax)/-(vMax - vMin);
 				};
+			},
+			L: function(xTop, dL, dR){
+				return function(x){
+					return x<xTop-dL? 0
+						:x>xTop+dR? 0
+						:x==xTop? 1
+						:x<xTop? (x - (xTop-dL))/dL
+						:(x-(xTop+dR))/-dR;
+				};
+			},
+			P: function(vMin, vMax, dL, dR){
+				dL = dL==null?0:dL;
+				dR = dR==null?0:dR;
+				return function(x){
+					return x<vMin-dL? 0
+						:x>vMax+dR? 0
+						:x>=vMin && x<=vMax? 1
+						:x<vMin? (x-(vMin-dL))/dL
+						:(x-(vMax+dR))/-dR;
+				};
 			}
 		},
 		
@@ -42,16 +62,13 @@ var Fuzzy = {};
 			var step = (xMax - xMin)/count;
 			var S = 0;
 			for(var p = xMin; p<=xMax; p+=step){
-				var val = F(p);
-				if(val>0){
-					points++;
-					S+=val*p;
-				}
+				points+=F(p);
+				S+=F(p)*p;
 			}
-			return S/count + xMin;
+			return S/points;
 		},
 		
-		getFuzzyValue: function(x){
+		truth: function(x){
 			if(x==true)
 				return 1.0;
 			if(x==false)
