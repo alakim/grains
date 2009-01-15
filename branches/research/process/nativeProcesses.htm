@@ -1,0 +1,86 @@
+<html>
+<head>
+<style type="text/css">
+#out{
+	background-color:#000022;
+	color:#fafaff;
+	font-family:courier, monospace;
+	font-size:10px;
+	padding:5px;
+	margin:5px;
+	width:500px;
+	height:200px;
+}
+</style>
+<script type="text/javascript"> // Helper functions
+	function $(id){return document.getElementById(id);}
+	
+	function write(msg){$("out").innerHTML+=msg;}
+	function writeLine(msg){write(msg+"<br>")}
+	function cls(){$("out").innerHTML = "";}
+	
+	function each(coll, F){
+		if(coll.length){
+			for(var i=0; i<coll.length; i++){
+				F(coll[i], i);
+			}
+		}
+		else{
+			for(var k in coll){
+				F(coll[k], k);
+			}
+		}
+	}
+</script>
+
+<script type="text/javascript"> // Mock services
+	function srvAdd(x, y, onload){
+		window.setTimeout(function(){onload(x+y);}, 500);
+	}
+	
+	function srvMul(x, y, onload){
+		window.setTimeout(function(){onload(x*y);}, 800);
+	}
+</script>
+
+<script type="text/javascript"> // Demo functions
+
+	function startServAdd(x, y){
+		srvAdd(x, y, function(res){
+			writeLine(x+"+"+y+"="+res);
+		});
+	}
+	
+	function startServMul(x, y){
+		srvMul(x, y, function(res){
+			writeLine(x+"*"+y+"="+res);
+		});
+	}
+	
+	function runSequence(){
+		write("(2 + 3)");
+		srvAdd(2, 3, function(res){
+			write(" * 4");
+			srvMul(res, 4, function(res){
+				write(" + 22")
+				srvAdd(res,22, function(res){
+					writeLine(" = "+res+" "+((res==(2+3)*4+22)?"OK!":"Failure"));
+				});
+			});
+		});
+	}
+	
+</script>
+</head>
+<body>
+<h1>Native Processes Demo Page</h1>
+<p>
+	<button onclick="startServAdd(3, 2)">add(3,2)</button>
+	<button onclick="startServMul(3, 2)">mul(3,2)</button>
+	<button onclick="runSequence()">run sequence</button>
+	<button onclick="cls()">clear screen</button>
+</p>
+
+<div id="out"></div>
+</body>
+</html>
