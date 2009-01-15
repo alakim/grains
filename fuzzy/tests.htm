@@ -143,7 +143,7 @@ new JSUnit.Test("Fuzzy values", "Functions").run = function(){
 }
 
 
-new JSUnit.Test("Fuzzy values", "Defuzzyfication").run = function(){
+new JSUnit.Test("Fuzzy values", "Defuzzification").run = function(){
 	var F = Fuzzy.functions.P(3,5,2,2);
 	
 	this.assert(Math.floor(Fuzzy.defuzzy(1, 7, F)*100)/100, 4);
