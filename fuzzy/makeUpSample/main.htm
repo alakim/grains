@@ -12,6 +12,21 @@ function each(coll, F){
 		for(var k in coll){F(coll[k], k);}
 }
 
+function max(coll){
+	var idx = 0;
+	var val = null;
+	each(coll, function(v, i){
+		if(val==null){
+			val = v; idx = i;
+		}
+		else if(v>val){
+			val = v; idx = i;
+		}
+	});
+	
+	return {val:val, idx:idx};
+}
+
 function filter(coll, cond){
 	var res = [];
 	NsiBase.each(coll, function(el){if(cond(el))res.push(el);});
@@ -59,7 +74,7 @@ function viewObject(obj, htmlMode){
 var MakeUp = {
 	
 	rules: {
-		wide: Fuzzy.functions.S(400, 500),
+		wide: Fuzzy.functions.S(600, 800),
 		narrow: Fuzzy.functions.Z(200, 350),
 		lowHeight: Fuzzy.functions.Z(100, 200),
 		
@@ -155,6 +170,8 @@ var MakeUp = {
 		light: function(){with(Html){var _=MakeUp;
 			return div(
 				_.blocks.header(),
+				p(a({href:"#"}, "Оглавление")),
+				p(a({href:"#"}, "Новости")),
 				_.blocks.page()
 			);
 		}}
@@ -164,11 +181,20 @@ var MakeUp = {
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		
-		document.body.innerHTML = _.rules.useStandard(width, height)? _.makeUps.standard()
-			:_.rules.useNarrow(width, height)? _.makeUps.narrow()
-			:_.rules.useNoNews(width, height)? _.makeUps.noNews()
-			:_.rules.useLight(width, height)? _.makeUps.light()
-			:_.makeUps.standard();
+		var rates = [
+			_.rules.useNarrow(width, height),
+			_.rules.useNoNews(width, height),
+			_.rules.useLight(width, height),
+			_.rules.useStandard(width, height)
+		];
+		
+		switch(max(rates).idx){
+			case 0: document.body.innerHTML = _.makeUps.narrow();break;
+			case 1: document.body.innerHTML = _.makeUps.noNews();break;
+			case 2: document.body.innerHTML = _.makeUps.light();break;
+			case 3: document.body.innerHTML = _.makeUps.standard();break;
+			default: document.body.innerHTML = _.makeUps.standard();break;
+		}
 	}
 }
 
