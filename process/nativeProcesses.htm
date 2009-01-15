@@ -31,15 +31,17 @@
 			}
 		}
 	}
+	
+	function extend(o, s){each(s, function(v, nm){o[nm] = v;});}
 </script>
 
 <script type="text/javascript"> // Mock services
 	function srvAdd(x, y, onload){
-		window.setTimeout(function(){onload(x+y);}, 500);
+		window.setTimeout(function(){onload(x+y);}, 600);
 	}
 	
 	function srvMul(x, y, onload){
-		window.setTimeout(function(){onload(x*y);}, 800);
+		window.setTimeout(function(){onload(x*y);}, 1300);
 	}
 </script>
 
@@ -70,14 +72,45 @@
 		});
 	}
 	
+	function runParallel(){
+		var sync = {
+			x: null, 
+			y: null,
+			run: function(data){var _=this;
+				writeLine("sync...");
+				extend(_, data);
+				if(_.x!=null && _.y!=null){
+					write(_.x+" + "+_.y);
+					srvAdd(_.x, _.y, function(res){
+						writeLine(" = "+res+" "+(res==11?"OK!":"Failure"));
+					});
+				}
+			}
+		};
+		
+		writeLine("2 + 3 ...");
+		srvAdd(2,3, function(res){
+			writeLine("2 + 3 = "+res);
+			sync.run({x:res});
+		});
+		
+		writeLine("2 * 3 ...");
+		srvMul(2,3, function(res){
+			writeLine("2 * 3 = "+res);
+			sync.run({y:res});
+		});
+	}
 </script>
 </head>
 <body>
 <h1>Native Processes Demo Page</h1>
+<p>Это пример реализации рабочего потока стандартными средствами Javascript и DOM.</p>
+<p>Не очень, конечно, вразумительно получается...</p>
 <p>
 	<button onclick="startServAdd(3, 2)">add(3,2)</button>
 	<button onclick="startServMul(3, 2)">mul(3,2)</button>
 	<button onclick="runSequence()">run sequence</button>
+	<button onclick="runParallel()">run parallel</button>
 	<button onclick="cls()">clear screen</button>
 </p>
 
