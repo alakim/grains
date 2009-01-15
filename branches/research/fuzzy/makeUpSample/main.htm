@@ -1,0 +1,127 @@
+<html>
+<head>
+<script type="text/javascript" src="../fuzzy.js"></script>
+<script type="text/javascript" src="html.js"></script>
+<script type="text/javascript">
+function extend(m,s){for(var k in s){m[k] = s[k];}}
+
+function each(coll, F){
+	if(coll.length)
+		for(var i=0; i<coll.length; i++){F(coll[i], i);}
+	else
+		for(var k in coll){F(coll[k], k);}
+}
+
+function filter(coll, cond){
+	var res = [];
+	NsiBase.each(coll, function(el){if(cond(el))res.push(el);});
+	return res;
+}
+
+function $(id){
+	return document.getElementById(id);
+}
+
+function $$(tag, root, condition){
+	root = root?root:document;
+	var coll = root.getElementsByTagName(tag);
+	if(condition!=null){
+		if(typeof(condition)=="string")
+			condition = new Function("el", "with(el){return "+condition+";}");
+		coll = NsiBase.filter(coll, condition);
+	}
+	return coll;
+}
+
+function isIE(){
+	return navigator.appName.match(/internet\s+explorer/i);
+}
+
+function addEventHandler(element, event, handler){
+	if(element.addEventListener)
+		element.addEventListener(event, handler, true);
+	else
+		element.attachEvent("on"+event, handler);
+}
+
+function viewObject(obj, htmlMode){
+	if(typeof(obj)!="object")
+		return obj.toString();
+	var s = [];
+	for(var k in obj){
+		if(typeof(obj[k])!="function")
+			s.push((htmlMode?k.bold():k)+": "+NsiBase.viewObject(obj[k], htmlMode)+(htmlMode?"<br>":"\n"));
+	}
+	return s.join("");
+}
+
+
+var MakeUp = {
+	wideWindow: Fuzzy.functions.S(400, 500),
+	narrowWindow: Fuzzy.functions.Z(400, 500),
+	
+	rules: [
+		function(w, h){
+			
+		}
+	],
+	
+	blocks:{
+		header: function(){with(Html){
+			return div(
+				h1("Заголовок сайта")
+			);
+		}},
+		
+		news: function(){with(Html){
+			return div(
+				h2("Новости"),
+				times(10, function(i){
+					return p(i, ": ", "Текст новостного сообщения");
+				})
+			);
+		}},
+		
+		page: function(){with(Html){
+			return div(
+				times(22, function(i){
+					return p(i, ": ",
+						times(200, function(i){return "abcdefg ";})
+					);
+				})
+			);
+		}},
+		
+		menu: function(){with(Html){
+			return ul(
+				times(6, function(i){
+					return li("Раздел ", i);
+				})
+			);
+		}}
+	},
+	
+	arrange: function(width, height){with(Html){var _=this;
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		
+		document.body.innerHTML = table({border:1, width:"100%", cellpadding:3, cellspacing:0}, 
+			tr(td({colspan:3}, _.blocks.header())),
+			tr(
+				td({valign:"top", width:150}, _.blocks.menu()),
+				td({valign:"top"}, _.blocks.page()),
+				td({valign:"top", width:150}, _.blocks.news())
+			)
+		);
+	}}
+}
+
+function init(){
+	addEventHandler(window, "resize", function(){ MakeUp.arrange(); });
+	MakeUp.arrange();
+}
+</script>
+</head>
+<body onload="init()">
+</body>
+</html>
