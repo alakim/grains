@@ -75,23 +75,23 @@ var MakeUp = {
 	
 	rules: {
 		wide: Fuzzy.functions.S(600, 800),
-		narrow: Fuzzy.functions.Z(200, 350),
-		lowHeight: Fuzzy.functions.Z(100, 200),
+		narrow: Fuzzy.functions.Z(300, 500),
+		lowHeight: Fuzzy.functions.Z(200, 300),
 		
 		useNarrow: function(w, h){with(Fuzzy){var _=this;
-			return and(_.narrow(w), not(_.lowHeight(h))) > 0.5;
+			return and(_.narrow(w), not(_.lowHeight(h)));
 		}},
 		
 		useNoNews: function(w, h){with(Fuzzy){var _=this;
-			return and(not(_.wide(w)), not(_.lowHeight(h))) > 0.5;
+			return and(not(_.wide(w)), not(_.narrow(w)), not(_.lowHeight(h)));
 		}},
 		
 		useStandard: function(w,h){with(Fuzzy){var _=this;
-			return and(_.wide(w), not(_.lowHeight(h))) > 0.5;
+			return and(_.wide(w), not(_.lowHeight(h)));
 		}},
 		
 		useLight: function(w,h){with(Fuzzy){var _=this;
-			return and(_.narrow(w), _.lowHeight(h)) > 0.5;
+			return and(_.narrow(w), _.lowHeight(h));
 		}}
 	},
 	
