@@ -57,14 +57,28 @@ function viewObject(obj, htmlMode){
 
 
 var MakeUp = {
-	wideWindow: Fuzzy.functions.S(400, 500),
-	narrowWindow: Fuzzy.functions.Z(400, 500),
 	
-	rules: [
-		function(w, h){
-			
-		}
-	],
+	rules: {
+		wide: Fuzzy.functions.S(400, 500),
+		narrow: Fuzzy.functions.Z(200, 350),
+		lowHeight: Fuzzy.functions.Z(100, 200),
+		
+		useNarrow: function(w, h){with(Fuzzy){var _=this;
+			return and(_.narrow(w), not(_.lowHeight(h))) > 0.5;
+		}},
+		
+		useNoNews: function(w, h){with(Fuzzy){var _=this;
+			return and(not(_.wide(w)), not(_.lowHeight(h))) > 0.5;
+		}},
+		
+		useStandard: function(w,h){with(Fuzzy){var _=this;
+			return and(_.wide(w), not(_.lowHeight(h))) > 0.5;
+		}},
+		
+		useLight: function(w,h){with(Fuzzy){var _=this;
+			return and(_.narrow(w), _.lowHeight(h)) > 0.5;
+		}}
+	},
 	
 	blocks:{
 		header: function(){with(Html){
@@ -93,27 +107,69 @@ var MakeUp = {
 		}},
 		
 		menu: function(){with(Html){
-			return ul(
-				times(6, function(i){
-					return li("Раздел ", i);
-				})
+			return div(
+				h2("Разделы сайта"),
+				ul(
+					times(6, function(i){
+						return li("Раздел ", i);
+					})
+				)
+			)
+		}}
+	},
+	
+	makeUps:{
+		narrow: function(){with(Html){var _=MakeUp;
+			return div(
+				_.blocks.header(),
+				p(a({href:"#"}, "Новости")),
+				_.blocks.menu(),
+				_.blocks.page()
+			);
+		}},
+		
+		standard: function(){with(Html){
+			return table({border:1, width:"100%", cellpadding:3, cellspacing:0}, 
+				tr(td({colspan:3, align:"center"}, MakeUp.blocks.header())),
+				tr(
+					td({valign:"top", width:150}, MakeUp.blocks.menu()),
+					td({valign:"top"}, MakeUp.blocks.page()),
+					td({valign:"top", width:150}, MakeUp.blocks.news())
+				)
+			);
+		}},
+		
+		noNews: function(){with(Html){
+			return table({border:1, width:"100%", cellpadding:3, cellspacing:0}, 
+				tr(td({colspan:2, align:"center"}, MakeUp.blocks.header())),
+				tr(
+					td({valign:"top", width:150},
+						p(a({href:"#"}, "Новости")),
+						MakeUp.blocks.menu()
+					),
+					td({valign:"top"}, MakeUp.blocks.page())
+				)
+			);
+		}},
+		
+		light: function(){with(Html){var _=MakeUp;
+			return div(
+				_.blocks.header(),
+				_.blocks.page()
 			);
 		}}
 	},
 	
-	arrange: function(width, height){with(Html){var _=this;
+	arrange: function(width, height){var _=this;
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		
-		document.body.innerHTML = table({border:1, width:"100%", cellpadding:3, cellspacing:0}, 
-			tr(td({colspan:3}, _.blocks.header())),
-			tr(
-				td({valign:"top", width:150}, _.blocks.menu()),
-				td({valign:"top"}, _.blocks.page()),
-				td({valign:"top", width:150}, _.blocks.news())
-			)
-		);
-	}}
+		document.body.innerHTML = _.rules.useStandard(width, height)? _.makeUps.standard()
+			:_.rules.useNarrow(width, height)? _.makeUps.narrow()
+			:_.rules.useNoNews(width, height)? _.makeUps.noNews()
+			:_.rules.useLight(width, height)? _.makeUps.light()
+			:_.makeUps.standard();
+	}
 }
 
 function init(){
