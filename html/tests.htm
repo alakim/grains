@@ -152,7 +152,7 @@ new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 	}
 }
 
-new JSUnit.Test("Итерация", "Шаблоны").run = function(){
+new JSUnit.Test("Итерация 1", "Шаблоны").run = function(){
 	with(Html){
 		this.assert(
 			div(
@@ -164,6 +164,22 @@ new JSUnit.Test("Итерация", "Шаблоны").run = function(){
 		);
 	}
 }
+
+new JSUnit.Test("Итерация 2", "Шаблоны").run = function(){
+	with(Html){
+		this.assert(
+			div(
+				p("xyz"),
+				times(2, function(i){
+					return span(i);
+				}),
+				p("abc")
+			),
+			"<div><p>xyz</p><span>1</span><span>2</span><p>abc</p></div>"
+		);
+	}
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;
 	JSUnit.init();
