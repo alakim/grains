@@ -114,8 +114,11 @@ var MakeUp = {
 		page: function(){with(Html){
 			return div(
 				times(22, function(i){
-					return p(i, ": ",
-						times(200, function(i){return "abcdefg ";})
+					return div(
+						p({style:"margin-bottom:0px;"}, i, ": ",
+							times(20, function(i){return "abcdefg ";})
+						),
+						p({style:"text-align:right; margin-top:0px;"}, a({href:"#"}, "Подробнее..."))
 					);
 				})
 			);
@@ -181,20 +184,12 @@ var MakeUp = {
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		
-		var rates = [
-			_.rules.useNarrow(width, height),
-			_.rules.useNoNews(width, height),
-			_.rules.useLight(width, height),
-			_.rules.useStandard(width, height)
-		];
-		
-		switch(max(rates).idx){
-			case 0: document.body.innerHTML = _.makeUps.narrow();break;
-			case 1: document.body.innerHTML = _.makeUps.noNews();break;
-			case 2: document.body.innerHTML = _.makeUps.light();break;
-			case 3: document.body.innerHTML = _.makeUps.standard();break;
-			default: document.body.innerHTML = _.makeUps.standard();break;
-		}
+		document.body.innerHTML = _.makeUps[max({
+			"narrow": _.rules.useNarrow(width, height),
+			"noNews": _.rules.useNoNews(width, height),
+			"light": _.rules.useLight(width, height), 
+			"standard": _.rules.useStandard(width, height)
+		}).idx]();
 	}
 }
 
