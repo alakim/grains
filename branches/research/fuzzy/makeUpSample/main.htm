@@ -80,19 +80,32 @@ var MakeUp = {
 		lowHeight: Fuzzy.functions.Z(200, 300),
 		
 		useNarrow: function(w, h){with(Fuzzy){var _=this;
-			return and(_.narrow(w), not(_.lowHeight(h)));
+			return and(
+				_.narrow(w), 
+				not(_.lowHeight(h))
+			);
 		}},
 		
 		useNoNews: function(w, h){with(Fuzzy){var _=this;
-			return and(not(or(_.wide(w), _.extraWide(w))), not(_.narrow(w)), not(_.lowHeight(h)));
+			return and(
+				not(or( _.wide(w),  _.extraWide(w) )), 
+				not(_.narrow(w)), 
+				not(_.lowHeight(h))
+			);
 		}},
 		
 		useStandard: function(w,h){with(Fuzzy){var _=this;
-			return and(_.wide(w), not(_.lowHeight(h)));
+			return and(
+				_.wide(w), 
+				not(_.lowHeight(h))
+			);
 		}},
 		
 		useLight: function(w,h){with(Fuzzy){var _=this;
-			return and(_.narrow(w), _.lowHeight(h));
+			return and(
+				_.narrow(w), 
+				_.lowHeight(h)
+			);
 		}},
 		
 		useWide: function(w,h){with(Fuzzy){var _=this;
@@ -218,13 +231,15 @@ var MakeUp = {
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		
-		document.body.innerHTML = _.makeUps[max({
-			"narrow": _.rules.useNarrow(width, height),
-			"noNews": _.rules.useNoNews(width, height),
-			"light": _.rules.useLight(width, height), 
-			"standard": _.rules.useStandard(width, height),
-			"wide": _.rules.useWide(width, height)
-		}).idx]();
+		document.body.innerHTML = _.makeUps[
+			max({
+				"narrow": _.rules.useNarrow(width, height),
+				"noNews": _.rules.useNoNews(width, height),
+				"light": _.rules.useLight(width, height), 
+				"standard": _.rules.useStandard(width, height),
+				"wide": _.rules.useWide(width, height)
+			}).idx
+		]();
 	}
 }
 
