@@ -74,8 +74,9 @@ function viewObject(obj, htmlMode){
 var MakeUp = {
 	
 	rules: {
-		wide: Fuzzy.functions.S(600, 800),
-		narrow: Fuzzy.functions.Z(300, 500),
+		extraWide: Fuzzy.functions.S(800, 900),
+		wide: Fuzzy.functions.P(700, 800, 100, 100),
+		narrow: Fuzzy.functions.Z(350, 450),
 		lowHeight: Fuzzy.functions.Z(200, 300),
 		
 		useNarrow: function(w, h){with(Fuzzy){var _=this;
@@ -83,7 +84,7 @@ var MakeUp = {
 		}},
 		
 		useNoNews: function(w, h){with(Fuzzy){var _=this;
-			return and(not(_.wide(w)), not(_.narrow(w)), not(_.lowHeight(h)));
+			return and(not(or(_.wide(w), _.extraWide(w))), not(_.narrow(w)), not(_.lowHeight(h)));
 		}},
 		
 		useStandard: function(w,h){with(Fuzzy){var _=this;
@@ -92,6 +93,10 @@ var MakeUp = {
 		
 		useLight: function(w,h){with(Fuzzy){var _=this;
 			return and(_.narrow(w), _.lowHeight(h));
+		}},
+		
+		useWide: function(w,h){with(Fuzzy){var _=this;
+			return _.extraWide(w);
 		}}
 	},
 	
@@ -111,17 +116,35 @@ var MakeUp = {
 			);
 		}},
 		
-		page: function(){with(Html){
-			return div(
-				times(22, function(i){
-					return div(
-						p({style:"margin-bottom:0px;"}, i, ": ",
-							times(20, function(i){return "abcdefg ";})
-						),
-						p({style:"text-align:right; margin-top:0px;"}, a({href:"#"}, "Подробнее..."))
-					);
-				})
-			);
+		page: function(colCount){with(Html){
+			colCount = colCount?colCount:1;
+			var newsCount = 22;
+			
+			function article(i){
+				return div(
+					p({style:"margin-bottom:0px;"}, i, ": ",
+						times(20, function(i){return "abcdefg ";})
+					),
+					p({style:"text-align:right; margin-top:0px;"}, a({href:"#"}, "Подробнее..."))
+				);
+			}
+			
+			if(colCount==1)
+				return div(
+					times(newsCount, function(i){
+						return article(i);
+					})
+				);
+			else
+				return div(table({border:0, cellpadding:3, cellspacing:0}, tr(
+					times(colCount, function(i){
+						return td({valign:"top"},
+							times(newsCount/colCount, function(j){
+								return article(j+(newsCount/colCount)*(i-1));
+							})
+						);
+					})
+				)));
 		}},
 		
 		menu: function(){with(Html){
@@ -143,6 +166,17 @@ var MakeUp = {
 				p(a({href:"#"}, "Новости")),
 				_.blocks.menu(),
 				_.blocks.page()
+			);
+		}},
+		
+		wide: function(){with(Html){
+			return table({border:1, width:"100%", cellpadding:3, cellspacing:0}, 
+				tr(td({colspan:3, align:"center"}, MakeUp.blocks.header())),
+				tr(
+					td({valign:"top", width:150}, MakeUp.blocks.menu()),
+					td({valign:"top"}, MakeUp.blocks.page(2)),
+					td({valign:"top", width:150}, MakeUp.blocks.news())
+				)
 			);
 		}},
 		
@@ -188,7 +222,8 @@ var MakeUp = {
 			"narrow": _.rules.useNarrow(width, height),
 			"noNews": _.rules.useNoNews(width, height),
 			"light": _.rules.useLight(width, height), 
-			"standard": _.rules.useStandard(width, height)
+			"standard": _.rules.useStandard(width, height),
+			"wide": _.rules.useWide(width, height)
 		}).idx]();
 	}
 }
