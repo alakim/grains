@@ -136,7 +136,13 @@ function Catalog(items){
 		
 		showSubCloud: function(coll){with(Html){var _=this;
 			var htmlSelected = apply(_.selectedTags, function(t, i){
-				return (i>0?"&amp;":"") + span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, t.replace(/\s+/g, "&nbsp;"))+" ";
+				return (i>0?"&amp;":"") + 
+					span({"class":"selected pointer link", onclick:"Catalog.delTag("+_.ID+",'"+t+"')"}, 
+						t.replace(/\s+/g, "&nbsp;"),
+						"[",
+						_.tags[t].items.length,
+						"]"
+					)+" ";
 			});
 			
 			
@@ -176,7 +182,7 @@ function Catalog(items){
 				}
 				var mt = t.nm.match(_.reHighlight);
 				return span({"class":"link pointer", style:mt?"background-color:#ffff00;":"", onclick:"Catalog.addTag("+_.ID+",'"+t.nm+"')"},
-					t.nm.replace(/\s+/,"&nbsp;"), "[", subcloud[t.nm], "]"
+					t.nm.replace(/\s+/,"&nbsp;"), "[", subcloud[t.nm], "/"+_.tags[t.nm].items.length+"]"
 				)+" ";
 			});
 			
@@ -311,7 +317,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"3.1.50",
+		version:"3.2.65",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
