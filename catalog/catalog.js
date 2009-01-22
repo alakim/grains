@@ -312,7 +312,7 @@ function Catalog(items){
 			_.showSubCloud([]);
 			
 			_.renderResultTable(filter(_.items, function(el){
-				return el.label.match(re);
+				return el.label && el.label.match(re);
 			}));
 		},
 		
@@ -331,7 +331,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"3.3.67",
+		version:"3.3.68",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
