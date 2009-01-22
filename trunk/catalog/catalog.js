@@ -94,7 +94,8 @@ function Catalog(items){
 					p({style:"text-align:right;"},
 						span({id:_.statisticsPanelID}),
 						input({type:"text", id:_.highlightFieldID}),
-						button({onclick:"Catalog.highlightStrings("+_.ID+")"}, "найти"),
+						button({onclick:"Catalog.highlightStrings("+_.ID+")"}, "найти в тегах"),
+						button({onclick:"Catalog.searchLabels("+_.ID+")"}, "найти в заголовках"),
 						" ",
 						span({"class":"link pointer", onclick:"Catalog.checkData("+_.ID+")"}, "check data")
 					),
@@ -219,35 +220,37 @@ function Catalog(items){
 			});
 			
 			_.showSubCloud(coll);
-			with(Html){
-				$(_.outPanelID).innerHTML = 
-				div(
-					div(coll.length, " item", (coll.length.toString().match(/1$/)?"":"s")," found"),
-					table({border:0},
-						apply(coll, function(itm){
-							var ttitle = itm.tags.join(",");
-							return tr(
-								td({"class":"tagsColumn", width:"30%"},
-									span({"class":"link pointer", style:"margin:0px;", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
-										apply(itm.tags, function(itag, i){
-											return (i>0?", ":"") + itag;
-										})
-									)
-								),
-								td(
-									a({href:itm.url, title:ttitle},
-										Catalog.itemTitleTemplate(itm)
-									)
-								),
-								td({"class":"details"},
-									Catalog.itemDetailsTemplate(itm)
-								)
-							);
-						})
-					)
-				);
-			}
+			_.renderResultTable(coll);
 		},
+		
+		renderResultTable: function(coll){with(Html){var _=this;
+			$(_.outPanelID).innerHTML = 
+			div(
+				div(coll.length, " item", (coll.length.toString().match(/1$/)?"":"s")," found"),
+				table({border:0},
+					apply(coll, function(itm){
+						var ttitle = itm.tags.join(",");
+						return tr(
+							td({"class":"tagsColumn", width:"30%"},
+								span({"class":"link pointer", style:"margin:0px;", onclick:"Catalog.setConditions("+_.ID+", '"+ttitle+"')"},
+									apply(itm.tags, function(itag, i){
+										return (i>0?", ":"") + itag;
+									})
+								)
+							),
+							td(
+								a({href:itm.url, title:ttitle},
+									Catalog.itemTitleTemplate(itm)
+								)
+							),
+							td({"class":"details"},
+								Catalog.itemDetailsTemplate(itm)
+							)
+						);
+					})
+				)
+			);
+		}},
 		
 		addTag: function(tagID){var _=this;
 			_.selectedTags.push(tagID);
@@ -302,6 +305,17 @@ function Catalog(items){
 			_.showCloud();
 		},
 		
+		searchLabels: function(){var _=this;
+			var re = new RegExp($(_.highlightFieldID).value, "ig");
+			
+			_.selectedTags = [];
+			_.showSubCloud([]);
+			
+			_.renderResultTable(filter(_.items, function(el){
+				return el.label.match(re);
+			}));
+		},
+		
 		addToHistory: function(){var _=this;
 			_.history.push(_.selectedTags.join(","));
 		},
@@ -317,7 +331,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"3.2.66",
+		version:"3.3.67",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
@@ -353,6 +367,9 @@ function Catalog(items){
 		},
 		highlightStrings: function(catID){
 			Catalog.getInstance(catID).highlightStrings();
+		},
+		searchLabels: function(catID){
+			Catalog.getInstance(catID).searchLabels();
 		}
 	});
 })();
