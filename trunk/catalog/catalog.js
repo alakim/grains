@@ -317,11 +317,11 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"3.2.65",
+		version:"3.2.66",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
-			return itm.label;
+			return itm.label && itm.label.length?itm.label:itm.url;
 		},
 		
 		itemDetailsTemplate:function(itm){
