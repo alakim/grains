@@ -51,6 +51,18 @@ namespace IVC.Markup {
 			return Span(new object[] { content });
 		}
 		
+		/// <summary>Формирует тег A</summary>
+		/// <param name="content">контент</param>
+		public static string A(params object[] content) {
+			return Tag("a", content);
+		}
+
+		/// <summary>Формирует тег A</summary>
+		/// <param name="content">контент</param>
+		public static string A(object content) {
+			return A(new object[] { content });
+		}
+		
 		/// <summary>Формирует тег PRE</summary>
 		/// <param name="content">контент</param>
 		public static string Pre(params object[] content) {
@@ -370,6 +382,18 @@ namespace IVC.Markup {
 		/// <param name="content">контент</param>
 		protected static string Span(params object[] content) {
 			return Html.Span(content);
+		}
+
+		/// <summary>Формирует тег A</summary>
+		/// <param name="content">контент</param>
+		protected static string A(object content) {
+			return Html.A(content);
+		}
+
+		/// <summary>Формирует тег A</summary>
+		/// <param name="content">контент</param>
+		protected static string A(params object[] content) {
+			return Html.A(content);
 		}
 
 		/// <summary>Формирует тег PRE</summary>
