@@ -1,6 +1,6 @@
 $stdout = File.open("TagDefinitions.cs", "w+")
 
-tags = ['DIV', 'P', 'SPAN', 'PRE', 'UL', 'OL', 'LI', 'INPUT', 'TEXTAREA', 'TABLE', 'TR', 'TH', 'TD', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']
+tags = ['DIV', 'P', 'SPAN', 'A', 'PRE', 'UL', 'OL', 'LI', 'INPUT', 'TEXTAREA', 'TABLE', 'TR', 'TH', 'TD', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']
 attributes = ['class', 'width', 'height', 'border', 'cellpadding', 'cellspacing', 'align', 'valign', 'style', 'src', 'href', 'id', 'name', 'type', 'title']
 
 puts <<END_OF_CS
