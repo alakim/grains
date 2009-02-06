@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "3.3.95",
+	version: "4.1.73",
 	
 	minSize:{w:150, h:100},
 	
@@ -70,6 +70,10 @@
 			img.src = __.includePath+"/"+str[k];
 			__.images[k] = img;
 		}
+	},
+	
+	isIE: function(){
+		return navigator.appName.match(/internet\s+explorer/i);
 	},
 	
 	__:{
@@ -303,7 +307,7 @@
 		},
 		
 		getviewpoint:function(){var _=DWL.__;
-			var ie=document.all && !window.opera;
+			var ie=DWL.isIE();
 			var domclientWidth=document.documentElement && parseInt(document.documentElement.clientWidth) || 100000;
 			_.standardbody=(document.compatMode=="CSS1Compat")? document.documentElement : document.body;
 			_.scroll_top=(ie)? _.standardbody.scrollTop : window.pageYOffset;
@@ -393,6 +397,25 @@
 					d.close();
 					_.__.closeDynamics(currentDlg);
 					return;
+				}
+			}
+		},
+		
+		contains: function(container, elem){
+			return elem.tagName=="BODY"? false
+				:elem.parentNode==container? true
+				:container.parentNode==elem? false
+				:DWL.__.contains(container, elem.parentNode);
+		},
+		
+		lockExternalFields: function(dlg, lock){
+			if(!DWL.isIE()) return;
+			lock = lock==null?true:lock;
+			var coll = document.getElementsByTagName("SELECT");
+			for(var i=0; i<coll.length; i++){var el=coll[i];
+				if(!DWL.__.contains(dlg, el)){
+					//alert(el.style.display);
+					el.style.display = lock?"none":"";
 				}
 			}
 		}
@@ -485,6 +508,7 @@
 			t.className = t.className.replace("dynamic", "fixed");
 		}
 		_.closeDynamics(t);
+		_.lockExternalFields(t, true);
 		return t;
 	},
 	
@@ -533,6 +557,7 @@
 			if(t.parentNode)
 				t.parentNode.removeChild(t);
 		
+		DWL.__.lockExternalFields(t, false);
 		return closewinbol;
 	},
 	
