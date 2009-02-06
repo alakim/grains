@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.1.73",
+	version: "4.1.74",
 	
 	minSize:{w:150, h:100},
 	
@@ -75,6 +75,8 @@
 	isIE: function(){
 		return navigator.appName.match(/internet\s+explorer/i);
 	},
+	
+	selectorLockMode:"substitute", //"off", "hide", "substitute"
 	
 	__:{
 		minimizeorder: 0,
@@ -408,14 +410,30 @@
 				:DWL.__.contains(container, elem.parentNode);
 		},
 		
-		lockExternalFields: function(dlg, lock){
-			if(!DWL.isIE()) return;
+		lockExternalFields: function(dlg, lock){var _=DWL;
+			if(!_.isIE() || _.selectorLockMode=="off") return;
 			lock = lock==null?true:lock;
+			if(!lock){
+				var substColl = document.getElementsByTagName("SPAN");
+				for(var i=0; i<substColl.length; i++){var el=substColl[i];
+					if(el.className=="dwlsubst"){
+						el.parentElement.removeChild(el);
+					}
+				}
+			}
 			var coll = document.getElementsByTagName("SELECT");
 			for(var i=0; i<coll.length; i++){var el=coll[i];
-				if(!DWL.__.contains(dlg, el)){
-					//alert(el.style.display);
-					el.style.display = lock?"none":"";
+				if(!lock){
+					el.style.display = "";
+				}
+				else if(!_.__.contains(dlg, el) && el.style.display!="none"){
+					if(_.selectorLockMode=="substitute"){
+						var subst = document.createElement("SPAN");
+						subst.className = "dwlsubst";
+						el.parentNode.insertBefore(subst, el);
+						subst.innerHTML = el.options[el.selectedIndex].innerHTML;
+					}
+					el.style.display = "none";
 				}
 			}
 		}
