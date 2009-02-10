@@ -1,8 +1,9 @@
 if(typeof(Html)!="object")
 	throw("Html module required!");
 
-function Catalog(items){
-	this.items = items;
+function Catalog(settings){
+	this.items = settings.items;
+	this.catalogs = settings.catalogs;
 	this.history = [];
 	this.ID = Catalog.instances.length;
 	Catalog.instances.push(this);
@@ -331,7 +332,7 @@ function Catalog(items){
 	}
 	
 	extend(Catalog, {
-		version:"3.3.68",
+		version:"4.1.69",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
