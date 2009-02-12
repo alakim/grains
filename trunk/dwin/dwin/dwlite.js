@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.1.75",
+	version: "4.1.76",
 	
 	minSize:{w:150, h:100},
 	
@@ -214,21 +214,14 @@
 		},
 		
 		setopacity:function(targetobject, value){
-			if (!targetobject)
-				return
-			try{
-				if (targetobject.filters && targetobject.filters[0]){ //IE syntax
-					if (typeof targetobject.filters[0].opacity=="number") //IE6
-						targetobject.filters[0].opacity=value*100
-					else //IE 5.5
-						targetobject.style.filter="alpha(opacity="+value*100+")"
-				}
-				else if (typeof targetobject.style.MozOpacity!="undefined") //Old Mozilla syntax
-					targetobject.style.MozOpacity=value
-				else if (typeof targetobject.style.opacity!="undefined") //Standard opacity syntax
-					targetobject.style.opacity=value
-			}
-			catch(){
+			var undef = "undefined";
+			if (!targetobject){ return; }
+			if (typeof targetobject.style.filter!=undef){
+					   targetobject.style.filter="alpha(opacity="+value*100+")";
+			}else if (typeof targetobject.style.MozOpacity!=undef){
+					   targetobject.style.MozOpacity=value;
+			}else if (typeof targetobject.style.opacity!=undef){
+					   targetobject.style.opacity=value;
 			}
 		},
 		
