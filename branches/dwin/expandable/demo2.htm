@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>DWin lite demo</title>
+	<link rel="stylesheet" href="dwin/dwlite.css" type="text/css" />
+	
+	<script type="text/javascript" src="dwin/dwlite.js"></script>
+	<script type="text/javascript">
+	var counter = 1;
+	function openNewDialog(){
+		DWL.open(null, "Dialog #"+(counter++), "width=300,height=200,left=170,top=100,resize=1,scrolling=1");
+	}
+	function openNewPinDialog(){
+		DWL.open(null, "Dialog #"+(counter++), "width=300,height=200,left=170,top=100,resize=1,scrolling=1,pinButton=1");
+	}
+	
+	</script>
+</head>
+<body>
+	<h1>DWin lite demo</h1>
+	<p>ѕример создани€ произвольных диалоговых окон.</p>
+	<p>ѕри создании окна не указываетс€ ссылка на существующий элемент DIV, 
+	этот элемент создаетс€ динамически модулем DWL.</p>
+	<button onclick="openNewDialog()">Open new dialog</button>
+	<button onclick="openNewPinDialog()">Open new dialog with pin button</button>
+	
+</body>
+</html>
