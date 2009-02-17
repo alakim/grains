@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.1.76",
+	version: "5.1.76",
 	
 	minSize:{w:150, h:100},
 	
@@ -98,6 +98,22 @@
 			wait:"wait.gif",
 			pinOn:"pinOn.gif",
 			pinOff:"pinOff.gif"
+		},
+		
+		extractChildren: function(pnl){
+			var coll = [];
+			while(pnl.childNodes.length){
+				var nd = pnl.childNodes[0];
+				coll.push(nd);
+				nd.parentNode.removeChild(nd);
+			}
+			return coll;
+		},
+		
+		insertChildren: function(pnl, coll){
+			for(var i=0; i<coll.length; i++){
+				pnl.appendChild(coll[i]);
+			};
 		},
 		
 		buildWindow: function(bodyDiv, title, buttons, dlgButtons){var __=DWL.__;
@@ -483,6 +499,22 @@
 		
 		D_.tobjects.push(t);
 		return t;
+	},
+	
+	openExpanded: function(divID, trgPanelID, options){var _=DWL;
+		var pnl = _.$(trgPanelID);
+		var coll = _.__.extractChildren(pnl);
+		pnl.innerHTML = "<div><div id=\""+divID+"_panel\"></div><div id=\""+divID+"_store\" style=\"display:none;\"></div></div>";
+		_.__.insertChildren(_.$(divID+"_store"), coll);
+		
+		_.$(divID+"_panel").innerHTML = "lsdkjflskdjflksdfjl";
+		
+		// TEST
+		window.setTimeout(function(){
+			var cc = _.__.extractChildren(_.$(divID+"_store"));
+			pnl.innerHTML = "";
+			_.__.insertChildren(pnl, cc);
+		}, 1000);
 	},
 	
 	open:function(divID, title, attr, options){var _=DWL.__;
