@@ -47,8 +47,14 @@ KB.Collections = {
 	var filter = KB.Collections.filter;
 	
 	extend(KB, {
-		version: "2.2.89",
+		version: "2.3.91",
 		instances: [],
+		
+		standardRelations:{
+			is:{name:"is", inversion:"may be", description:"Устанавливает иерархию наследования сущностей"},
+			uses:{name:"uses", inversion:"used by", description:"Обозначает использование одной сущности другой"},
+			includes:{name:"includes", inversion:"included by", description:"Обозначает включение одной сущности в другую"}
+		},
 		
 		getInstance: function(idx){
 			return KB.instances[idx];

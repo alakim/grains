@@ -19,7 +19,7 @@ function KbView(kb, panelID){
 	var filter = KB.Collections.filter;
 	
 	extend(KbView, {
-		version: "1.1.90",
+		version: "1.1.91",
 		animationTimeout: 1000,
 		instances: [],
 		
@@ -84,7 +84,7 @@ function KbView(kb, panelID){
 						return span(
 							i>0?", ":"",
 							" ", 
-							span({"class":"relation"}, rel.type.name,
+							span({"class":"relation", title:rel.type.description}, rel.type.name,
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
