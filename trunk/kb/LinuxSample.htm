@@ -10,11 +10,11 @@ var kb = new KB({
 	name:"Операционные системы",
 	
 	relationTypes:{
-		is:{name:"is", inversion:"may be"},
-		comesFrom:{name:"comes from", inversion:"predecessor of"},
-		uses:{name:"uses", inversion:"used by"},
-		includes:{name:"includes", inversion:"included by"},
-		refTo:{name:"references to", inversion:"referenced by"}
+		is:{name:"is", inversion:"may be", description:"Устанавливает иерархию наследования сущностей"},
+		comesFrom:{name:"comes from", inversion:"predecessor of", description:"Указывает на происхождение сущности (в историческом аспекте)."},
+		uses:{name:"uses", inversion:"used by", description:"Обозначает использование одной сущности другой"},
+		includes:{name:"includes", inversion:"included by", description:"Обозначает включение одной сущности в другую"},
+		refTo:{name:"references to", inversion:"referenced by", description:"Обозначает смысловую связь между двумя сущностями"}
 	},
 	
 	items:{
