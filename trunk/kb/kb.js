@@ -72,7 +72,8 @@ function KB(data){
 				_.relations.push({
 					type: _.relationTypes[rel.type],
 					src: itm,
-					trg: _.items[rel.trg]
+					trg: _.items[rel.trg],
+					truth: rel.truth
 				});
 			});
 		},
@@ -105,7 +106,9 @@ function KB(data){
 								return span(
 									i>0?", ":"",
 									" ", 
-									span({style:"color:#888888;"}, rel.type.name), 
+									span({style:"color:#888888;"}, rel.type.name,
+										rel.truth?span(" (", rel.truth, ")"):null
+									), 
 									" ", rel.trg.name, " "
 								);
 							}),
@@ -114,7 +117,10 @@ function KB(data){
 								return span(
 									i>0?", ":"",
 									" ", 
-									span({style:"color:#888888;"}, rel.type.inversion), 
+									span({style:"color:#888888;"},
+										rel.type.inversion,
+										rel.truth?span(" (", rel.truth, ")"):null
+									), 
 									" ", rel.src.name, " "
 								);
 							})
@@ -122,7 +128,10 @@ function KB(data){
 						div({style:"margin-left:20px;"},
 							itm.description?p({style:"margin-top:0px; margin-bottom:0px;"}, itm.description):null,
 							apply(itm.refs, function(ref, i){
-								return a({href:ref.url}, ref.title);
+								return span(
+									i>0?", ":null,
+									a({href:ref.url}, ref.title)
+								);
 							})
 						)
 					);

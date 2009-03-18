@@ -11,11 +11,17 @@ var kb = new KB({
 	
 	relationTypes:{
 		is:{name:"is", inversion:"may be"},
-		uses:{name:"uses", inversion:"used by"}
+		uses:{name:"uses", inversion:"used by"},
+		includes:{name:"includes", inversion:"included by"},
+		refTo:{name:"references to", inversion:"referenced by"}
 	},
 	
 	items:{
+		
 		os: {name:"Операционная система"},
+		
+		OpenGL:{},
+		
 		linux: {
 			name:"Linux",
 			description:"Операционка такая",
@@ -24,6 +30,7 @@ var kb = new KB({
 				{type:"is", trg:"os"}
 			]
 		},
+		
 		windows: {
 			name:"MS Windows", 
 			description:"Операционка такая",
@@ -31,16 +38,57 @@ var kb = new KB({
 				{type:"is", trg:"os"}
 			]
 		},
-		kde: {name:"KDE"},
+		
+		MacOS: {
+			name:"Mac OS", 
+			relations:[
+				{type:"is", trg:"os"}
+			]
+		},
+		
+		graphEnvironment: {
+			name:"Графическая среда"
+		},
+		
+		kde: {
+			name:"KDE",
+			relations:[
+				{type:"is", trg:"graphEnvironment"},
+				{type:"uses", truth:0.5, trg:"compiz"}
+			]
+		},
+		gnome: {
+			name:"GNOME",
+			relations:[
+				{type:"is", trg:"graphEnvironment"},
+				{type:"uses", truth:0.5, trg:"compiz"}
+			]
+		},
+		
 		compiz: {
 			name:"Compiz",
 			relations:[
-				{type:"is", trg:"windowManager"}
+				{type:"is", trg:"windowManager"},
+				{type:"uses", trg:"OpenGL"}
 			],
 			refs:[
-				{url:"http://www.compiz.org/", title:"Compiz Home"}
+				{url:"http://www.compiz.org/", title:"Compiz Home"},
+				{url:"http://ru.wikipedia.org/wiki/Compiz", title:"Compiz - Википедия"}
 			]
 		},
+		
+		compizFusion:{
+			name:"Compiz Fusion",
+			relations:[
+				{type:"includes", trg:"compiz"},
+				{type:"includes", trg:"beryl"}
+			]
+		},
+		
+		beryl: {
+			name:"Beryl"
+		},
+		
 		windowManager:{
 			name:"Window Manager",
 			description:"Менеджер окон"
