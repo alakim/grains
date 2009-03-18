@@ -19,7 +19,7 @@ function KbView(kb, panelID){
 	var filter = KB.Collections.filter;
 	
 	extend(KbView, {
-		version: "1.1.89",
+		version: "1.1.90",
 		animationTimeout: 1000,
 		instances: [],
 		
@@ -97,7 +97,7 @@ function KbView(kb, panelID){
 						return span(
 							i>0?", ":"",
 							" ", 
-							span({"class":"relation"},
+							span({"class":"relation", title:rel.type.description},
 								rel.type.inversion,
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
@@ -126,7 +126,12 @@ function KbView(kb, panelID){
 					input({type:"text", id:"searchField"+_.idx}),
 					button({onclick:"KbView.search("+_.idx+")"}, "Search")
 				),
-				apply(_.kb.items, function(itm){return _.itemDisplay(itm);})
+				apply(_.kb.items, function(itm){return _.itemDisplay(itm);}),
+				
+				p({"class":"logo"},
+					"Powered by KB v.", KB.version, ", ",
+					"KbView v.", KbView.version
+				)
 			);
 		}}
 	});

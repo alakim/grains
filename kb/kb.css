@@ -32,15 +32,26 @@ p.itemName{
 
 span.itemName{
 	font-weight:bold;
+	padding:3px;
 }
 
 .attention{
-	background-color:#ffff00;
+	background-color:#ffff88;
+	color:#000044;
 }
 
 .link{
-	color:#0000ff;
+	color:#0000aa;
 	text-decoration:underline;
 	cursor:hand;
 	cursor:pointer;
 }
+
+p.logo{
+	text-align:center;
+	color:#aaaaaa;
+	font-family:Verdana;
+	font-size:10px;
+	margin-top:40px;
+}
+
