@@ -12,6 +12,7 @@ var kb = new KB({
 	
 	relationTypes:{
 		is:{name:"is", inversion:"may be"},
+		comesFrom:{name:"comes from", inversion:"predecessor of"},
 		uses:{name:"uses", inversion:"used by"},
 		includes:{name:"includes", inversion:"included by"},
 		refTo:{name:"references to", inversion:"referenced by"}
@@ -89,13 +90,18 @@ var kb = new KB({
 		compizFusion:{
 			name:"Compiz Fusion",
 			relations:[
-				{type:"includes", trg:"compiz"},
-				{type:"includes", trg:"beryl"}
+				{type:"is", trg:"windowManager"},
+				{type:"comesFrom", trg:"compiz"},
+				{type:"comesFrom", trg:"beryl"}
 			]
 		},
 		
 		beryl: {
-			name:"Beryl"
+			name:"Beryl",
+			relations:[
+				{type:"is", trg:"windowManager"},
+				{type:"comesFrom", trg:"compiz"}
+			]
 		},
 		
 		windowManager:{

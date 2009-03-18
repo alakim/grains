@@ -87,7 +87,7 @@ function KB(data){
 			
 			var itemsFound = false;
 			each(items, function(itm){
-				KB.goToItem(itm.id);
+				KB.goToItem(idx, itm.id);
 				itemsFound = true;
 			});
 			
