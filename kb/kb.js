@@ -5,6 +5,7 @@ function KB(data){
 	for(var k in data){
 		this[k] = data[k];
 	}
+	this.idx = KB.instances.length;
 	KB.instances.push(this);
 };
 
@@ -43,7 +44,12 @@ function KB(data){
 	}
 	
 	extend(KB, {
+		animationTimeout: 1000,
 		instances: [],
+		
+		getInstance: function(idx){
+			return KB.instances[idx];
+		},
 		
 		init: function(){
 			each(KB.instances, function(inst){
@@ -56,6 +62,36 @@ function KB(data){
 				element.addEventListener(event, handler, true);
 			else
 				element.attachEvent("on"+event, handler);
+		},
+		
+		goToItem: function(idx, itmID){
+			var el = $(itmID+"d"+idx);
+			el.className+=" attention";
+			window.setTimeout(function(){
+				document.getElementById(itmID+"d"+idx).className = "itemName";
+			}, KB.animationTimeout);
+			
+			window.scrollTo(el.offsetLeft, el.offsetTop);
+		},
+		
+		search: function(idx){
+			var fld = $("searchField"+idx);
+			var val = fld.value;
+			if(!val.length)
+				return;
+			var kb = KB.getInstance(idx);
+			var re = new RegExp(val, "gi");
+			var items = filter(kb.items, function(itm){
+				return itm.name.match(re);
+			});
+			
+			var itemsFound = false;
+			each(items, function(itm){
+				KB.goToItem(itm.id);
+				itemsFound = true;
+			});
+			
+			fld.style.backgroundColor = itemsFound?"#ffffff":"#ff0000";
 		}
 	});
 	
@@ -105,7 +141,7 @@ function KB(data){
 			return div({"class":"itemPanel"},
 				p({"class":"itemName"}, 
 					a({name:itm.id},
-						span({"class":"itemName"}, itm.name), ": "
+						span({"class":"itemName", id:itm.id+"d"+_.idx}, itm.name), ": "
 					),
 					apply(_.getRelations(itm, false), function(rel, i){
 						return span(
@@ -115,7 +151,7 @@ function KB(data){
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
-							a({href:"#"+rel.trg.id}, rel.trg.name), 
+							span({"class":"link", onclick:"KB.goToItem("+_.idx+",'"+rel.trg.id+"')"}, rel.trg.name), 
 							" "
 						);
 					}),
@@ -129,7 +165,7 @@ function KB(data){
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
-							a({href:"#"+rel.src.id}, rel.src.name), 
+							span({"class":"link", onclick:"KB.goToItem("+_.idx+",'"+rel.src.id+"')"}, rel.src.name), 
 							" "
 						);
 					})
@@ -139,7 +175,7 @@ function KB(data){
 					apply(itm.refs, function(ref, i){
 						return span(
 							i>0?", ":null,
-							a({href:ref.url}, ref.title)
+							a({href:ref.url, target:"_blank"}, ref.title)
 						);
 					})
 				)
@@ -149,6 +185,10 @@ function KB(data){
 		displayMainView: function(){with(Html){var _=this;
 			$(_.panelID).innerHTML = div(
 				h1(_.name),
+				p(
+					input({type:"text", id:"searchField"+_.idx}),
+					button({onclick:"KB.search("+_.idx+")"}, "Search")
+				),
 				apply(_.items, function(itm){return _.itemDisplay(itm);})
 			);
 		}},
