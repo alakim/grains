@@ -19,7 +19,7 @@ function KbView(kb, panelID){
 	var filter = KB.Collections.filter;
 	
 	extend(KbView, {
-		version: "1.1.91",
+		version: "1.2.92",
 		animationTimeout: 1000,
 		instances: [],
 		
@@ -74,6 +74,20 @@ function KbView(kb, panelID){
 	
 	extend(KbView.prototype, {
 		
+		itemRefDisplay: function(itm){with(Html){var _=this;
+			return span(
+				{
+					"class":typeof(itm)=="string"?"undefinedItem":"link", 
+					onclick:
+						typeof(itm)=="string"?
+							null
+							:"KbView.goToItem("+_.idx+",'"+itm.id+"')"
+				}, 
+				
+				typeof(itm)=="string"?itm:itm.name
+			);
+		}},
+		
 		itemDisplay: function(itm){with(Html){var _=this;
 			return div({"class":"itemPanel"},
 				p({"class":"itemName"}, 
@@ -88,7 +102,8 @@ function KbView(kb, panelID){
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
-							span({"class":"link", onclick:"KbView.goToItem("+_.idx+",'"+rel.trg.id+"')"}, rel.trg.name), 
+							
+							_.itemRefDisplay(rel.trg),
 							" "
 						);
 					}),
@@ -102,7 +117,7 @@ function KbView(kb, panelID){
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
-							span({"class":"link", onclick:"KbView.goToItem("+_.idx+",'"+rel.src.id+"')"}, rel.src.name), 
+							_.itemRefDisplay(rel.src),
 							" "
 						);
 					})
@@ -127,6 +142,19 @@ function KbView(kb, panelID){
 					button({onclick:"KbView.search("+_.idx+")"}, "Search")
 				),
 				apply(_.kb.items, function(itm){return _.itemDisplay(itm);}),
+				
+				div({"class":"warning"},
+					span({"class":"subTitle"}, "Undefined items"),
+					": ",
+					apply(
+						filter(_.kb.relations, function(rel){
+							return typeof(rel.trg)=="string";
+						}),
+						function(rel){
+							return span({"class":"undefinedItem"},rel.trg);
+						}
+					)
+				),
 				
 				p({"class":"logo"},
 					"Powered by KB v.", KB.version, ", ",
