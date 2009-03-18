@@ -102,16 +102,16 @@ function KB(data){
 		},
 		
 		itemDisplay: function(itm){with(Html){var _=this;
-			return div({style:"border:1px solid #888888; padding:3px; margin:5px;"},
-				p({style:"margin-top:0px; margin-bottom:3px;"},
+			return div({"class":"itemPanel"},
+				p({"class":"itemName"}, 
 					a({name:itm.id},
-						span({style:"font-weight:bold;"}, itm.name), ": "
+						span({"class":"itemName"}, itm.name), ": "
 					),
 					apply(_.getRelations(itm, false), function(rel, i){
 						return span(
 							i>0?", ":"",
 							" ", 
-							span({style:"color:#888888;"}, rel.type.name,
+							span({"class":"relation"}, rel.type.name,
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
 							" ", 
@@ -124,7 +124,7 @@ function KB(data){
 						return span(
 							i>0?", ":"",
 							" ", 
-							span({style:"color:#888888;"},
+							span({"class":"relation"},
 								rel.type.inversion,
 								rel.truth?span(" (", rel.truth, ")"):null
 							), 
@@ -134,8 +134,8 @@ function KB(data){
 						);
 					})
 				),
-				div({style:"margin-left:20px;"},
-					itm.description?p({style:"margin-top:0px; margin-bottom:0px;"}, itm.description):null,
+				div({"class":"details"},
+					itm.description?p(itm.description):null,
 					apply(itm.refs, function(ref, i){
 						return span(
 							i>0?", ":null,
