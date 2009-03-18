@@ -1,3 +1,9 @@
+if(typeof(KB)=="undefined")
+	alert("KB module required!");
+
+if(typeof(Html)=="undefined")
+	alert("Html module required!");
+
 function KbView(kb, panelID){
 	this.idx = KbView.instances.length;
 	KbView.instances.push(this);
@@ -8,40 +14,12 @@ function KbView(kb, panelID){
 
 (function(){
 	function $(id){return document.getElementById(id);}
-	function isArray(coll){return typeof(coll.length)!="undefined";}
-	function each(coll, F){
-		if(isArray(coll)){
-			for(var i=0; i<coll.length; i++){
-				F(coll[i], i);
-			}
-		}
-		else{
-			for(var k in coll){
-				F(coll[k], k);
-			}
-		}
-	}
-	
-	function filter(coll, cond){
-		var arrayMode = isArray(coll);
-		var res = arrayMode?[]:{};
-		each(coll, function(el, k){
-			if(cond(el)){
-				if(arrayMode)
-					res.push(el);
-				else
-					res[k] = el;
-			}
-		});
-		return res;
-	}
-	
-	function extend(o, s){
-		each(s, function(el, nm){ o[nm] = el;});
-	}
+	var extend = KB.Collections.extend;
+	var each = KB.Collections.each;
+	var filter = KB.Collections.filter;
 	
 	extend(KbView, {
-		version: "1.0.88",
+		version: "1.1.89",
 		animationTimeout: 1000,
 		instances: [],
 		

@@ -1,6 +1,3 @@
-if(typeof(Html)=="undefined")
-	alert("Html module required!");
-
 function KB(data){
 	for(var k in data){
 		this[k] = data[k];
@@ -9,11 +6,11 @@ function KB(data){
 	KB.instances.push(this);
 };
 
-(function(){
-	function $(id){return document.getElementById(id);}
-	function isArray(coll){return typeof(coll.length)!="undefined";}
-	function each(coll, F){
-		if(isArray(coll)){
+KB.Collections = {
+	isArray: function(coll){return typeof(coll.length)!="undefined";},
+	
+	each: function(coll, F){
+		if(KB.Collections.isArray(coll)){
 			for(var i=0; i<coll.length; i++){
 				F(coll[i], i);
 			}
@@ -23,12 +20,12 @@ function KB(data){
 				F(coll[k], k);
 			}
 		}
-	}
+	},
 	
-	function filter(coll, cond){
-		var arrayMode = isArray(coll);
+	filter: function(coll, cond){
+		var arrayMode = KB.Collections.isArray(coll);
 		var res = arrayMode?[]:{};
-		each(coll, function(el, k){
+		KB.Collections.each(coll, function(el, k){
 			if(cond(el)){
 				if(arrayMode)
 					res.push(el);
@@ -37,14 +34,20 @@ function KB(data){
 			}
 		});
 		return res;
-	}
+	},
 	
-	function extend(o, s){
-		each(s, function(el, nm){ o[nm] = el;});
+	extend: function(o, s){
+		KB.Collections.each(s, function(el, nm){ o[nm] = el;});
 	}
+};
+
+(function(){
+	var extend = KB.Collections.extend;
+	var each = KB.Collections.each;
+	var filter = KB.Collections.filter;
 	
 	extend(KB, {
-		version: "2.1.88",
+		version: "2.2.89",
 		instances: [],
 		
 		getInstance: function(idx){
