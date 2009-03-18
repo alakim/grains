@@ -65,6 +65,12 @@ function KB(data){
 		relationTypes: {},
 		relations:[],
 		
+		setItemIDs: function(){
+			each(this.items, function(itm, id){
+				itm.id = id;
+			});
+		},
+		
 		setItemRelations: function(itm){var _=this;
 			if(!itm.relations || itm.relations.length==0)
 				return;
@@ -95,52 +101,61 @@ function KB(data){
 			});
 		},
 		
+		itemDisplay: function(itm){with(Html){var _=this;
+			return div({style:"border:1px solid #888888; padding:3px; margin:5px;"},
+				p({style:"margin-top:0px; margin-bottom:3px;"},
+					a({name:itm.id},
+						span({style:"font-weight:bold;"}, itm.name), ": "
+					),
+					apply(_.getRelations(itm, false), function(rel, i){
+						return span(
+							i>0?", ":"",
+							" ", 
+							span({style:"color:#888888;"}, rel.type.name,
+								rel.truth?span(" (", rel.truth, ")"):null
+							), 
+							" ", 
+							a({href:"#"+rel.trg.id}, rel.trg.name), 
+							" "
+						);
+					}),
+					
+					apply(_.getRelations(itm, true), function(rel, i){
+						return span(
+							i>0?", ":"",
+							" ", 
+							span({style:"color:#888888;"},
+								rel.type.inversion,
+								rel.truth?span(" (", rel.truth, ")"):null
+							), 
+							" ", 
+							a({href:"#"+rel.src.id}, rel.src.name), 
+							" "
+						);
+					})
+				),
+				div({style:"margin-left:20px;"},
+					itm.description?p({style:"margin-top:0px; margin-bottom:0px;"}, itm.description):null,
+					apply(itm.refs, function(ref, i){
+						return span(
+							i>0?", ":null,
+							a({href:ref.url}, ref.title)
+						);
+					})
+				)
+			);
+		}},
+		
 		displayMainView: function(){with(Html){var _=this;
 			$(_.panelID).innerHTML = div(
 				h1(_.name),
-				apply(_.items, function(itm){
-					return div({style:"border:1px solid #888888; padding:3px; margin:5px;"},
-						p({style:"margin-top:0px; margin-bottom:3px;"},
-							span({style:"font-weight:bold;"}, itm.name), ": ",
-							apply(_.getRelations(itm, false), function(rel, i){
-								return span(
-									i>0?", ":"",
-									" ", 
-									span({style:"color:#888888;"}, rel.type.name,
-										rel.truth?span(" (", rel.truth, ")"):null
-									), 
-									" ", rel.trg.name, " "
-								);
-							}),
-							
-							apply(_.getRelations(itm, true), function(rel, i){
-								return span(
-									i>0?", ":"",
-									" ", 
-									span({style:"color:#888888;"},
-										rel.type.inversion,
-										rel.truth?span(" (", rel.truth, ")"):null
-									), 
-									" ", rel.src.name, " "
-								);
-							})
-						),
-						div({style:"margin-left:20px;"},
-							itm.description?p({style:"margin-top:0px; margin-bottom:0px;"}, itm.description):null,
-							apply(itm.refs, function(ref, i){
-								return span(
-									i>0?", ":null,
-									a({href:ref.url}, ref.title)
-								);
-							})
-						)
-					);
-				})
+				apply(_.items, function(itm){return _.itemDisplay(itm);})
 			);
 		}},
 		
 		init:function(){var _=this;
 			_.setDefaultNames();
+			_.setItemIDs();
 			each(_.items, function(itm){
 				_.setItemRelations(itm);
 			});
