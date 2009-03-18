@@ -1,0 +1,39 @@
+<html>
+<head>
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="kb.js"></script>
+<script type="text/javascript">
+
+var kb = new KB({
+	panelID: "kbOut",
+	
+	name:"Операционные системы",
+	
+	items:{
+		os: {name:"Операционная система"},
+		linux: {name:"Linux", description:"Операционка такая"},
+		windows: {name:"MS Windows", description:"Операционка такая"},
+		kde: {name:"KDE"},
+		compiz: {}
+	},
+	
+	relationTypes:{
+		is:{name:"is", inversion:"may be"},
+		uses:{name:"uses", inversion:"used by"}
+	}
+});
+
+kb.setRelations([
+	{type:"uses", src:"linux", trg:"kde"},
+	{type:"is", src:"linux", trg:"os"},
+	{type:"is", src:"windows", trg:"os"}
+]);
+
+
+</script>
+</head>
+<body>
+	<div id="kbOut">
+	</div>
+</body>
+</html>
