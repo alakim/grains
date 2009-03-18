@@ -1,0 +1,35 @@
+body{
+	font-family: Arial;
+	font-size:14px;
+}
+
+p{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.details{
+	font-family:Tahoma, Arial;
+	font-size:12px;
+	margin-left:20px;
+	color:#555555;
+}
+
+.relation {
+	color:#888888;
+}
+
+.itemPanel{
+	border:1px solid #888888; 
+	padding:3px; 
+	margin:5px;
+}
+
+p.itemName{
+	margin-top:0px; 
+	margin-bottom:3px;
+}
+
+span.itemName{
+	font-weight:bold;
+}
