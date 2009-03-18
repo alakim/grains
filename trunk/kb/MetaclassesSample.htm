@@ -1,0 +1,59 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="kb.css"/>
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="kb.js"></script>
+<script type="text/javascript" src="kbView.js"></script>
+<script type="text/javascript">
+
+var kb = new KB({
+	name:"ћетаклассы",
+	
+	relationTypes:{
+		is:KB.standardRelations.is,
+		uses:KB.standardRelations.uses,
+		includes:KB.standardRelations.includes,
+		comesFrom:{name:"comes from", inversion:"predecessor of", description:"”казывает на происхождение сущности (в историческом аспекте)."},
+		refTo:{name:"references to", inversion:"referenced by", description:"ќбозначает смысловую св€зь между двум€ сущност€ми"}
+	},
+	
+	items:{
+		
+		"собака": {},
+		"порода собак":{},
+		"дворн€га":{
+			relations:[
+				{type:"is", trg:"порода собак"},
+				{type:"is", trg:"собака"}
+			]
+		},
+		"колли":{
+			relations:[
+				{type:"is", trg:"порода собак"},
+				{type:"is", trg:"собака"}
+			]
+		},
+		"“узик":{
+			relations:[
+				{type:"is", trg:"собака"},
+				{type:"is", trg:"дворн€га"}
+			]
+		},
+		"Ўарик":{
+			relations:[
+				{type:"is", trg:"собака"},
+				{type:"is", trg:"колли"}
+			]
+		}
+	}
+});
+
+new KbView(kb, "kbOut");
+
+</script>
+</head>
+<body>
+	<div id="kbOut">
+	</div>
+</body>
+</html>
