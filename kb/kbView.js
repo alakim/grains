@@ -19,7 +19,7 @@ function KbView(kb, panelID){
 	var filter = KB.Collections.filter;
 	
 	extend(KbView, {
-		version: "1.2.92",
+		version: "1.2.93",
 		animationTimeout: 1000,
 		instances: [],
 		
@@ -135,6 +135,10 @@ function KbView(kb, panelID){
 		}},
 		
 		displayMainView: function(){with(Html){var _=this;
+			var relationsToUndefinedItems = filter(_.kb.relations, function(rel){
+				return typeof(rel.trg)=="string";
+			});
+			
 			$(_.panelID).innerHTML = div(
 				h1(_.kb.name),
 				p(
@@ -143,18 +147,15 @@ function KbView(kb, panelID){
 				),
 				apply(_.kb.items, function(itm){return _.itemDisplay(itm);}),
 				
-				div({"class":"warning"},
-					span({"class":"subTitle"}, "Undefined items"),
-					": ",
-					apply(
-						filter(_.kb.relations, function(rel){
-							return typeof(rel.trg)=="string";
-						}),
-						function(rel){
-							return span({"class":"undefinedItem"},rel.trg);
-						}
+				relationsToUndefinedItems.length?
+					div({"class":"warning"},
+						span({"class":"subTitle"}, "Undefined items"),
+						": ",
+						apply(relationsToUndefinedItems, function(rel){
+								return span({"class":"undefinedItem"},rel.trg);
+						})
 					)
-				),
+					:null,
 				
 				p({"class":"logo"},
 					"Powered by KB v.", KB.version, ", ",
