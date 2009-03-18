@@ -65,6 +65,18 @@ function KB(data){
 		relationTypes: {},
 		relations:[],
 		
+		setItemRelations: function(itm){var _=this;
+			if(!itm.relations || itm.relations.length==0)
+				return;
+			each(itm.relations, function(rel){
+				_.relations.push({
+					type: _.relationTypes[rel.type],
+					src: itm,
+					trg: _.items[rel.trg]
+				});
+			});
+		},
+		
 		setRelations: function(relations){var _=this;
 			each(relations, function(rel, i){
 				_.relations.push({
@@ -86,26 +98,33 @@ function KB(data){
 			$(_.panelID).innerHTML = div(
 				h1(_.name),
 				apply(_.items, function(itm){
-					return p(
-						span({style:"font-weight:bold;"}, itm.name), ": ",
-						apply(_.getRelations(itm, false), function(rel, i){
-							return span(
-								i>0?", ":"",
-								" ", 
-								span({style:"color:#888888;"}, rel.type.name), 
-								" ", rel.trg.name, " "
-							);
-						}),
-						
-						apply(_.getRelations(itm, true), function(rel, i){
-							return span(
-								i>0?", ":"",
-								" ", 
-								span({style:"color:#888888;"}, rel.type.inversion), 
-								" ", rel.src.name, " "
-							);
-						})
-						
+					return div({style:"border:1px solid #888888; padding:3px; margin:5px;"},
+						p({style:"margin-top:0px; margin-bottom:3px;"},
+							span({style:"font-weight:bold;"}, itm.name), ": ",
+							apply(_.getRelations(itm, false), function(rel, i){
+								return span(
+									i>0?", ":"",
+									" ", 
+									span({style:"color:#888888;"}, rel.type.name), 
+									" ", rel.trg.name, " "
+								);
+							}),
+							
+							apply(_.getRelations(itm, true), function(rel, i){
+								return span(
+									i>0?", ":"",
+									" ", 
+									span({style:"color:#888888;"}, rel.type.inversion), 
+									" ", rel.src.name, " "
+								);
+							})
+						),
+						div({style:"margin-left:20px;"},
+							itm.description?p({style:"margin-top:0px; margin-bottom:0px;"}, itm.description):null,
+							apply(itm.refs, function(ref, i){
+								return a({href:ref.url}, ref.title);
+							})
+						)
 					);
 				})
 			);
@@ -113,6 +132,9 @@ function KB(data){
 		
 		init:function(){var _=this;
 			_.setDefaultNames();
+			each(_.items, function(itm){
+				_.setItemRelations(itm);
+			});
 			_.displayMainView();
 		},
 		
