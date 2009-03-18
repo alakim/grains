@@ -2,12 +2,11 @@
 <head>
 <link rel="stylesheet" type="text/css" href="kb.css"/>
 <script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="kbView.js"></script>
 <script type="text/javascript" src="kb.js"></script>
 <script type="text/javascript">
 
 var kb = new KB({
-	panelID: "kbOut",
-	
 	name:"Операционные системы",
 	
 	relationTypes:{
@@ -111,6 +110,7 @@ var kb = new KB({
 	}
 });
 
+new KbView(kb, "kbOut");
 
 </script>
 </head>

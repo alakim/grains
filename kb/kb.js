@@ -44,7 +44,7 @@ function KB(data){
 	}
 	
 	extend(KB, {
-		animationTimeout: 1000,
+		version: "2.1.88",
 		instances: [],
 		
 		getInstance: function(idx){
@@ -62,41 +62,10 @@ function KB(data){
 				element.addEventListener(event, handler, true);
 			else
 				element.attachEvent("on"+event, handler);
-		},
-		
-		goToItem: function(idx, itmID){
-			var el = $(itmID+"d"+idx);
-			el.className+=" attention";
-			window.setTimeout(function(){
-				document.getElementById(itmID+"d"+idx).className = "itemName";
-			}, KB.animationTimeout);
-			
-			window.scrollTo(el.offsetLeft, el.offsetTop);
-		},
-		
-		search: function(idx){
-			var fld = $("searchField"+idx);
-			var val = fld.value;
-			if(!val.length)
-				return;
-			var kb = KB.getInstance(idx);
-			var re = new RegExp(val, "gi");
-			var items = filter(kb.items, function(itm){
-				return itm.name.match(re);
-			});
-			
-			var itemsFound = false;
-			each(items, function(itm){
-				KB.goToItem(idx, itm.id);
-				itemsFound = true;
-			});
-			
-			fld.style.backgroundColor = itemsFound?"#ffffff":"#ff0000";
 		}
 	});
 	
 	extend(KB.prototype, {
-		panelID:"", 
 		items: {},
 		relationTypes: {},
 		relations:[],
@@ -137,69 +106,12 @@ function KB(data){
 			});
 		},
 		
-		itemDisplay: function(itm){with(Html){var _=this;
-			return div({"class":"itemPanel"},
-				p({"class":"itemName"}, 
-					a({name:itm.id},
-						span({"class":"itemName", id:itm.id+"d"+_.idx}, itm.name), ": "
-					),
-					apply(_.getRelations(itm, false), function(rel, i){
-						return span(
-							i>0?", ":"",
-							" ", 
-							span({"class":"relation"}, rel.type.name,
-								rel.truth?span(" (", rel.truth, ")"):null
-							), 
-							" ", 
-							span({"class":"link", onclick:"KB.goToItem("+_.idx+",'"+rel.trg.id+"')"}, rel.trg.name), 
-							" "
-						);
-					}),
-					
-					apply(_.getRelations(itm, true), function(rel, i){
-						return span(
-							i>0?", ":"",
-							" ", 
-							span({"class":"relation"},
-								rel.type.inversion,
-								rel.truth?span(" (", rel.truth, ")"):null
-							), 
-							" ", 
-							span({"class":"link", onclick:"KB.goToItem("+_.idx+",'"+rel.src.id+"')"}, rel.src.name), 
-							" "
-						);
-					})
-				),
-				div({"class":"details"},
-					itm.description?p(itm.description):null,
-					apply(itm.refs, function(ref, i){
-						return span(
-							i>0?", ":null,
-							a({href:ref.url, target:"_blank"}, ref.title)
-						);
-					})
-				)
-			);
-		}},
-		
-		displayMainView: function(){with(Html){var _=this;
-			$(_.panelID).innerHTML = div(
-				h1(_.name),
-				p(
-					input({type:"text", id:"searchField"+_.idx}),
-					button({onclick:"KB.search("+_.idx+")"}, "Search")
-				),
-				apply(_.items, function(itm){return _.itemDisplay(itm);})
-			);
-		}},
-		
 		init:function(){var _=this;
 			_.setDefaultNames();
 			_.setItemIDs();
 			each(_.items, function(itm){
 				_.setItemRelations(itm);
 			});
-			_.displayMainView();
 		},
 		
 		getRelations: function(itm, inversion){
@@ -212,7 +124,5 @@ function KB(data){
 		}
 	});
 })()
-
-KB.addEventHandler(window, "load", KB.init);
 
 
