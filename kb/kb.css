@@ -47,6 +47,21 @@ span.itemName{
 	cursor:pointer;
 }
 
+.undefinedItem{
+	color:#ff0000;
+}
+
+.warning{
+	border:1px solid #880000;
+	padding:5px;
+	margin:10px;
+	background-color:#ffffaa;
+}
+
+.subTitle{
+	font-weight:bold;
+}
+
 p.logo{
 	text-align:center;
 	color:#aaaaaa;

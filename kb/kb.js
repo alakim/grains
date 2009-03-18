@@ -47,7 +47,7 @@ KB.Collections = {
 	var filter = KB.Collections.filter;
 	
 	extend(KB, {
-		version: "2.3.91",
+		version: "2.4.92",
 		instances: [],
 		
 		standardRelations:{
@@ -92,7 +92,7 @@ KB.Collections = {
 				_.relations.push({
 					type: _.relationTypes[rel.type],
 					src: itm,
-					trg: _.items[rel.trg],
+					trg: _.items[rel.trg]?_.items[rel.trg]:rel.trg,
 					truth: rel.truth
 				});
 			});
@@ -102,8 +102,8 @@ KB.Collections = {
 			each(relations, function(rel, i){
 				_.relations.push({
 					type: _.relationTypes[rel.type], 
-					src: _.items[rel.src],
-					trg: _.items[rel.trg]
+					src: _.items[rel.src]?_.items[rel.src]:rel.src,
+					trg: _.items[rel.trg]?_.items[rel.trg]:rel.trg
 				});
 			});
 		},
