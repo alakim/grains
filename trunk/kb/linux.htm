@@ -26,7 +26,7 @@ var kb = new KB({
 			name:"Linux",
 			description:"Операционка такая",
 			relations:[
-				{type:"uses", trg:"kde"},
+				{type:"uses", trg:"DesktopEnvironment"},
 				{type:"is", trg:"os"}
 			]
 		},
@@ -46,22 +46,30 @@ var kb = new KB({
 			]
 		},
 		
-		graphEnvironment: {
-			name:"Графическая среда"
+		DesktopEnvironment: {
+			name:"Desktop Environment"
 		},
 		
 		kde: {
 			name:"KDE",
 			relations:[
-				{type:"is", trg:"graphEnvironment"},
-				{type:"uses", truth:0.5, trg:"compiz"}
+				{type:"is", trg:"DesktopEnvironment"},
+				{type:"uses", truth:0.5, trg:"compiz"},
+				{type:"uses", truth:0.5, trg:"KWin"}
 			]
 		},
 		gnome: {
 			name:"GNOME",
+			description:"от англ. GNU Network Object Model Environment",
 			relations:[
-				{type:"is", trg:"graphEnvironment"},
+				{type:"is", trg:"DesktopEnvironment"},
 				{type:"uses", truth:0.5, trg:"compiz"}
+			]
+		},
+		
+		KWin: {
+			relations:[
+				{type:"is", trg:"windowManager"}
 			]
 		},
 		
