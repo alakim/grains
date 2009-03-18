@@ -33,3 +33,14 @@ p.itemName{
 span.itemName{
 	font-weight:bold;
 }
+
+.attention{
+	background-color:#ffff00;
+}
+
+.link{
+	color:#0000ff;
+	text-decoration:underline;
+	cursor:hand;
+	cursor:pointer;
+}
