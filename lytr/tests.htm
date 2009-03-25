@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>LyTr Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="lytr.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля LyTr", "Configuration").run = function(){
+	this.assert(typeof(LyTr), "object");
+}
+
+new JSUnit.Test("Simple Transposition", "Transpositions").run = function(){
+	this.assert(LyTr.transpose("c4 d8 e f g", 2), "d4 e8 fis g a");
+	this.assert(LyTr.transpose("d4 e8 fis g a", -2), "c4 d8 e f g");
+
+	this.assert(LyTr.transpose("e4 fis8 g a4 g8 a b1", 2), "fis4 gis8 a b4 a8 b cis1");
+	this.assert(LyTr.transpose("fis4 gis8 a b4 a8 b cis1", -2), "e4 fis8 g a4 g8 a b1");
+}
+
+new JSUnit.Test("Simple Transposition, flat mode", "Transpositions").run = function(){
+	this.assert(LyTr.transpose("c4 d8 e f g", 2, false), "d4 e8 ges g a");
+	this.assert(LyTr.transpose("e4 fis8 g a4 g8 a b1", 2, false), "ges4 aes8 a b4 a8 b des1");
+}
+
+new JSUnit.Test("Chords", "Transpositions").run = function(){
+	this.assert(LyTr.transpose("a4:+7 b:m7 e:7", 2), "b4:+7 cis:m7 fis:7");
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = LyTr.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>LyTr Unit Tests</h1>
+	<p>LyTr v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>

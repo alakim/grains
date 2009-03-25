@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>LyTr Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<script type="text/javascript" src="lytr.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function start(){
+	$("out").value = LyTr.transpose(
+		$("src").value,
+		parseInt($("tbInterval").value),
+		$("cbSharpMode").checked
+	);
+}
+</script>
+</head>
+<body>
+	<h1>Lilypond Transposition Tool</h1>
+	<p>Powered by LyTr v.<span id="versionPanel"></span></p>
+	<textarea id="src" style="width:500px; height:120px;"></textarea>
+	<p>
+		<button onclick="start()">transpose</button>
+		by
+		<input type="text" style="width:35px;" id="tbInterval" value="2"> halftones,
+		using sharp mode: <input type="checkbox" checked="true" id="cbSharpMode">
+	</p>
+	<textarea id="out" style="width:500px; height:120px;"></textarea>
+</body>
+</html>
