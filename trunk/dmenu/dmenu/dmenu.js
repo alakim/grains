@@ -1,5 +1,7 @@
 if(typeof(Html)=="undefined")
 	throw "Html module required. Chech html.js file.";
+if(typeof(Html.tagCollection)=="undefined")
+	throw "Module Html version at least 1.6.* required";
 	
 function DMenu(panelId, structure){var _=this;
 	_.structure = structure;
@@ -40,7 +42,7 @@ function DMenu(panelId, structure){var _=this;
 	var instances = [];
 	
 	extend(__, {
-		version: "1.0.0",
+		version: "1.0.98",
 		
 		getInstance:function(idx){
 			return instances[idx];
@@ -80,6 +82,14 @@ function DMenu(panelId, structure){var _=this;
 				__.css.addClass(el, "hiLink");
 			else
 				__.css.removeClass(el, "hiLink");
+		},
+		
+		openSubMenu:function(el, idx, id){
+			__.getInstance(idx).openSubMenu(el, id);
+		},
+		
+		closeSubMenu:function(el, idx, id){
+			__.getInstance(idx).closeSubMenu(id);
 		}
 	});
 	
@@ -91,20 +101,61 @@ function DMenu(panelId, structure){var _=this;
 		$panel: function(){return $(this.panelId);},
 		
 		render: function(){with(Html){var _=this;
+			var subMenuCounter = 0;
 			_.$panel().innerHTML = div(
 				{"class":"menupanel"},
 				apply(_.structure, function(mn){
-					return span(
-						{
-							"class":"menuItem",
-							onmouseover:"DMenu.highlightLink(this)",
-							onmouseout:"DMenu.highlightLink(this, false)"
-						}, 
-						mn.nm
+					return tagCollection(
+						span(
+							{
+								"class":"menuItem",
+								onmouseover:mn.sub?"DMenu.openSubMenu(this, "+_.idx+", "+subMenuCounter+")":"DMenu.highlightLink(this)",
+								onmouseout:mn.sub?"DMenu.closeSubMenu(this, "+_.idx+", "+subMenuCounter+")":"DMenu.highlightLink(this, false)"
+							}, 
+							mn.nm
+						),
+						mn.sub?
+							div(
+								{
+									id:_.getSubMenuID(subMenuCounter++),
+									"class":"submenupanel",
+									style:"position:absolute; display:none;"
+								},
+								apply(mn.sub, function(subMn){
+									return div(
+										{
+											onmouseover:"DMenu.openSubMenu(this, "+_.idx+", -1)",
+											onmouseout:"DMenu.closeSubMenu(this, "+_.idx+", -1)"
+										},
+										subMn.nm
+									);
+								})
+							)
+							:null
 					);
 				})
 			);
-		}}
+		}},
+		
+		getSubMenuID: function(id){
+			return "pnl"+this.idx+"_"+id;
+		},
+		
+		openSubMenu: function(el, id, on){
+			on = on==null?true:on;
+			var mnu = id<0?el:$(this.getSubMenuID(id));
+			mnu.style.display = on?"block":"none";
+			if(on){
+				extend(mnu.style, {
+					top: el.offsetTop + 16+"px",
+					left:el.offsetLeft - 3 +"px"
+				});
+			}
+		},
+		
+		closeSubMenu: function(id){
+			this.openSubMenu(null, id, false);
+		}
 	});
 	
 	addEventHandler(window, "load", DMenu.init);
