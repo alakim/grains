@@ -73,6 +73,18 @@ new JSUnit.Test("Картинки", "Верстка").run = function(){
 	}
 }
 
+new JSUnit.Test("tagCollection", "Верстка").run = function(){
+	with(Html){
+		this.assert(
+			tagCollection(
+				div("abc"),
+				"def",
+				div("ghi")
+			),
+			"<div>abc</div>def<div>ghi</div>"
+		);
+	}
+}
 new JSUnit.Test("Таблица", "Шаблоны").run = function(){
 	with(Html){
 		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
