@@ -21,7 +21,7 @@ var Html = {};
 	function defineNotEmptyTags(tags){defineTags(tags, false, true)}
 	
 	extend(Html, {
-		version: "1.5.49",
+		version: "1.6.97",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing, notEmpty){
@@ -62,6 +62,14 @@ var Html = {};
 			for(var i=0; i<count; i++)
 				h.push(F(i+1));
 			return h.join("");
+		},
+		
+		tagCollection: function(){
+			var res = [];
+			each(arguments, function(tag){
+				res.push(tag);
+			});
+			return res.join("");
 		}
 	});
 	
