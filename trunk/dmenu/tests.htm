@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>DWL Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="dmenu/dmenu.js"></script>
+<script type="text/javascript">
+function $testDiv(){return document.getElementById("testDiv");}
+
+new JSUnit.Test("Подключение модуля DMenu").run = function(){
+	this.assert(typeof(DMenu), "function");
+}
+
+
+new JSUnit.Test("Манипуляции с классами", "CSS").run = function(){
+	DMenu.css.addClass($testDiv(), "c1");
+	this.assert($testDiv().className, "c1");
+	DMenu.css.addClass($testDiv(), "c2");
+	this.assert($testDiv().className, "c1 c2");
+	DMenu.css.addClass($testDiv(), "c3");
+	this.assert($testDiv().className, "c1 c2 c3");
+	
+	DMenu.css.removeClass($testDiv(), "c2");
+	this.assert($testDiv().className, "c1 c3");
+	
+	DMenu.css.removeClass($testDiv(), "c1");
+	this.assert($testDiv().className, "c3");
+	
+	DMenu.css.removeClass($testDiv(), "c3");
+	this.assert($testDiv().className, "");
+}
+
+</script>
+</head>
+<body onload="JSUnit.init()">
+	<h1>DMenu Unit Tests</h1>
+	<div id="testDiv"></div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+.menupanel{
+	background-color:#fffff0;
+	color: #444444;
+	font-family: Arial, Sans-serif;
+	font-size: 13px;
+	padding: 2px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #99bced;
+}
+
+.menuItem{
+	cursor:hand;
+	cursor:pointer;
+	margin-right:5px;
+}
+
+.hiLink{
+	text-decoration:underline;
+	color:#0000ff;
+}
+
+.submenupanel{
+	background-color:#fffff0;
+	color: #444444;
+	padding:3px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #99bced;
+	font-family: Arial, Sans-serif;
+	font-size: 13px;
+}
+
+.menupanel a:link{color: #444444;}
+.menupanel a:visited{color: #444444;}
+.menupanel a:hover{color: #444444;}
+
+.submenupanel a:link{color: #444444;}
+.submenupanel a:visited{color: #444444;}
+.submenupanel a:hover{color: #444444;}
+
