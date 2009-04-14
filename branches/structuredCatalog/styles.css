@@ -1,0 +1,54 @@
+body{
+	font-family:arial, sans-serif;
+	font-size:14px;
+}
+.pointer{
+	cursor:hand;
+	cursor:pointer;
+}
+.link{
+	color:#000088;
+	text-decoration:underline;
+	margin:5px;
+}
+.attention{
+	background-color:#ffaa00;
+	padding:3px;
+}
+.starred{
+	background-color:#ffff00;
+	padding:3px;
+}
+.selected{
+	background-color:#ccccff;
+	padding:3px;
+	
+}
+
+#cloud2{
+	padding:5px;
+	margin:10px;
+	border:1px solid black;
+}
+
+#out{
+	padding:5px;
+	margin:10px;
+	border:1px solid black;
+}
+
+td{
+	font-family: verdana, arial, sans-serif;
+	font-size:12px;
+}
+
+td.tagsColumn{
+	background-color:#cccccc;
+	font-size:10px;
+}
+
+
+td.details{
+	color:#888888;
+	font-size:10px;
+}
