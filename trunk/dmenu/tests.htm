@@ -39,10 +39,17 @@ new JSUnit.Test("Функция contains", "Collections").run = function(){
 }
 
 new JSUnit.Test("Манипуляции с классами", "CSS").run = function(){
+	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), false);
 	DMenu.internal.addCssClass($testDiv(), "c1");
+	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), true);
 	this.assert($testDiv().className, "c1");
+	
+	this.assert(DMenu.internal.hasCssClass($testDiv(), "c2"), false);
 	DMenu.internal.addCssClass($testDiv(), "c2");
 	this.assert($testDiv().className, "c1 c2");
+	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), true);
+	this.assert(DMenu.internal.hasCssClass($testDiv(), "c2"), true);
+	
 	DMenu.internal.addCssClass($testDiv(), "c3");
 	this.assert($testDiv().className, "c1 c2 c3");
 	
