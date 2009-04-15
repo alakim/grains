@@ -39,8 +39,12 @@ function DMenu(panelId, structure){var _=this;
 	
 	function extend(o, s){for(var k in s) o[k] = s[k];}
 	
+	function hasCssClass(el, clNm){
+		return contains(el.className.split(/\s+/), clNm);
+	}
+	
 	function addCssClass(el, clNm){
-		if(contains(el.className.split(/\s+/), clNm))
+		if(hasCssClass(el, clNm))
 			return;
 		el.className+=" "+clNm;
 	}
@@ -67,6 +71,7 @@ function DMenu(panelId, structure){var _=this;
 			each: each,
 			contains: contains,
 			addCssClass:addCssClass,
+			hasCssClass:hasCssClass,
 			removeCssClass:removeCssClass
 		};
 	}
@@ -74,6 +79,7 @@ function DMenu(panelId, structure){var _=this;
 	extend(__, {
 		version: "1.0.98",
 		
+		defaultTimeout:500,
 		
 		registerInstance:function(inst){
 			inst.idx = instances.length;
@@ -94,12 +100,12 @@ function DMenu(panelId, structure){var _=this;
 				removeCssClass(el, "hiLink");
 		},
 		
-		openSubMenu:function(el, idx, id){
-			getInstance(idx).openSubMenu(el, id);
+		menuOn:function(el, idx, id, subId){
+			getInstance(idx).menuOn(el, id, subId);
 		},
 		
-		closeSubMenu:function(el, idx, id){
-			getInstance(idx).closeSubMenu(id);
+		menuOff:function(el, idx, id, subId){
+			getInstance(idx).menuOff(el, id, subId);
 		}
 	});
 	
@@ -112,36 +118,50 @@ function DMenu(panelId, structure){var _=this;
 		
 		render: function(){with(Html){var _=this;
 			var subMenuCounter = 0;
+			
+			function menuItemTemplate(menuItem){
+				return span(
+					{
+						"class":"menuItem",
+						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+(menuItem.sub?(","+subMenuCounter):"")+")",
+						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+(menuItem.sub?(","+subMenuCounter):"")+")"
+					}, 
+					menuItem.nm
+				);
+			}
+			
+			function menuPanelTemplate(menuItem){
+				return div(
+					{
+						id:_.getSubMenuID(subMenuCounter),
+						"class":"submenupanel",
+						style:"position:absolute; display:none;",
+						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+")",
+						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+")"
+					},
+					apply(menuItem.sub, subMenuItemTemplate)
+				)
+			}
+			
+			function subMenuItemTemplate(subMn){
+				return div(
+					{
+						"class":"menuItem",
+						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+")",
+						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+")"
+					},
+					subMn.nm
+				);
+			}
+			
 			_.$panel().innerHTML = div(
 				{"class":"menupanel"},
 				apply(_.structure, function(mn){
+					if(mn.sub)
+						subMenuCounter++;
 					return tagCollection(
-						span(
-							{
-								"class":"menuItem",
-								onmouseover:mn.sub?"DMenu.openSubMenu(this, "+_.idx+", "+subMenuCounter+")":"DMenu.highlightLink(this)",
-								onmouseout:mn.sub?"DMenu.closeSubMenu(this, "+_.idx+", "+subMenuCounter+")":"DMenu.highlightLink(this, false)"
-							}, 
-							mn.nm
-						),
-						mn.sub?
-							div(
-								{
-									id:_.getSubMenuID(subMenuCounter++),
-									"class":"submenupanel",
-									style:"position:absolute; display:none;"
-								},
-								apply(mn.sub, function(subMn){
-									return div(
-										{
-											onmouseover:"DMenu.openSubMenu(this, "+_.idx+", -1)",
-											onmouseout:"DMenu.closeSubMenu(this, "+_.idx+", -1)"
-										},
-										subMn.nm
-									);
-								})
-							)
-							:null
+						menuItemTemplate(mn),
+						mn.sub?menuPanelTemplate(mn):null
 					);
 				})
 			);
@@ -151,15 +171,29 @@ function DMenu(panelId, structure){var _=this;
 			return "pnl"+this.idx+"_"+id;
 		},
 		
+		menuOn: function(el, id, subId){
+			if(subId)
+				this.openSubMenu(el, subId, true);
+			__.highlightLink(el);
+		},
+		
+		menuOff: function(el, id, subId){
+			if(subId)
+				this.closeSubMenu(subId);
+			__.highlightLink(el, false);
+		},
+		
 		openSubMenu: function(el, id, on){
 			on = on==null?true:on;
 			var mnu = id<0?el:$(this.getSubMenuID(id));
-			mnu.style.display = on?"block":"none";
-			if(on){
-				extend(mnu.style, {
-					top: el.offsetTop + 16+"px",
-					left:el.offsetLeft - 3 +"px"
-				});
+			if(mnu){
+				mnu.style.display = on?"block":"none";
+				if(on){
+					extend(mnu.style, {
+						top: el.offsetTop + 16+"px",
+						left:el.offsetLeft - 3 +"px"
+					});
+				}
 			}
 		},
 		
