@@ -12,7 +12,7 @@ function DMenu(panelId, structure){var _=this;
 (function(){
 	function $(id){return document.getElementById(id);}
 	
-	var testMode = typeof(JSUnit)!="undefined";
+	var testMode = typeof(JSUnit)!="undefined" || typeof(Documentation)=="function";
 	
 	function each(coll, F){
 		if(typeof(coll.length)=="undefined")
@@ -58,8 +58,12 @@ function DMenu(panelId, structure){var _=this;
 	
 	var instances = [];
 	
+	function getInstance(idx){
+		return instances[idx];
+	}
+	
 	if(testMode){
-		__.test = {
+		__.internal = {
 			each: each,
 			contains: contains,
 			addCssClass:addCssClass,
@@ -70,9 +74,6 @@ function DMenu(panelId, structure){var _=this;
 	extend(__, {
 		version: "1.0.98",
 		
-		getInstance:function(idx){
-			return instances[idx];
-		},
 		
 		registerInstance:function(inst){
 			inst.idx = instances.length;
@@ -85,23 +86,20 @@ function DMenu(panelId, structure){var _=this;
 			});
 		},
 		
-		css:{
-		},
-		
 		highlightLink:function(el, on){
 			on = on==null?true:on;
 			if(on)
-				__.css.addCssClass(el, "hiLink");
+				addCssClass(el, "hiLink");
 			else
-				__.css.removeCssClass(el, "hiLink");
+				removeCssClass(el, "hiLink");
 		},
 		
 		openSubMenu:function(el, idx, id){
-			__.getInstance(idx).openSubMenu(el, id);
+			getInstance(idx).openSubMenu(el, id);
 		},
 		
 		closeSubMenu:function(el, idx, id){
-			__.getInstance(idx).closeSubMenu(id);
+			getInstance(idx).closeSubMenu(id);
 		}
 	});
 	

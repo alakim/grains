@@ -15,6 +15,17 @@
 	
 	<script type="text/javascript">
 		new Documentation("DMenu", "Модуль для создания динамических выпадающих меню", [
+			{type:"string", name:"version", dsc:"Версия модуля"},
+			{type:"object", name:"internal", dsc:"Внутренние объекты (формируется только в отладочных версиях модуля)", children:[
+				{type:"method", name:"addCssClass", dsc:"Присваивает CSS-класс заданному HTML-элементу. Аргументы: el - HTML-элемент, clNm - имя класса"},
+				{type:"method", name:"removeCssClass", dsc:"Удаляет заданный класс из списка CSS-классов заданного HTML-элемента. Аргументы: el - HTML-элемент, clNm - имя класса"}
+			]},
+			{type:"method", name:"init", dsc:"Инициализация модуля"},
+			{type:"method", name:"registerInstance", dsc:"Регистрирует экземпляр меню во внутреннем реестре."},
+			
+			{type:"object", name:"prototype", dsc:"Прототип объекта меню", children:[
+				{type:"property", name:"$panel", dsc:"HTML-элемент. Панель для отображения меню."}
+			]}
 			
 		]);
 		
