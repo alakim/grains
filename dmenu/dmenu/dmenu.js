@@ -12,6 +12,8 @@ function DMenu(panelId, structure){var _=this;
 (function(){
 	function $(id){return document.getElementById(id);}
 	
+	var testMode = typeof(JSUnit)!="undefined";
+	
 	function each(coll, F){
 		if(typeof(coll.length)=="undefined")
 			for(var k in coll) F(coll[k], k)
@@ -37,9 +39,33 @@ function DMenu(panelId, structure){var _=this;
 	
 	function extend(o, s){for(var k in s) o[k] = s[k];}
 	
+	function addCssClass(el, clNm){
+		if(contains(el.className.split(/\s+/), clNm))
+			return;
+		el.className+=" "+clNm;
+	}
+	
+	function removeCssClass(el, clNm){
+		var classes = [];
+		each(el.className.split(/\s+/), function(cl){
+			if(cl!=clNm)
+				classes.push(cl);
+		});
+		el.className = classes.join(" ");
+	}
+	
 	var __=DMenu;
 	
 	var instances = [];
+	
+	if(testMode){
+		__.test = {
+			each: each,
+			contains: contains,
+			addCssClass:addCssClass,
+			removeCssClass:removeCssClass
+		};
+	}
 	
 	extend(__, {
 		version: "1.0.98",
@@ -60,28 +86,14 @@ function DMenu(panelId, structure){var _=this;
 		},
 		
 		css:{
-			addClass:function(el, clNm){
-				if(contains(el.className.split(/\s+/), clNm))
-					return;
-				el.className+=" "+clNm;
-			},
-			
-			removeClass:function(el, clNm){
-				var classes = [];
-				each(el.className.split(/\s+/), function(cl){
-					if(cl!=clNm)
-						classes.push(cl);
-				});
-				el.className = classes.join(" ");
-			}
 		},
 		
 		highlightLink:function(el, on){
 			on = on==null?true:on;
 			if(on)
-				__.css.addClass(el, "hiLink");
+				__.css.addCssClass(el, "hiLink");
 			else
-				__.css.removeClass(el, "hiLink");
+				__.css.removeCssClass(el, "hiLink");
 		},
 		
 		openSubMenu:function(el, idx, id){

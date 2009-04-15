@@ -11,22 +11,48 @@ new JSUnit.Test("Подключение модуля DMenu").run = function(){
 	this.assert(typeof(DMenu), "function");
 }
 
+new JSUnit.Test("Итератор each", "Collections").run = function(){
+	var coll = ["a", "b", "c"];
+	var res = "";
+	DMenu.test.each(coll, function(el, i){
+		res+=el+i;
+	});
+	this.assert(res, "a0b1c2");
+	
+	res = "";
+	coll = {a:1, b:2, c:3};
+	DMenu.test.each(coll, function(el, k){
+		res+=k+el
+	});
+	this.assert(res, "a1b2c3");
+}
+
+new JSUnit.Test("Функция contains", "Collections").run = function(){
+	var coll = [1, 2, 3, 4];
+	this.assert(DMenu.test.contains(coll, 1), true);
+	this.assert(DMenu.test.contains(coll, 2), true);
+	this.assert(DMenu.test.contains(coll, 3), true);
+	this.assert(DMenu.test.contains(coll, 4), true);
+	this.assert(DMenu.test.contains(coll, 5), false);
+	this.assert(DMenu.test.contains(coll, 6), false);
+	
+}
 
 new JSUnit.Test("Манипуляции с классами", "CSS").run = function(){
-	DMenu.css.addClass($testDiv(), "c1");
+	DMenu.test.addCssClass($testDiv(), "c1");
 	this.assert($testDiv().className, "c1");
-	DMenu.css.addClass($testDiv(), "c2");
+	DMenu.test.addCssClass($testDiv(), "c2");
 	this.assert($testDiv().className, "c1 c2");
-	DMenu.css.addClass($testDiv(), "c3");
+	DMenu.test.addCssClass($testDiv(), "c3");
 	this.assert($testDiv().className, "c1 c2 c3");
 	
-	DMenu.css.removeClass($testDiv(), "c2");
+	DMenu.test.removeCssClass($testDiv(), "c2");
 	this.assert($testDiv().className, "c1 c3");
 	
-	DMenu.css.removeClass($testDiv(), "c1");
+	DMenu.test.removeCssClass($testDiv(), "c1");
 	this.assert($testDiv().className, "c3");
 	
-	DMenu.css.removeClass($testDiv(), "c3");
+	DMenu.test.removeCssClass($testDiv(), "c3");
 	this.assert($testDiv().className, "");
 }
 
