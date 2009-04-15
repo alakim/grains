@@ -79,7 +79,7 @@ function DMenu(panelId, structure){var _=this;
 	extend(__, {
 		version: "1.0.98",
 		
-		defaultTimeout:500,
+		defaultTimeout:200,
 		
 		registerInstance:function(inst){
 			inst.idx = instances.length;
@@ -113,6 +113,8 @@ function DMenu(panelId, structure){var _=this;
 		idx:null,
 		structure:null,
 		panelId:null,
+		panels:[],
+		currentId:0,
 		
 		$panel: function(){return $(this.panelId);},
 		
@@ -120,7 +122,7 @@ function DMenu(panelId, structure){var _=this;
 			var subMenuCounter = 0;
 			
 			function menuItemTemplate(menuItem){
-				return span(
+				return Html.span(
 					{
 						"class":"menuItem",
 						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+(menuItem.sub?(","+subMenuCounter):"")+")",
@@ -130,7 +132,7 @@ function DMenu(panelId, structure){var _=this;
 				);
 			}
 			
-			function menuPanelTemplate(menuItem){
+			function menuPanelTemplate(menuItem){with(Html){
 				return div(
 					{
 						id:_.getSubMenuID(subMenuCounter),
@@ -141,10 +143,10 @@ function DMenu(panelId, structure){var _=this;
 					},
 					apply(menuItem.sub, subMenuItemTemplate)
 				)
-			}
+			}}
 			
 			function subMenuItemTemplate(subMn){
-				return div(
+				return Html.div(
 					{
 						"class":"menuItem",
 						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+")",
@@ -157,8 +159,10 @@ function DMenu(panelId, structure){var _=this;
 			_.$panel().innerHTML = div(
 				{"class":"menupanel"},
 				apply(_.structure, function(mn){
-					if(mn.sub)
+					if(mn.sub){
 						subMenuCounter++;
+						_.panels.push(subMenuCounter);
+					}
 					return tagCollection(
 						menuItemTemplate(mn),
 						mn.sub?menuPanelTemplate(mn):null
@@ -171,24 +175,32 @@ function DMenu(panelId, structure){var _=this;
 			return "pnl"+this.idx+"_"+id;
 		},
 		
-		menuOn: function(el, id, subId){
-			if(subId)
-				this.openSubMenu(el, subId, true);
-			__.highlightLink(el);
+		menuOn: function(el, id, subId){var _=this;
+			if(subId){
+				_.openSubMenu(el, subId, true);
+			}
+			else
+				__.highlightLink(el);
 		},
 		
-		menuOff: function(el, id, subId){
-			if(subId)
-				this.closeSubMenu(subId);
+		menuOff: function(el, id, subId){var _=this;
+			// if(subId){
+			// 	window.setTimeout(function(){
+			// 		_.closeSubMenu(subId);
+			// 	}, __.defaultTimeout);
+			// }
 			__.highlightLink(el, false);
 		},
 		
-		openSubMenu: function(el, id, on){
+		openSubMenu: function(el, id, on){var _=this;
 			on = on==null?true:on;
+			
 			var mnu = id<0?el:$(this.getSubMenuID(id));
 			if(mnu){
 				mnu.style.display = on?"block":"none";
 				if(on){
+					_.currentId = id;
+					_.closePanels(id);
 					extend(mnu.style, {
 						top: el.offsetTop + 16+"px",
 						left:el.offsetLeft - 3 +"px"
@@ -197,8 +209,15 @@ function DMenu(panelId, structure){var _=this;
 			}
 		},
 		
-		closeSubMenu: function(id){
-			this.openSubMenu(null, id, false);
+		closePanels: function(except){var _=this;
+			each(_.panels, function(pnlId){
+				if(pnlId!=except)
+					_.closeSubMenu(pnlId);
+			});
+		},
+		
+		closeSubMenu: function(id){var _=this;
+			_.openSubMenu(null, id, false);
 		}
 	});
 	
