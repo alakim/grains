@@ -6,7 +6,8 @@ if(typeof(Html.tagCollection)=="undefined")
 function DMenu(panelId, structure){var _=this;
 	_.structure = structure;
 	_.panelId = panelId;
-	DMenu.registerInstance(_);
+	DMenu.registerMenu(_);
+
 }
 
 (function(){
@@ -40,7 +41,9 @@ function DMenu(panelId, structure){var _=this;
 	function extend(o, s){for(var k in s) o[k] = s[k];}
 	
 	function hasCssClass(el, clNm){
-		return contains(el.className.split(/\s+/), clNm);
+		return 
+			!el.className?false
+			:contains(el.className.split(/\s+/), clNm);
 	}
 	
 	function addCssClass(el, clNm){
@@ -50,6 +53,8 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	function removeCssClass(el, clNm){
+		if(!el.className)
+			return;
 		var classes = [];
 		each(el.className.split(/\s+/), function(cl){
 			if(cl!=clNm)
@@ -60,11 +65,32 @@ function DMenu(panelId, structure){var _=this;
 	
 	var __=DMenu;
 	
-	var instances = [];
-	
-	function getInstance(idx){
-		return instances[idx];
+	function Registry(){
+		this.items = [];
 	}
+	
+	extend(Registry.prototype, {
+		register: function(itm){
+			itm.idx = this.items.length;
+			this.items.push(itm);
+		},
+		get:function(idx){
+			return this.items[idx];
+		},
+		each:function(F){
+			for(var i=0; i<this.items.length; i++){
+				F(this.items[i], i);
+			}
+		}
+	});
+	
+	var menus = new Registry();
+	var domItems = new Registry();
+	
+	function domItemId(idx){
+		return "DMenuItem"+idx;
+	}
+	
 	
 	if(testMode){
 		__.internal = {
@@ -79,17 +105,16 @@ function DMenu(panelId, structure){var _=this;
 	extend(__, {
 		version: "1.0.98",
 		
-		defaultTimeout:200,
-		
-		registerInstance:function(inst){
-			inst.idx = instances.length;
-			instances.push(inst);
-		},
+		defaultTimeout:1000,
 		
 		init: function(){
-			each(instances, function(mnu){
+			menus.each(function(mnu){
 				mnu.render();
 			});
+		},
+		
+		registerMenu:function(menu){
+			menus.register(menu);
 		},
 		
 		highlightLink:function(el, on){
@@ -100,12 +125,91 @@ function DMenu(panelId, structure){var _=this;
 				removeCssClass(el, "hiLink");
 		},
 		
-		menuOn:function(el, idx, id, subId){
-			getInstance(idx).menuOn(el, id, subId);
+		menuOn:function(el, idx, id){
+			getInstance(idx).menuOn(el, id);
 		},
 		
-		menuOff:function(el, idx, id, subId){
-			getInstance(idx).menuOff(el, id, subId);
+		menuOff:function(el, idx, id){
+			getInstance(idx).menuOff(el, id);
+		},
+		
+		item:{
+			link:{
+				render: function(menu, itm){with(Html){
+					domItems.register(itm);
+					return span({"class":"menuItem", id:domItemId(itm.idx)},
+						a({href:itm.url}, itm.nm)
+					);
+				}}
+			},
+			
+			action:{
+				render: function(menu, itm){with(Html){
+					domItems.register(itm);
+					return span({
+						"class":"menuItem",
+						onmouseover:"DMenu.item.action.mouseOver(this,"+menu.idx+", "+itm.idx+")",
+						onmouseout:"DMenu.item.action.mouseOut(this,"+menu.idx+", "+itm.idx+")",
+						onclick:"DMenu.item.action.click("+menu.idx+", "+itm.idx+")"
+					}, itm.nm);
+				}},
+				
+				mouseOver: function(el, menuIdx, itmIdx){
+					__.highlightLink(el);
+				},
+				
+				mouseOut: function(el, menuIdx, itmIdx){
+					__.highlightLink(el, false);
+				},
+				
+				click: function(menuIdx, itmIdx){
+				}
+			},
+			
+			disabledItem:{
+				render: function(menu, itm){with(Html){
+					return span({"class":"menuItem disabled"}, itm.nm)
+				}}
+			},
+			
+			submenu:{
+				render: function(menu, itm){with(Html){
+					domItems.register(itm);
+					return span({
+						"class":"menuItem",
+						onmouseover:"DMenu.item.submenu.mouseOver("+menu.idx+", "+itm.idx+")",
+						onmouseout:"DMenu.item.submenu.mouseOut("+menu.idx+", "+itm.idx+")"
+					}, itm.nm);
+				}},
+				
+				mouseOver: function(menuIdx, itmIdx){
+					$(domItemId(itmIdx)+"pnl").style.display = "block";
+				},
+				
+				mouseOut: function(menuIdx, itmIdx){
+					$(domItemId(itmIdx)+"pnl").style.display = "none";
+				}
+			},
+			
+			submenuPanel:{
+				render: function(menu, itm){with(Html){
+					return div({
+						id:domItemId(itm.idx)+"pnl",
+						"class":"submenupanel",
+						style:"position:absolute; display:none;",
+						onmouseover:"DMenu.item.submenuPanel.mouseOver("+menu.idx+", "+itm.idx+")",
+						onmouseout:"DMenu.item.submenuPanel.mouseOut("+menu.idx+", "+itm.idx+")"
+						},
+						apply(itm.sub, function(nd){return nd.nm;})
+					);
+				}},
+				
+				mouseOver: function(){
+				},
+				
+				mouseOut: function(){
+				}
+			}
 		}
 	});
 	
@@ -113,112 +217,26 @@ function DMenu(panelId, structure){var _=this;
 		idx:null,
 		structure:null,
 		panelId:null,
-		panels:[],
-		currentId:0,
+		items:[],
 		
 		$panel: function(){return $(this.panelId);},
 		
 		render: function(){with(Html){var _=this;
-			var subMenuCounter = 0;
-			
-			function menuItemTemplate(menuItem){
-				return Html.span(
-					{
-						"class":"menuItem",
-						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+(menuItem.sub?(","+subMenuCounter):"")+")",
-						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+(menuItem.sub?(","+subMenuCounter):"")+")"
-					}, 
-					menuItem.nm
-				);
-			}
-			
-			function menuPanelTemplate(menuItem){with(Html){
-				return div(
-					{
-						id:_.getSubMenuID(subMenuCounter),
-						"class":"submenupanel",
-						style:"position:absolute; display:none;",
-						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+")",
-						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+")"
-					},
-					apply(menuItem.sub, subMenuItemTemplate)
-				)
-			}}
-			
-			function subMenuItemTemplate(subMn){
-				return Html.div(
-					{
-						"class":"menuItem",
-						onmouseover:"DMenu.menuOn(this, "+_.idx+", "+subMenuCounter+")",
-						onmouseout:"DMenu.menuOff(this, "+_.idx+", "+subMenuCounter+")"
-					},
-					subMn.nm
-				);
-			}
-			
 			_.$panel().innerHTML = div(
 				{"class":"menupanel"},
 				apply(_.structure, function(mn){
-					if(mn.sub){
-						subMenuCounter++;
-						_.panels.push(subMenuCounter);
-					}
 					return tagCollection(
-						menuItemTemplate(mn),
-						mn.sub?menuPanelTemplate(mn):null
+						mn.sub?tagCollection(
+							__.item.submenu.render(_, mn),
+							__.item.submenuPanel.render(_, mn)
+						)
+						:mn.url?__.item.link.render(_, mn)
+						:mn.act?__.item.action.render(_, mn)
+						:__.item.disabledItem.render(_, mn)
 					);
 				})
 			);
-		}},
-		
-		getSubMenuID: function(id){
-			return "pnl"+this.idx+"_"+id;
-		},
-		
-		menuOn: function(el, id, subId){var _=this;
-			if(subId){
-				_.openSubMenu(el, subId, true);
-			}
-			else
-				__.highlightLink(el);
-		},
-		
-		menuOff: function(el, id, subId){var _=this;
-			// if(subId){
-			// 	window.setTimeout(function(){
-			// 		_.closeSubMenu(subId);
-			// 	}, __.defaultTimeout);
-			// }
-			__.highlightLink(el, false);
-		},
-		
-		openSubMenu: function(el, id, on){var _=this;
-			on = on==null?true:on;
-			
-			var mnu = id<0?el:$(this.getSubMenuID(id));
-			if(mnu){
-				mnu.style.display = on?"block":"none";
-				if(on){
-					_.currentId = id;
-					_.closePanels(id);
-					extend(mnu.style, {
-						top: el.offsetTop + 16+"px",
-						left:el.offsetLeft - 3 +"px"
-					});
-				}
-			}
-		},
-		
-		closePanels: function(except){var _=this;
-			each(_.panels, function(pnlId){
-				if(pnlId!=except)
-					_.closeSubMenu(pnlId);
-			});
-		},
-		
-		closeSubMenu: function(id){var _=this;
-			_.openSubMenu(null, id, false);
-		}
+		}}
 	});
 	
 	addEventHandler(window, "load", DMenu.init);

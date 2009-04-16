@@ -15,6 +15,11 @@
 	margin-right:10px;
 }
 
+.disabled {
+	color:#888888;
+	cursor:default;
+}
+
 .hiLink{
 	text-decoration:underline;
 	color:#0000ff;
