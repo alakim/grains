@@ -1,7 +1,7 @@
 if(typeof(Html)=="undefined")
 	throw "Html module required. Chech html.js file.";
 if(typeof(Html.tagCollection)=="undefined")
-	throw "Module Html version at least 1.6.* required";
+	throw "Module Html (version at least 1.6.*) required";
 	
 function DMenu(panelId, structure){var _=this;
 	_.structure = structure;
@@ -91,6 +91,9 @@ function DMenu(panelId, structure){var _=this;
 		return "DMenuItem"+idx;
 	}
 	
+	function subMenuPanelId(idx){
+		return domItemId(idx)+"pnl";
+	}
 	
 	if(testMode){
 		__.internal = {
@@ -106,6 +109,7 @@ function DMenu(panelId, structure){var _=this;
 		version: "1.0.98",
 		
 		defaultTimeout:1000,
+		subMenuOffset:{x:-3, y:16},
 		
 		init: function(){
 			menus.each(function(mnu){
@@ -177,30 +181,38 @@ function DMenu(panelId, structure){var _=this;
 					domItems.register(itm);
 					return span({
 						"class":"menuItem",
-						onmouseover:"DMenu.item.submenu.mouseOver("+menu.idx+", "+itm.idx+")",
-						onmouseout:"DMenu.item.submenu.mouseOut("+menu.idx+", "+itm.idx+")"
+						onmouseover:"DMenu.item.submenu.mouseOver(this, "+menu.idx+", "+itm.idx+")",
+						onmouseout:"DMenu.item.submenu.mouseOut(this, "+menu.idx+", "+itm.idx+")"
 					}, itm.nm);
 				}},
 				
-				mouseOver: function(menuIdx, itmIdx){
-					$(domItemId(itmIdx)+"pnl").style.display = "block";
+				mouseOver: function(el, menuIdx, itmIdx){
+					extend($(subMenuPanelId(itmIdx)).style, {
+						display: "block",
+						top:el.offsetTop + __.subMenuOffset.y+"px",
+						left:el.offsetLeft + __.subMenuOffset.x+"px"
+					});
 				},
 				
-				mouseOut: function(menuIdx, itmIdx){
-					$(domItemId(itmIdx)+"pnl").style.display = "none";
+				mouseOut: function(el, menuIdx, itmIdx){
+					$(subMenuPanelId(itmIdx)).style.display = "none";
 				}
 			},
 			
 			submenuPanel:{
 				render: function(menu, itm){with(Html){
 					return div({
-						id:domItemId(itm.idx)+"pnl",
+						id:subMenuPanelId(itm.idx),
 						"class":"submenupanel",
 						style:"position:absolute; display:none;",
 						onmouseover:"DMenu.item.submenuPanel.mouseOver("+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.submenuPanel.mouseOut("+menu.idx+", "+itm.idx+")"
 						},
-						apply(itm.sub, function(nd){return nd.nm;})
+						apply(itm.sub, function(nd){
+							return div(
+								nd.nm
+							);
+						})
 					);
 				}},
 				
