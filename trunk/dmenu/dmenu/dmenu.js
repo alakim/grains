@@ -105,7 +105,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.1.112",
+		version: "1.1.113",
 		
 		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
@@ -220,7 +220,7 @@ function DMenu(panelId, structure){var _=this;
 								)
 								:nd.url?__.item.link.render(menu, nd)
 								:nd.action?__.item.action.render(menu, nd)
-								:nd.name
+								:__.item.disabledItem.render(menu, nd)
 							);
 						})
 					);
