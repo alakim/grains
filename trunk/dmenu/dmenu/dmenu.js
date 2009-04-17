@@ -41,10 +41,8 @@ function DMenu(panelId, structure){var _=this;
 	function extend(o, s){for(var k in s) o[k] = s[k];}
 	
 	function hasCssClass(el, clNm){
-		var res = 
-			!(el.className && el.className.length>0)?false
+		return !(el.className && el.className.length>0)?false
 			:contains(el.className.split(/\s+/), clNm);
-		return res;
 	}
 	
 	function addCssClass(el, clNm){
@@ -109,7 +107,7 @@ function DMenu(panelId, structure){var _=this;
 	extend(__, {
 		version: "1.0.98",
 		
-		defaultTimeout:1000,
+		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
 		
 		init: function(){
@@ -188,15 +186,17 @@ function DMenu(panelId, structure){var _=this;
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
-					extend($(subMenuPanelId(itmIdx)).style, {
-						display: "block",
-						top:el.offsetTop + __.subMenuOffset.y+"px",
-						left:el.offsetLeft + __.subMenuOffset.x+"px"
-					});
+					__.item.submenuPanel.show(
+						$(subMenuPanelId(itmIdx)),
+						{
+							x:el.offsetLeft + __.subMenuOffset.x, 
+							y:el.offsetTop + __.subMenuOffset.y
+						}
+					);
 				},
 				
 				mouseOut: function(el, menuIdx, itmIdx){
-					$(subMenuPanelId(itmIdx)).style.display = "none";
+					__.item.submenuPanel.hide($(subMenuPanelId(itmIdx)));
 				}
 			},
 			
@@ -206,8 +206,8 @@ function DMenu(panelId, structure){var _=this;
 						id:subMenuPanelId(itm.idx),
 						"class":"submenupanel",
 						style:"position:absolute; display:none;",
-						onmouseover:"DMenu.item.submenuPanel.mouseOver("+menu.idx+", "+itm.idx+")",
-						onmouseout:"DMenu.item.submenuPanel.mouseOut("+menu.idx+", "+itm.idx+")"
+						onmouseover:"DMenu.item.submenuPanel.mouseOver(this)",
+						onmouseout:"DMenu.item.submenuPanel.mouseOut(this)"
 						},
 						apply(itm.sub, function(nd){
 							return div(
@@ -217,10 +217,36 @@ function DMenu(panelId, structure){var _=this;
 					);
 				}},
 				
-				mouseOver: function(){
+				mouseOver: function(el){
+					el.visiblePanel = 1;
 				},
 				
-				mouseOut: function(){
+				mouseOut: function(el){
+					__.item.submenuPanel.hide(el);
+				},
+				
+				show:function(el, pos){
+					extend(el.style, {
+						display: "block",
+						top:pos.y+"px",
+						left:pos.x+"px"
+					});
+				},
+				
+				hide: function(el, afterDelay){
+					afterDelay = afterDelay==null?false:afterDelay;
+					
+					if(!afterDelay){
+						el.visiblePanel = 0;
+						window.setTimeout(function(){
+							__.item.submenuPanel.hide(el, true);
+						}, __.defaultTimeout);
+					}
+					else{
+						if(el.visiblePanel==1)
+							return;
+						el.style.display = "none";
+					}
 				}
 			}
 		}
@@ -238,15 +264,13 @@ function DMenu(panelId, structure){var _=this;
 			_.$panel().innerHTML = div(
 				{"class":"menupanel"},
 				apply(_.structure, function(mn){
-					return tagCollection(
-						mn.sub?tagCollection(
+					return mn.sub?tagCollection(
 							__.item.submenu.render(_, mn),
 							__.item.submenuPanel.render(_, mn)
 						)
 						:mn.url?__.item.link.render(_, mn)
 						:mn.act?__.item.action.render(_, mn)
-						:__.item.disabledItem.render(_, mn)
-					);
+						:__.item.disabledItem.render(_, mn);
 				})
 			);
 		}}
