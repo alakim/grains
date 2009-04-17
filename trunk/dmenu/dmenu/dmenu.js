@@ -105,7 +105,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.0.110",
+		version: "1.0.111",
 		
 		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
@@ -138,12 +138,10 @@ function DMenu(panelId, structure){var _=this;
 		
 		item:{
 			link:{
-				render: function(menu, itm){with(Html){
-					items.register(itm);
-					return span({"class":"menuItem", id:domItemId(itm.idx)},
-						a({href:itm.url}, itm.name)
-					);
-				}}
+				render: function(menu, itm){
+					itm.action = new Function("window.location.href = \""+itm.url+"\";");
+					return __.item.action.render(menu, itm);
+				}
 			},
 			
 			action:{
@@ -169,8 +167,7 @@ function DMenu(panelId, structure){var _=this;
 				},
 				
 				click: function(menuIdx, itmIdx){
-					var itm = items.get(itmIdx)
-					itm.action();
+					items.get(itmIdx).action();
 				}
 			},
 			
