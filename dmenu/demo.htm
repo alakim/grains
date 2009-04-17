@@ -35,17 +35,17 @@
 	var showMenu_22 = true;
 	
 	new DMenu("menu", [
-		{nm:"Menu 1", url:"http://w1011/kb", show:showMenu_1},
-		{nm:"Menu 2", sub:[
-			{nm: "Menu 2.1", act:function(){alert("Menu 2.1");}},
-			{nm: "Menu 2.2", url:"http://www.stroi.ru", show:showMenu_22}
+		{name:"Menu 1", url:"http://w1011/kb", show:showMenu_1},
+		{name:"Menu 2", sub:[
+			{name: "Menu 2.1", action:function(){alert("Menu 2.1");}},
+			{name: "Menu 2.2", url:"http://www.stroi.ru", show:showMenu_22}
 		]},
-		{nm:"Menu 3", sub:[
-			{nm: "Menu 3.1", act:function(){alert("Menu 3.1");}},
-			{nm: "Menu 3.2", url:"http://www.yandex.ru"}
+		{name:"Menu 3", sub:[
+			{name: "Menu 3.1", action:function(){alert("Menu 3.1");}},
+			{name: "Menu 3.2", url:"http://www.yandex.ru"}
 		]},
-		{nm:"Menu 4"},
-		{nm:"Menu 5", act:"alert('menu 5 clicked!')"}
+		{name:"Menu 4"},
+		{name:"Menu 5", action:"alert('menu 5 clicked!')"}
 	]);
 	</script>
 </head>

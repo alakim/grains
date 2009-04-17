@@ -84,7 +84,7 @@ function DMenu(panelId, structure){var _=this;
 	});
 	
 	var menus = new Registry();
-	var domItems = new Registry();
+	var items = new Registry();
 	
 	function domItemId(idx){
 		return "DMenuItem"+idx;
@@ -105,7 +105,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.0.98",
+		version: "1.0.110",
 		
 		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
@@ -139,22 +139,25 @@ function DMenu(panelId, structure){var _=this;
 		item:{
 			link:{
 				render: function(menu, itm){with(Html){
-					domItems.register(itm);
+					items.register(itm);
 					return span({"class":"menuItem", id:domItemId(itm.idx)},
-						a({href:itm.url}, itm.nm)
+						a({href:itm.url}, itm.name)
 					);
 				}}
 			},
 			
 			action:{
 				render: function(menu, itm){with(Html){
-					domItems.register(itm);
+					items.register(itm);
+					if(typeof(itm.action)=="string")
+						itm.action = new Function(itm.action);
+						
 					return span({
 						"class":"menuItem",
 						onmouseover:"DMenu.item.action.mouseOver(this,"+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.action.mouseOut(this,"+menu.idx+", "+itm.idx+")",
 						onclick:"DMenu.item.action.click("+menu.idx+", "+itm.idx+")"
-					}, itm.nm);
+					}, itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
@@ -166,23 +169,25 @@ function DMenu(panelId, structure){var _=this;
 				},
 				
 				click: function(menuIdx, itmIdx){
+					var itm = items.get(itmIdx)
+					itm.action();
 				}
 			},
 			
 			disabledItem:{
 				render: function(menu, itm){with(Html){
-					return span({"class":"menuItem disabled"}, itm.nm)
+					return span({"class":"menuItem disabled"}, itm.name)
 				}}
 			},
 			
 			submenu:{
 				render: function(menu, itm){with(Html){
-					domItems.register(itm);
+					items.register(itm);
 					return span({
 						"class":"menuItem",
 						onmouseover:"DMenu.item.submenu.mouseOver(this, "+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.submenu.mouseOut(this, "+menu.idx+", "+itm.idx+")"
-					}, itm.nm);
+					}, itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
@@ -216,8 +221,8 @@ function DMenu(panelId, structure){var _=this;
 									__.item.submenuPanel.render(menu, nd)
 								)
 								:nd.url?__.item.link.render(menu, nd)
-								:nd.act?__.item.action.render(menu, nd)
-								:nd.nm
+								:nd.action?__.item.action.render(menu, nd)
+								:nd.name
 							);
 						})
 					);
@@ -275,7 +280,7 @@ function DMenu(panelId, structure){var _=this;
 							__.item.submenuPanel.render(_, mn)
 						)
 						:mn.url?__.item.link.render(_, mn)
-						:mn.act?__.item.action.render(_, mn)
+						:mn.action?__.item.action.render(_, mn)
 						:__.item.disabledItem.render(_, mn);
 				})
 			);
