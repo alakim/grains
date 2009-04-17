@@ -41,9 +41,10 @@ function DMenu(panelId, structure){var _=this;
 	function extend(o, s){for(var k in s) o[k] = s[k];}
 	
 	function hasCssClass(el, clNm){
-		return 
-			!el.className?false
+		var res = 
+			!(el.className && el.className.length>0)?false
 			:contains(el.className.split(/\s+/), clNm);
+		return res;
 	}
 	
 	function addCssClass(el, clNm){
