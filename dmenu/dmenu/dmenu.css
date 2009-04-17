@@ -36,6 +36,12 @@
 	font-size: 13px;
 }
 
+.newSection{
+	border-top: 1px solid #888888;
+	margin-top:3px;
+	padding-top:3px;
+}
+
 .menupanel a:link{color: #444444;}
 .menupanel a:visited{color: #444444;}
 .menupanel a:hover{color: #444444;}

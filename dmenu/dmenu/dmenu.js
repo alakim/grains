@@ -105,7 +105,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.0.111",
+		version: "1.1.112",
 		
 		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
@@ -213,6 +213,7 @@ function DMenu(panelId, structure){var _=this;
 						},
 						apply(itm.sub, function(nd){
 							return div(
+								nd.section?{"class":"newSection"}:null,
 								nd.sub?tagCollection(
 									__.item.submenu.render(menu, nd),
 									__.item.submenuPanel.render(menu, nd)
