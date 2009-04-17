@@ -211,7 +211,13 @@ function DMenu(panelId, structure){var _=this;
 						},
 						apply(itm.sub, function(nd){
 							return div(
-								nd.nm
+								nd.sub?tagCollection(
+									__.item.submenu.render(menu, nd),
+									__.item.submenuPanel.render(menu, nd)
+								)
+								:nd.url?__.item.link.render(menu, nd)
+								:nd.act?__.item.action.render(menu, nd)
+								:nd.nm
 							);
 						})
 					);
