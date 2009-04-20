@@ -106,9 +106,9 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.2.114",
+		version: "1.3.115",
 		
-		defaultTimeout:300,
+		defaultTimeout:200,
 		subMenuOffset:{x:-3, y:16},
 		
 		init: function(){
@@ -229,6 +229,7 @@ function DMenu(panelId, structure){var _=this;
 				
 				mouseOver: function(el){
 					el.visiblePanel = 1;
+					removeCssClass(el, "oldPanel");
 				},
 				
 				mouseOut: function(el){
@@ -236,6 +237,7 @@ function DMenu(panelId, structure){var _=this;
 				},
 				
 				show:function(el, pos){
+					removeCssClass(el, "oldPanel");
 					extend(el.style, {
 						display: "block",
 						top:pos.y+"px",
@@ -249,6 +251,7 @@ function DMenu(panelId, structure){var _=this;
 					
 					if(!afterDelay){
 						el.visiblePanel = 0;
+						addCssClass(el, "oldPanel");
 						window.setTimeout(function(){
 							__.item.submenuPanel.hide(el, true);
 						}, __.defaultTimeout);

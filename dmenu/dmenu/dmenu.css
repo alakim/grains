@@ -36,6 +36,11 @@
 	font-size: 13px;
 }
 
+.oldPanel{
+	filter: alpha(opacity=70);
+	opacity: 0.70;
+}
+
 .newSection{
 	border-top: 1px solid #888888;
 	margin-top:3px;
