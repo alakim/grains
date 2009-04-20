@@ -36,6 +36,10 @@
 	
 	new DMenu("menu", [
 		{name:"Menu 1", url:"http://w1011/kb", show:showMenu_1},
+		{name:"Действия", sub:[
+			{name:"Создать", img:"demoImages/new.gif", action:"alert(\"created!\")"},
+			{name:"Удалить", img:"demoImages/del.gif", action:"alert(\"deleted!\")"}
+		]},
 		{name:"Menu 2", sub:[
 			{name: "Menu 2.1", action:function(){alert("Menu 2.1");}},
 			{name: "Menu 2.2", url:"http://www.stroi.ru", show:showMenu_22}

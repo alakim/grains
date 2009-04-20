@@ -106,7 +106,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.3.115",
+		version: "1.4.116",
 		
 		defaultTimeout:200,
 		subMenuOffset:{x:-3, y:16},
@@ -138,6 +138,13 @@ function DMenu(panelId, structure){var _=this;
 		},
 		
 		item:{
+			basic:{
+				renderImage:function(itm){
+					return !itm.img?null
+						:Html.img({src:itm.img, style:"margin-right:5px;"});
+				}
+			},
+			
 			link:{
 				render: function(menu, itm){
 					itm.action = new Function("window.location.href = \""+itm.url+"\";");
@@ -156,7 +163,7 @@ function DMenu(panelId, structure){var _=this;
 						onmouseover:"DMenu.item.action.mouseOver(this,"+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.action.mouseOut(this,"+menu.idx+", "+itm.idx+")",
 						onclick:"DMenu.item.action.click("+menu.idx+", "+itm.idx+")"
-					}, itm.name);
+					}, __.item.basic.renderImage(itm), itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
@@ -185,7 +192,7 @@ function DMenu(panelId, structure){var _=this;
 						"class":"menuItem",
 						onmouseover:"DMenu.item.submenu.mouseOver(this, "+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.submenu.mouseOut(this, "+menu.idx+", "+itm.idx+")"
-					}, itm.name);
+					}, __.item.basic.renderImage(itm), itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
