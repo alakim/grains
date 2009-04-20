@@ -85,6 +85,7 @@ function DMenu(panelId, structure){var _=this;
 	
 	var menus = new Registry();
 	var items = new Registry();
+	var layerCounter = 0;
 	
 	function domItemId(idx){
 		return "DMenuItem"+idx;
@@ -105,7 +106,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.1.113",
+		version: "1.2.114",
 		
 		defaultTimeout:300,
 		subMenuOffset:{x:-3, y:16},
@@ -238,7 +239,8 @@ function DMenu(panelId, structure){var _=this;
 					extend(el.style, {
 						display: "block",
 						top:pos.y+"px",
-						left:pos.x+"px"
+						left:pos.x+"px",
+						zIndex:layerCounter++
 					});
 				},
 				
