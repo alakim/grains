@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>IEDDL Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="dwin/ieddl.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля IEDDL").run = function(){
+	this.assert(typeof(IEDDL), "object");
+	document.getElementById("versionFld").innerHTML = IEDDL.version;
+}
+
+new JSUnit.Test("Итерации 1", "Работа с коллекциями").run = function(){
+	var coll = [1,2,3];
+	var res = "";
+	IEDDL.test.each(coll, function(el, i){
+		res+=el+":"+i+";";
+	});
+	this.assert(res, "1:0;2:1;3:2;");
+}
+
+new JSUnit.Test("Итерации 2", "Работа с коллекциями").run = function(){
+	var coll = [1,2,3,4,5,6];
+	var count = 0;
+	IEDDL.test.each(coll, function(el, i){
+		if(el<4)
+			count++;
+		else
+			return false;
+	});
+	this.assert(count, 3);
+}
+
+new JSUnit.Test("Фильтрация 1", "Работа с коллекциями").run = function(){
+	var coll = [1,2,3,4,5];
+	var res = IEDDL.test.filter(coll, function(el){return el>2 && el<5});
+	this.assert(res.join(), "3,4");
+}
+
+new JSUnit.Test("Фильтрация 2", "Работа с коллекциями").run = function(){
+	var coll = [
+		{x:1, y:2},
+		{x:2, y:2},
+		{x:3, y:2},
+		{x:4, y:2},
+		{x:5, y:2}
+	];
+	
+	var res = IEDDL.test.filter(coll, "x>2 && x< 5");
+	this.assert(res.length, 2);
+	this.assert(res[0].x, 3);
+	this.assert(res[1].x, 4);
+}
+
+
+new JSUnit.Test("Поиск", "Работа с коллекциями").run = function(){
+	var coll = [
+		{x:1, y:2},
+		{x:2, y:2},
+		{x:3, y:2},
+		{x:4, y:2},
+		{x:5, y:2}
+	];
+	
+	var res = IEDDL.test.find(coll, "x>2 && x< 5");
+	this.assert(res!=null, true);
+	this.assert(res.x, 3);
+	
+	this.assert(IEDDL.test.find(coll, "x>8"), null);
+}
+
+</script>
+</head>
+<body onload="JSUnit.init()">
+	<h1>IEDDL Unit Tests</h1>
+	<p>IEDDL v.<span id="versionFld"></span></p>
+</body>
+</html>
