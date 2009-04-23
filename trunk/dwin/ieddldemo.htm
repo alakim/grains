@@ -17,7 +17,7 @@
 		var d1 = DWL.open("dlg1", "Dialog #1", "width=300,height=200,left=100,top=70,resize=1,scrolling=1");
 		d1.contentarea.innerHTML = div(
 			"Ваше решение: ",
-			select({id:"sel1", name:"sel1"},
+			select({id:"sel1", name:"sel1", style:"width:80px;"},
 				option({value:1}, "Да"),
 				option({value:0}, "Нет")
 			)
@@ -27,7 +27,7 @@
 		var d2 = DWL.open("dlg2", "Dialog #2", "width=300,height=200,left=170,top=100,resize=1,scrolling=1");
 		d2.contentarea.innerHTML = div(
 			"Ваше решение: ",
-			select({id:"sel2", name:"sel2"},
+			select({id:"sel2", name:"sel2", style:"width:80px;"},
 				option({value:1}, "Да"),
 				option({value:0}, "Нет")
 			)
