@@ -1,194 +1,319 @@
-﻿///<module>
-///<summary>
-///Заплатка для IE. Замена drop down lists для корректного отображения слоев
-///</summary>
-///</module>
+﻿if(typeof(Html)=="undefined")
+	throw "Module html.js required for using IEDDL."
 
-///<public/><summary>Корневой объект модуля</summary>
-var IEDDL = new Object();
+var IEDDL = {};
 
-///<private/><summary>Возвращает HTML-элемент, заданный идентификатором</summary>
-///<param name="id">идентификатор элемента</param>
-IEDDL.getElement = function(id){
-	return document.getElementById(id);
-}
-
-IEDDL.imagePath = "ddl.gif";
-
-///<public/><summary>Заменяет выпадающий список</summary>
- ///<param name="id">идентификатор списка</param>
-IEDDL.replaceDDL = function(id){var _=IEDDL;
-	var el = _.getElement(id);
-	if(el.size==0)
-		_._replaceSimpleDDL(el);
-	else
-		_._replaceMultilineDDL(el);
-}
-
-///<private/><summary>Заменяет все выпадающие списки</summary>
-IEDDL.replaceDDLs = function(root){var _=IEDDL;
-	root = root?root:document;
-	var coll = root.getElementsByTagName("select");
-	for(var i=0; i<coll.length; i++){
-		var el = coll[i];
-		if(el.size==0)
-			_._replaceSimpleDDL(el);
+(function(){
+	var testMode = typeof(JSUnit)=="object";
+	
+	function $(id){return document.getElementById(id);}
+	function $$(tagName, root, condition){
+		root = root?root:document;
+		var coll = root.getElementsByTagName(tagName);
+		if(condition)
+			coll = filter(coll, condition);
+		return coll;
+	}
+	
+	function each(coll, F){
+		for(var i=0; i<coll.length; i++){
+			if(F(coll[i], i)==false)
+				break;
+		}
+	}
+	
+	function getConditionFunction(condition){
+		if(typeof(condition)=="string")
+			condition = new Function("el", "with(el){return "+condition+";}");
+		return condition;
+	}
+	
+	function find(coll, condition){
+		condition = getConditionFunction(condition);
+		for(var i=0; i<coll.length; i++){
+			var el = coll[i];
+			if(condition(el))
+				return el;
+		}
+		return null;
+	}
+	
+	function filter(coll, condition){
+		condition = getConditionFunction(condition);
+		var res = [];
+		each(coll, function(el){
+			if(condition(el))
+				res.push(el);
+		});
+		return res;
+	}
+	
+	if(testMode){
+		IEDDL.test = { each:each, find:find, filter:filter, $:$, $$:$$ };
+	}
+	
+	function addEventHandler(element, event, handler){
+		if(element.addEventListener)
+			element.addEventListener(event, handler, true);
 		else
-			_._replaceMultilineDDL(el);
-	}
-	_.buildLstView();
-	_.configWin();
-}
-
-///<private/><summary>Заменяет заданный простой выпадающий список</summary>
-///<param name="el">список</param>
-IEDDL._replaceSimpleDDL = function(el){
-	var val = IEDDL.getOption(el, el.value);
-	if(val=="")
-		val = "&nbsp;";
-	var html = "<div class=ieddlfld onclick=\"IEDDL.openList('"+el.name+"')\" style=\"cursor:default; width:"+el.style.width+"; height:9px; background-color:white; border:1 solid #7F9DB9;\"><table border=0 width=100% cellpadding=0 cellspacing=0><tr><td class=ieddlfld><span class=ieddlfld style=\"padding-left:4px;\" id=\"tb_"+el.name+"\">"+val+"</span></td><td width=\"17\" height=\"19\"><img class=ieddlfld src=\""+IEDDL.imagePath+"\" width=\"17\" height=\"19\" border=\"0\"></td></tr></table></div>";
-	el.style.display = "none";
-	el.outerHTML = html+el.outerHTML;	
-}
-
-///<private/><summary>Заменяет заданный многострочный список</summary>
-///<param name="el">список</param>
-IEDDL._replaceMultilineDDL = function(el){
-	el.style.display = "none";
-	var html = "<div id=\"mb_"+el.name+"\" class=ieddlfld style=\"cursor:default; overflow-y:auto; padding:1px; width:"+el.style.width+"; height:"+el.style.height+"; background-color:white; border:1 solid #7F9DB9;\">";
-	html+="</div>";
-	el.outerHTML = html+el.outerHTML;	
-	IEDDL._fillMultilineDDL(el);
-}
-
-///<private/><summary>Формирует элементы заданного многострочного списка</summary>
-///<param name="el">список</param>
-IEDDL._fillMultilineDDL = function(el){
-	var dsp = IEDDL.getElement("mb_"+el.name);
-	var html = "";
-	var aOpt = el.options;
-	if(aOpt.length==0)
-		html = "&nbsp;";
-	else{
-		var selId = el.id;
-		for(var i=0; i<aOpt.length; i++){
-			var val = aOpt[i].value;
-			html+="<span id=\"mb_"+el.name+"_"+val+"\" style=\"cursor:default; width:100%; padding-left:3px;\" onmouseover=\"this.style.backgroundColor=this.checked?'#B2B4BF':'#EEEEEE'\" onmouseout=\"this.style.backgroundColor=this.checked?'#B2B4BF':'white'\" onclick=\"IEDDL.setMultilineListValue('"+selId+"', '"+val+"')\">"+aOpt[i].innerText+"</span><br>";
-		}
-	}
-	dsp.innerHTML = html;	
-}
-
-///<public/><summary>Обновляет содержимое заданного многострочного списка</summary>
-///<param name="id">идентификатор списка</param>
-IEDDL.updateMultilineDDl = function(id){var _=IEDDL;
-	_._fillMultilineDDL(_.getElement(id));
-}
-
-///<private/><summary>Возвращает элемент списка с заданным значением</summary>
-///<param name="ddl">список</param>
-///<param name="val">значение элемента</param>
-IEDDL.getOption = function(ddl, val){
-	var coll = ddl.options;
-	for(var i=0; i<coll.length; i++){
-		var el = coll[i];
-		if(el.value==val){
-			return el.innerText;
-		}
-	}
-	return "";
-}
-
-///<private/><summary>Открывает заданный выпадающий список</summary>
-///<param name="selId">идентификатор списка</param>
-IEDDL.openList = function(selId){var _=IEDDL;
-	var selLst = _.getElement("ieddlSelLst");
-	if(selLst.style.display!="none"){
-		selLst.style.display = "none";
-		return;
+			element.attachEvent("on"+event, handler);
 	}
 	
-	var sel = _.getSelectElement(selId);
+	function extend(o,s){for(var k in s)o[k]=s[k];}
 	
-	var lst = "";
-	for(var i=0; i<sel.options.length; i++){
-		var el = sel.options[i];
-		var val = el.value;
-		if(val.match(/\"/ig))
-			val = val.replace(/\"/ig, "\\x22")
-		lst+="<span style=\"cursor:default; width:100%; padding-left:3px;\" onmouseover=\"this.style.backgroundColor='#B2B4BF'\" onmouseout=\"this.style.backgroundColor='white'\" onclick=\"IEDDL.setListValue('"+selId+"', '"+val+"')\">"+el.innerText+"</span><br>";
+	var _ = IEDDL;
+	function buildListPanel(){
+		var div = document.createElement("DIV");
+		document.body.appendChild(div);
+		div.id="ieddlSelLst";
+		div.style = "z-index:9000;display:none;background-color:#ffffff;border:1px solid #000000;margin:0px;position:absolute;";
 	}
-	selLst.innerHTML = lst;
-	IEDDL.moveLst("ieddlSelLst", "tb_"+selId, 0, 20);
-	selLst.style.width = sel.style.width;
-	selLst.style.display = "block";
-}
-
-///<private/><summary>Устанавливает значение заданного выпадающего списка</summary>
-///<param name="selId">идентификатор списка</param>
-///<param name="val">устанавливаемое значение</param>
-IEDDL.setListValue = function(selId, val){var _=IEDDL;
-	var sel = _.getSelectElement(selId);
-	sel.value = val;
-	var tb = _.getElement("tb_"+selId);
-	for(var i=0; i<sel.options.length; i++){
-		var el = sel.options[i];
-		if(el.value==val){
-			tb.innerText = el.innerText;
-			break;
-		}
+	
+	function configWindow(){
+		addEventHandler(document, "click", _.docOnClick);
 	}
-	if(sel.onchange!=null)
-		sel.onchange();
+	
+	function getOption(ddl, val){
+		var opt = find(ddl.options, function(el){
+			return el.value==val;
+		});
+		return opt?opt.innerText:"";
+	}
+	
+	function replaceSimpleDDL(el){with(Html){
+		var val = getOption(el, el.value);
+		if(val=="")
+			val = "&nbsp;";
+		var html = div(
+			{
+				"class":"ieddlfld",
+				onclick:"IEDDL.openList('"+el.name+"')",
+				style:"cursor:default; width:"+el.style.width+"; height:9px; background-color:white; border:1px solid #7F9DB9;"
+			},
+			table({border:0, width:"100%", cellPadding:0, cellSpacing:0},
+				tr(
+					td({"class":"ieddlfld"},
+						span({"class":"ieddlfld", style:"padding-left:4px;", id:"tb_"+el.name}, val)
+					),
+					td({width:17, height:19},
+						img({"class":"ieddlfld", src:IEDDL.imagePath, width:17, height:19, border:0})
+					)
+				)
+			)
+		);
 		
-	_.getElement('ieddlSelLst').style.display = "none";
-}
-
-///<private/><summary>Устанавливает значение заданного многострочного списка</summary>
-///<param name="selId">идентификатор списка</param>
-///<param name="val">устанавливаемое значение</param>
-IEDDL.setMultilineListValue = function(selId, val){var _=IEDDL;
-	var sel = _.getSelectElement(selId);
-	sel.value = val;
-	_.syncDisplay(selId);
+		el.style.display = "none";
+		el.outerHTML = html+el.outerHTML;
+	}}
 	
-	if(sel.onchange!=null)
-		sel.onchange();
-		
-	_.getElement('ieddlSelLst').style.display = "none";
-}
-
-///<public/><summary>Отображает ("синхронизирует") текущее значение заданного выпадающего списка</summary>
-///<param name="selId">идентификатор списка</param>
-IEDDL.syncDisplay = function(selId){var _=IEDDL;
-	var dspNm = "tb_"+selId;
-	var dspl = _.getElement(dspNm);
-	if(dspl==null)
-		_.syncMultilineDisplay(selId);
-	else{
-		var sel = _.getSelectElement(selId);
-		var idx = sel.selectedIndex;
-		if(idx>=0 && sel.options[idx]!=null)
-			dspl.innerText = sel.options[idx].text;
+	function replaceMultilineDDL(el){with(Html){
+		el.style.display = "none";
+		var html = div({
+				id:"mb_"+el.name, 
+				"class":"ieddlfld",
+				style:"cursor:default; overflow-y:auto; padding:1px; width:"+el.style.width+"; height:"+el.style.height+"; background-color:white; border:1 solid #7F9DB9;"
+		});
+		el.outerHTML = html+el.outerHTML;
+		fillMultilineDDL(el);
+	}}
+	
+	function fillMultilineDDL(el){
+		$("mb_"+el.name).innerHTML = el.options.length==0?"&nbsp;"
+			:apply(el.options, function(opt, i){
+				return Html.span({
+					id:"mb_"+el.name+"_"+opt.value,
+					style:"cursor:default; width:100%; padding-left:3px;",
+					onmouseover:"IEDDL.multilineDDL.mouseover(this)",
+					onmouseout:"IEDDL.multilineDDL.mouseout(this)",
+					click:"IEDDL.multilineDDL.click('"+el.id+"', '"+opt.value+"')"
+				}, opt.innerText);
+			});
 	}
-}
 
-///<public/><summary>Отображает ("синхронизирует") текущее значение заданного многострочного списка</summary>
-///<param name="selId">идентификатор списка</param>
-IEDDL.syncMultilineDisplay = function(selId){var _=IEDDL;
-	var sel = _.getSelectElement(selId);
-	var idx = sel.selectedIndex;
-	if(idx>=0 && sel.options[idx]!=null){
-		var txt = sel.options[idx].text;
-		var dspl = _.getElement("mb_"+selId+"_"+sel.value);
-		_._resetMultilineDisplay(selId);
-		if(dspl!=null){
-			dspl.checked = true;
-			dspl.style.backgroundColor = "#B2B4BF";
+	function openList(selId){
+		var selLst = $("ieddlSelLst");
+		if(selLst.style.display!="none"){
+			selLst.style.display = "none";
+			return;
 		}
+		
+		var sel = getSelectElement(selId);
+		selLst.innerHTML = Html.apply(sel.options, function(opt, i){
+			var val = opt.value;
+			if(val.match(/\"/ig))
+				val = val.replace(/\"/ig, "\\x22")
+			return Html.span({
+				style:"cursor:default; width:100%; padding-left:3px;",
+				onmouseover:"IEDDL.simpleDDL.mouseover(this)",
+				onmouseout:"IEDDL.simpleDDL.mouseout(this)",
+				onmouseout:"IEDDL.simpleDDL.click('"+selId+"', '"+val+"')"
+			}, opt.innerText);
+		});
+		
+		moveLst("ieddlSelLst", "tb_"+selId, 0, 20);
+		extend(selLst.style, {width: sel.style.width, display:"block"});
 	}
-}
+	
+	function moveLst(divId, anchorId, offsetX, offsetY){
+		var pos = getAnchorPosition(anchorId);
+		var o = $(divId);
+		var offX = offsetX!=null?offsetX:0;
+		var offY = offsetY!=null?offsetY:0;
+		if(o.style) extend(o.style, {
+			left: pos.x + offX,
+			top: pos.y + offY
+		});
+	}
+	
+	function getAnchorPosition(ancId){
+		function getPageOffsetLeft(el){
+			var ol=el.offsetLeft;
+			while((el=el.offsetParent) != null){
+				ol += el.offsetLeft;
+			}
+			return ol;
+		}
+		
+		function getPageOffsetTop(el){
+			var ot=el.offsetTop;
+			while((el=el.offsetParent) != null){
+				ot += el.offsetTop;
+				if(!el.tagName.match(/body/i) && el.scrollTop!=0){
+					ot-=el.scrollTop;
+				}
+			}
+			return ot + 4;
+		}
+		
+		var anc = $(ancId);
+		return anc==null?{x:0, y:0}
+			:{
+				x: getPageOffsetLeft(anc),
+				y: getPageOffsetTop(anc)
+			};
+	}
+	
+	function getSelectElement(selId){
+		var sel = $(selId);
+		return sel?sel
+			: find(document.getElementsByTagName("select"), function(el){return el.name==selId;});
+	}
+	
+	function resetMultilineDisplay(selId){
+		each($$("SPAN"), function(el){
+			if(el.id.match("mb_"+selId)){
+				el.checked = false;
+				el.style.backgroundColor = "white";
+			}
+		});
+	}
+	
+	extend(_,{
+		version: "1.0.118",
+		imagePath: "ddl.gif",
+		
+		init:function(){
+		},
+		
+		simpleDDL:{
+			mouseover:function(el){
+				el.style.backgroundColor = "#B2B4BF";
+			},
+			mouseout:function(el){
+				el.style.backgroundColor = "white";
+			},
+			click:function(selId, val){
+				var sel = getSelectElement(selId);
+				sel.value = val;
+				var tb = $("tb_"+selId);
+				
+				each(sel.options, function(el){
+					if(el.value==val){
+						tb.innerText = el.innerText;
+						return false;
+					}
+					return true;
+				});
+				
+				if(sel.onchange!=null)
+					sel.onchange();
+					
+				$('ieddlSelLst').style.display = "none";
+			}
+		},
+		
+		multilineDDL:{
+			mouseover:function(el){
+				el.style.backgroundColor=el.checked?"#B2B4BF":"#EEEEEE"; 
+			},
+			mouseout:function(el){
+				el.style.backgroundColor=el.checked?"#B2B4BF":"white";
+			},
+			click:function(selId, val){
+				var sel = getSelectElement(selId);
+				sel.value = val;
+				_.syncDisplay(selId);
+				
+				if(sel.onchange!=null)
+					sel.onchange();
+				$('ieddlSelLst').style.display = "none";
+			}
+		},
+		
+		syncMultilineDisplay:function(selId){
+			var sel = getSelectElement(selId);
+			var idx = sel.selectedIndex;
+			if(idx>=0 && sel.options[idx]!=null){
+				var txt = sel.options[idx].text;
+				var dspl = $("mb_"+selId+"_"+sel.value);
+				resetMultilineDisplay(selId);
+				if(dspl!=null){
+					dspl.checked = true;
+					dspl.style.backgroundColor = "#B2B4BF";
+				}
+			}
+		},
+		
+		syncDisplay:function(selId){
+			var dspl = $("tb_"+selId);
+			if(dspl==null)
+				_.syncMultilineDisplay(selId);
+			else{
+				var sel = getSelectElement(selId);
+				var idx = sel.selectedIndex;
+				if(idx>=0 && sel.options[idx]!=null)
+					dspl.innerText = sel.options[idx].text;
+			}
+		},
+		
+		replaceDDL:function(el){
+			if(typeof(el)=="string") el = $(el);
+			if(el.size==0)
+				replaceSimpleDDL(el);
+			else
+				replaceMultilineDDL(el);
+		},
+		
+		replaceDDLs:function(root){
+			root = root?root:document;
+			each(root.getElementsByTagName("SELECT"), function(el){
+				replaceDDL(el);
+			});
+			
+			buildListPanel();
+			configWindow();
+		},
+		
+		updateMultilineDDl: function(el){
+			if(typeof(el)=="string") el = $(el);
+			fillMultilineDDL(el);
+		}
+	});
+	
+	addEventHandler(window, "load", IEDDL.init);
+})();
 
+// TODO: со старыми методами что-то сделать надо...
 ///<public/><summary>Управляет отображением заданного выпадающего списка</summary>
 ///<param name="selId">идентификатор выпадающего списка</param>
 ///<param name="show">режим отображения (true - показать, false - скрыть)</param>
@@ -207,130 +332,12 @@ IEDDL.showMultilineDDL = function(selId, show){
 		dspl.style.display = show?"block":"none";
 }
 
-///<private/><summary>Сбрасывает значение заданного многострочного селектора</summary>
-///<param name="selId">идентификатор селектора</param>
-IEDDL._resetMultilineDisplay = function(selId){
-	var coll = document.getElementsByTagName("span");
-	for(var i=0; i<coll.length; i++){
-		var el = coll[i];
-		if(el.id.match("mb_"+selId)){
-			el.checked = false;
-			el.style.backgroundColor = "white";
-		}
-	}
-}
-
-///<private/><summary>Возвращает выпадающий список, заданный его идентификатором (атрибут id), или именем (атрибут name)</summary>
-///<param name="selId">идентификатор или имя выпадающего списка</param>
-IEDDL.getSelectElement = function(selId){
-	var sel = IEDDL.getElement(selId);
-	if(sel!=null)
-		return sel;
-	var coll = document.getElementsByTagName("select");
-	for(var i=0; i<coll.length; i++){
-		var el = coll[i];
-		if(el.name==selId){
-			return el;
-		}
-	}
-	return null;
-}
-
-///<private/><summary>Изменяет расположение (перемещает) "окно" выпадающего списка</summary>
-///<param name="divId">идентификтор "окна"</param>
-///<param name="ancorId">идентификатор метки</param>
-///<param name="offsetX">смещение по горизонтали</param>
-///<param name="offsetY">смещение по вертикали</param>
-IEDDL.moveLst = function (divId, ancorId, offsetX, offsetY){var _=IEDDL;
-	var c = _.getAnchorPosition(ancorId);
-	var o = _.getElement(divId);
-	var offX = offsetX!=null?offsetX:0;
-	var offY = offsetY!=null?offsetY:0;
-	if (o.style) {
-		o.style.left = c.x + offX;
-		o.style.top = c.y + offY;
-	}
-}
-
-///<private/><summary>Возвращает экземпляр метки, заданной ее идентификатором</summary>
-///<param name="ancId">идентификатор метки</param>
-IEDDL.getAnchorPosition = function (ancId){var _=IEDDL;
-	var coordinates = new Object();
-	var anc = _.getElement(ancId);
-	if(anc==null){
-		coordinates.x = 0;
-		coordinates.y = 0;
-	}	
-	else{
-		coordinates.x = _.getPageOffsetLeft(anc);
-		coordinates.y = _.getPageOffsetTop(anc);
-	}
-	return coordinates;
-}
-
-
-///<private/><summary>Возвращает горизонтальное смещение данного элемента внутри страницы</summary>
-///<param name="el">элемент, для которого определяется смещение</param>
-IEDDL.getPageOffsetLeft = function (el){
-	var ol=el.offsetLeft;
-	while((el=el.offsetParent) != null){
-		ol += el.offsetLeft;
-	}
-	return ol;
-}
-
-///<private/><summary>Возвращает вертикальное смещение данного элемента внутри страницы</summary>
-///<param name="el">элемент, для которого определяется смещение</param>
-IEDDL.getPageOffsetTop = function(el){
-	var ot=el.offsetTop;
-	while((el=el.offsetParent) != null){
-		ot += el.offsetTop;
-		if(!el.tagName.match(/body/i) && el.scrollTop!=0){
-			ot-=el.scrollTop;
-		}
-	}
-	return ot + 4;
-}
-
-///<private/><summary>Формирует отображение списка</summary>
-IEDDL.buildLstView = function(){
-	var div = document.createElement("DIV");
-	div.id="ieddlSelLst";
-	var ds = div.style;
-	ds.zIndex=9000;
-	ds.display = "none";
-	ds.backgroundColor = "white";
-	ds.borderWidth = 1;
-	ds.borderStyle = "solid";
-	ds.borderColor = "black";
-	ds.margin = 0;
-	ds.position = "absolute";
-	document.body.appendChild(div);
-}
-
 ///<public/><summary>Закрывает все списки</summary>
 IEDDL.closeAll = function(){
 	if(event.srcElement.className=="ieddlfld")
 		return;
 	var lst = IEDDL.getElement("ieddlSelLst");
 	if(lst)lst.style.display = "none";
-}
-
-///<private/><summary>Конфигурирует окно</summary>
-IEDDL.configWin = function(){var _=IEDDL;
-	_.addEventHandler(document, "click", _.docOnClick);
-}
-
-///<private/><summary>Добавляет обработчик события к заданному элементу</summary>
- ///<param name="element">DOM-элемент</param>
- ///<param name="event">имя события (без префикса "on")</param>
- ///<param name="handler">функция-обработчик</param>
- ///<optimize>addEventHandler</optimize>
-IEDDL.addEventHandler = function(element, event, handler){
-	if(element.addEventListener)
-		element.addEventListener(event, handler, true);
-	else
-		element.attachEvent("on"+event, handler);
 }
 
 ///<private/><summary>Обработчик события для документа</summary>
@@ -346,26 +353,4 @@ IEDDL.init = function(){
 	}
 }
 
-IEDDL.addEventHandler(window, "load", IEDDL.init);
 
-
-///<optimization>
-///<item name="getElement"/>
-///<item name="replaceDDLs"/>
-///<item name="_replaceSimpleDDL"/>
-///<item name="_replaceMultilineDDL"/>
-///<item name="_fillMultilineDDL"/>
-///<item name="getOption"/>
-///<item name="openList"/>
-///<item name="setListValue"/>
-///<item name="setMultilineListValue"/>
-///<item name="_resetMultilineDisplay"/>
-///<item name="getSelectElement"/>
-///<item name="moveLst"/>
-///<item name="getAnchorPosition"/>
-///<item name="coordinates"/>
-///<item name="getPageOffsetLeft"/>
-///<item name="getPageOffsetTop"/>
-///<item name="buildLstView"/>
-///<item name="configWin"/>
-///</optimization>
