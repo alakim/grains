@@ -49,7 +49,7 @@ var IEDDL = {};
 	}
 	
 	if(testMode){
-		IEDDL.test = { each:each, find:find, filter:filter, $:$, $$:$$ };
+		IEDDL.internals = { each:each, find:find, filter:filter, $:$, $$:$$, extend:extend};
 	}
 	
 	function addEventHandler(element, event, handler){
