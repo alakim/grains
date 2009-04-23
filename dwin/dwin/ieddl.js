@@ -4,7 +4,7 @@
 var IEDDL = {};
 
 (function(){
-	var testMode = typeof(JSUnit)=="object";
+	var testMode = typeof(JSUnit)=="object" || typeof(Documentation)=="function";
 	
 	function $(id){return document.getElementById(id);}
 	function $$(tagName, root, condition){
@@ -66,11 +66,20 @@ var IEDDL = {};
 		var div = document.createElement("DIV");
 		document.body.appendChild(div);
 		div.id="ieddlSelLst";
-		div.style = "z-index:9000;display:none;background-color:#ffffff;border:1px solid #000000;margin:0px;position:absolute;";
+		extend(div.style, {
+			zIndex:9000,
+			display:"none",
+			backgroundColor:"#ffffff",
+			borderWidth:"1px",
+			borderStyle:"solid",
+			borderColor:"#000000",
+			margin:"0px",
+			position:"absolute"
+		});
 	}
 	
 	function configWindow(){
-		addEventHandler(document, "click", _.docOnClick);
+		addEventHandler(document, "click", IEDDL.closeAll);
 	}
 	
 	function getOption(ddl, val){
@@ -87,7 +96,7 @@ var IEDDL = {};
 		var html = div(
 			{
 				"class":"ieddlfld",
-				onclick:"IEDDL.openList('"+el.name+"')",
+				onclick:"IEDDL.events.openList('"+el.name+"')",
 				style:"cursor:default; width:"+el.style.width+"; height:9px; background-color:white; border:1px solid #7F9DB9;"
 			},
 			table({border:0, width:"100%", cellPadding:0, cellSpacing:0},
@@ -123,35 +132,11 @@ var IEDDL = {};
 				return Html.span({
 					id:"mb_"+el.name+"_"+opt.value,
 					style:"cursor:default; width:100%; padding-left:3px;",
-					onmouseover:"IEDDL.multilineDDL.mouseover(this)",
-					onmouseout:"IEDDL.multilineDDL.mouseout(this)",
-					click:"IEDDL.multilineDDL.click('"+el.id+"', '"+opt.value+"')"
+					onmouseover:"IEDDL.events.multilineDDL.mouseover(this)",
+					onmouseout:"IEDDL.events.multilineDDL.mouseout(this)",
+					click:"IEDDL.events.multilineDDL.click('"+el.id+"', '"+opt.value+"')"
 				}, opt.innerText);
 			});
-	}
-
-	function openList(selId){
-		var selLst = $("ieddlSelLst");
-		if(selLst.style.display!="none"){
-			selLst.style.display = "none";
-			return;
-		}
-		
-		var sel = getSelectElement(selId);
-		selLst.innerHTML = Html.apply(sel.options, function(opt, i){
-			var val = opt.value;
-			if(val.match(/\"/ig))
-				val = val.replace(/\"/ig, "\\x22")
-			return Html.span({
-				style:"cursor:default; width:100%; padding-left:3px;",
-				onmouseover:"IEDDL.simpleDDL.mouseover(this)",
-				onmouseout:"IEDDL.simpleDDL.mouseout(this)",
-				onmouseout:"IEDDL.simpleDDL.click('"+selId+"', '"+val+"')"
-			}, opt.innerText);
-		});
-		
-		moveLst("ieddlSelLst", "tb_"+selId, 0, 20);
-		extend(selLst.style, {width: sel.style.width, display:"block"});
 	}
 	
 	function moveLst(divId, anchorId, offsetX, offsetY){
@@ -213,54 +198,83 @@ var IEDDL = {};
 		imagePath: "ddl.gif",
 		
 		init:function(){
+			if(window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i))){
+				_.replaceDDLs();
+			}
 		},
 		
-		simpleDDL:{
-			mouseover:function(el){
-				el.style.backgroundColor = "#B2B4BF";
-			},
-			mouseout:function(el){
-				el.style.backgroundColor = "white";
-			},
-			click:function(selId, val){
-				var sel = getSelectElement(selId);
-				sel.value = val;
-				var tb = $("tb_"+selId);
+		events:{
+			openList: function(selId){
+				var selLst = $("ieddlSelLst");
+				if(selLst.style.display!="none"){
+					selLst.style.display = "none";
+					return;
+				}
 				
-				each(sel.options, function(el){
-					if(el.value==val){
-						tb.innerText = el.innerText;
-						return false;
-					}
-					return true;
+				var sel = getSelectElement(selId);
+				selLst.innerHTML = Html.apply(sel.options, function(opt, i){
+					var val = opt.value;
+					if(val.match(/\"/ig))
+						val = val.replace(/\"/ig, "\\x22")
+					return Html.div({
+						style:"cursor:default; width:100%; padding-left:3px;",
+						onmouseover:"IEDDL.events.simpleDDL.mouseover(this)",
+						onmouseout:"IEDDL.events.simpleDDL.mouseout(this)",
+						onmouseout:"IEDDL.events.simpleDDL.click('"+selId+"', '"+val+"')"
+					}, opt.innerText);
 				});
 				
-				if(sel.onchange!=null)
-					sel.onchange();
+				moveLst("ieddlSelLst", "tb_"+selId, 0, 20);
+				extend(selLst.style, {width: sel.style.width, display:"block"});
+			},
+			
+			simpleDDL:{
+				mouseover:function(el){
+					el.style.backgroundColor = "#B2B4BF";
+				},
+				mouseout:function(el){
+					el.style.backgroundColor = "white";
+				},
+				click:function(selId, val){
+					var sel = getSelectElement(selId);
+					sel.value = val;
+					var tb = $("tb_"+selId);
 					
-				$('ieddlSelLst').style.display = "none";
+					each(sel.options, function(el){
+						if(el.value==val){
+							tb.innerText = el.innerText;
+							return false;
+						}
+						return true;
+					});
+					
+					if(sel.onchange!=null)
+						sel.onchange();
+						
+					$('ieddlSelLst').style.display = "none";
+				}
+			},
+			
+			multilineDDL:{
+				mouseover:function(el){
+					el.style.backgroundColor=el.checked?"#B2B4BF":"#EEEEEE"; 
+				},
+				mouseout:function(el){
+					el.style.backgroundColor=el.checked?"#B2B4BF":"white";
+				},
+				click:function(selId, val){
+					var sel = getSelectElement(selId);
+					sel.value = val;
+					_.syncDisplay(selId);
+					
+					if(sel.onchange!=null)
+						sel.onchange();
+					$('ieddlSelLst').style.display = "none";
+				}
 			}
 		},
 		
-		multilineDDL:{
-			mouseover:function(el){
-				el.style.backgroundColor=el.checked?"#B2B4BF":"#EEEEEE"; 
-			},
-			mouseout:function(el){
-				el.style.backgroundColor=el.checked?"#B2B4BF":"white";
-			},
-			click:function(selId, val){
-				var sel = getSelectElement(selId);
-				sel.value = val;
-				_.syncDisplay(selId);
-				
-				if(sel.onchange!=null)
-					sel.onchange();
-				$('ieddlSelLst').style.display = "none";
-			}
-		},
-		
-		syncMultilineDisplay:function(selId){
+		syncMultilineDisplay: function(selId){
 			var sel = getSelectElement(selId);
 			var idx = sel.selectedIndex;
 			if(idx>=0 && sel.options[idx]!=null){
@@ -297,60 +311,38 @@ var IEDDL = {};
 		replaceDDLs:function(root){
 			root = root?root:document;
 			each(root.getElementsByTagName("SELECT"), function(el){
-				replaceDDL(el);
+				_.replaceDDL(el);
 			});
 			
 			buildListPanel();
 			configWindow();
 		},
 		
-		updateMultilineDDl: function(el){
+		updateMultilineDDL: function(el){
 			if(typeof(el)=="string") el = $(el);
 			fillMultilineDDL(el);
+		},
+		
+		showDDL: function(selId, show){
+			var dspl = $("tb_"+selId);
+			if(dspl)
+				dspl.style.display = show?"block":"none";
+		},
+		
+		showMultilineDDL: function(selId, show){
+			var dspl = $("mb_"+selId);
+			if(dspl)
+				dspl.style.display = show?"block":"none";
+		},
+		
+		closeAll: function(){
+			if(event.srcElement.className=="ieddlfld")
+				return;
+			var lst = $("ieddlSelLst");
+			if(lst) lst.style.display = "none";
 		}
 	});
 	
 	addEventHandler(window, "load", IEDDL.init);
 })();
-
-// TODO: со старыми методами что-то сделать надо...
-///<public/><summary>Управляет отображением заданного выпадающего списка</summary>
-///<param name="selId">идентификатор выпадающего списка</param>
-///<param name="show">режим отображения (true - показать, false - скрыть)</param>
-IEDDL.showDDL = function(selId, show){
-	var dspl = IEDDL.getElement("tb_"+selId);
-	if(dspl)
-		dspl.style.display = show?"block":"none";
-}
-
-///<public/><summary>Управляет отображением заданного многострочного селектора</summary>
-///<param name="selId">идентификатор селектора</param>
-///<param name="show">режим отображения (true - показать, false - скрыть)</param>
-IEDDL.showMultilineDDL = function(selId, show){
-	var dspl = IEDDL.getElement("mb_"+selId);
-	if(dspl)
-		dspl.style.display = show?"block":"none";
-}
-
-///<public/><summary>Закрывает все списки</summary>
-IEDDL.closeAll = function(){
-	if(event.srcElement.className=="ieddlfld")
-		return;
-	var lst = IEDDL.getElement("ieddlSelLst");
-	if(lst)lst.style.display = "none";
-}
-
-///<private/><summary>Обработчик события для документа</summary>
- ///<optimize>docOnClick</optimize>
-IEDDL.docOnClick = function(){
-	IEDDL.closeAll();
-}
-
-///<public/><summary>Инициализирует модуль</summary>
-IEDDL.init = function(){
-	if(window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i))){
-		IEDDL.replaceDDLs();
-	}
-}
-
 
