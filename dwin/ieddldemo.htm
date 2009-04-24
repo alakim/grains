@@ -5,6 +5,16 @@
 	<title>IE DDL demo</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="dwin/dwlite.css" type="text/css" />
+	<style type="text/css">
+	#console {
+		background-color:#000044;
+		width:500px;
+		color:#fafaff;
+		font-family: arial, sans-serif;
+		margin:10px;
+		padding:4px;
+	}
+	</style>
 	
 	<script type="text/javascript" src="../html/html.js"></script>
 	<script type="text/javascript" src="dwin/ieddl.js"></script>
@@ -13,8 +23,15 @@
 	DWL.selectorLockMode = "off";
 	IEDDL.imagePath = "dwin/ddl.gif";
 	
+	function $(id){return document.getElementById(id);}
+	
+	function log(msg){
+		$("console").innerHTML+=msg+"<br>";
+	}
+	
 	function openDialogs(){with(Html){
-		var d1 = DWL.open("dlg1", "Dialog #1", "width=300,height=200,left=100,top=70,resize=1,scrolling=1");
+		log("Opening dialogs...");
+		var d1 = DWL.open("dlg1", "Dialog #1", "width=300,height=200,left=300,top=70,resize=1,scrolling=1");
 		d1.contentarea.innerHTML = div(
 			"Ваше решение: ",
 			select({id:"sel1", name:"sel1", style:"width:80px;"},
@@ -24,12 +41,23 @@
 		);
 		IEDDL.replaceDDLs(d1.contentarea);
 		
-		var d2 = DWL.open("dlg2", "Dialog #2", "width=300,height=200,left=170,top=100,resize=1,scrolling=1");
+		var d2 = DWL.open("dlg2", "Dialog #2", "width=300,height=200,left=370,top=100,resize=1,scrolling=1");
 		d2.contentarea.innerHTML = div(
-			"Ваше решение: ",
-			select({id:"sel2", name:"sel2", style:"width:80px;"},
-				option({value:1}, "Да"),
-				option({value:0}, "Нет")
+			div(
+				"Ваше решение: ",
+				select({id:"sel2", name:"sel2", style:"width:80px;"},
+					option({value:1}, "Да"),
+					option({value:0}, "Нет")
+				)
+			),
+			div(
+				"Дополнительные возможности: ",
+				select({id:"sel21", name:"sel21", size:3, style:"width:180px;"},
+					option({value:1}, "по-простому"),
+					option({value:2}, "по-умному"),
+					option({value:3}, "по-хитрому"),
+					option({value:4}, "вовсе нетривиально")
+				)
 			)
 		);
 		IEDDL.replaceDDLs(d2.contentarea);
@@ -41,5 +69,6 @@
 	<h1>IE DDL demo</h1>
 	<p>Пример использования замещения выпадающих списков для работы в IE.</p>
 	<button onclick="openDialogs()">Открыть диалоги</button>
+	<div id="console"></div>
 </body>
 </html>

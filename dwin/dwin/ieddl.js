@@ -196,11 +196,13 @@ var IEDDL = {};
 	extend(_,{
 		version: "1.0.118",
 		imagePath: "ddl.gif",
+		enabled:window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i)),
 		
 		init:function(){
-			if(window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i))){
-				_.replaceDDLs();
-			}
+			if(!_.enabled) return;
+			buildListPanel();
+			configWindow();
+			_.replaceDDLs();
 		},
 		
 		events:{
@@ -220,7 +222,7 @@ var IEDDL = {};
 						style:"cursor:default; width:100%; padding-left:3px;",
 						onmouseover:"IEDDL.events.simpleDDL.mouseover(this)",
 						onmouseout:"IEDDL.events.simpleDDL.mouseout(this)",
-						onmouseout:"IEDDL.events.simpleDDL.click('"+selId+"', '"+val+"')"
+						onclick:"IEDDL.events.simpleDDL.click('"+selId+"', '"+val+"')"
 					}, opt.innerText);
 				});
 				
@@ -301,6 +303,8 @@ var IEDDL = {};
 		},
 		
 		replaceDDL:function(el){
+			if(!_.enabled) return;
+			
 			if(typeof(el)=="string") el = $(el);
 			if(el.size==0)
 				replaceSimpleDDL(el);
@@ -309,13 +313,13 @@ var IEDDL = {};
 		},
 		
 		replaceDDLs:function(root){
+			if(!_.enabled) return;
+			
 			root = root?root:document;
 			each(root.getElementsByTagName("SELECT"), function(el){
 				_.replaceDDL(el);
 			});
 			
-			buildListPanel();
-			configWindow();
 		},
 		
 		updateMultilineDDL: function(el){
