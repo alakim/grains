@@ -117,27 +117,38 @@ var IEDDL = {};
 	
 	function replaceMultilineDDL(el){with(Html){
 		el.style.display = "none";
-		var html = div({
-				id:"mb_"+el.name, 
-				"class":"ieddlfld",
-				style:"cursor:default; overflow-y:auto; padding:1px; width:"+el.style.width+"; height:"+el.style.height+"; background-color:white; border:1 solid #7F9DB9;"
+		var pnl = document.createElement("DIV");
+		el.parentNode.insertBefore(pnl, el);
+		pnl.id = "mb_"+el.name; 
+		pnl.className = "ieddlfld";
+		extend(pnl.style, {
+			cursor:"default",
+			overflowY:"auto",
+			padding:"1px",
+			width:el.style.width,
+			height:el.style.height,
+			backgroundColor:"white",
+			borderWidth:"1px",
+			borderStyle:"solid",
+			borderColor:"#7F9DB9"
 		});
-		el.outerHTML = html+el.outerHTML;
+		
 		fillMultilineDDL(el);
 	}}
 	
-	function fillMultilineDDL(el){
-		$("mb_"+el.name).innerHTML = el.options.length==0?"&nbsp;"
+	function fillMultilineDDL(el){with(Html){
+		var html = el.options.length==0?"&nbsp;"
 			:apply(el.options, function(opt, i){
-				return Html.span({
+				return Html.div({
 					id:"mb_"+el.name+"_"+opt.value,
 					style:"cursor:default; width:100%; padding-left:3px;",
 					onmouseover:"IEDDL.events.multilineDDL.mouseover(this)",
 					onmouseout:"IEDDL.events.multilineDDL.mouseout(this)",
-					click:"IEDDL.events.multilineDDL.click('"+el.id+"', '"+opt.value+"')"
-				}, opt.innerText);
+					onclick:"IEDDL.events.multilineDDL.click('"+el.id+"', '"+opt.value+"')"
+				}, opt.innerHTML);
 			});
-	}
+		$("mb_"+el.name).innerHTML = html;
+	}}
 	
 	function moveLst(divId, anchorId, offsetX, offsetY){
 		var pos = getAnchorPosition(anchorId);
@@ -277,6 +288,7 @@ var IEDDL = {};
 		},
 		
 		syncMultilineDisplay: function(selId){
+			log("sync multi DDL: ", selId);
 			var sel = getSelectElement(selId);
 			var idx = sel.selectedIndex;
 			if(idx>=0 && sel.options[idx]!=null){
