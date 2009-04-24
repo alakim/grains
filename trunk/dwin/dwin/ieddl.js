@@ -196,7 +196,7 @@ var IEDDL = {};
 	}
 	
 	function resetMultilineDisplay(selId){
-		each($$("SPAN"), function(el){
+		each($$("DIV", $("mb_"+selId)), function(el){
 			if(el.id.match("mb_"+selId)){
 				el.checked = false;
 				el.style.backgroundColor = "white";
@@ -205,7 +205,7 @@ var IEDDL = {};
 	}
 	
 	extend(_,{
-		version: "1.0.118",
+		version: "1.1.123",
 		imagePath: "ddl.gif",
 		enabled:window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i)),
 		
@@ -288,7 +288,6 @@ var IEDDL = {};
 		},
 		
 		syncMultilineDisplay: function(selId){
-			log("sync multi DDL: ", selId);
 			var sel = getSelectElement(selId);
 			var idx = sel.selectedIndex;
 			if(idx>=0 && sel.options[idx]!=null){

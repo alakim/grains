@@ -25,8 +25,27 @@
 	
 	function $(id){return document.getElementById(id);}
 	
-	function log(msg){
-		$("console").innerHTML+=msg+"<br>";
+	function html2Display(html){
+		return html.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+	}
+	
+	function log(){
+		var msg = [];
+		for(var i=0; i<arguments.length; i++){
+			msg.push(arguments[i]);
+		}
+		msg.push("<br>");
+		$("console").innerHTML+=msg.join(" ");
+	}
+	
+	function init(){
+		$("cbEnable").checked = IEDDL.enabled;
+	}
+	
+	function toggleCbEnable(){
+		IEDDL.enabled = $("cbEnable").checked;
 	}
 	
 	function openDialogs(){with(Html){
@@ -52,7 +71,7 @@
 			),
 			div(
 				"Дополнительные возможности: ",
-				select({id:"sel21", name:"sel21", size:3, style:"width:180px;"},
+				select({id:"sel21", name:"sel21", size:3, style:"width:180px;height:50px;"},
 					option({value:1}, "по-простому"),
 					option({value:2}, "по-умному"),
 					option({value:3}, "по-хитрому"),
@@ -65,10 +84,11 @@
 	
 	</script>
 </head>
-<body>
+<body onload="init()">
 	<h1>IE DDL demo</h1>
 	<p>Пример использования замещения выпадающих списков для работы в IE.</p>
 	<button onclick="openDialogs()">Открыть диалоги</button>
+	<input type="checkbox" id="cbEnable" checked onclick="toggleCbEnable()"> enable IEDDL
 	<div id="console"></div>
 </body>
 </html>
