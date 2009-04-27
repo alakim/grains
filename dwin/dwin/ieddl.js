@@ -89,7 +89,15 @@ var IEDDL = {};
 		return opt?opt.innerText:"";
 	}
 	
+	function checkDDL(el){
+		if(!el.name || el.name.length<1)
+			throw "Для работы IEDDL необходимо, чтобы элемент SELECT имел имя (атрибут NAME).";
+		if(!el.style.width.length)
+			throw "Для работы IEDDL необходимо, чтобы для элемента SELECT была задана ширина (STYLE.WIDTH)";
+	}
+	
 	function replaceSimpleDDL(el){with(Html){
+		checkDDL();
 		var val = getOption(el, el.value);
 		if(val=="")
 			val = "&nbsp;";
@@ -102,7 +110,7 @@ var IEDDL = {};
 			table({border:0, width:"100%", cellPadding:0, cellSpacing:0},
 				tr(
 					td({"class":"ieddlfld"},
-						span({"class":"ieddlfld", style:"padding-left:4px;", id:"tb_"+el.name}, val)
+						span({"class":"ieddlfld", style:"padding-left:4px; width:"+el.style.width+";", id:"tb_"+el.name}, val)
 					),
 					td({width:17, height:19},
 						img({"class":"ieddlfld", src:IEDDL.imagePath, width:17, height:19, border:0})
@@ -116,6 +124,7 @@ var IEDDL = {};
 	}}
 	
 	function replaceMultilineDDL(el){with(Html){
+		checkDDL();
 		el.style.display = "none";
 		var pnl = document.createElement("DIV");
 		el.parentNode.insertBefore(pnl, el);
@@ -205,7 +214,7 @@ var IEDDL = {};
 	}
 	
 	extend(_,{
-		version: "1.1.123",
+		version: "1.1.124",
 		imagePath: "ddl.gif",
 		enabled:window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i)),
 		
@@ -238,6 +247,8 @@ var IEDDL = {};
 				});
 				
 				moveLst("ieddlSelLst", "tb_"+selId, 0, 20);
+				var width = $("tb_"+selId).style.width;
+				
 				extend(selLst.style, {width: sel.style.width, display:"block"});
 			},
 			
@@ -340,8 +351,9 @@ var IEDDL = {};
 		
 		showDDL: function(selId, show){
 			var dspl = $("tb_"+selId);
-			if(dspl)
+			if(dspl){
 				dspl.style.display = show?"block":"none";
+			}
 		},
 		
 		showMultilineDDL: function(selId, show){
