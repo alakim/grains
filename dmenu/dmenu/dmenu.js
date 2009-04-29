@@ -110,7 +110,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.5.125",
+		version: "1.5.126",
 		
 		defaultTimeout:200,
 		subMenuOffset:{x:-3, y:16},
@@ -297,7 +297,7 @@ function DMenu(panelId, structure){var _=this;
 		$panel: function(){return $(this.panelId);},
 		
 		enableItem: function(itemId, enable){
-			// TODO: enableItem
+			enable = enable==null?true:enable;
 			var itm = $(itemPanelId(this, itemId));
 			var cls = "disabled";
 			if(enable){
