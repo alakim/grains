@@ -97,7 +97,7 @@ var IEDDL = {};
 	}
 	
 	function replaceSimpleDDL(el){with(Html){
-		checkDDL();
+		checkDDL(el);
 		var val = getOption(el, el.value);
 		if(val=="")
 			val = "&nbsp;";
@@ -124,7 +124,7 @@ var IEDDL = {};
 	}}
 	
 	function replaceMultilineDDL(el){with(Html){
-		checkDDL();
+		checkDDL(el);
 		el.style.display = "none";
 		var pnl = document.createElement("DIV");
 		el.parentNode.insertBefore(pnl, el);
@@ -214,7 +214,7 @@ var IEDDL = {};
 	}
 	
 	extend(_,{
-		version: "1.1.124",
+		version: "1.1.128",
 		imagePath: "ddl.gif",
 		enabled:window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i)),
 		
