@@ -20,6 +20,11 @@
 	cursor:default;
 }
 
+.disabled img{
+	filter: alpha(opacity=10);
+	opacity: 0.10;
+}
+
 .hiLink{
 	text-decoration:underline;
 	color:#0000ff;
