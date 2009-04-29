@@ -95,6 +95,10 @@ function DMenu(panelId, structure){var _=this;
 		return domItemId(idx)+"pnl";
 	}
 	
+	function itemPanelId(menu, id){
+		return "menu"+menu.idx+"itm"+id;
+	}
+	
 	if(testMode){
 		__.internal = {
 			each: each,
@@ -106,7 +110,7 @@ function DMenu(panelId, structure){var _=this;
 	}
 	
 	extend(__, {
-		version: "1.4.116",
+		version: "1.5.125",
 		
 		defaultTimeout:200,
 		subMenuOffset:{x:-3, y:16},
@@ -157,24 +161,32 @@ function DMenu(panelId, structure){var _=this;
 					items.register(itm);
 					if(typeof(itm.action)=="string")
 						itm.action = new Function(itm.action);
-						
-					return span({
+					
+					var attr = {
 						"class":"menuItem",
 						onmouseover:"DMenu.item.action.mouseOver(this,"+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.action.mouseOut(this,"+menu.idx+", "+itm.idx+")",
-						onclick:"DMenu.item.action.click("+menu.idx+", "+itm.idx+")"
-					}, __.item.basic.renderImage(itm), itm.name);
+						onclick:"DMenu.item.action.click(this, "+menu.idx+", "+itm.idx+")"
+					};
+					if(itm.id)
+						attr.id = itemPanelId(menu, itm.id);
+					if(itm.enable==false)
+						attr["class"]+=" disabled";
+					return span(attr, __.item.basic.renderImage(itm), itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
+					if(hasCssClass(el, "disabled")) return;
 					__.highlightLink(el);
 				},
 				
 				mouseOut: function(el, menuIdx, itmIdx){
+					if(hasCssClass(el, "disabled")) return;
 					__.highlightLink(el, false);
 				},
 				
-				click: function(menuIdx, itmIdx){
+				click: function(el, menuIdx, itmIdx){
+					if(hasCssClass(el, "disabled")) return;
 					items.get(itmIdx).action();
 				}
 			},
@@ -188,11 +200,14 @@ function DMenu(panelId, structure){var _=this;
 			submenu:{
 				render: function(menu, itm){with(Html){
 					items.register(itm);
-					return span({
+					var attr = {
 						"class":"menuItem",
 						onmouseover:"DMenu.item.submenu.mouseOver(this, "+menu.idx+", "+itm.idx+")",
 						onmouseout:"DMenu.item.submenu.mouseOut(this, "+menu.idx+", "+itm.idx+")"
-					}, __.item.basic.renderImage(itm), itm.name);
+					};
+					if(itm.id)
+						attr.id = itemPanelId(menu, itm.id);
+					return span(attr, __.item.basic.renderImage(itm), itm.name);
 				}},
 				
 				mouseOver: function(el, menuIdx, itmIdx){
@@ -280,6 +295,17 @@ function DMenu(panelId, structure){var _=this;
 		items:[],
 		
 		$panel: function(){return $(this.panelId);},
+		
+		enableItem: function(itemId, enable){
+			// TODO: enableItem
+			var itm = $(itemPanelId(this, itemId));
+			var cls = "disabled";
+			if(enable){
+				removeCssClass(itm, cls)
+			}
+			else
+				addCssClass(itm, cls);
+		},
 		
 		render: function(){with(Html){var _=this;
 			_.$panel().innerHTML = div(
