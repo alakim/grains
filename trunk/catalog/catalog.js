@@ -81,6 +81,8 @@ function Catalog(settings){
 			_.tags = [];
 			
 			each(_.items, function(itm){
+				if(typeof(itm.tags)=="string")
+					itm.tags = itm.tags.split(";");
 				each(itm.tags, function(t){
 					if(!_.tags[t])
 						_.tags[t] = {items:[]};
@@ -103,7 +105,11 @@ function Catalog(settings){
 					div({id:_.cloudPanelID}),
 					div({id:_.subCloudPanelID}),
 					div({id:_.outPanelID}),
-					div({id:_.errorPanelID})
+					div({id:_.errorPanelID}),
+					div({style:"color:#bbbbbb; font-family: Tahoma, Verdana, Arial, Sans-serif; font-size:10px; margin-top:80px; text-align:center; border-top:1px solid #eeeeee; padding-top:5px;"},
+						"Powered by Catalog v.",
+						Catalog.version
+					)
 				);
 			}
 			_.showCloud();
@@ -332,7 +338,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"4.1.69",
+		version:"4.2.129",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
