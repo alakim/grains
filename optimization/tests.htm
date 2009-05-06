@@ -8,28 +8,30 @@ new JSUnit.Test("Подключение модуля Opt", "Configuration").run = function(){
 	this.assert(typeof(Opt), "object");
 }
 
-new JSUnit.Test("Парабола 1", "Optimization").run = function(){
+new JSUnit.Test("Парабола 1", "Scalar optimization").run = function(){
 	function F(x){
 		x-=1;
 		return x*x;
 	}
 	var eps = 0.0001;
 	var dx0 = 0.05;
-	var res = Opt.findMin(F, 0, dx0, eps).min;
+	var res = Opt.findMin(F, new Opt.scalarIterator(0, dx0, eps));
 	var expectedMin = 1;
-	this.assert(res>(expectedMin-eps*100) && res<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
 }
 
-new JSUnit.Test("Парабола 2", "Optimization").run = function(){
+new JSUnit.Test("Парабола 2", "Scalar optimization").run = function(){
 	function F(x){
 		x+=4;
 		return x*x * 0.3;
 	}
 	var eps = 0.0001;
 	var dx0 = 1;
-	var res = Opt.findMin(F, 0, dx0, eps).min;
+	var res = Opt.findMin(F, new Opt.scalarIterator(0, dx0, eps));
 	var expectedMin = -4;
-	this.assert(res>(expectedMin-eps*100) && res<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
 }
 
 
