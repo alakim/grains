@@ -15,9 +15,9 @@ new JSUnit.Test("Парабола 1", "Scalar optimization").run = function(){
 	}
 	var eps = 0.0001;
 	var dx0 = 0.05;
-	var res = Opt.findMin(F, new Opt.scalarIterator(0, dx0, eps));
+	var res = Opt.findMin(F, eps, new Opt.scalarIterator(0, dx0));
 	var expectedMin = 1;
-	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res.min = "+res.min);
 	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
 }
 
@@ -28,9 +28,9 @@ new JSUnit.Test("Парабола 2", "Scalar optimization").run = function(){
 	}
 	var eps = 0.0001;
 	var dx0 = 1;
-	var res = Opt.findMin(F, new Opt.scalarIterator(0, dx0, eps));
+	var res = Opt.findMin(F, eps, new Opt.scalarIterator(0, dx0));
 	var expectedMin = -4;
-	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res = "+res);
+	this.assert(res.min>(expectedMin-eps*100) && res.min<(expectedMin+eps*100), true, "res.min = "+res.min);
 	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
 }
 
