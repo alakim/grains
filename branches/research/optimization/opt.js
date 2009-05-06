@@ -4,51 +4,43 @@ var Opt = {};
 	function extend(o, s){for(var k in s)o[k]=s[k];}
 	
 	extend(Opt, {
-		version: "1.0.0",
+		version: "1.1.0",
 		maxIterations:100,
 		
-		findMin: function(F, iterator){
+		findMin: function(F, eps, iterator){
 			var res = F(iterator.x);
+			var d = 0;
 			for(var i=0; i<Opt.maxIterations; i++){
-				var x1 = iterator.next();
+				var x1 = iterator.next(d>0);
 				var res1 = F(x1);
-				iterator.compare(res, res1);
+				d = res1 - res;
 				//console.log(i,": ",iterator.x, res1, iterator.dy);
-				if(iterator.end) break;
+				if(Math.abs(d)<eps) break;
 				res = res1;
 			}
 			
 			//console.log("found in "+i+"steps");
-			return {min:iterator.x, esp:iterator.dy, steps:i};
+			return {min:iterator.x, esp:d, steps:i};
 		}
 	});
 	
 	Opt.scalarIterator = function(x0, dx0, eps){var _=this;
 		_.x0 = x0;
 		_.dx0 = dx0;
-		_.eps = eps;
 		_.reset();
 	};
 	
 	Opt.scalarIterator.prototype = {
 		x:0,
 		dx:0,
-		dy:0,
-		end:false,
 		
 		reset: function(){var _=this;
 			_.x = _.x0;
 			_.dx = _.dx0;
 		},
 		
-		compare: function(v0, v1){var _=this;
-			_.dy = v1 - v0;
-			_.end = Math.abs(_.dy)<_.eps;
-			return _.dy;
-		},
-		
-		next: function(){var _=this;
-			if(_.dy>0){
+		next: function(reverse){var _=this;
+			if(reverse){
 				//console.log("reverse on dy="+_.dy);
 				_.dx = _.dx*-0.5;
 			}
