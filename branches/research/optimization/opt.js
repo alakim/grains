@@ -3,7 +3,7 @@ var Opt = {};
 (function(){
 	function extend(o, s){for(var k in s)o[k]=s[k];}
 	
-	each(coll, F){
+	function each(coll, F){
 		if(!coll) return;
 		for(var i=0; i<coll.length; i++)
 			F(coll[i], i);
