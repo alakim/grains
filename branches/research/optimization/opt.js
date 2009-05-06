@@ -14,7 +14,7 @@ var Opt = {};
 		maxIterations:100,
 		
 		findMin: function(F, eps, iterator){
-			var res = F(iterator.x);
+			var res = F(iterator.$val());
 			var d = 0;
 			for(var i=0; i<Opt.maxIterations; i++){
 				var x1 = iterator.next(d>0);
@@ -52,6 +52,10 @@ var Opt = {};
 			}
 			_.x+=_.dx;
 			return _.x;
+		},
+		
+		$val: function(){
+			return this.x;
 		}
 	};
 	
@@ -86,8 +90,13 @@ var Opt = {};
 				_.iteratorIdx++;
 				if(_.iteratorIdx>_.iterators.length-1) _.iteratorIdx = 0;
 			}
+			console.log("iterator "+_.iteratorIdx+(reverse?" reverse":""));
 			_.v[_.iteratorIdx] = _.iterators[_.iteratorIdx].next(reverse);
 			return _.v;
+		},
+		
+		$val: function(){
+			return this.v;
 		}
 	}
 })();

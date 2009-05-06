@@ -34,6 +34,52 @@ new JSUnit.Test("Парабола 2", "Scalar optimization").run = function(){
 	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
 }
 
+new JSUnit.Test("Параболоид 1", "Vector optimization").run = function(){
+	function F(v){
+		var x = v[0];
+		var y = v[1];
+		return x*x + y*y;
+	}
+	
+	var eps = 0.0001;
+	var dv0 = [0.5, 0.5];
+	var res = Opt.findMin(F, eps, new Opt.vectorIterator([1, 1], dv0));
+	var expectedMin = [0, 0];
+	this.assert(res.min[0]>(expectedMin[0]-eps*100) && res.min[0]<(expectedMin[0]+eps*100), true, "res.min = "+res.min);
+	this.assert(res.min[1]>(expectedMin[1]-eps*100) && res.min[1]<(expectedMin[1]+eps*100), true, "res.min = "+res.min);
+	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
+}
+
+new JSUnit.Test("Параболоид 2", "Vector optimization", true).run = function(){
+	function F(v){
+		var x = v[0]+0;
+		var y = v[1]-0;
+		return 1*x*x + 1*y*y;
+	}
+	
+	var eps = 0.0001;
+	var dv0 = [0.1, 0.1];
+	var res = Opt.findMin(F, eps, new Opt.vectorIterator([1, 1], dv0));
+	var expectedMin = [-4, 2];
+	alert(displayObject(res));
+	this.assert(res.min[0]>(expectedMin[0]-dv0[0]) && res.min[0]<(expectedMin[0]+dv0[0]), true, "res.min = "+res.min);
+	this.assert(res.min[1]>(expectedMin[1]-dv0[1]) && res.min[1]<(expectedMin[1]+dv0[1]), true, "res.min = "+res.min);
+	this.assert(res.steps<Opt.maxIterations, true, "Превышен лимит итераций: "+res.steps);
+}
+
+
+function displayObject(o, sep){
+	if(o.constructor==Array)
+		return "["+o.join(", ")+"]";
+	if(typeof(o)=="object"){
+		sep = sep?sep:"\n";
+		var s = [];
+		for(var k in o)
+			s.push(k+": "+displayObject(o[k]));
+		return s.join(sep);
+	}
+	return o.toString();
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = Opt.version;
