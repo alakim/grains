@@ -111,7 +111,7 @@ function Catalog(settings){
 				each(itm.tags, function(t){
 					t = t.toLowerCase()
 					normalizedTags.push(t);
-					if(!_.tags[t])
+					if(!_.tags[t] || !_.tags[t].items)
 						_.tags[t] = {items:[]};
 					_.tags[t].items.push(itm);
 				});
@@ -366,7 +366,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"5.2.140",
+		version:"5.2.141",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
