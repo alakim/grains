@@ -107,11 +107,15 @@ function Catalog(settings){
 				if(typeof(itm.tags)=="string")
 					itm.tags = itm.tags.split(";");
 				applySynonyms(itm);
+				var normalizedTags = [];
 				each(itm.tags, function(t){
+					t = t.toLowerCase()
+					normalizedTags.push(t);
 					if(!_.tags[t])
 						_.tags[t] = {items:[]};
 					_.tags[t].items.push(itm);
 				});
+				itm.tags = normalizedTags;
 			});
 		},
 		
@@ -362,7 +366,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"5.1.139",
+		version:"5.2.140",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
