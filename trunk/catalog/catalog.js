@@ -83,6 +83,7 @@ function Catalog(settings){
 			
 			var synDict = {};
 			each(_.synonyms, function(grp){
+				if(typeof(grp)=="string") grp = grp.split(";");
 				each(grp, function(wrd){
 					if(synDict[wrd]==null){
 						synDict[wrd] = grp;
@@ -361,7 +362,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"5.0.138",
+		version:"5.1.139",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
