@@ -4,6 +4,7 @@ if(typeof(Html)!="object")
 function Catalog(settings){
 	this.items = settings.items;
 	this.catalogs = settings.catalogs;
+	this.synonyms = settings.synonyms?settings.synonyms:[];
 	this.history = [];
 	this.ID = Catalog.instances.length;
 	Catalog.instances.push(this);
@@ -80,9 +81,31 @@ function Catalog(settings){
 		init: function(){var _=this;
 			_.tags = [];
 			
+			var synDict = {};
+			each(_.synonyms, function(grp){
+				each(grp, function(wrd){
+					if(synDict[wrd]==null){
+						synDict[wrd] = grp;
+					}
+				});
+			});
+			
+			function applySynonyms(itm){
+				var tags = [];
+				each(itm.tags, function(t){
+					if(synDict[t])
+						tags = merge(tags, synDict[t]);
+					else
+						tags.push(t);
+				});
+				
+				itm.tags = tags;
+			}
+			
 			each(_.items, function(itm){
 				if(typeof(itm.tags)=="string")
 					itm.tags = itm.tags.split(";");
+				applySynonyms(itm);
 				each(itm.tags, function(t){
 					if(!_.tags[t])
 						_.tags[t] = {items:[]};
@@ -338,7 +361,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"4.2.129",
+		version:"5.0.138",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
