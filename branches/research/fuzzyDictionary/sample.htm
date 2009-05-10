@@ -1,0 +1,43 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title></title>
+<style></style>
+<script type="text/javascript" src="fdict.js"></script>
+<script type="text/javascript">
+	function $(id){return document.getElementById(id);}
+
+	var dict = new FDict([
+		"ОАО ИВЦ Мосстрой",
+		"Моспромстройматериалы",
+		"Стройкомплект",
+		"Моссовет",
+		"грант",
+		"граната",
+		"гренадер",
+		"регата",
+		"агат",
+		"горгулия",
+		"лилия",
+		"орангутанг",
+		"танго"
+	]);
+	function addWord(){
+		dict.add($("tbWord").value);
+	}	
+	function findWord(){
+		alert(dict.find($("tbWord").value));
+	}
+</script>
+</head>
+<body>
+	<h1>Fuzzy Dictionary Sample</h1>
+	
+	<div>
+	<input type="text" id="tbWord">
+	<button onclick="addWord()">add word</button>
+	<button onclick="findWord()">find word</button>
+	</div>
+
+</body>
+</html>

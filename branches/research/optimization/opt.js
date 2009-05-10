@@ -26,6 +26,10 @@ var Opt = {};
 			
 			//console.log("found in "+i+"steps");
 			return {min:iterator.x, esp:iterator.dy, steps:i};
+		},
+
+		geneticoptimize: function(){
+			
 		}
 	});
 	
@@ -106,7 +110,7 @@ var Opt = {};
 		},
 		
 		next: function(){var _=this;
-			// Последовательный обход по всем координатам.
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 			_.iteratorIdx++;
 			if(_.iteratorIdx>_.iterators.length-1) _.iteratorIdx = 0;
 			
