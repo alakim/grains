@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="dmenu/dmenu.js"></script>
 <script type="text/javascript">
 function $testDiv(){return document.getElementById("testDiv");}
+function trimString(str){return str.replace(/^\s+/, "").replace(/\s+$/, "");}
 
 new JSUnit.Test("Подключение модуля DMenu").run = function(){
 	this.assert(typeof(DMenu), "function");
@@ -42,22 +43,22 @@ new JSUnit.Test("Манипуляции с классами", "CSS").run = function(){
 	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), false, "Error 1");
 	DMenu.internal.addCssClass($testDiv(), "c1");
 	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), true, "Error 2");
-	this.assert($testDiv().className, "c1", "Error 3");
+	this.assert(trimString($testDiv().className), "c1", "Error 3");
 	
 	this.assert(DMenu.internal.hasCssClass($testDiv(), "c2"), false, "Error 4");
 	DMenu.internal.addCssClass($testDiv(), "c2");
-	this.assert($testDiv().className, "c1 c2", "Error 5");
+	this.assert(trimString($testDiv().className), "c1 c2", "Error 5");
 	this.assert(DMenu.internal.hasCssClass($testDiv(), "c1"), true, "Error 6");
 	this.assert(DMenu.internal.hasCssClass($testDiv(), "c2"), true, "Error 7");
 	
 	DMenu.internal.addCssClass($testDiv(), "c3");
-	this.assert($testDiv().className, "c1 c2 c3", "Error 8");
+	this.assert(trimString($testDiv().className), "c1 c2 c3", "Error 8");
 	
 	DMenu.internal.removeCssClass($testDiv(), "c2");
-	this.assert($testDiv().className, "c1 c3", "Error 9");
+	this.assert(trimString($testDiv().className), "c1 c3", "Error 9");
 	
 	DMenu.internal.removeCssClass($testDiv(), "c1");
-	this.assert($testDiv().className, "c3", "Error 10");
+	this.assert(trimString($testDiv().className), "c3", "Error 10");
 	
 	DMenu.internal.removeCssClass($testDiv(), "c3");
 	this.assert($testDiv().className, "", "Error 11");
