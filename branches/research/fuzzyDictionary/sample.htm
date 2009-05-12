@@ -2,7 +2,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title></title>
-<style></style>
+<style>
+	p{
+		margin-top:0px;
+		margin-bottom:0px;
+	}
+</style>
 <script type="text/javascript" src="lib/html.js"></script>
 <script type="text/javascript" src="fdict.js"></script>
 <script type="text/javascript">
@@ -343,6 +348,16 @@
 			})
 		);
 	}}
+	
+	function displayDict(){with(Html){
+		$("res").innerHTML = div(
+			apply(dict.dict, function(v, k){
+				return p(
+					span({style:"font-weight:bold; font-family:courier new, monospace;"}, k), " (", k.length,"): [", v.join(", "), "]"
+				);
+			})
+		);
+	}}
 </script>
 </head>
 <body onload="init()">
@@ -352,6 +367,7 @@
 	<input type="text" id="tbWord">
 	<button onclick="addWord()">add word</button>
 	<button onclick="findWord()">find word</button>
+	<button onclick="displayDict()">display dictionary</button>
 	Порог: <input type="text" id="tbThreshold" value="0.7">
 	</div>
 	
