@@ -1,6 +1,7 @@
-function FDict(coll){var _=this;
+﻿function FDict(coll){var _=this;
 	_.dict = {};
 	_.words = [];
+	_.dictSize = 0;
 	if(coll) _.addCollection(coll);		
 }
 
@@ -25,7 +26,7 @@ function FDict(coll){var _=this;
 	var __=FDict;
 
 	function moveWindow(word, F){
-		for(var pos=0; pos<word.length-__.windowSize; pos++){
+		for(var pos=0; pos<=word.length-__.windowSize; pos++){
 			F(word.slice(pos, pos+__.windowSize), pos);
 		}
 	}
@@ -48,13 +49,15 @@ function FDict(coll){var _=this;
 
 			moveWindow(word.toLowerCase(), function(str){
 				if(!_.dict[str]){
-					_.dict[str] = []; 
+					_.dict[str] = [];
+					_.dictSize++;
 				}
 				_.dict[str].push(wordId);
 			})
 		},
 		
 		find: function(word){var _=this;
+			word = word.toLowerCase();
 			var counters = {};
 			moveWindow(word, function(str){
 				each(_.dict[str], function(id){
@@ -66,17 +69,27 @@ function FDict(coll){var _=this;
 			});
 			
 			var arr = [];
+			var maxCount = 0;
+			var maxCountEntries = 0;
 			each(counters, function(count, id){
-				arr.push({count:count, id:id});
+				var word = _.words[id];
+				arr.push({count:count, id:id, val:word, rate:count/*/word.length*/});
+				if(maxCount<count){
+					maxCount = count;
+					maxCountEntries = 0;
+				}
+				else if(count==maxCount)
+					maxCountEntries++;
 			});
 			arr.sort(function(x,y){
-				return x.count>y.count?-1
-						:x.count<y.count?1
+				return x.rate>y.rate?-1
+						:x.rate<y.rate?1
 						:0;
 			});
 			var res = [];
 			each(arr, function(w){
-				res.push(_.words[w.id]);
+				var word = _.words[w.id];
+				res.push({val:w.val, rate:w.count/maxCount});
 			});
 			return res;
 		}
