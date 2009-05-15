@@ -13,19 +13,35 @@ var Opt = {};
 		version: "2.1.0",
 		maxIterations:100,
 		
-		findMin: function(F, iterator){
-			var res = F(iterator.x);
+		findMin: function(F, x0, dx0, eps){
+			var res = F(x0);
+			var x = x0;
+			var dx = dx0;
+			var d = 0;
 			for(var i=0; i<Opt.maxIterations; i++){
-				var x1 = iterator.next();
+				var x1 = x+dx;
 				var res1 = F(x1);
-				iterator.compare(res, res1);
-				//console.log(i,": ",iterator.x, res1, iterator.dy);
-				if(iterator.$end()) break;
-				res = res1;
+				d = Math.abs(res - res1);
+				//console.log(i,": ",x, res1, d);
+				if(d<eps) break;
+				if(res1<res){
+					res = res1;
+					x = x1;
+				}
+				else
+					dx = dx*-0.5;
 			}
 			
 			//console.log("found in "+i+"steps");
-			return {min:iterator.x, esp:iterator.dy, steps:i};
+			return {min:x, esp:d, steps:i};
+		},
+		
+		findVectorMin: function(F, v0, dv0, eps){
+			var res;
+			for(var i=0; i<v0.length; i++){
+				var v = v0[i];
+				res = findMin(
+			}
 		},
 
 		geneticoptimize: function(){
