@@ -8,6 +8,21 @@ new JSUnit.Test("Подключение модуля JSQL", "Configuration").run = function(){
 	this.assert(typeof(JSQL), "object");
 }
 
+new JSUnit.Test("Простая БД", "Initialization").run = function(){
+	var db = new JSQL.DataBase([
+		new JSQL.Table("Organizations", [
+			{name:"ООО \"Рога и копыта\"", address:"ул. Козловского, 33", phone:"444-4444"},
+			{name:"ООО \"Кирпичи и доски\"", address:"шоссе Энтузиастов, 1", phone:"333-3333"},
+			{name:"ЗАО \"Хлеб и вода\"", address:"ул. Матросская тишина, 8", phone:"222-2222"}
+		])
+	]);
+	
+	var res = db.select("name", {from:"Organizations"});
+	this.assert(res.length, 3);
+	this.assert(res[0], "ООО \"Рога и копыта\"");
+	this.assert(res[1], "ООО \"Кирпичи и доски\"");
+	this.assert(res[2], "ЗАО \"Хлеб и вода\"");
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = JSQL.version;
