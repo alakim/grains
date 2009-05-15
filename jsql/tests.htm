@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>JSQL Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="jsql.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля JSQL", "Configuration").run = function(){
+	this.assert(typeof(JSQL), "object");
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = JSQL.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JSQL Unit Tests</h1>
+	<p>Среда для моделирования SQL-запросов средствами javascript</p>
+	<p>JSQL v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
