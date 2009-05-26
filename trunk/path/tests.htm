@@ -28,27 +28,34 @@ new JSUnit.Test("Вызов конструктора", "Construction").run = function(){
 	
 }
 
-new JSUnit.Test("Relative path", "Operations").run = function(){
+new JSUnit.Test("test 1", "Relative path").run = function(){
 	var path = new Path("abc/def/ghi/jkl.htm");
 	var rel = path.relativeTo("abc/def/mno/prs.htm");
 	
 	this.assert(rel.toWeb(), "../ghi/jkl.htm");
 }
 
-new JSUnit.Test("Absolute path 1", "Operations").run = function(){
+new JSUnit.Test("test 2", "Relative path").run = function(){
+	var path = new Path("../source/photo/sitemap.xml");
+	var rel = path.relativeTo("../source/photo/spb_oblast/pashskij_pogost/default.xml");
+	
+	this.assert(rel.toWeb(), "../../sitemap.xml");
+}
+
+new JSUnit.Test("test 1", "Absolute path").run = function(){
 	var path = new Path("../../abc.htm");
 	var abs = path.absoluteFrom("abc/def/ghi/jkl");
 	
 	this.assert(abs.toWeb(), "abc/def/abc.htm");
 }
 
-new JSUnit.Test("Absolute path 2", "Operations").run = function(){
+new JSUnit.Test("test 2", "Absolute path").run = function(){
 	var path = new Path("spb_oblast/pashskij_pogost/default.xml");
 	var absPath = path.absoluteFrom("../source/photo/sitemap.xml");
 	this.assert(absPath.toWeb(), "../source/photo/spb_oblast/pashskij_pogost/default.xml");
 }
 
-new JSUnit.Test("Absolute path 3", "Operations").run = function(){
+new JSUnit.Test("test 3", "Absolute path").run = function(){
 	var path = new Path("../spb_oblast/pashskij_pogost/default.xml");
 	var absPath = path.absoluteFrom("../source/photo/sitemap.xml");
 	this.assert(absPath.toWeb(), "../source/spb_oblast/pashskij_pogost/default.xml");

@@ -30,7 +30,7 @@ function Path(path){var _=this;
 	var __ = Path;
 	
 	extend(__, {
-		version: "1.1.151",
+		version: "1.1.152",
 		maxIterationCount:500
 	});
 	
@@ -51,7 +51,7 @@ function Path(path){var _=this;
 			var forward = [];
 				
 			for(var i=0; i<__.maxIterationCount; i++){
-				if(i>=_.dirs.length || i>=basePath.dirs.length)
+				if(i>=_.dirs.length && i>=basePath.dirs.length)
 					break;
 				if(_.dirs[i]==basePath.dirs[i])
 					continue;
@@ -64,7 +64,12 @@ function Path(path){var _=this;
 				throw "Too many iterations";
 			}
 			
-			return new Path(backward.join("")+forward.join("/")+(_.file?("/"+_.file):""));
+			forward = forward.join("/");
+			if(forward.length){
+				forward = forward+"/";
+			}
+			
+			return new Path(backward.join("")+forward+(_.file?_.file:""));
 		},
 		
 		absoluteFrom: function(basePath){var _=this;
