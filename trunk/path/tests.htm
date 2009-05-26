@@ -39,7 +39,7 @@ new JSUnit.Test("Absolute path", "Operations").run = function(){
 	var path = new Path("../../abc.htm");
 	var abs = path.absoluteFrom("abc/def/ghi/jkl");
 	
-	this.assert(abs.toWeb(), "abc/dev/abc.htm");
+	this.assert(abs.toWeb(), "abc/def/abc.htm");
 }
 
 function init(){
