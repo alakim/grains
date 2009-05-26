@@ -30,7 +30,7 @@ function Path(path){var _=this;
 	var __ = Path;
 	
 	extend(__, {
-		version: "1.1.150",
+		version: "1.1.151",
 		maxIterationCount:500
 	});
 	
@@ -75,7 +75,6 @@ function Path(path){var _=this;
 			var forward = [];
 			for(var i=0; i<_.dirs.length; i++){
 				var d = _.dirs[i];
-				console.log(d);
 				if(d=="..")
 					baseIdx--;
 				else
@@ -87,9 +86,10 @@ function Path(path){var _=this;
 				base.push(basePath.dirs[i]);
 			}
 			base = base.join("/");
-			if(base.length)
-				base+="/";
-			return new Path(base+forward.join("/")+(_.file?_.file:""));
+			forward = forward.join("/");
+			if(forward.length && base.length)
+				forward = "/"+forward;
+			return new Path(base+forward+(_.file?("/"+_.file):""));
 		}
 	};
 })()

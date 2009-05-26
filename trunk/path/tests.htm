@@ -35,11 +35,23 @@ new JSUnit.Test("Relative path", "Operations").run = function(){
 	this.assert(rel.toWeb(), "../ghi/jkl.htm");
 }
 
-new JSUnit.Test("Absolute path", "Operations").run = function(){
+new JSUnit.Test("Absolute path 1", "Operations").run = function(){
 	var path = new Path("../../abc.htm");
 	var abs = path.absoluteFrom("abc/def/ghi/jkl");
 	
 	this.assert(abs.toWeb(), "abc/def/abc.htm");
+}
+
+new JSUnit.Test("Absolute path 2", "Operations").run = function(){
+	var path = new Path("spb_oblast/pashskij_pogost/default.xml");
+	var absPath = path.absoluteFrom("../source/photo/sitemap.xml");
+	this.assert(absPath.toWeb(), "../source/photo/spb_oblast/pashskij_pogost/default.xml");
+}
+
+new JSUnit.Test("Absolute path 3", "Operations").run = function(){
+	var path = new Path("../spb_oblast/pashskij_pogost/default.xml");
+	var absPath = path.absoluteFrom("../source/photo/sitemap.xml");
+	this.assert(absPath.toWeb(), "../source/spb_oblast/pashskij_pogost/default.xml");
 }
 
 function init(){
