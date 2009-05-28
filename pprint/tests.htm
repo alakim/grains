@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>PPrint Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="pprint.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля PPrint", "Configuration").run = function(){
+	this.assert(typeof(PPrint), "object");
+}
+
+function simpleDocument(){
+	return [
+		"<html>  ",
+		"	<head>	",
+		"		<title>My Document</title>",
+		"	</head>",
+		"	<body> ",
+		"		<h1>My Document</h1>",
+		"	</body>",
+		"</html>"
+	].join("\r\n");
+}
+
+new JSUnit.Test("flatDocument", "Formatting").run = function(){
+	var html = simpleDocument();
+	
+	var flatCode = PPrint.flatDocument(html);
+	this.assert(flatCode, "<html><head><title>My Document</title></head><body><h1>My Document</h1></body></html>");
+}
+
+new JSUnit.Test("pretty print 1", "Formatting").run = function(){
+	var html = simpleDocument();
+	
+	var code = PPrint.formatDocument(html);
+	console.log(code);
+	this.assert(code, "<html>\r\n\t<head>\r\n\t\t<title>MyDocument</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>My Document</h1>\r\n\t</body>\r\n</html>");
+}
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = PPrint.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>PPrint Unit Tests</h1>
+	<p>Модуль форматирования документов XML и HTML. Реализует функцию pretty print.</p>
+	<p>PPrint v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
