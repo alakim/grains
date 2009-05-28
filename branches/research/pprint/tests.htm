@@ -8,32 +8,69 @@ new JSUnit.Test("Подключение модуля PPrint", "Configuration").run = function(){
 	this.assert(typeof(PPrint), "object");
 }
 
-function simpleDocument(){
+function simpleDocument1(){
 	return [
 		"<html>  ",
 		"	<head>	",
 		"		<title>My Document</title>",
 		"	</head>",
 		"	<body> ",
-		"		<h1>My Document</h1>",
+		"		<h1 class=\"big\">My Document</h1>",
+		"	</body>",
+		"</html>"
+	].join("\r\n");
+}
+
+function simpleDocument2(){
+	return [
+		"<html>  ",
+		"	<head>	",
+		"		<title>My Document</title>",
+		"	</head>",
+		"	<body> ",
+		"		<h1 class=\"big\">My Document</h1>",
+		"		<p>Paragraph</p>",
+		"	</body>",
+		"</html>"
+	].join("\r\n");
+}
+
+function freeDocument(){
+	return [
+		"<html>  ",
+		"	<head>	",
+		"		<title>My Document</title>",
+		"	</head>",
+		"	<body> ",
+		"		<h1 class=\"big\">My Document</h1>",
+		"		<p>Paragraph 1",
+		"		<p>Paragraph 2",
 		"	</body>",
 		"</html>"
 	].join("\r\n");
 }
 
 new JSUnit.Test("flatDocument", "Formatting").run = function(){
-	var html = simpleDocument();
+	var html = simpleDocument1();
 	
 	var flatCode = PPrint.flatDocument(html);
-	this.assert(flatCode, "<html><head><title>My Document</title></head><body><h1>My Document</h1></body></html>");
+	this.assert(flatCode, "<html><head><title>My Document</title></head><body><h1 class=\"big\">My Document</h1></body></html>");
 }
 
 new JSUnit.Test("pretty print 1", "Formatting").run = function(){
-	var html = simpleDocument();
+	var html = simpleDocument2();
 	
 	var code = PPrint.formatDocument(html);
 	console.log(code);
-	this.assert(code, "<html>\r\n\t<head>\r\n\t\t<title>MyDocument</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>My Document</h1>\r\n\t</body>\r\n</html>");
+	this.assert(code, "<html>\r\n\t<head>\r\n\t\t<title>My Document</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1 class=\"big\">My Document</h1>\r\n\t\t<p>Paragraph</p>\r\n\t</body>\r\n</html>");
+}
+
+new JSUnit.Test("pretty print 2", "Formatting").run = function(){
+	var html = freeDocument();
+	
+	var code = PPrint.formatDocument(html);
+	console.log(code);
+	this.assert(code, "<html>\r\n\t<head>\r\n\t\t<title>My Document</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1 class=\"big\">My Document</h1>\r\n\t\t<p>Paragraph 1\r\n\t\t<p>Paragraph 2\r\n\t</body>\r\n</html>");
 }
 
 function init(){

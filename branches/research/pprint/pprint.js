@@ -45,6 +45,7 @@ var PPrint = {};
 	function Document(code){var _=this;
 		code = flatDocument(code);
 		_.nodes = [];
+		_.root = null;
 		
 		var reTag = /<(\/)?(\w+)(\s+[^>]+)?>/i;
 		
@@ -58,7 +59,6 @@ var PPrint = {};
 					prev.closed;
 				if(!prev.parent){
 					prev.parent = closingTag;
-					prev.level = closingTag.level+1;
 					closingTag.children.push(prev);
 				}
 				prev = prev.prev;
@@ -73,24 +73,27 @@ var PPrint = {};
 			return prev;
 		}
 		
-		console.log("code: ", code);
+		function setLevel(tag, level){
+			tag.level = level;
+			each(tag.children, function(chld){
+				setLevel(chld, level+1);
+			});
+		}
+		
 		for(var pos=0, tag=""; pos<code.length; pos+=(tag.tag.length+textNode.length)){
-			console.log("Begin: pos:", pos, " tag:'", tag, "'");
 			var tail = code.substr(pos, code.length-pos);
 			var mt = tail.match(reTag);
-			console.log("pos:", pos, ", tail:'", tail, "' ", (mt?"":" not"), " matches");
 			if(!mt){
 				_.nodes.push({name:"#text", val:tail});
-				console.log("no more tags...");
-				return;
+				break;
 			}
 			// found items: 
 			var textNode = tail.substr(0, mt.index);
-			console.log("text found: '", textNode, "'");
 			tag = mt[0];
 			var tagClosing = mt[1]!=null;
 			
 			var tag = {
+				root:pos?false:true,
 				name:mt[2],
 				closing: mt[1]!=null,
 				closed:false,
@@ -101,7 +104,8 @@ var PPrint = {};
 				level:0
 			};
 			
-			console.log("tag found: '", tag.tag, "'");
+			if(tag.root)
+				_.root = tag;
 			
 			if(tag.closing)
 				findOpenTag(tag);
@@ -111,9 +115,9 @@ var PPrint = {};
 			_.nodes.push(tag);
 			prevTag = tag;
 			
-			console.log("End: pos:", pos, " code.length:", code.length);
 		}
-		console.log("Constructor out");
+		
+		setLevel(_.root, 0);
 	}
 	
 	Document.prototype = {
@@ -124,7 +128,7 @@ var PPrint = {};
 				if(contains(inlineTags, tag.name.toLowerCase()))
 					return "";
 				
-				return (tag.level?lineBreak:"") + repeat(tab, tag.level);
+				return (tag.root?"":lineBreak)+ repeat(tab, tag.level);
 			}
 			var prevText = "";
 			each(_.nodes, function(nd, i){
@@ -142,8 +146,11 @@ var PPrint = {};
 							code.push(nd.tag);
 						}
 						else{
-							code.push(indent(nd)+tab);
-							code.push(prevText);
+							if(prevText.length){
+								code.push(indent(nd)+tab);
+								code.push(prevText);
+							}
+							
 							code.push(indent(nd));
 							code.push(nd.tag);
 						}
