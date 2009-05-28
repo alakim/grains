@@ -3,6 +3,8 @@ var PPrint = {};
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
 	function each(coll, F){
+		if(!coll)
+			return;
 		if(typeof(coll.length)=="undefined"){
 			for(var k in coll)
 				F(coll[k], k);
@@ -49,8 +51,6 @@ var PPrint = {};
 		
 		var reTag = /<(\/)?(\w+)(\s+[^>]+)?>/i;
 		
-		var prevTag = null;
-		
 		function findOpenTag(closingTag){
 			closingTag.children = [];
 			var prev = closingTag.prev;
@@ -74,11 +74,16 @@ var PPrint = {};
 		}
 		
 		function setLevel(tag, level){
+			console.log("setLevel(", tag.name, "("+tag.idx+"), ", level, ")");
 			tag.level = level;
+			if(tag.corresponding)
+				tag.corresponding.level = level;
 			each(tag.children, function(chld){
 				setLevel(chld, level+1);
 			});
 		}
+		
+		var prevTag = null;
 		
 		for(var pos=0, tag=""; pos<code.length; pos+=(tag.tag.length+textNode.length)){
 			var tail = code.substr(pos, code.length-pos);
@@ -110,8 +115,11 @@ var PPrint = {};
 			if(tag.closing)
 				findOpenTag(tag);
 			
-			if(textNode.length)
-				_.nodes.push({name:"#text", val:textNode});
+			if(textNode.length){
+				var tnd = {name:"#text", val:textNode, parent:prevTag};
+				_.nodes.push(tnd);
+				//prevTag.children.push(tnd);
+			}
 			_.nodes.push(tag);
 			prevTag = tag;
 			
@@ -125,9 +133,9 @@ var PPrint = {};
 			var code = [];
 			
 			function indent(tag){
+				console.log("indent for", tag.name, "("+tag.idx+"), tag.level", tag.level);
 				if(contains(inlineTags, tag.name.toLowerCase()))
 					return "";
-				
 				return (tag.root?"":lineBreak)+ repeat(tab, tag.level);
 			}
 			var prevText = "";
@@ -137,8 +145,16 @@ var PPrint = {};
 				}
 				else{
 					if(!nd.closing){
-						code.push(indent(nd));
-						code.push(nd.tag);
+						if(!nd.corresponding){
+							code.push(prevText);
+							code.push(indent(nd));
+							code.push(nd.tag);
+							prevText = "";
+						}
+						else{
+							code.push(indent(nd));
+							code.push(nd.tag);
+						}
 					}
 					else{
 						if(nd.prev==nd.corresponding){

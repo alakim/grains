@@ -1,9 +1,30 @@
 <html>
 <head>
 <title>PPrint Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
 <script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript">
+	if(typeof(console)=="undefined"){
+		console = {
+			log:function(){
+				var msg = [];
+				for(var i=0; i<arguments.length; i++){
+					msg.push(arguments[i]);
+				}
+				out.innerHTML+=msg.join(" ")
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/\r\n/g, "<br>")
+					.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+					+ "<br><hr>";
+			}
+		};
+	}
+</script>
 <script type="text/javascript" src="pprint.js"></script>
 <script type="text/javascript">
+
 new JSUnit.Test("Подключение модуля PPrint", "Configuration").run = function(){
 	this.assert(typeof(PPrint), "object");
 }
