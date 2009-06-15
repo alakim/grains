@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.1.76",
+	version: "4.1.153",
 	
 	minSize:{w:150, h:100},
 	
@@ -428,7 +428,8 @@
 						var subst = document.createElement("SPAN");
 						subst.className = "dwlsubst";
 						el.parentNode.insertBefore(subst, el);
-						subst.innerHTML = el.options[el.selectedIndex].innerHTML;
+						if(el.selectedIndex>=0)
+							subst.innerHTML = el.options[el.selectedIndex].innerHTML;
 					}
 					el.style.display = "none";
 				}
