@@ -214,7 +214,7 @@ var IEDDL = {};
 	}
 	
 	extend(_,{
-		version: "1.1.128",
+		version: "1.1.159",
 		imagePath: "ddl.gif",
 		enabled:window.navigator.userAgent.match(/MSIE/i) && !(window.navigator.userAgent.match(/Opera/i)),
 		
@@ -300,6 +300,7 @@ var IEDDL = {};
 		
 		syncMultilineDisplay: function(selId){
 			var sel = getSelectElement(selId);
+			sel.style.display = "none";
 			var idx = sel.selectedIndex;
 			if(idx>=0 && sel.options[idx]!=null){
 				var txt = sel.options[idx].text;
@@ -318,6 +319,7 @@ var IEDDL = {};
 				_.syncMultilineDisplay(selId);
 			else{
 				var sel = getSelectElement(selId);
+				sel.style.display = "none";
 				var idx = sel.selectedIndex;
 				if(idx>=0 && sel.options[idx]!=null)
 					dspl.innerText = sel.options[idx].text;
