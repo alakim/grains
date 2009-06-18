@@ -48,7 +48,7 @@ new JSUnit.Test("unicode codes", "Symbol table").run = function(){
 		this.assert(index[ent.unicode], null, "Error: unicode code '"+ent.unicode+"' is not unique");
 		index[ent.unicode] = true;
 		this.assert(ent.unicode.match(/[а-я]/i)==null, true, "Error: unicode code of symbol '"+ent.entity.name+"' contains cyrillic letters")
-		this.assert(ent.unicode.match(/[0-9a-f]{4}/i)!=null, true, "Error: bad unicode:'"+ent.unicode+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
+		this.assert(ent.unicode.match(/^u\+[0-9a-f]{4}$/i)!=null, true, "Error: bad unicode:'"+ent.unicode+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
 	}
 }
 
