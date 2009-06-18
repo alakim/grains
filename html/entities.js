@@ -1,6 +1,7 @@
 ﻿var Entities = {
-	version:"1.0.162",
+	version:"1.1.164",
 	table: [
+		
 		{symbol:" ", entity:{name:"nbsp", code:160}, description:"неразрывный пробел", unicode:"00A0", iso:"ISOnum"},
 		{symbol:"¡", entity:{name:"iexcl", code:161}, description:"перевернутый восклицательный знак", unicode:"00A1", iso:"ISOnum"},
 		{symbol:"¢", entity:{name:"cent", code:162}, description:"цент", unicode:"00A2", iso:"ISOnum"},
@@ -258,5 +259,44 @@
 		{symbol:"‹", entity:{name:"lsaquo", code:8249}, description:"левая угловая одиночная кавычка", unicode:"2039", iso:"ISO proposed"},
 		{symbol:"›", entity:{name:"rsaquo", code:8250}, description:"правая угловая одиночная кавычка", unicode:"203A", iso:"ISO proposed"},
 		{symbol:"€", entity:{name:"euro", code:8364}, description:"валюта евро", unicode:"20AC", iso:"NEW"}
-	]
+	],
+	
+	byEntityCode:{},
+	byEntityName:{},
+	bySymbol:{}
 };
+
+(function(){
+	function each(coll, F){
+		for(var i=0; i<coll.length; i++){
+			F(coll[i], i);
+		}
+	}
+	
+	function extend(o, s){for(var k in s){o[k] = s[k];}}
+	
+	var _ = Entities;
+	
+	each(_.table, function(ent){
+		_.byEntityCode[ent.entity.code] = ent;
+		_.byEntityName[ent.entity.name] = ent;
+		_.bySymbol[ent.symbol] = ent;
+	});
+	
+	extend(_, {
+		replaceAll: function(str){
+			str = str.replace(/&(?!(#x?)?[a-z0-9]+;)/g, "&amp;");
+			each(_.table, function(ent){
+				if(ent.entity.name=="amp")
+					return;
+				var entity = "&"+ent.entity.name+";";
+				var reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
+				str = str
+					.replace(ent.symbol, entity)
+					.replace(reCode, entity);
+			});
+			return str;
+		}
+	});
+})();
+
