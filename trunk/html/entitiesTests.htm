@@ -1,0 +1,43 @@
+﻿<html>
+<head>
+<title>Entities Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../tools/jsUnit_utf8.js"></script>
+<script type="text/javascript" src="entities.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля Entities", "Configuration").run = function(){
+	this.assert(typeof(Entities), "object");
+}
+
+new JSUnit.Test("symbols", "Symbol table").run = function(){
+	for(var i=0; i<Entities.table.length; i++){
+		var ent = Entities.table[i];
+		this.assert(ent.symbol.length, 1, "Error: bad symbol:'"+ent.symbol+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
+		this.assert(ent.symbol!=" ", true, "Error: symbol '"+ent.entity.name+"' has simple space as symbol")
+	}
+}
+
+new JSUnit.Test("unicode codes", "Symbol table").run = function(){
+	for(var i=0; i<Entities.table.length; i++){
+		var ent = Entities.table[i];
+		this.assert(ent.unicode.match(/[а-я]/i)==null, true, "Error: unicode code of symbol '"+ent.entity.name+"' contains cyrillic letters")
+		this.assert(ent.unicode.match(/[0-9a-f]{4}/i)!=null, true, "Error: bad unicode:'"+ent.unicode+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
+	}
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = Entities.version;
+	document.getElementById("itemCount").innerHTML = Entities.table.length;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Entities Unit Tests</h1>
+	<p>Entities v.<span id="versionPanel"></span></p>
+	<p>Contains <span id="itemCount"></span> entity descriptions</p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
