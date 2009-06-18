@@ -10,16 +10,43 @@ new JSUnit.Test("Подключение модуля Entities", "Configuration")
 }
 
 new JSUnit.Test("symbols", "Symbol table").run = function(){
+	index = {};
+	isoTypes = {
+		"ISOnum":true,
+		"ISOdia":true,
+		"ISOlat1":true,
+		"ISOlat2":true,
+		"ISOtech":true,
+		"ISOgrk3":true,
+		"ISOpub":true,
+		"ISOamsa":true,
+		"ISOamsb":true,
+		"ISOamsc":true,
+		"ISOamsn":true,
+		"ISOamso":true,
+		"ISOamsr":true,
+		"NEW RFC 2070":true,
+		"ISO proposed":true,
+		"NEW":true,
+		"":true
+	};
 	for(var i=0; i<Entities.table.length; i++){
 		var ent = Entities.table[i];
+		this.assert(index[ent.entity.code], null, "Error: entity code '"+ent.entity.code+"' is not unique");
+		index[ent.entity.code] = true;
 		this.assert(ent.symbol.length, 1, "Error: bad symbol:'"+ent.symbol+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
-		this.assert(ent.symbol!=" ", true, "Error: symbol '"+ent.entity.name+"' has simple space as symbol")
+		this.assert(ent.symbol!=" ", true, "Error: symbol '"+ent.entity.name+"' has simple space as symbol");
+		
+		this.assert(isoTypes[ent.iso], true, "Error: unknown iso type '"+ent.iso+"' of symbol '"+ent.entity.name+"' ("+ent.entity.code+")");
 	}
 }
 
 new JSUnit.Test("unicode codes", "Symbol table").run = function(){
+	var index = {};
 	for(var i=0; i<Entities.table.length; i++){
 		var ent = Entities.table[i];
+		this.assert(index[ent.unicode], null, "Error: unicode code '"+ent.unicode+"' is not unique");
+		index[ent.unicode] = true;
 		this.assert(ent.unicode.match(/[а-я]/i)==null, true, "Error: unicode code of symbol '"+ent.entity.name+"' contains cyrillic letters")
 		this.assert(ent.unicode.match(/[0-9a-f]{4}/i)!=null, true, "Error: bad unicode:'"+ent.unicode+"' (name:"+ent.entity.name+", code:"+ent.entity.code+")");
 	}
@@ -32,6 +59,15 @@ new JSUnit.Test("descriptions", "Symbol table").run = function(){
 	}
 }
 
+new JSUnit.Test("simple", "Replacements").run = function(){
+	var str = "abc def>xxx&#160;yyy&#0160;zzz";
+	this.assert(Entities.replaceAll(str), "abc&nbsp;def&gt;xxx&nbsp;yyy&nbsp;zzz", "Error 1");
+}
+
+new JSUnit.Test("with ampersands", "Replacements").run = function(){
+	var str = "abc def>xxx&#160;yyy&#0160;zzz & zz";
+	this.assert(Entities.replaceAll(str), "abc&nbsp;def&gt;xxx&nbsp;yyy&nbsp;zzz &amp; zz", "Error 1");
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = Entities.version;
@@ -42,6 +78,7 @@ function init(){
 </head>
 <body onload="init()">
 	<h1>Entities Unit Tests</h1>
+	<p><a href="http://html.manual.ru/book/info/specialchars.php">Использовавшаяся таблица кодировок</a></p>
 	<p>Entities v.<span id="versionPanel"></span></p>
 	<p>Contains <span id="itemCount"></span> entity descriptions</p>
 	<div id="testContainer" style="display:none;"></div>
