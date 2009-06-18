@@ -1,5 +1,6 @@
 ﻿var Entities = {
-	version:"1.1.165",
+	version:"1.2.166",
+	enableLtGtReplacement:true,
 	table: [
 		
 		{symbol:" ", entity:{name:"nbsp", code:160}, description:"неразрывный пробел", unicode:"U+00A0", iso:"ISOnum"},
@@ -289,6 +290,10 @@
 			each(_.table, function(ent){
 				if(ent.entity.name=="amp")
 					return;
+				if(!_.enableLtGtReplacement){
+					if(ent.entity.name=="lt" || ent.entity.name=="gt")
+						return;
+				}
 				var entity = "&"+ent.entity.name+";";
 				var reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
 				str = str
