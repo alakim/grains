@@ -60,13 +60,20 @@ new JSUnit.Test("descriptions", "Symbol table").run = function(){
 }
 
 new JSUnit.Test("simple", "Replacements").run = function(){
+	Entities.enableXmlStdReplacement = true;
 	var str = "abc def>xxx&#160;yyy&#0160;zzz";
 	this.assert(Entities.replaceAll(str), "abc&nbsp;def&gt;xxx&nbsp;yyy&nbsp;zzz", "Error 1");
 }
 
 new JSUnit.Test("with ampersands", "Replacements").run = function(){
+	Entities.enableXmlStdReplacement = true;
 	var str = "abc def>xxx&#160;yyy&#0160;zzz & zz";
 	this.assert(Entities.replaceAll(str), "abc&nbsp;def&gt;xxx&nbsp;yyy&nbsp;zzz &amp; zz", "Error 1");
+}
+
+new JSUnit.Test("Европейские символы", "Replacements").run = function(){
+	Entities.enableXmlStdReplacement = false;
+	this.assert(Entities.replaceAll("<p>Проверка Kuremäe. <i>(Курсив)</i></p><p>И снова Kuremäe</p>"), "<p>Проверка Kurem&auml;e. <i>(Курсив)</i></p><p>И снова Kurem&auml;e</p>", "Error 1");
 }
 
 function init(){

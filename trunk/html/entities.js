@@ -1,6 +1,6 @@
 ﻿var Entities = {
-	version:"1.2.166",
-	enableLtGtReplacement:true,
+	version:"1.3.167",
+	enableXmlStdReplacement:true,
 	table: [
 		
 		{symbol:" ", entity:{name:"nbsp", code:160}, description:"неразрывный пробел", unicode:"U+00A0", iso:"ISOnum"},
@@ -290,15 +290,18 @@
 			each(_.table, function(ent){
 				if(ent.entity.name=="amp")
 					return;
-				if(!_.enableLtGtReplacement){
-					if(ent.entity.name=="lt" || ent.entity.name=="gt")
+				if(!_.enableXmlStdReplacement){
+					if(ent.entity.name=="lt" || ent.entity.name=="gt" || ent.entity.name=="quot")
 						return;
 				}
 				var entity = "&"+ent.entity.name+";";
-				var reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
+				if(!ent.reSymbol)
+					ent.reSymbol = new RegExp(ent.symbol, "g");
+				if(!ent.reCode)
+					ent.reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
 				str = str
-					.replace(ent.symbol, entity)
-					.replace(reCode, entity);
+					.replace(ent.reSymbol, entity)
+					.replace(ent.reCode, entity);
 			});
 			return str;
 		}
