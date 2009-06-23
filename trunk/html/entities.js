@@ -1,5 +1,5 @@
 ﻿var Entities = {
-	version:"1.3.167",
+	version:"1.3.168",
 	enableXmlStdReplacement:true,
 	table: [
 		
@@ -282,6 +282,8 @@
 		_.byEntityCode[ent.entity.code] = ent;
 		_.byEntityName[ent.entity.name] = ent;
 		_.bySymbol[ent.symbol] = ent;
+		ent.reSymbol = new RegExp(ent.symbol, "g");
+		ent.reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
 	});
 	
 	extend(_, {
@@ -295,10 +297,6 @@
 						return;
 				}
 				var entity = "&"+ent.entity.name+";";
-				if(!ent.reSymbol)
-					ent.reSymbol = new RegExp(ent.symbol, "g");
-				if(!ent.reCode)
-					ent.reCode = new RegExp("&#0*"+ent.entity.code+";", "g");
 				str = str
 					.replace(ent.reSymbol, entity)
 					.replace(ent.reCode, entity);
