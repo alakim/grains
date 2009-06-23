@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>DateExt Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="dateExt.js"></script>
+<script type="text/javascript">
+function $testDiv(){return document.getElementById("testDiv");}
+
+new JSUnit.Test("Подключение модуля DateExt").run = function(){
+	this.assert(typeof(DateExt), "object");
+	document.getElementById("spanVersion").innerHTML = DateExt.version;
+}
+
+new JSUnit.Test("local", "Localization").run = function(){
+	this.assert(DateExt.format.localWithTime.toString(new Date(2009, 5, 9, 15, 34)), "вторник, 9 июня 2009 г. в 15:34", "Error 1");
+}
+
+new JSUnit.Test("digits", "Localization").run = function(){
+	this.assert(DateExt.format.shortDigitsWithTime.toString(new Date(2009, 5, 9, 15, 34)), "09.06.2009 в 15:34", "Error 1");
+}
+
+new JSUnit.Test("xsd", "Localization").run = function(){
+	this.assert(DateExt.format.xsdWithTime.toString(new Date(2009, 5, 9, 15, 34)), "2009-06-09T15:34:00", "Error 1");
+}
+
+new JSUnit.Test("xsd", "parsing").run = function(){
+	var d = DateExt.format.xsdWithTime.parse("2009-06-09T15:34:00");
+	
+	this.assert(d.getFullYear(), 2009);
+	this.assert(d.getMonth(), 5);
+	this.assert(d.getDate(), 9);
+	this.assert(d.getHours(), 15);
+	this.assert(d.getMinutes(), 34);
+	this.assert(d.getSeconds(), 0);
+}
+
+
+</script>
+</head>
+<body onload="JSUnit.init()">
+	<h1>DateExt Unit Tests</h1>
+	<p>DateExt v.<span id="spanVersion"></span></p>
+	<div id="testDiv"></div>
+</body>
+</html>
