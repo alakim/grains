@@ -1,5 +1,5 @@
 var DateExt = {
-	version: "1.1.172"
+	version: "1.1.173"
 };
 
 (function(){
@@ -80,7 +80,7 @@ var DateExt = {
 					return [
 						_.format.local.toString(date, accusativeCase),
 						"â",
-						h+":"+m
+						twoDigits(h)+":"+twoDigits(m)
 					].join(" ");
 				}
 			},
