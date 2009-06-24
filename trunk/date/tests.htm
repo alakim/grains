@@ -18,10 +18,14 @@ new JSUnit.Test("local", "Localization").run = function(){
 
 new JSUnit.Test("digits", "Localization").run = function(){
 	this.assert(DateExt.format.shortDigitsWithTime.toString(new Date(2009, 5, 9, 15, 34)), "09.06.2009 â 15:34", "Error 1");
+	this.assert(DateExt.format.shortDigitsWithTime.toString(new Date(2009, 5, 9, 5)), "09.06.2009 â 05:00", "Error 2");
+	this.assert(DateExt.format.shortDigitsWithTime.toString(new Date(2009, 5, 9, 0, 09)), "09.06.2009 â 00:09", "Error 3");
 }
 
 new JSUnit.Test("xsd", "Localization").run = function(){
 	this.assert(DateExt.format.xsdWithTime.toString(new Date(2009, 5, 9, 15, 34)), "2009-06-09T15:34:00", "Error 1");
+	this.assert(DateExt.format.xsdWithTime.toString(new Date(2009, 5, 9, 5)), "2009-06-09T05:00:00", "Error 2");
+	this.assert(DateExt.format.xsdWithTime.toString(new Date(2009, 5, 9, 0, 4)), "2009-06-09T00:04:00", "Error 3");
 }
 
 new JSUnit.Test("xsd", "parsing").run = function(){
