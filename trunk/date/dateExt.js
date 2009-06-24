@@ -1,5 +1,5 @@
 var DateExt = {
-	version: "1.1.170"
+	version: "1.1.171"
 };
 
 (function(){
@@ -78,7 +78,7 @@ var DateExt = {
 						return _.format.local.toString(date, accusativeCase);
 					
 					return [
-						_.format.local.toString(date),
+						_.format.local.toString(date, accusativeCase),
 						"â",
 						h+":"+m
 					].join(" ");
@@ -149,4 +149,10 @@ var DateExt = {
 		}
 		
 	});
+	
+	if(typeof(JSUnit)=="object"){
+		_.internals = {
+			days:days
+		}
+	}
 })();
