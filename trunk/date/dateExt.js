@@ -1,14 +1,14 @@
 var DateExt = {
-	version: "1.0.169"
+	version: "1.1.170"
 };
 
 (function(){
 	function extend(o,s){for(var k in s){o[k]=s[k];}}
 	
-	function MonthDef(shortName, fullName, nameGen){
+	function MonthDef(shortName, fullName, nameGenitive){
 		this.shortName = shortName;
 		this.fullName = fullName;
-		this.nameGen = nameGen;
+		this.nameGenitive = nameGenitive;
 	}
 	
 	var months = [
@@ -26,9 +26,11 @@ var DateExt = {
 		new MonthDef("дек", "декабрь", "декабря")
 	];
 	
-	function DayDef(shortName, fullName){
+	function DayDef(shortName, fullName, nameAccusative){
 		this.shortName = shortName;
 		this.fullName = fullName;
+		this.nameAccusative = nameAccusative?nameAccusative
+			:fullName.replace(/а$/, "у");
 	}
 	
 	var days = [
@@ -55,11 +57,12 @@ var DateExt = {
 		
 		format:{
 			local:{
-				toString: function(date){
+				toString: function(date, accusativeCase){
+					accusativeCase = accusativeCase!=null?accusativeCase:false;
 					return [
-						days[date.getDay()].fullName+",",
+						days[date.getDay()][accusativeCase?"nameAccusative":"fullName"]+",",
 						date.getDate(),
-						months[date.getMonth()].nameGen,
+						months[date.getMonth()].nameGenitive,
 						date.getFullYear(),
 						"г."
 					].join(" ");
@@ -67,11 +70,12 @@ var DateExt = {
 			},
 			
 			localWithTime: {
-				toString: function(date){
+				toString: function(date, accusativeCase){
+					accusativeCase = accusativeCase!=null?accusativeCase:false;
 					var h = date.getHours();
 					var m = date.getMinutes();
 					if(h==0 && m==0)
-						return _.format.local.toString(date);
+						return _.format.local.toString(date, accusativeCase);
 					
 					return [
 						_.format.local.toString(date),
