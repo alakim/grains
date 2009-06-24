@@ -1,5 +1,5 @@
 var DateExt = {
-	version: "1.1.171"
+	version: "1.1.172"
 };
 
 (function(){
@@ -104,7 +104,7 @@ var DateExt = {
 					return [
 						_.format.shortDigits.toString(date),
 						"â",
-						h+":"+m
+						twoDigits(h)+":"+twoDigits(m)
 					].join(" ");
 				}
 			},
