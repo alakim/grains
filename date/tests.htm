@@ -14,6 +14,7 @@ new JSUnit.Test("Подключение модуля DateExt").run = function(){
 new JSUnit.Test("local", "Localization").run = function(){
 	this.assert(DateExt.format.localWithTime.toString(new Date(2009, 5, 9, 15, 34)), "вторник, 9 июня 2009 г. в 15:34", "Error 1");
 	this.assert(DateExt.format.localWithTime.toString(new Date(2009, 5, 10, 15, 34), true), "среду, 10 июня 2009 г. в 15:34", "Error 2");
+	this.assert(DateExt.format.localWithTime.toString(new Date(2009, 5, 10, 10, 0), true), "среду, 10 июня 2009 г. в 10:00", "Error 3");
 }
 
 new JSUnit.Test("digits", "Localization").run = function(){
