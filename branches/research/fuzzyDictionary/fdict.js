@@ -33,10 +33,47 @@
 
 	extend(__, {
 		windowSize: 3
-		
 	});
+	
+	function filterByThreshold(res1, threshold){
+		if(!threshold)
+			return res1;
+		var res = [];
+		each(res1, function(el){
+			if(el.rate>threshold)
+				res.push(el);
+		});
+		return res;
+	}
+	
+	function filterDelta(res1){
+		if(res1.length<3)
+			return res1;
+			
+		var delta = [];
+		for(var i=1; i<res1.length; i++){
+			var el = res1[i];
+			var prev = res1[i-1];
+			delta.push({d:prev.rate - el.rate, i:i});
+		}
+		
+		delta = delta.sort(function(x, y){
+			return x.d>y.d?-1
+				:x.d<y.d?1
+				:0;
+		});
+		
+		var res = [];
+		for(var i=0; i<delta[0].i; i++){
+			res.push(res1[i]);
+		}
+		return res;
+	}
 
 	extend(FDict.prototype, {
+		threshold: 0.7,
+		deltaFiltration:false,
+		
 		addCollection: function(coll){var _=this;
 			each(coll, function(w){
 				_.add(w);
@@ -91,6 +128,10 @@
 				var word = _.words[w.id];
 				res.push({val:w.val, rate:w.count/maxCount});
 			});
+			
+			res = filterByThreshold(res, _.threshold);
+			if(_.deltaFiltration)
+				res = filterDelta(res);
 			return res;
 		}
 	});
