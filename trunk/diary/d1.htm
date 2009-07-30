@@ -1,0 +1,45 @@
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<style></style>
+<script type="text/javascript" src="defs/html.js"></script> <!-- специальная версия в кодировке UTF-8 -->
+<script type="text/javascript" src="defs/dateExt.js"></script> <!-- специальная версия в кодировке UTF-8 -->
+<script type="text/javascript" src="defs/diary.js"></script>
+<script type="text/javascript">
+with(Diary){
+	var d = new diary(
+		year(2009, 
+			month(6, 
+				day(26,
+					{time:"13:30", tags:"things", dsc:"купил велоперчатки и зеркало"},
+					{time:"15:27", tags:"work", dsc:"Создал десять новых проектов"}
+				),
+				day(27,
+					{dsc:"Начало отпуска"},
+					{time:"11:30", dsc:"Краску купил."},
+					{time:"15:45", dsc:"Приехали в деревню."}
+				),
+				day(28,
+					{time:"10:00", tags:"Gorodok", dsc:"Приехал в Звенигород"},
+					{time:"15:50", dsc:"Вернулся из Звенигорода."},
+					{time:"19:45", dsc:"Звонил родным"}
+				)
+			),
+			month(7,
+				day(1,
+					{dsc:"Вот и июль наступил..."}
+				)
+			)
+		)
+	);
+}
+function init(){
+	d.display("diaryPnl")
+}
+</script>
+</head>
+<body onload="init()">
+	<div id="diaryPnl"></div>
+</body>
+</html>
