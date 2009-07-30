@@ -1,4 +1,4 @@
-﻿if(typeof(Html)=="undefined")
+if(typeof(Html)=="undefined")
 	alert("Module html.js required!");
 if(typeof(DateExt)=="undefined")
 	alert("Module dateExt.js required!");
@@ -26,12 +26,22 @@ var Diary = {};
 	var _ = Diary;
 	var taglist = {};
 	var itemCounter = 0;
+	var instances = [];
+	
 	extend(_, {
 		diary: function(){var d = this;
 			d.items = [];
+			d.selectedTags = {};
+			d.id = instances.length;
+			instances.push(d);
 			each(arguments, function(a, i){
 				d.items.push(a);
 			});
+		},
+		
+		selectTag: function(id, tagName){
+			instances[id].selectedTags[tagName] = instances[id].selectedTags[tagName]?false:true;
+			instances[id].display();
 		},
 
 		year: function(nr){
@@ -124,13 +134,26 @@ var Diary = {};
 	};
 	
 	extend(_.diary.prototype, {
-		display: function(pnlId){
+		selectedTags:{},
+		id:0,
+		pnlId:null,
+		display: function(pnlId){var inst=this;
+			if(pnlId)
+				this.pnlId = pnlId;
+			else
+				pnlId = this.pnlId;
 			var html = [];
 			with(Html){
 				html.push(div(
 					"Tags: ",
 					apply(taglist, function(t, k){
-						return span(k, ":", t.length, ", ");
+						return span(span(
+							{
+								style:"color:#"+(inst.selectedTags[k]?"ff0000":"0000ff")+"; text-decoration:underline; cursor:hand; cursor:pointer;",
+								onclick:"Diary.selectTag("+inst.id+", '"+k+"')"
+							},
+							k
+						),  ":", t.length, ",&nbsp;");
 					})
 				));
 			}
