@@ -153,7 +153,7 @@ var Diary = {};
 								onclick:"Diary.selectTag("+inst.id+", '"+k+"')"
 							},
 							k
-						),  ":", t.length, ",&nbsp;");
+						),  ":", t.length, ", ");
 					})
 				));
 			}
