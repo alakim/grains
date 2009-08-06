@@ -27,11 +27,11 @@ var Diary = {};
 	var taglist = {};
 	var itemCounter = 0;
 	var instances = [];
+	var selectedTags = {};
 	
 	extend(_, {
 		diary: function(){var d = this;
 			d.items = [];
-			d.selectedTags = {};
 			d.id = instances.length;
 			instances.push(d);
 			each(arguments, function(a, i){
@@ -40,7 +40,7 @@ var Diary = {};
 		},
 		
 		selectTag: function(id, tagName){
-			instances[id].selectedTags[tagName] = instances[id].selectedTags[tagName]?false:true;
+			selectedTags[tagName] = selectedTags[tagName]?false:true;
 			instances[id].display();
 		},
 
@@ -88,16 +88,15 @@ var Diary = {};
 
 	
 	var templates = {
-		item: function(itm){
-			if(itm.year)
-				return templates.year(itm);
-			if(itm.month)
-				return templates.month(itm);
-			if(itm.day)
-				return templates.day(itm);
-			if(itm.dsc)
-				return templates.dsc(itm);
-		},
+		item: function(itm, instId){with(Html){
+			return div(
+				itm.year?templates.year(itm)
+				:itm.month?templates.month(itm)
+				:itm.day?templates.day(itm)
+				:itm.dsc?templates.dsc(itm, instId)
+				:null
+			);
+		}},
 		
 		year: function(item){with(Html){
 			return div(
@@ -124,8 +123,17 @@ var Diary = {};
 				)
 			);
 		}},
-		dsc: function(item){with(Html){
+		dsc: function(item, id){with(Html){
+			var itemSelected = false;
+			if(item.tags){
+				var tags = item.tags.split(";");
+				each(tags, function(tag){
+					if(selectedTags[tag])
+						itemSelected = true;
+				});
+			}
 			return p(
+				itemSelected?{style:"background-color:#ffff00;"}:null,
 				item.time? span(span({style:"color:#0000ff;"}, item.time), " "): null,
 				item.tags? span(span({style:"background-color:#eeeeee;"}, item.tags), " "): null,
 				item.dsc
@@ -134,7 +142,6 @@ var Diary = {};
 	};
 	
 	extend(_.diary.prototype, {
-		selectedTags:{},
 		id:0,
 		pnlId:null,
 		display: function(pnlId){var inst=this;
@@ -149,7 +156,7 @@ var Diary = {};
 					apply(taglist, function(t, k){
 						return span(span(
 							{
-								style:"color:#"+(inst.selectedTags[k]?"ff0000":"0000ff")+"; text-decoration:underline; cursor:hand; cursor:pointer;",
+								style:"color:#"+(selectedTags[k]?"ff0000":"0000ff")+"; text-decoration:underline; cursor:hand; cursor:pointer;",
 								onclick:"Diary.selectTag("+inst.id+", '"+k+"')"
 							},
 							k
@@ -158,7 +165,7 @@ var Diary = {};
 				));
 			}
 			each(this.items, function(itm){
-				html.push(templates.item(itm));
+				html.push(templates.item(itm, inst.id));
 			});
 			$(pnlId).innerHTML = html.join("");
 		}
