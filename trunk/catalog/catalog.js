@@ -259,6 +259,7 @@ function Catalog(settings){
 		},
 		
 		renderResultTable: function(coll){with(Html){var _=this;
+			coll = coll.sort(Catalog.compareItems);
 			$(_.outPanelID).innerHTML = 
 			div(
 				div(coll.length, " item", (coll.length.toString().match(/1$/)?"":"s")," found"),
@@ -366,7 +367,7 @@ function Catalog(settings){
 	}
 	
 	extend(Catalog, {
-		version:"5.2.141",
+		version:"5.3.181",
 		instances:[],
 		
 		itemTitleTemplate: function(itm){
@@ -379,6 +380,8 @@ function Catalog(settings){
 				:itm.details?itm.details
 				:null;
 		},
+		
+		compareItems: function(x, y){return 1;},
 		
 		getInstance: function(id){return Catalog.instances[id];},
 		
