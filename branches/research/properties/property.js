@@ -1,10 +1,16 @@
 var Property = {
-	create: function(defaultValue){
+	create: function(defaultValue, getter, setter){
 		var val = defaultValue;
 		
 		return function(v){
-			if(v) val = v;
-			else return val;
+			if(v){
+				if(setter) setter(v);
+				else val = v;
+			}
+			else{
+				if(getter) return getter();
+				else return val;
+			}
 		};
 	}
 }
