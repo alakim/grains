@@ -17,6 +17,30 @@ new JSUnit.Test("Простые операции", "Simple tests").run = function(){
 	
 }
 
+new JSUnit.Test("Getter", "Simple tests").run = function(){
+	var $size = Property.create(100, function(){
+		return "abc";
+	});
+	this.assert($size(), "abc");
+	$size(34);
+	this.assert($size(), "abc");
+}
+
+new JSUnit.Test("Setter", "Simple tests").run = function(){
+	var sss = 0;
+	var $size = Property.create(null, 
+		function(){
+			return sss;
+		}, 
+		function(v){
+			return sss = v+2;
+		}
+	);
+	
+	this.assert($size(), 0);
+	$size(34);
+	this.assert($size(), 36);
+}
 
 function init(){
 	JSUnit.init();
