@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>LyTr Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="property.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля Property", "Configuration").run = function(){
+	this.assert(typeof(Property), "object");
+}
+
+new JSUnit.Test("Простые операции", "Simple tests").run = function(){
+	var $size = Property.create(100);
+	this.assert($size(), 100);
+	$size(34);
+	this.assert($size(), 34);
+	
+}
+
+
+function init(){
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Property Unit Tests</h1>
+</body>
+</html>
