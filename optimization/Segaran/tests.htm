@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Opt Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html;charset=windows-1251">
+<script type="text/javascript" src="../../tools/jsUnit.js"></script>
+<script type="text/javascript" src="opt.js"></script>
+<script type="text/javascript">
+function each(coll, F){
+	if(typeof(coll.length)=="undefined"){
+		for(var k in coll){
+			F(coll[k], k);
+		}
+	}
+	else{
+		for(var i=0; i<coll.length; i++){
+			F(coll[i], i);
+		}
+	}
+}
+
+new JSUnit.Test("Подключение модуля Opt", "Configuration").run = function(){
+	this.assert(typeof(Opt), "object");
+}
+
+new JSUnit.Test("RandomInt", "Randomization").run = function(){
+	var minV = 1;
+	var maxV = 10;
+	var count = 100;
+	var coll = {};
+	for(var i=0; i<count; i++){
+		var r = Opt.randInt(minV, maxV);
+		if(coll[r]==null) coll[r] = 1; else coll[r]++;
+	}
+
+	var res = [];
+	for(var k in coll){
+		//console.log(k, ":", coll[k]);
+		this.assert(k>=minV && k<=maxV, true, "Error 1: 'k="+k+"'");
+		this.assert(coll[k]<count*2/maxV, true, "Error 2");
+		this.assert(k, Math.round(k), "Error 3");
+		res.push(k);
+	}
+	this.assert(res.length, 10, "Error 4");
+}
+
+new JSUnit.Test("Random", "Optimization").run = function(){
+	var dmn = [
+		{minV:1, maxV:10},
+		{minV:1, maxV:5},
+		{minV:2, maxV:12}
+	];
+	var r = Opt.randomoptimize(dmn, function(v){
+		var cost = 0;
+		each(v, function(x){
+			cost+=x;
+		});
+		return cost;
+	});
+	each(r, function(v, i){
+		console.log(i, ":", v);
+	});
+	
+}
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = Opt.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Opt Unit Tests</h1>
+	<p>Методы численной оптимизации. По книге Т.Сегаран "Программируем коллективный разум"</p>
+	<p>Opt v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
