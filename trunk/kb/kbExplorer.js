@@ -38,22 +38,54 @@ function KbExplorer(kb, panelID){
 				element.addEventListener(event, handler, true);
 			else
 				element.attachEvent("on"+event, handler);
-		}
+		},
+		
+		search: function(idx){KbExplorer.instances[idx].search();},
+		displayItem: function(idx, nm){KbExplorer.instances[idx].displayItem(nm);}
 	});
 	
 	extend(KbExplorer.prototype, {
+		selectedItems:[],
+		
+		search: function(){var _=this;
+			var searchValue = $("searchField"+_.idx).value;
+			console.log("searching for "+searchValue);
+			var re = new RegExp(searchValue, "ig");
+			_.selectedItems = filter(_.kb.items, function(itm, nm){
+				return itm.name.match(re) || nm.match(re);
+			});
+			
+			_.displaySelectedItems();
+		},
+		
+		displaySelectedItems: function(){with(Html){var _=this;
+			$("selectedItems"+_.idx).innerHTML = div(
+				apply(_.selectedItems, function(itm, nm){
+					return span({"class":"kbExplorerSelectedItem", onclick:"KbExplorer.displayItem("+_.idx+", '"+nm+"')"}, itm.name);
+				})
+			);
+		}},
+		
+		displayItem: function(nm){with(Html){var _=this;
+			var itm = _.kb.items[nm];
+			$("itemView"+_.idx).innerHTML = div(
+				div(itm.name)
+			);
+		}},
 		
 		displayMainView: function(){with(Html){var _=this;
 			var relationsToUndefinedItems = filter(_.kb.relations, function(rel){
 				return typeof(rel.trg)=="string";
 			});
 			
-			$(_.panelID).innerHTML = div(
+			$(_.panelID).innerHTML = div({"class":"KbExplorerMainView"},
 				h1(_.kb.name),
 				p(
 					input({type:"text", id:"searchField"+_.idx}),
 					button({onclick:"KbExplorer.search("+_.idx+")"}, "Search")
 				),
+				
+				div({id:"selectedItems"+_.idx, style:"margin:5px; padding:5px;"}),
 				
 				relationsToUndefinedItems.length?
 					div({"class":"warning"},
@@ -64,6 +96,7 @@ function KbExplorer(kb, panelID){
 						})
 					)
 					:null,
+				div({id:"itemView"+_.idx, "class":"kbExplorerItemView"}),
 				
 				p({"class":"logo"},
 					"Powered by KB v.", KB.version, ", ",
