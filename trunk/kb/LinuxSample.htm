@@ -56,7 +56,8 @@ var kb = new KB({
 			relations:[
 				{type:"is", trg:"DesktopEnvironment"},
 				{type:"uses", truth:0.5, trg:"compiz"},
-				{type:"uses", truth:0.5, trg:"KWin"}
+				{type:"uses", truth:0.5, trg:"KWin"},
+				{type:"uses", trg:"Qt"}
 			]
 		},
 		xfce: {
@@ -70,7 +71,8 @@ var kb = new KB({
 			description:"от англ. GNU Network Object Model Environment",
 			relations:[
 				{type:"is", trg:"DesktopEnvironment"},
-				{type:"uses", truth:0.5, trg:"compiz"}
+				{type:"uses", truth:0.5, trg:"compiz"},
+				{type:"uses", trg:"GTKplus"}
 			]
 		},
 		
@@ -112,6 +114,19 @@ var kb = new KB({
 		windowManager:{
 			name:"Window Manager",
 			description:"Менеджер окон"
+		},
+		GTKplus:{
+			name:"GTK+",
+			description:"Сокр. от GIMP Toolkit. Набор элементов интерфейса для X Window System",
+			relations:[
+				{type:"comesFrom", trg:"GIMP"}
+			]
+		},
+		Qt:{
+			description:"Произносится \"кьют\". Кросс-платформенный инструментарий разработки ПО на языке программирования C++."
+		},
+		GIMP:{
+			description:"GNU Image Manipulation Program. Растровый графический редактор"
 		}
 	}
 });
