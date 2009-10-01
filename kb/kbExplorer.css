@@ -1,0 +1,21 @@
+.KbExplorerMainView{
+	background-color:#fafafa;
+	padding:5px;
+	margin:0px;
+	border:1px solid #888888;
+}
+
+.kbExplorerSelectedItem{
+	background-color:#ffffee;
+	border:1px solid #000088;
+	padding:3px;
+	margin:2px;
+	cursor:pointer; cursor:hand;
+}
+
+.kbExplorerItemView{
+	margin:5px;
+	padding:5px;
+	border: 1px solid black;
+	background-color:#ffffff;
+}
