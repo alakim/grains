@@ -69,7 +69,16 @@ function KbExplorer(kb, panelID){
 		displayItem: function(nm){with(Html){var _=this;
 			var itm = _.kb.items[nm];
 			$("itemView"+_.idx).innerHTML = div(
-				div(itm.name)
+				div(itm.name),
+				div(
+					p("Inheritance"),
+					apply(kb.getRelationPath(itm, "is"), function(s, i){
+						return span(
+							i>0?" -> ":null,
+							span({style:"color:red;"}, s?s.name:"NULL")
+						);
+					})
+				)
 			);
 		}},
 		

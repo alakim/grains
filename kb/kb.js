@@ -37,6 +37,23 @@ KB.Collections = {
 		return res;
 	},
 	
+	find: function(coll, cond){
+		if(KB.Collections.isArray(coll)){
+			for(var i=0; i<coll.length; i++){
+				var el = coll[i];
+				if(cond(el, i))
+					return el;
+			}
+		}
+		else{
+			for(var k in coll){
+				var el = coll[k];
+				if(cond(el, k))
+					return el;
+			}
+		}
+	},
+	
 	extend: function(o, s){
 		KB.Collections.each(s, function(el, nm){ o[nm] = el;});
 	}
@@ -46,6 +63,7 @@ KB.Collections = {
 	var extend = KB.Collections.extend;
 	var each = KB.Collections.each;
 	var filter = KB.Collections.filter;
+	var find = KB.Collections.find;
 	
 	extend(KB, {
 		version: "2.4.92",
@@ -131,6 +149,20 @@ KB.Collections = {
 					rel.trg==itm
 					:rel.src==itm;
 			});
+		},
+		
+		getRelationPath: function(item, relType){var _=this;
+			return item==null?[]:[item].concat(_.getRelationPath(_.getRelationTarget(item, relType), relType));
+		},
+		
+		getRelationTarget: function(item, relType){var _=this;
+			if(!item.relations)
+				return null;
+			var rel = find(item.relations, function(rel){
+				return rel.type==relType;
+			});
+			if(rel)
+				return _.items[rel.trg];
 		}
 	});
 })()
