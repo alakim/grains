@@ -29,7 +29,6 @@ function KbView(kb, panelID){
 		
 		init: function(){
 			each(KbView.instances, function(inst){
-				inst.kb.init();
 				inst.displayMainView();
 			});
 		},

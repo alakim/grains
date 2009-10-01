@@ -6,6 +6,7 @@
 <script type="text/javascript" src="../html/html.js"></script>
 <script type="text/javascript" src="kb.js"></script>
 <script type="text/javascript" src="kbView.js"></script>
+<script type="text/javascript" src="kbExplorer.js"></script>
 <script type="text/javascript">
 
 var kb = new KB({
@@ -131,12 +132,28 @@ var kb = new KB({
 	}
 });
 
-new KbView(kb, "kbOut");
+
+function toggleView(){
+	if(document.getElementById("viewModeKbView").checked){
+		new KbView(kb, "kbOut");
+		KbView.init();
+	}
+	else{
+		new KbExplorer(kb, "kbOut");
+		KbExplorer.init();
+	}
+}
+
+//new KbView(kb, "kbOut");
 
 </script>
 </head>
 <body>
-	<div id="kbOut">
-	</div>
+	<p>
+		<input type="radio" id="viewModeKbView" name="viewMode" value="kbView" checked> kbView, 
+		<input type="radio" id="viewModeKbExplorer" name="viewMode" value="kbExplorer"> kbExplorer
+		<button onclick="toggleView()">Use</button>
+	</p>
+	<div id="kbOut"></div>
 </body>
 </html>
