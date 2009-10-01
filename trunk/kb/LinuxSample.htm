@@ -22,8 +22,14 @@ var kb = new KB({
 	},
 	
 	items:{
+		software:{},
 		
-		os: {name:"Операционная система"},
+		os: {
+			name:"Операционная система",
+			relations:[
+				{type:"is", trg:"software"}
+			]
+		},
 		
 		linux: {
 			name:"Linux",
