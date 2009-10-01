@@ -4,6 +4,7 @@ function KB(data){
 	}
 	this.idx = KB.instances.length;
 	KB.instances.push(this);
+	this.init();
 };
 
 KB.Collections = {
