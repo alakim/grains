@@ -3,6 +3,7 @@
 <meta http-equiv="Content-type"  content="text/html; charset=windows-1251" />
 
 <link rel="stylesheet" type="text/css" href="kb.css"/>
+<link rel="stylesheet" type="text/css" href="kbExplorer.css"/>
 <script type="text/javascript" src="../html/html.js"></script>
 <script type="text/javascript" src="kb.js"></script>
 <script type="text/javascript" src="kbView.js"></script>
@@ -150,8 +151,8 @@ function toggleView(){
 </head>
 <body>
 	<p>
-		<input type="radio" id="viewModeKbView" name="viewMode" value="kbView" checked> kbView, 
-		<input type="radio" id="viewModeKbExplorer" name="viewMode" value="kbExplorer"> kbExplorer
+		<input type="radio" id="viewModeKbView" name="viewMode" value="kbView" checked> <label for="viewModeKbView">kbView</label>, 
+		<input type="radio" id="viewModeKbExplorer" name="viewMode" value="kbExplorer"> <label for="viewModeKbExplorer">kbExplorer</label>
 		<button onclick="toggleView()">Use</button>
 	</p>
 	<div id="kbOut"></div>

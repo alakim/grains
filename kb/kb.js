@@ -23,11 +23,11 @@ KB.Collections = {
 		}
 	},
 	
-	filter: function(coll, cond){
-		var arrayMode = KB.Collections.isArray(coll);
+	filter: function(coll, cond, arrayMode){
+		var arrayMode = arrayMode!=null ?arrayMode :KB.Collections.isArray(coll);
 		var res = arrayMode?[]:{};
 		KB.Collections.each(coll, function(el, k){
-			if(cond(el)){
+			if(cond(el, k)){
 				if(arrayMode)
 					res.push(el);
 				else
