@@ -155,27 +155,28 @@ KB.Collections = {
 			return item==null?[]:[item].concat(_.getRelationPath(_.getRelationTarget(item, relType), relType));
 		},
 		
-		getRelationTree: function(item, relType){var _=this;
+		getRelationTree: function(item, relType, inversion){var _=this;
 			if(item==null)return [];
 			var tree = [item];
-			var targets = _.getRelationTargets(item, relType);
+			var targets = _.getRelationTargets(item, relType, inversion);
 			if(targets){
 				tree.push([]);
 				each(targets, function(trg){
-					tree[1].push(_.getRelationTree(trg, relType));
+					tree[1].push(_.getRelationTree(trg, relType, inversion));
 				});
 			}
 			return tree;
 		},
 		
-		getRelationTargets: function(item, relType){var _=this;
+		getRelationTargets: function(item, relType, inversion){var _=this;
 			if(!item.relations)
 				return null;
-			var rels = filter(item.relations, function(rel){return rel.type==relType;});
+			var rels = filter(_.getRelations(item, inversion), function(rel){return inversion?rel.type.inversion==relType:rel.type.name==relType;});
 			var res = [];
 			each(rels, function(rel){
-				var t = _.items[rel.trg];
-				res.push(t?t:rel.trg);
+				var trgId = inversion?rel.src:rel.trg;
+				var t = _.items[trgId];
+				res.push(t?t:trgId);
 			});
 			return res;
 		},
