@@ -103,7 +103,8 @@ function KbExplorer(kb, panelID){
 			var relTypes = {};
 			if(itm.relations) each(itm.relations, function(rel){relTypes[rel.type] = true;});
 			$("itemView"+_.idx).innerHTML = div(
-				div(itm.name),
+				div({"class":"KbExplorer title"}, itm.name),
+				itm.description?p(itm.description):null,
 				itm.relations && itm.relations.length? div({"class":"KbExplorer section"}, 
 					p({"class":"KbExplorer title"}, "Relations"),
 						apply(relTypes, function(v, rT){
