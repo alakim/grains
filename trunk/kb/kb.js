@@ -155,6 +155,31 @@ KB.Collections = {
 			return item==null?[]:[item].concat(_.getRelationPath(_.getRelationTarget(item, relType), relType));
 		},
 		
+		getRelationTree: function(item, relType){var _=this;
+			if(item==null)return [];
+			var tree = [item];
+			var targets = _.getRelationTargets(item, relType);
+			if(targets){
+				tree.push([]);
+				each(targets, function(trg){
+					tree[1].push(_.getRelationTree(trg, relType));
+				});
+			}
+			return tree;
+		},
+		
+		getRelationTargets: function(item, relType){var _=this;
+			if(!item.relations)
+				return null;
+			var rels = filter(item.relations, function(rel){return rel.type==relType;});
+			var res = [];
+			each(rels, function(rel){
+				var t = _.items[rel.trg];
+				res.push(t?t:rel.trg);
+			});
+			return res;
+		},
+		
 		getRelationTarget: function(item, relType){var _=this;
 			if(!item.relations)
 				return null;

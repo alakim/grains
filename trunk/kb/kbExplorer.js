@@ -49,7 +49,6 @@ function KbExplorer(kb, panelID){
 		
 		search: function(){var _=this;
 			var searchValue = $("searchField"+_.idx).value;
-			console.log("searching for "+searchValue);
 			var re = new RegExp(searchValue, "ig");
 			_.selectedItems = filter(_.kb.items, function(itm, nm){
 				return itm.name.match(re) || nm.match(re);
@@ -61,24 +60,53 @@ function KbExplorer(kb, panelID){
 		displaySelectedItems: function(){with(Html){var _=this;
 			$("selectedItems"+_.idx).innerHTML = div(
 				apply(_.selectedItems, function(itm, nm){
-					return span({"class":"kbExplorerSelectedItem", onclick:"KbExplorer.displayItem("+_.idx+", '"+nm+"')"}, itm.name);
+					return span({"class":"KbExplorer SelectedItem", onclick:"KbExplorer.displayItem("+_.idx+", '"+nm+"')"}, itm.name);
 				})
+			);
+		}},
+		
+		templates:{
+			relationPath: function(itm, relType){with(Html){
+				return div(
+					apply(kb.getRelationPath(itm, relType), function(s, i){
+						return span(
+							i>0?span({style:"margin:3px;"}, relType):null,
+							span({style:"color:red;"}, s?s.name:"NULL")
+						);
+					})					
+				);
+			}}
+			
+		},
+		
+		relationTree: function(relType, tree){with(Html){var _=this;
+			if(!tree || !tree.length)
+				return "";
+			return tagCollection(
+				span({style:"color:red;"}, tree[0].name?tree[0].name:tree[0]),
+				tree[1] && tree[1].length?tagCollection(
+					span({style:"margin:3px;"}, relType),
+					ul({"class":"KbExplorer relationTree"},
+						apply(tree[1], function(nd){
+							return li(_.relationTree(relType, nd));
+						})
+					)
+				):null
 			);
 		}},
 		
 		displayItem: function(nm){with(Html){var _=this;
 			var itm = _.kb.items[nm];
+			var relTypes = {};
+			if(itm.relations) each(itm.relations, function(rel){relTypes[rel.type] = true;});
 			$("itemView"+_.idx).innerHTML = div(
 				div(itm.name),
-				div(
-					p("Inheritance"),
-					apply(kb.getRelationPath(itm, "is"), function(s, i){
-						return span(
-							i>0?" -> ":null,
-							span({style:"color:red;"}, s?s.name:"NULL")
-						);
-					})
-				)
+				itm.relations && itm.relations.length? div({"class":"KbExplorer section"}, 
+					p({"class":"KbExplorer title"}, "Relations"),
+						apply(relTypes, function(v, rT){
+							return _.relationTree(rT, kb.getRelationTree(itm, rT));
+						})
+				):null
 			);
 		}},
 		
@@ -87,7 +115,7 @@ function KbExplorer(kb, panelID){
 				return typeof(rel.trg)=="string";
 			});
 			
-			$(_.panelID).innerHTML = div({"class":"KbExplorerMainView"},
+			$(_.panelID).innerHTML = div({"class":"KbExplorer MainView"},
 				h1(_.kb.name),
 				p(
 					input({type:"text", id:"searchField"+_.idx}),
@@ -105,7 +133,7 @@ function KbExplorer(kb, panelID){
 						})
 					)
 					:null,
-				div({id:"itemView"+_.idx, "class":"kbExplorerItemView"}),
+				div({id:"itemView"+_.idx, "class":"KbExplorer ItemView"}),
 				
 				p({"class":"logo"},
 					"Powered by KB v.", KB.version, ", ",
