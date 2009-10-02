@@ -1,11 +1,11 @@
-.KbExplorerMainView{
+.KbExplorer.MainView{
 	background-color:#fafafa;
 	padding:5px;
 	margin:0px;
 	border:1px solid #888888;
 }
 
-.kbExplorerSelectedItem{
+.KbExplorer.SelectedItem{
 	background-color:#ffffee;
 	border:1px solid #000088;
 	padding:3px;
@@ -13,9 +13,24 @@
 	cursor:pointer; cursor:hand;
 }
 
-.kbExplorerItemView{
+.KbExplorer.ItemView{
 	margin:5px;
 	padding:5px;
 	border: 1px solid black;
 	background-color:#ffffff;
+}
+
+.KbExplorer.section{
+	border: 1px solid black;
+	margin:1px;
+	padding:2px;
+}
+
+.KbExplorer.title{
+	font-weight:bold;
+}
+
+.KbExplorer.relationTree{
+	margin-top:0px;
+	padding-top:0px;
 }
