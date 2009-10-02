@@ -34,3 +34,7 @@
 	margin-top:0px;
 	padding-top:0px;
 }
+.KbExplorer.treeNode{
+	color:red;
+	cursor:pointer; cursor:hand;
+}

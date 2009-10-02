@@ -82,8 +82,11 @@ function KbExplorer(kb, panelID){
 		relationTree: function(relType, tree){with(Html){var _=this;
 			if(!tree || !tree.length)
 				return "";
+			var nodeAttributes = {"class":"KbExplorer treeNode"};
+			if(tree[0].name) nodeAttributes.onclick = "KbExplorer.displayItem("+_.idx+",'"+tree[0].id+"')";
+			var nodeTitle = tree[0].name?tree[0].name:tree[0];
 			return tagCollection(
-				span({style:"color:red;"}, tree[0].name?tree[0].name:tree[0]),
+				span(nodeAttributes, nodeTitle),
 				tree[1] && tree[1].length?tagCollection(
 					span({style:"margin:3px;"}, relType),
 					ul({"class":"KbExplorer relationTree"},
