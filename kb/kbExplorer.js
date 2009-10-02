@@ -101,16 +101,22 @@ function KbExplorer(kb, panelID){
 		displayItem: function(nm){with(Html){var _=this;
 			var itm = _.kb.items[nm];
 			var relTypes = {};
-			if(itm.relations) each(itm.relations, function(rel){relTypes[rel.type] = true;});
+			each(kb.getRelations(itm, false), function(rel){relTypes[rel.type.name] = true;});
+			var relInversions = {};
+			each(kb.getRelations(itm, true), function(rel){relInversions[rel.type.inversion] = true;});
 			$("itemView"+_.idx).innerHTML = div(
 				div({"class":"KbExplorer title"}, itm.name),
 				itm.description?p(itm.description):null,
-				itm.relations && itm.relations.length? div({"class":"KbExplorer section"}, 
+				div({"class":"KbExplorer section"}, 
 					p({"class":"KbExplorer title"}, "Relations"),
-						apply(relTypes, function(v, rT){
-							return _.relationTree(rT, kb.getRelationTree(itm, rT));
-						})
-				):null
+					apply(relTypes, function(v, rT){
+						return _.relationTree(rT, kb.getRelationTree(itm, rT, false));
+					}),
+					
+					apply(relInversions, function(v, rT){
+						return _.relationTree(rT, kb.getRelationTree(itm, rT, true));
+					})		
+				)
 			);
 		}},
 		
