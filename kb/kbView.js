@@ -128,6 +128,11 @@ function KbView(kb, panelID){
 							i>0?", ":null,
 							a({href:ref.url, target:"_blank"}, ref.title)
 						);
+					}),
+					apply(itm.docs, function(doc, i){
+						return p(
+							a({href:doc.url}, doc.title)
+						);
 					})
 				)
 			);

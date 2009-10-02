@@ -116,7 +116,15 @@ function KbExplorer(kb, panelID){
 					apply(relInversions, function(v, rT){
 						return _.relationTree(rT, kb.getRelationTree(itm, rT, true));
 					})		
-				)
+				),
+				itm.docs?div({"class":"KbExplorer section"}, 
+					p({"class":"KbExplorer title"}, "Links"),
+					apply(itm.docs, function(doc, i){
+						return p(
+							a({href:doc.url}, doc.title)
+						);
+					})
+				):null
 			);
 		}},
 		
