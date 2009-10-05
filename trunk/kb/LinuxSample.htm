@@ -18,7 +18,26 @@ var kb = new KB({
 		uses:KB.standardRelations.uses,
 		includes:KB.standardRelations.includes,
 		comesFrom:{name:"comes from", inversion:"predecessor of", description:"Указывает на происхождение сущности (в историческом аспекте)."},
-		refTo:{name:"references to", inversion:"referenced by", description:"Обозначает смысловую связь между двумя сущностями"}
+		refTo:{
+			name:"references to", inversion:"referenced by", description:"Обозначает смысловую связь между двумя сущностями",
+			rules:{
+				testCount: function(kb, relType){
+					var count = 0;
+					KB.Collections.each(kb.relations, function(rel){
+						if(rel.type.name=="refTo") count++;
+					});
+					kb.errors.log("test message", "kb contains "+count+" 'refTo' relations");
+				}
+			}
+		}
+	},
+	
+	rules:{
+		testCount:function(kb){
+			var count = 0;
+			KB.Collections.each(kb.items, function(){count++});
+			kb.errors.log("test warning", "kb contains "+count+" items")
+		}
 	},
 	
 	items:{
