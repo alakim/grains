@@ -21,22 +21,16 @@ var kb = new KB({
 		refTo:{
 			name:"references to", inversion:"referenced by", description:"Обозначает смысловую связь между двумя сущностями",
 			rules:{
-				testCount: function(kb, relType){
-					var count = 0;
-					KB.Collections.each(kb.relations, function(rel){
-						if(rel.type.name=="refTo") count++;
-					});
-					kb.errors.log("test message", "kb contains "+count+" 'refTo' relations");
-				}
+				testCount: function(kb, relType){with(KB.Collections){
+					kb.errors.log("test message", "kb contains "+count(filter(kb.relations, function(rel){return rel.type.name=="refTo";}))+" 'refTo' relations");					
+				}}
 			}
 		}
 	},
 	
 	rules:{
 		testCount:function(kb){
-			var count = 0;
-			KB.Collections.each(kb.items, function(){count++});
-			kb.errors.log("test warning", "kb contains "+count+" items")
+			kb.errors.log("test warning", "kb contains "+KB.Collections.count(kb.items)+" items")
 		}
 	},
 	

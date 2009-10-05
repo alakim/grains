@@ -24,6 +24,16 @@ KB.Collections = {
 		}
 	},
 	
+	count: function(coll){
+		if(typeof(coll.length)!="undefined")
+			return coll.length;
+		else{
+			var count = 0;
+			for(var k in coll) count++;
+			return count;
+		}
+	},
+	
 	filter: function(coll, cond, arrayMode){
 		var arrayMode = arrayMode!=null ?arrayMode :KB.Collections.isArray(coll);
 		var res = arrayMode?[]:{};
@@ -67,7 +77,7 @@ KB.Collections = {
 	var find = KB.Collections.find;
 	
 	extend(KB, {
-		version: "2.5.196",
+		version: "2.6.197",
 		instances: [],
 		
 		standardRelations:{
