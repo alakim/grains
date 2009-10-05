@@ -38,3 +38,11 @@
 	color:red;
 	cursor:pointer; cursor:hand;
 }
+
+.KbExplorer.errorType{
+	font-weight:bold;
+}
+.KbExplorer.errorMessage{
+	color:red;
+}
+

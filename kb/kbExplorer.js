@@ -19,7 +19,7 @@ function KbExplorer(kb, panelID){
 	var filter = KB.Collections.filter;
 	
 	extend(KbExplorer, {
-		version: "1.0.0",
+		version: "1.0.196",
 		animationTimeout: 1000,
 		instances: [],
 		
@@ -129,10 +129,6 @@ function KbExplorer(kb, panelID){
 		}},
 		
 		displayMainView: function(){with(Html){var _=this;
-			var relationsToUndefinedItems = filter(_.kb.relations, function(rel){
-				return typeof(rel.trg)=="string";
-			});
-			
 			$(_.panelID).innerHTML = div({"class":"KbExplorer MainView"},
 				h1(_.kb.name),
 				p(
@@ -142,15 +138,13 @@ function KbExplorer(kb, panelID){
 				
 				div({id:"selectedItems"+_.idx, style:"margin:5px; padding:5px;"}),
 				
-				relationsToUndefinedItems.length?
-					div({"class":"warning"},
-						span({"class":"subTitle"}, "Undefined items"),
-						": ",
-						apply(relationsToUndefinedItems, function(rel){
-								return span({"class":"undefinedItem"},rel.trg);
-						})
-					)
-					:null,
+				_.kb.errors.$count()? div({"class":"warning"},
+					_.kb.errors.render(function(err){
+						return p(
+							span({"class":"KbExplorer errorType"}, err.type), ": ", span({"class":"KbExplorer errorMessage"}, err.message)
+						);
+					})
+				):null,
 				div({id:"itemView"+_.idx, "class":"KbExplorer ItemView"}),
 				
 				p({"class":"logo"},

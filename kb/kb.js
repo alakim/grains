@@ -11,6 +11,7 @@ KB.Collections = {
 	isArray: function(coll){return typeof(coll.length)!="undefined";},
 	
 	each: function(coll, F){
+		if(coll==null) return;
 		if(KB.Collections.isArray(coll)){
 			for(var i=0; i<coll.length; i++){
 				F(coll[i], i);
@@ -66,13 +67,30 @@ KB.Collections = {
 	var find = KB.Collections.find;
 	
 	extend(KB, {
-		version: "2.4.92",
+		version: "2.5.196",
 		instances: [],
 		
 		standardRelations:{
 			is:{name:"is", inversion:"may be", description:"Устанавливает иерархию наследования сущностей"},
 			uses:{name:"uses", inversion:"used by", description:"Обозначает использование одной сущности другой"},
 			includes:{name:"includes", inversion:"included by", description:"Обозначает включение одной сущности в другую"}
+		},
+		
+		standardRules:{
+			findUndefinedItems: function(kb){
+				var relationsToUndefinedItems = filter(kb.relations, function(rel){
+					return typeof(rel.trg)=="string";
+				});
+				var dict = {};
+				each(relationsToUndefinedItems, function(r){dict[r.trg] = true;});
+				each(dict, function(v, name){
+					kb.errors.log("undefined item", name);
+				});
+			},
+			
+			circularReferences: function(kb){
+				kb.errors.log("not implemented rule", "Standard rule 'circularReferences' is not implemented");
+			}
 		},
 		
 		getInstance: function(idx){
@@ -93,10 +111,32 @@ KB.Collections = {
 		}
 	});
 	
+	function Log(){
+		var items = [];
+		this.log = function(type, msg){items.push({type:type, message:msg});};
+		this.getItems = function(){return items.concat();};
+		this.clear = function(){items = [];};
+		this.$count = function(){return items.length;};
+		this.render = function(template){return Html.apply(items, template);};
+	};
+	
 	extend(KB.prototype, {
 		items: {},
 		relationTypes: {},
 		relations:[],
+		errors:new Log(),
+		rules:[],
+		
+		checkRules: function(){var _=this;
+			each(KB.standardRules, function(r){(r(_))});
+			each(_.rules, function(r){r(_)});
+			each(_.relationTypes, function(relType){
+				each(relType.rules, function(r){r(_, relType);});
+			});
+			each(_.items, function(itm){
+				each(itm.rules, function(r){r(_, itm);});
+			});
+		},
 		
 		setItemIDs: function(){
 			each(this.items, function(itm, id){
@@ -140,6 +180,7 @@ KB.Collections = {
 			each(_.items, function(itm){
 				_.setItemRelations(itm);
 			});
+			_.checkRules();
 		},
 		
 		getRelations: function(itm, inversion){
