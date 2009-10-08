@@ -36,7 +36,7 @@
 *******************************************************************************/
 
 var JSUnit = {
-	version: "1.2",
+	version: "1.2.199",
 	
 	MockObject: function(){
 		this.expectations = [];
@@ -273,6 +273,8 @@ JSUnit.Test.prototype = {
 		}
 
 		function compare(x,y){
+			if(x==null && y==null) return true;
+			if(x==null || y==null) return false;
 			if(typeof(x)!=typeof(y)) return false;
 			if(x.constructor==Array){
 				if(x.length!=y.length) return false;
