@@ -1,5 +1,8 @@
 /******************************************************************************
-*     Среда модульного тестирования
+*     Среда модульного тестирования 
+*	  http://code.google.com/p/grains/source/browse/#svn/trunk/tools
+*		
+*		
 *  Блокировка тестов: 
 *     1) можно в конструкторе теста задавать параметр "enabled"
 *     2) можно в url формы тестирования задавать номера включаемых/выключаемых тестов:
@@ -33,7 +36,7 @@
 *******************************************************************************/
 
 var JSUnit = {
-	version: "1.1 NA",
+	version: "1.2",
 	
 	MockObject: function(){
 		this.expectations = [];
@@ -245,6 +248,53 @@ JSUnit.MockObject.prototype = {
 JSUnit.Test.prototype = {
 	run: function(){},
 	assert: function(expr, std, msg){
+			
+		function valueToString(val){
+			if(val==null)
+				return "null";
+			if(val=="")
+				return "\"\"";
+			if(typeof(val.length)!="undefined" && typeof(val)!="string"){
+				var s = [];
+				for(var i=0; i<val.length; i++){
+					s.push(valueToString(val[i]));
+				}
+				return "["+s.join(",")+"]";
+			}
+			
+			if(typeof(val)=="object"){
+				var s = [];
+				for(var k in val){
+					s.push(k+":"+valueToString(val[k]));
+				}
+				return "{"+s.join("; ")+"}";
+			}
+			return val.toString();
+		}
+
+		function compare(x,y){
+			if(typeof(x)!=typeof(y)) return false;
+			if(x.constructor==Array){
+				if(x.length!=y.length) return false;
+				for(var i=0; i<x.length; i++){
+					if(!compare(x[i], y[i])) return false;
+				}
+				return true;
+			}
+			if(typeof(x)=="object"){
+				for(var k in x){
+					if(!compare(x[k], y[k])) return false;
+				}
+				for(var k in y){
+					if(!compare(x[k], y[k])) return false;
+				}
+				return true;
+			}
+			if(typeof(x)=="function") return true;
+			
+			return x == y;
+		}
+		
 		function difPos(s1, s2){
 			if(typeof(s1)!="string" || typeof(s2)!="string")
 				return null;
@@ -256,10 +306,10 @@ JSUnit.Test.prototype = {
 			}
 			return null;
 		}
-		if(expr!=std){
+		if(!compare(expr, std)){
 			var pos = difPos(std, expr);
 			var posStr = pos==null?"":(" at pos "+pos+": '"+std.slice(0, pos)+"'");
-			throw new Error("Assertion failed: "+this._str2Html((msg?msg:""))+" expected: "+this._str2Html(std)+", but was: "+this._str2Html(expr)+posStr);
+			throw new Error("Assertion failed: "+this._str2Html((msg?msg:""))+" expected: "+this._str2Html(valueToString(std))+", but was: "+this._str2Html(valueToString(expr))+posStr);
 		}
 	},
 	
