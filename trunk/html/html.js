@@ -21,7 +21,7 @@ var Html = {};
 	function defineNotEmptyTags(tags){defineTags(tags, false, true)}
 	
 	extend(Html, {
-		version: "1.6.97",
+		version: "2.0.201",
 		xhtmlMode: true,
 		
 		tag: function(name, content, selfClosing, notEmpty){
@@ -70,6 +70,38 @@ var Html = {};
 				res.push(tag);
 			});
 			return res.join("");
+		},
+		
+		json: function(o){
+			if(o==null) return 'null';
+			if(typeof(o)=="string") return "'"+o+"'";
+			if(typeof(o)=="boolean") return o.toString();
+			if(typeof(o)=="number") return o.toString();
+			if(typeof(o)=="function") return "";
+			if(o.constructor==Array){
+				var res = [];
+				for(var i=0; i<o.length; i++) res.push(Html.json(o[i]));
+				return "["+res.join(",")+"]";
+			}
+			if(typeof(o)=="object"){
+				var res = [];
+				for(var k in o) res.push(k+":"+Html.json(o[k]));
+				return "{"+res.join(",")+"}";
+			}
+			return "";
+		},
+		
+		format: function(str, v1, v2){
+			for(var i=0; i<arguments.length; i++){
+				str = str.replace(new RegExp("{\s*"+i+"\s*}", "ig"), arguments[i+1])
+			}
+			return str;
+		},
+		
+		callFunction: function(name, a1, a2){
+			var args = [];
+			for(var i=1; i<arguments.length; i++) args.push(Html.json(arguments[i]));
+			return [name, "(", args.join(","), ")"].join("");
 		}
 	});
 	
