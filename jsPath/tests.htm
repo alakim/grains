@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>JsPath Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="jspath.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля JsPath", "Configuration").run = function(){
+	this.assert(typeof(JsPath), "object");
+}
+
+new JSUnit.Test("steps").run = function(){with(JsPath)
+	var steps = JsPath.privates.getSteps("abc/def");
+	this.assert(steps, ["abc", "def"]);
+}
+
+new JSUnit.Test("test 1").run = function(){with(JsPath){
+	var obj = {};
+	set(obj, "abc", 1);
+	this.assert(obj.abc, 1, "Error 1");
+	set(obj, "def/ghi", 11);
+	this.assert(obj.def.ghi, 11, "Error 2");
+	
+	set(obj, "x/#0", "xx");
+	set(obj, "x/#1", "abc");
+	this.assert(obj.x, ["xx","abc"], "Error 3");
+	
+	this.assert(obj, {abc:1, def:{ghi:11}, x:["xx", "abc"]}, "Error 4");
+	this.assert(obj.x.constructor.name, "Array", "Error 5");
+}}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = JsPath.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JsPath Unit Tests</h1>
+	<p>JsPath v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
