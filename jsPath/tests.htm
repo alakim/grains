@@ -25,8 +25,14 @@ new JSUnit.Test("test 1").run = function(){with(JsPath){
 	set(obj, "x/#1", "abc");
 	this.assert(obj.x, ["xx","abc"], "Error 3");
 	
-	this.assert(obj, {abc:1, def:{ghi:11}, x:["xx", "abc"]}, "Error 4");
-	this.assert(obj.x.constructor.name, "Array", "Error 5");
+	this.assert(obj, {abc:1, def:{ghi:11}, x:["xx", "abc"]}, "Error 4.1");
+	this.assert(obj.x.constructor.name, "Array", "Error 4.2");
+	this.assert(obj.x.length, 2, "Error 4.3");
+	
+	this.assert(get(obj, "abc"), 1, "Error 5.1");
+	this.assert(get(obj, "def/ghi"), 11, "Error 5.2");
+	this.assert(get(obj, "x/#0"), "xx", "Error 5.3");
+	this.assert(get(obj, "x/#1"), "abc", "Error 5.4");
 }}
 
 

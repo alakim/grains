@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"1.0.203"
+	version:"1.0.204"
 };
 
 (function(){
@@ -29,7 +29,7 @@ var JsPath = {
 			var o = obj;
 			each(getSteps(path), function(s, i, next){
 				var arrMode = arrayMode(s);
-				var idx = arrMode?RegExp.$1:null;
+				var idx = arrMode?parseInt(RegExp.$1):null;
 				if(next==null){
 					if(arrMode) o[idx] = val;
 					else o[s] = val;
@@ -51,7 +51,12 @@ var JsPath = {
 		
 		get: function(obj, path){
 			var o = obj;
-			each(getSteps(path), function(s){o = o[s];});
+			each(getSteps(path), function(s){
+				if(arrayMode(s)){
+					o = o[parseInt(RegExp.$1)];
+				}
+				else o = o[s];
+			});
 			return o;
 		}
 	});
