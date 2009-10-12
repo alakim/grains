@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"1.0.204"
+	version:"1.0.205"
 };
 
 (function(){
@@ -10,21 +10,11 @@ var JsPath = {
 			for(var k in coll) F(coll[k], k);
 	}
 	
-	function extend(o,s){
-		for(var k in s) o[k] = s[k];
-	}
+	function extend(o,s){for(var k in s) o[k] = s[k];}
+	function getSteps(path){return path.split("/");}
+	function arrayMode(step){return step.match(/^#(\d+)/);}
 	
-	var _=JsPath;
-	
-	function getSteps(path){
-		return path.split("/");
-	}
-	
-	function arrayMode(step){
-		return step.match(/^#(\d+)/);
-	}
-	
-	extend(_, {
+	extend(JsPath, {
 		set: function(obj, path, val){
 			var o = obj;
 			each(getSteps(path), function(s, i, next){
@@ -60,10 +50,4 @@ var JsPath = {
 			return o;
 		}
 	});
-	
-	if(typeof(JSUnit)!="undefined"){
-		_.privates = {
-			getSteps:getSteps
-		}
-	}
 })();

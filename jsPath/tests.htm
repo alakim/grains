@@ -9,12 +9,7 @@ new JSUnit.Test("Подключение модуля JsPath", "Configuration").run = function(){
 	this.assert(typeof(JsPath), "object");
 }
 
-new JSUnit.Test("steps").run = function(){with(JsPath)
-	var steps = JsPath.privates.getSteps("abc/def");
-	this.assert(steps, ["abc", "def"]);
-}
-
-new JSUnit.Test("test 1").run = function(){with(JsPath){
+new JSUnit.Test("test 1", "Attribute access").run = function(){with(JsPath){
 	var obj = {};
 	set(obj, "abc", 1);
 	this.assert(obj.abc, 1, "Error 1");
@@ -26,7 +21,8 @@ new JSUnit.Test("test 1").run = function(){with(JsPath){
 	this.assert(obj.x, ["xx","abc"], "Error 3");
 	
 	this.assert(obj, {abc:1, def:{ghi:11}, x:["xx", "abc"]}, "Error 4.1");
-	this.assert(obj.x.constructor.name, "Array", "Error 4.2");
+	//this.assert(obj.x.constructor.name, "Array", "Error 4.2");
+	this.assert(obj.x.constructor, Array, "Error 4.2");
 	this.assert(obj.x.length, 2, "Error 4.3");
 	
 	this.assert(get(obj, "abc"), 1, "Error 5.1");
