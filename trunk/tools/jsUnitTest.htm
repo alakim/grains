@@ -16,10 +16,15 @@ new JSUnit.Test("Сравнение массивов").run = function(){
 	this.assert([1], [2], "Правильная ошибка!");
 }
 
-new JSUnit.Test("Сравнение объектов").run = function(){
+new JSUnit.Test("test 1", "Сравнение объектов").run = function(){
 	this.assert({x:1, y:2}, {x:1, y:2});
 	this.assert({}, {});
 	this.assert({x:1, y:2}, {x:1, y:22}, "Правильная ошибка!");
+}
+
+new JSUnit.Test("test 2", "Сравнение объектов").run = function(){
+	this.assert({node:{name:"abc"}}, {node:{name:"abc"}});
+	this.assert({node:{name:"abc"}}, {node:{name:"def"}}, "Правильная ошибка!");
 }
 
 function init(){
