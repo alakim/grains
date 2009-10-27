@@ -9,8 +9,8 @@ function init(){with(Html){
 	var html = [];
 	for(var i=0; i<20; i++){
 		var color = colorSet.next();
-		console.log(color);
-		html.push(div({style:"background-color:#"+color+"; width:20px; height:20px; margin:1px; border:1px solid #888888;"}));
+		var ccolor = RandomColorSet.contra(color);
+		html.push(div({style:"background-color:#"+color+"; color:#"+ccolor+"; width:20px; height:20px; margin:1px; border:1px solid #888888;"}, "abc"));
 	}
 	document.getElementById("out").innerHTML = html.join("");
 }}
