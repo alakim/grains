@@ -1,0 +1,23 @@
+<html>
+<head>
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="rcolor.js"></script>
+<script type="text/javascript">
+
+function init(){with(Html){
+	var colorSet = new RandomColorSet("ffff00");
+	var html = [];
+	for(var i=0; i<20; i++){
+		var color = colorSet.next();
+		console.log(color);
+		html.push(div({style:"background-color:#"+color+"; width:20px; height:20px; margin:1px; border:1px solid #888888;"}));
+	}
+	document.getElementById("out").innerHTML = html.join("");
+}}
+</script>
+</head>
+<body onload="init()">
+	<h1>Random color module test</h1>
+	<div id="out"></div>
+</body>
+</html>

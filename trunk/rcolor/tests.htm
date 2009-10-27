@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>RColor Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="rcolor.js"></script>
+<script type="text/javascript">
+function $testDiv(){return document.getElementById("testDiv");}
+
+new JSUnit.Test("Подключение модуля rcolor", "Configuration").run = function(){
+	this.assert(typeof(RandomColorSet), "function");
+}
+
+new JSUnit.Test("Hex Formatting", "Formatting").run = function(){
+	this.assert(RandomColorSet.formatHex(1), "1");
+	this.assert(RandomColorSet.formatHex(8), "8");
+	this.assert(RandomColorSet.formatHex(10), "a");
+	this.assert(RandomColorSet.formatHex(0xa), "a");
+	this.assert(RandomColorSet.formatHex(0xff), "ff");
+	this.assert(RandomColorSet.formatHex(0xfa), "fa");
+	this.assert(RandomColorSet.formatHex(0xfc), "fc");
+	this.assert(RandomColorSet.formatHex(0xfe), "fe");
+}
+
+new JSUnit.Test("Color Formatting", "Formatting").run = function(){
+	this.assert(RandomColorSet.formatColor(0xff, 0xff, 0xff), "ffffff");
+	this.assert(RandomColorSet.formatColor(0x00, 0x00, 0x00), "000000");
+	this.assert(RandomColorSet.formatColor(0x08, 0x88, 0x0a), "08880a");
+	this.assert(RandomColorSet.formatColor(0x18, 0x18, 0x5a), "18185a");
+}
+
+
+new JSUnit.Test("Random steps", "Randomizing").run = function(){var _=this;
+	function test(){
+		var x = RandomColorSet.randomSteps(1);
+		_.assert(x>-10 && x<10, true);
+	}
+	
+	for(var i=0; i<300; i++){test();}
+}
+
+</script>
+</head>
+<body onload="JSUnit.init()">
+	<h1>RColor Unit Tests</h1>
+	<div id="testDiv"></div>
+</body>
+</html>
