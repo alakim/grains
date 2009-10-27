@@ -1,11 +1,9 @@
 function RandomColorSet(startingColor){
 	this.startingColor = startingColor?startingColor:"ffffff";
-	var mt = this.startingColor.match(/^([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/);
-	if(mt){
-		this.R = parseInt("0x"+mt[1]);
-		this.G = parseInt("0x"+mt[2]);
-		this.B = parseInt("0x"+mt[3]);
-	}
+	var clr = RandomColorSet.parseColor(this.startingColor);
+	this.R = clr.r;
+	this.G = clr.g;
+	this.B = clr.b;
 }
 
 (function(){
@@ -21,6 +19,15 @@ function RandomColorSet(startingColor){
 		randomSteps:function(step){
 			var div = 8;
 			return (Math.ceil(Math.random()*div*2)-div)*step;
+		},
+		
+		parseColor: function(color){
+			var mt = color.match(/^([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/);
+			return mt?{
+				r: parseInt("0x"+mt[1]),
+				g: parseInt("0x"+mt[2]),
+				b: parseInt("0x"+mt[3])
+			}:null;
 		},
 		
 		formatHex: function(d){
@@ -42,6 +49,13 @@ function RandomColorSet(startingColor){
 		
 		variate: function(v){
 			return ((v+__.randomSteps(__.step))%__.volume)+__.volume;
+		},
+		
+		contra: function(color){
+			var clr = __.parseColor(color);
+			var c = 255;
+			var s = Math.ceil(c/2);
+			return __.formatColor((clr.r+s)%c, (clr.g+s)%c, (clr.b+s)%c);
 		}
 	});
 	
