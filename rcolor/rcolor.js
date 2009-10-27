@@ -15,10 +15,11 @@ function RandomColorSet(startingColor){
 	
 	
 	extend(__, {
-		step:1,
+		step:15,
+		volume:135,
 		
 		randomSteps:function(step){
-			var div = 3;
+			var div = 8;
 			return (Math.ceil(Math.random()*div*2)-div)*step;
 		},
 		
@@ -37,6 +38,10 @@ function RandomColorSet(startingColor){
 			return (r<16?"0":"")+__.formatHex(r)+
 				(g<16?"0":"")+__.formatHex(g)+
 				(b<16?"0":"")+__.formatHex(b);
+		},
+		
+		variate: function(v){
+			return ((v+__.randomSteps(__.step))%__.volume)+__.volume;
 		}
 	});
 	
@@ -47,9 +52,9 @@ function RandomColorSet(startingColor){
 		B:0xff,
 		
 		next: function(){var _=this;
-			_.R+=__.randomSteps(__.step);
-			_.G+=__.randomSteps(__.step);
-			_.B+=__.randomSteps(__.step);
+			_.R = __.variate(_.R);
+			_.G = __.variate(_.G);
+			_.B = __.variate(_.B);
 			return __.formatColor(_.R, _.G, _.B);
 		}
 	};
