@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.1.202",
+	version: "2.1.211",
 	xhtmlMode: true	
 };
 
@@ -74,7 +74,7 @@ var Html = {
 		
 		json: function(o){
 			if(o==null) return 'null';
-			if(typeof(o)=="string") return "'"+o+"'";
+			if(typeof(o)=="string") return "'"+o.replace(/\"/g, "\\\"")+"'";
 			if(typeof(o)=="boolean") return o.toString();
 			if(typeof(o)=="number") return o.toString();
 			if(typeof(o)=="function") return "";

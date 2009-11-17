@@ -202,6 +202,7 @@ new JSUnit.Test("format function", "Formatting").run = function(){ with(Html){
 new JSUnit.Test("callFunction function", "Formatting").run = function(){ with(Html){
 	this.assert(callFunction("alert", 1), "alert(1)");
 	this.assert(callFunction("alert", "abc"), "alert('abc')");
+	this.assert(callFunction("alert", "ОАО \"Персей\""), "alert('ОАО \\\"Персей\\\"')");
 	this.assert(callFunction("alert", true), "alert(true)");
 	this.assert(callFunction("myFunction", 1, "abc", [1,2,3], {x:1, y:2, name:"abba"}), "myFunction(1,'abc',[1,2,3],{x:1,y:2,name:'abba'})");
 	
