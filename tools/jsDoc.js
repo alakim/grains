@@ -9,7 +9,7 @@ function Documentation(objName, description, defs){
 	
 }
 
-Documentation.version = "1.0.0";
+Documentation.version = "1.0.214";
 Documentation.sources = [];
 
 (function(){
@@ -22,7 +22,7 @@ Documentation.sources = [];
 	extend(__, {
 		instances:[],
 		
-		show:function(){with(Html){
+		show:function(){with(Html){var _=this;
 			var toc = document.createElement("DIV");
 			document.body.appendChild(toc);
 			toc.innerHTML = div(
@@ -32,23 +32,40 @@ Documentation.sources = [];
 			);
 			toc.style.marginBottom = 15;
 			
+			var srcDock = document.createElement("DIV");
+			document.body.appendChild(srcDock);
+			srcDock.innerHTML = div({style:"display:none;"},
+				div(apply(__.sources, function(srcID){
+					return iframe({id:"docFrame"+_.idx+"_"+srcID, name:"docFrame"+_.idx+"_"+srcID, width:100, height:100, src:$(srcID).src});
+				}))
+			);
+			
+			
 			for(var i=0;i<Documentation.instances.length;i++){
 				var outdiv = document.createElement("DIV");
 				document.body.appendChild(outdiv);
 				var inst = Documentation.instances[i];
 				inst.buildView(outdiv);
 			}
-		}}
+		}},
+		
+		
+		showSrcCode: function(idx, srcID, frameIdx){__.instances[idx].showSrcCode(srcID, frameIdx);}
 	});
 	
 	__.prototype = {
 		buildView: function(outdiv){with(Html){var _=this;
 			var obj = window[_.objName];
 			outdiv.innerHTML = div({"class":"globalObject"},
+			
 				div(span({style:"font-weight:bold;"}, "Sources:"),
 					div({style:"margin-left:30px;"},
-						apply(Documentation.sources, function(src){
-							return div(span({style:"font-weight:bold;"}, src), ": ", $(src).src);
+						apply(Documentation.sources, function(srcID, i){
+							return div(
+								span({style:"font-weight:bold;"}, srcID), ": ", 
+								$(srcID).src,
+								button({onclick:callFunction("Documentation.showSrcCode", _.idx, srcID, i)}, "show code")
+							);
 						})
 					)
 				),
@@ -59,6 +76,12 @@ Documentation.sources = [];
 				p({style:"text-align:center; margin-top:80px; font-size:10px; font-family:Tahoma, Arial, Sans-serif; color:#cccccc; border-top:1px solid #cccccc;"}, "Powered by jsDoc v.", Documentation.version)
 			)
 		}},
+		
+		showSrcCode: function(srcID, frameIdx){var _=this;
+			//var code = $("docFrame"+_.idx+"_"+srcID).document.innerHTML;
+			var code = window.frames[frameIdx].document.body.childNodes[0].innerHTML;
+			alert(code);
+		},
 		
 		_buildHtml: function(obj, defs){with(Html){var _=this;
 			if(!obj)
