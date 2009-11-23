@@ -22,15 +22,14 @@ Documentation.sources = [];
 	extend(__, {
 		instances:[],
 		
-		show:function(){
+		show:function(){with(Html){
 			var toc = document.createElement("DIV");
 			document.body.appendChild(toc);
-			var html = [];
-			for(var i=0;i<Documentation.instances.length;i++){
-				var inst = Documentation.instances[i];
-				html.push("<a href=\"#inst"+inst.idx+"\">"+inst.objName+"</a><br>");
-			}
-			toc.innerHTML = html.join("");
+			toc.innerHTML = div(
+				apply(Documentation.instances, function(inst, i){
+					return a({href:"#inst"+inst.idx}, inst.objName);
+				})
+			);
 			toc.style.marginBottom = 15;
 			
 			for(var i=0;i<Documentation.instances.length;i++){
@@ -39,17 +38,19 @@ Documentation.sources = [];
 				var inst = Documentation.instances[i];
 				inst.buildView(outdiv);
 			}
-		}
+		}}
 	});
 	
 	__.prototype = {
 		buildView: function(outdiv){with(Html){var _=this;
 			var obj = window[_.objName];
 			outdiv.innerHTML = div({"class":"globalObject"},
-				div("Sources: ",
-					apply(Documentation.sources, function(src){
-						return div(span({style:"font-weight:bold;"}, src), ": ", $(src).src);
-					})
+				div(span({style:"font-weight:bold;"}, "Sources:"),
+					div({style:"margin-left:30px;"},
+						apply(Documentation.sources, function(src){
+							return div(span({style:"font-weight:bold;"}, src), ": ", $(src).src);
+						})
+					)
 				),
 				h2(a({name:"inst"+_.idx}, _.objName)),
 				_.description?p(_.description):null,
@@ -59,47 +60,47 @@ Documentation.sources = [];
 			)
 		}},
 		
-		_buildHtml: function(obj, defs){
+		_buildHtml: function(obj, defs){with(Html){var _=this;
 			if(!obj)
-				return "<li style=\"color:#ff0000;\"><span style=\"font-weight:bold;\">"+name+"</span> item not implemented</li>";
-			var html = [];
-			html.push("<ol>");
-			for(var k in obj){
-				var doc = this.getDoc(k, defs);
-				var docString = doc!=null
-					?(doc.type+", "+doc.dsc)
-					:"<span style=\"color:#cccccc;\">not documented</span>";
-					
-				html.push("<li><span style=\"font-weight:bold;\">"+k+":</span> "+docString);
-				if(doc!=null && doc.children){
-					var chObj = obj[k];
-					if(!chObj)
-						html.push("Object '"+k+"' not found");
-					else{
-						html.push(this._buildHtml(chObj, doc.children));
-					}
-				}
-				html.push("</li>");
-			}
-			for(var i=0;i<defs.length;i++){
-				var def = defs[i];
-				if(def.type=="instance"){
-					html.push("<li><span style=\"font-weight:bold;\">object instance:</span>");
-					html.push("<ol>");
-					for(var i=0;i<def.children.length;i++){
-						var ch = def.children[i];
-						html.push("<li><span style=\"font-weight:bold;\">"+ch.name+":</span> "+ch.type+", "+ch.dsc+"</li>");
-					}
-					html.push("</ol>");
-					html.push("</li>");
-				}
-				else if(!def.displayed){
-					html.push("<li style=\" color:#aaaaaa;\"><span style=\"font-weight:bold;\">"+def.name+":</span> "+def.type+", "+def.dsc+" (not implemented)</li>");
-				}
-			}
-			html.push("</ol>");
-			return html.join("");
-		},
+				return li({style:"color:#ff0000;"},
+					span({style:"font-weight:bold;"}, name), 
+					"item not implemented"
+				);
+				
+			return ol(
+				apply(obj, function(chObj, k){
+					var doc = _.getDoc(k, defs);
+					var docString = doc!=null
+						?(doc.type+", "+doc.dsc)
+						:span({style:"color:#cccccc;"}, " not documented");
+						
+					return li(span({style:"font-weight:bold;"}, k, ":"), 
+						docString,
+						doc && doc.children? _._buildHtml(chObj, doc.children):null
+					);
+				}),
+				
+				apply(defs, function(def, i){
+					if(def.type=="instance")
+						return li(
+							span({style:"font-weight:bold;"}, "object instance:"),
+							ol(
+								apply(def.children, function(ch, i){
+									return li({style:"color:#aaaaaa;"},
+										span({style:"font-weight:bold;"}, def.name),
+										def.type, ", ", def.dsc, " (not implemented)"
+									);
+								})
+							)
+						);
+					else if(!def.displayed)
+						return li({style:"color:#aaaaaa;"},
+							span({style:"font-weight:bold;"}, def.name), " ",
+							def.type, ", ", def.dsc, " (not implemented)"
+						);
+				})
+			);
+		}},
 		
 		getDoc: function(itemName, defs){
 			for(var i=0;i<defs.length;i++){
