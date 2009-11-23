@@ -1,0 +1,161 @@
+<!ENTITY % basicmarkup_cont "#PCDATA | ref | img | class | sel | code | file | nobr">
+<!ENTITY % basicmarkup "(%basicmarkup_cont;)*">
+<!ENTITY % somecontent "p | code | file | cmd | list | picture | table | objTable | cit | note | srctext | notice | attention | conclusion | definition">
+<!ENTITY dash "&#8211;">
+<!ENTITY arrowright "&#8594;">
+<!ENTITY arrowleft "&#8592;">
+<!-- статья - корневой элемент -->
+<!ELEMENT article (section, book*)>
+<!-- раздел документа 
+	id - идентификатор
+	title - заголовок 
+	viewmode - вид отображения
+		normal - традиционный
+		table - все подразделы сводятся в таблицу-->
+<!ELEMENT section (section | thesis | optional | %somecontent;)*>
+<!ATTLIST section
+	id ID #IMPLIED
+	title CDATA #REQUIRED
+	viewmode (normal | table) "normal"
+	displayInTOC (yes | no) "yes"
+>
+<!-- абзац текста -->
+<!ELEMENT p %basicmarkup;>
+<!-- список 
+	marker - вид маркера-->
+<!ELEMENT list (caption?, li+)>
+<!ATTLIST list
+	marker (bullet | num | none) "bullet"
+>
+<!-- заголовок списка -->
+<!ELEMENT caption %basicmarkup;>
+<!-- элемент списка
+	name - имя элемента (например, если это список переменны, то это имя переменной -->
+<!ELEMENT li (%basicmarkup_cont; | list | notice | optional | note)*>
+<!ATTLIST li
+	name CDATA #IMPLIED
+>
+<!-- иллюстрация 
+		src - ссылка на файл
+		текст - подпись к рисунку-->
+<!ELEMENT picture (#PCDATA)>
+<!ATTLIST picture
+	src CDATA #REQUIRED
+>
+<!--in-line image
+		src - ссылка на файл-->
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+	src CDATA #REQUIRED
+>
+<!-- теги таблицы -->
+<!ELEMENT table (tr)+>
+<!ATTLIST table
+	border CDATA #IMPLIED
+>
+<!ELEMENT tr (td | th)+>
+<!ATTLIST tr
+	class CDATA #IMPLIED
+>
+<!ELEMENT th %basicmarkup;>
+<!ATTLIST th
+	rowspan CDATA #IMPLIED
+	colspan CDATA #IMPLIED
+>
+<!ELEMENT td %basicmarkup;>
+<!ATTLIST td
+	rowspan CDATA #IMPLIED
+	colspan CDATA #IMPLIED
+>
+<!-- гиперссылка 
+	sect - ссылка на главу
+	url - URL источника
+	xart - ссылка на внешний файл, отвечающий article.dtd. 
+			После имени файла через знак # можно указать идентификатор целевой секции
+	xSoftClass - ссылка на внешний файл, отвечающий XSoftDoc/class.dtd
+	-->
+<!ELEMENT ref (#PCDATA)>
+<!ATTLIST ref
+	sect IDREF #IMPLIED
+	url CDATA #IMPLIED
+	xart CDATA #IMPLIED
+	book IDREF #IMPLIED
+	xSoftClass CDATA #IMPLIED
+>
+<!--неразрывный текст-->
+<!ELEMENT nobr (#PCDATA)>
+<!--пример программного кода
+	если родительский элемент - p, то отображается inline
+	в противном случае - в виде блока
+-->
+<!ELEMENT code (#PCDATA | sel | optional | cs_region)*>
+<!-- имя файла, или некоторый путь
+-->
+<!ELEMENT file (#PCDATA)>
+<!--пример работы с командной строкой
+-->
+<!-- регион кода программы на C# -->
+<!ELEMENT cs_region (#PCDATA | cs_region)*>
+<!ATTLIST cs_region
+	name CDATA #IMPLIED
+	display (none | block) "none"
+>
+<!ELEMENT cmd (#PCDATA | sel)*>
+<!-- тезис 
+	dsc - описание-->
+<!ELEMENT thesis (%somecontent;)*>
+<!ATTLIST thesis
+	dsc CDATA #REQUIRED
+>
+<!-- цитата - для читателя-->
+<!ELEMENT cit %basicmarkup;>
+<!--заметка не для читателя -->
+<!ELEMENT note %basicmarkup;>
+<!-- текст из первоисточника - не для читателя -->
+<!ELEMENT srctext %basicmarkup;>
+<!-- имя класса -->
+<!ELEMENT class (#PCDATA)>
+<!-- выделенный текст -->
+<!ELEMENT sel ANY>
+<!-- примечание для читателя -->
+<!ELEMENT notice %basicmarkup;>
+<!-- особо важное примечание для читателя -->
+<!ELEMENT attention %basicmarkup;>
+<!-- определение некоторого понятия 
+	term - понятие (не отображается, а служит для ссылок)
+-->
+<!ELEMENT definition %basicmarkup;>
+<!ATTLIST definition
+	term CDATA #REQUIRED
+>
+<!-- таблица, наполняемая из произвольных тегов - объектов
+каждый такой тег преобразуется в строку таблицы 
+	width - ширина таблицы-->
+<!ELEMENT objTable (tblColumn+, tblObjects)>
+<!ATTLIST objTable
+	width CDATA #IMPLIED
+>
+<!-- определение колонки для таблицы 
+	select - имя атрибута (символ "@" не ставится), из которого следует выбирать значение. 
+		Если вместо имени атрибута стоит точка, то выводится содержимое тега
+		Если вместо имени атрибута стоит #, то выводится номер записи
+	style - описание стиля CSS для ячеек данной колонки
+	текст - заголовок колонки (если во всех колонках этот текст пустой, то строка заголовков 
+				не отображается)-->
+<!ELEMENT tblColumn (#PCDATA)>
+<!ATTLIST tblColumn
+	select CDATA #REQUIRED
+	style CDATA #IMPLIED
+	align (center | left | right) "left"
+	valign (center | top | bottom) "top"
+>
+<!-- объекты - содержимое таблицы -->
+<!ELEMENT tblObjects ANY>
+<!ELEMENT book (#PCDATA | ref)*>
+<!ATTLIST book
+	id ID #REQUIRED
+>
+<!-- необязательный фрагмент
+       обычно скрыт, но при желании можно показать -->
+<!ELEMENT optional (%basicmarkup_cont; | caption | notice | attention | cmd | p)*>
+<!ELEMENT conclusion (#PCDATA)>
