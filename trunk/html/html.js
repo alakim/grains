@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.1.211",
+	version: "2.2.214",
 	xhtmlMode: true	
 };
 
@@ -106,6 +106,6 @@ var Html = {
 	});
 	
 	defineTags(["div", "a", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "h1", "h2", "h3", "h4", "h5", "h6", "button"]);
-	defineSelfClosingTags(["img", "hr", "br"]);
+	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
 	defineNotEmptyTags(["th", "td"]);
 })();
