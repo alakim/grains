@@ -54,6 +54,21 @@ function simpleMarkup(){with(Html){
 	);
 }}
 
+
+// Простой пример разметки обработчиков
+function actions(){with(Html){
+	var name = "ОАО \"Персей\"";
+	var html = div(
+		span({
+			style:"cursor:hand;cursor:pointer; text-decoration:underline;",
+			//onclick:callFunction("alert", name)
+			onclick:"alert('ОАО \\\\\"Персей\\\\\"')"
+		}, name)
+	)
+	console.log(json(html));
+	document.getElementById("out").innerHTML = html;
+}}
+
 // Отображение набора данных с использованием шаблона
 function usingTemplates(){with(Html){
 	// Набор данных (данные в массиве)
@@ -167,6 +182,7 @@ function quasiXslt(){
 	<h1>Демонстрация возможностей модуля Html</h1>
 	<p>
 		<a href="#" onclick="simpleTable()">Простая верстка</a> |
+		<a href="#" onclick="actions()">Обработчики событий</a> |
 		<a href="#" onclick="simpleMarkup()">Простая разметка</a> |
 		<a href="#" onclick="usingTemplates()">Использование шаблонов (данные в массиве)</a> |
 		<a href="#" onclick="usingTemplates2()">Использование шаблонов (данные в словаре)</a> |

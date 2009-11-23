@@ -208,6 +208,16 @@ new JSUnit.Test("callFunction function", "Formatting").run = function(){ with(Ht
 	
 }}
 
+new JSUnit.Test("callFunction function 2", "Formatting").run = function(){ with(Html){
+	var idx = 1;
+	var id = 2;
+	var name="ОАО \"Персей\"";
+	this.assert(
+		span({"class":"TEditLinkButton", onclick:callFunction("action", idx, id, name)}, name),
+		"<span class=\"TEditLinkButton\" onclick=\"action(1,2,'ОАО \\\"Персей\\\"')\">ОАО \"Персей\"</span>"
+	);
+}}
+
 new JSUnit.Test("JSON serialization", "Formatting").run = function(){ with(Html){
 	this.assert(json(1), "1", "Error 1.1");
 	this.assert(json(11), "11", "Error 1.2");
