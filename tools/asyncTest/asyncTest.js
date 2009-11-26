@@ -6,7 +6,7 @@ function AsyncTest(title, processPanelID, steps){var _=this;
 	_.processPanelID = processPanelID;
 }
 
-AsyncTest.version = "1.0.216";
+AsyncTest.version = "1.1.217";
 
 (function(){
 	function $(id){return document.getElementById(id);}
@@ -58,10 +58,10 @@ AsyncTest.version = "1.0.216";
 			pnl.style.backgroundColor = "#00ffff";
 		},
 		
-		displayEnd: function(stepNr, errorOccured){var _=this;
+		displayEnd: function(stepNr, success){var _=this;
 			var pnl = $(_.stepID(stepNr));
 			if(!pnl) return;
-			pnl.style.backgroundColor = errorOccured?"#ff0000":"#00ff00";
+			pnl.style.backgroundColor = !success?"#ff0000":"#00ff00";
 		},
 		
 		displayLog: function(content){var _=this;
@@ -100,9 +100,9 @@ AsyncTest.version = "1.0.216";
 		},
 		run: function(){this.reset(); this.goOn();},
 		
-		goOn: function(errorOccured){var _=this;
-			errorOccured = errorOccured!=null?errorOccured:false;
-			_.display.displayEnd(_.curStep-1, errorOccured);
+		goOn: function(success){var _=this;
+			success = success!=null?success:true;
+			_.display.displayEnd(_.curStep-1, success);
 			this.doStep();
 		},
 		
@@ -124,7 +124,7 @@ AsyncTest.version = "1.0.216";
 				_.log.log("Assertion Failed", Html.format("Expected {1}, but was {0}", val, expected));
 			else
 				_.log.log("OK");
-			_.goOn(error);
+			_.goOn(!error);
 		},
 		
 		onEnd: function(){
