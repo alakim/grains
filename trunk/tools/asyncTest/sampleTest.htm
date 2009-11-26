@@ -1,0 +1,45 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8">
+	<script type="text/javascript" src="../../html/html.js"></script>
+	<script type="text/javascript" src="asyncTest.js"></script>
+	<script type="text/javascript">
+	function $(id){return document.getElementById(id);}
+	
+	// Калькулятор - тестируемый объект. Работает асинхронно.
+	function Calculator(){
+		this.x = 0; // Основной регистр данных
+	}
+	
+	Calculator.prototype = {
+		delay:500,
+		add: function(x, y){var _=this; setTimeout(function(){_.x = x+y; _.ready()}, _.delay);},
+		diff: function(x, y){var _=this; setTimeout(function(){_.x = x-y; _.ready()}, _.delay); },
+		$x: function(){return this.x;},
+		ready:function(){} // событие, активируемое по выполнении асинхронной операции
+	}
+	
+	var calc = new Calculator();
+	
+	// Простой тест калькулятора
+	var test = new AsyncTest("Простой тест калькулятора", "TestDisplayPnl", [
+		function(){calc.add(2, 2);},
+		function(){test.assert(calc.$x(), 41);},
+		function(){calc.diff(3, 2);},
+		function(){test.assert(calc.$x(), 1);}
+	]);
+	
+	calc.ready = function(){
+		test.goOn();
+	};
+	
+	function init(){
+		test.run();
+	}
+	</script>
+</head>
+<body onload="init()">
+	<h1>AsyncTest Sample</h1>
+	<div id="TestDisplayPnl"></div>
+</body>
+</html>
