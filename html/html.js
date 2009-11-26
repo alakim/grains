@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.2.214",
+	version: "2.3.215",
 	xhtmlMode: true	
 };
 
@@ -100,7 +100,12 @@ var Html = {
 		
 		callFunction: function(name, a1, a2){
 			var args = [];
-			for(var i=1; i<arguments.length; i++) args.push(Html.json(arguments[i]));
+			for(var i=1; i<arguments.length; i++){
+				var arg = arguments[i];
+				arg = typeof(arg)=="string" && arg.match(/^@/)? arg.slice(1, arg.length)
+					:Html.json(arg);
+				args.push(arg);
+			}
 			return [name, "(", args.join(","), ")"].join("");
 		}
 	});
