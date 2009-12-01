@@ -23,6 +23,9 @@ var TestService = {
 
 function init(){with(Flow){
 
+	// Элементами потока может быть просто функция, либо Sequence, либо Parallel
+	// Продолжение (Continuation) должна создаваться в главной функции элемента потока
+
 	new Sequence([
 		function(){f1(); setTimeout(new Continuation(), 1000);},
 		function(){
@@ -31,10 +34,10 @@ function init(){with(Flow){
 		},
 		function(){
 			log("TestService GetSum requested...");
-			var cont = new Continuation();
+			var cont = new Continuation(); // создаем продолжение в главной функции элемента потока
 			TestService.GetSum(3, 2, function(res){
 				log("TestService GetSum result: "+res);
-				cont();
+				cont(); // Здесь создавать продолжение нельзя. Следует приготовить его заранее.
 			});
 		},
 		function(){f3(); setTimeout(new Continuation(), 300);},
@@ -59,6 +62,7 @@ function init(){with(Flow){
 		
 		function(){log("END OF MAIN SEQUENCE REACHED")}
 	]).run();
+	
 
 }}	
 </script>
