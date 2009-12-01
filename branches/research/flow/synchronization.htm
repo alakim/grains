@@ -1,0 +1,30 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="flow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+function f1(){log("f1");}
+function f2(){log("f2");}
+function f3(){log("f3");}
+
+function init(){with(Flow){
+
+	new Sequence([
+		function(){f1(); setTimeout(function(){go($instIdx())}, 1000);},
+		function(){f2(); go($instIdx());},
+		function(){f3(); go($instIdx());}
+	]).run();
+
+}}	
+</script>
+</head>
+<body onload="init()">
+	<h1>Process Synchronization sample</h1>
+	<div id="out"></div>
+</body>
+</html>
