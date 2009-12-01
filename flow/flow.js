@@ -9,24 +9,18 @@ var Flow = {version:"0.0.0"};
 	
 	extend(__,{
 		Continuation: function(name){
-			//var idx = instances.length-1;
-			//console.log("idx:", arguments.callee.caller.blkID);
 			var idx = arguments.callee.caller.blkID;
 			var pos = arguments.callee.caller.pos;
-			console.log("***************Continuation constructor:", idx, ", name: ", name?name:"unnamed", " pos:", pos);
 			return function(){__.go(idx)};
 		},
 		
 		go:function(blkNr){
-			console.log("continue block:", blkNr);
 			var blk = instances[blkNr];
-			//console.log(blk);
 			if(blk)blk.doNext();
 		},
 		
 		Sequence: function(elements){
 			this.elements = elements;
-			console.log("Sequence constructor:", elements.length);
 			this.curPos = 0;
 			this.id = instances.length;
 			instances.push(this);
@@ -47,10 +41,11 @@ var Flow = {version:"0.0.0"};
 		},
 		
 		run: function(){var _=this;
-			console.log("run sequence #", _.id, " at pos ", _.curPos);
 			var el = _.elements[_.curPos];
-			console.log("positioned element:", el);
-			if(!el) return;
+			if(!el){
+				if(_.blkID) __.go(_.blkID);
+				return;
+			}
 			el.pos = _.curPos;
 			el.blkID = _.id;
 			function c(){
