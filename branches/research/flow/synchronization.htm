@@ -17,7 +17,7 @@ var TestService = {
 		var res = x+y;
 		setTimeout(function(){
 			onload(res);
-		}, 2000);
+		}, 200);
 	}
 };
 
@@ -27,18 +27,37 @@ function init(){with(Flow){
 		function(){f1(); setTimeout(new Continuation(), 1000);},
 		function(){
 			f2();
-			setTimeout(function(){
-				(new Continuation())();
-			}, 500);
+			var cont = new Continuation();
+			setTimeout(cont, 500);
 		},
 		function(){
 			log("TestService GetSum requested...");
+			var cont = new Continuation();
 			TestService.GetSum(3, 2, function(res){
 				log("TestService GetSum result: "+res);
-				(new Continuation())()
+				cont();
 			});
 		},
 		function(){f3(); setTimeout(new Continuation(), 300);},
+		
+		new Sequence([
+			function(){
+				var cont = new Continuation("inner 1");
+				log("Inner sequence begin");
+				console.log("inner sequence begin");
+				setTimeout(cont, 500);
+			},
+			function(){
+				log("TestService GetSum requested...");
+				var cont = new Continuation("inner 2");
+				TestService.GetSum(3, 8, function(res){
+					log("TestService GetSum result: "+res);
+					cont();
+				});
+			},
+			function(){log("Inner sequence calculation end"); (new Continuation())();},
+			function(){log("Inner sequence end"); (new Continuation())();}			
+		]),
 		
 		function(){log("End of sequence reached")}
 	]).run();

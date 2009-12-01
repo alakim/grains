@@ -8,23 +8,26 @@ var Flow = {version:"0.0.0"};
 	var instances = [];
 	
 	extend(__,{
-		//$instIdx: function(){
-		//	return instances.length-1;
-		//},
-		
-		Continuation: function(){
-			return function(){__.go(instances.length-1)};
+		Continuation: function(name){
+			//var idx = instances.length-1;
+			//console.log("idx:", arguments.callee.caller.blkID);
+			var idx = arguments.callee.caller.blkID;
+			var pos = arguments.callee.caller.pos;
+			console.log("***************Continuation constructor:", idx, ", name: ", name?name:"unnamed", " pos:", pos);
+			return function(){__.go(idx)};
 		},
 		
-		go:function(blk){
-			var blk = instances[blk];
+		go:function(blkNr){
+			console.log("continue block:", blkNr);
+			var blk = instances[blkNr];
 			//console.log(blk);
 			if(blk)blk.doNext();
 		},
 		
 		Sequence: function(elements){
 			this.elements = elements;
-			this.pos = 0;
+			console.log("Sequence constructor:", elements.length);
+			this.curPos = 0;
 			this.id = instances.length;
 			instances.push(this);
 		},
@@ -39,19 +42,21 @@ var Flow = {version:"0.0.0"};
 	
 	__.Sequence.prototype = {
 		doNext: function(){var _=this;
-			_.pos++;
+			_.curPos++;
 			_.run();
 		},
 		
 		run: function(){var _=this;
-			//console.log("run ", _.id);
-			var el = _.elements[_.pos];
+			console.log("run sequence #", _.id, " at pos ", _.curPos);
+			var el = _.elements[_.curPos];
+			console.log("positioned element:", el);
 			if(!el) return;
-			el.pos = _.pos;
+			el.pos = _.curPos;
+			el.blkID = _.id;
 			function c(){
 				if(typeof(el)=="function") el();
 				else if(typeof(el.run)=="function") el.run();
-				else throw "Element #"+pos+" is not executable.";
+				else throw "Element #"+_.curPos+" is not executable.";
 			}
 			c.block = _;
 			c();
