@@ -44,7 +44,6 @@ function init(){with(Flow){
 			function(){
 				var cont = new Continuation("inner 1");
 				log("Inner sequence begin");
-				console.log("inner sequence begin");
 				setTimeout(cont, 500);
 			},
 			function(){
@@ -59,7 +58,7 @@ function init(){with(Flow){
 			function(){log("Inner sequence end"); (new Continuation())();}			
 		]),
 		
-		function(){log("End of sequence reached")}
+		function(){log("END OF MAIN SEQUENCE REACHED")}
 	]).run();
 
 }}	
