@@ -8,9 +8,18 @@ function $(id){return document.getElementById(id);}
 
 function log(msg){$("out").innerHTML+=msg+"<br>";}
 
-function f1(){log("f1");}
-function f2(){log("f2");}
-function f3(){log("f3");}
+function f1(){log("f1 called");}
+function f2(){log("f2 called");}
+function f3(){log("f3 called");}
+
+var TestService = {
+	GetSum: function(x, y, onload){
+		var res = x+y;
+		setTimeout(function(){
+			onload(res);
+		}, 2000);
+	}
+};
 
 function init(){with(Flow){
 
@@ -22,14 +31,23 @@ function init(){with(Flow){
 				(new Continuation())();
 			}, 500);
 		},
-		function(){f3(); setTimeout(new Continuation(), 300);}
+		function(){
+			log("TestService GetSum requested...");
+			TestService.GetSum(3, 2, function(res){
+				log("TestService GetSum result: "+res);
+				(new Continuation())()
+			});
+		},
+		function(){f3(); setTimeout(new Continuation(), 300);},
+		
+		function(){log("End of sequence reached")}
 	]).run();
 
 }}	
 </script>
 </head>
 <body onload="init()">
-	<h1>Process Synchronization sample</h1>
+	<h1>Flow sample</h1>
 	<div id="out"></div>
 </body>
 </html>
