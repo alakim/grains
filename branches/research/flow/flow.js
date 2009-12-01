@@ -8,8 +8,12 @@ var Flow = {version:"0.0.0"};
 	var instances = [];
 	
 	extend(__,{
-		$instIdx: function(){
-			return instances.length-1;
+		//$instIdx: function(){
+		//	return instances.length-1;
+		//},
+		
+		Continuation: function(){
+			return function(){__.go(instances.length-1)};
 		},
 		
 		go:function(blk){
