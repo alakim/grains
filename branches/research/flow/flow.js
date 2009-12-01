@@ -1,4 +1,4 @@
-var Flow = {version:"0.0.0"};
+var Flow = {version:"1.0.0"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -26,9 +26,10 @@ var Flow = {version:"0.0.0"};
 			instances.push(this);
 		},
 		
-		Parallel: function(elements){
-			this.elements = elements;
-			this.count = elements.length;
+		Parallel: function(){
+			this.elements = [];
+			for(var i=0; i<arguments.length; i++) this.elements.push(arguments[i]);
+			this.count = this.elements.length;
 			this.id = instances.length;
 			instances.push(this);
 		}
@@ -59,7 +60,23 @@ var Flow = {version:"0.0.0"};
 	};
 	
 	__.Parallel.prototype = {
-		run: function(){
+		doNext: function(){var _=this;
+			_.count--;
+			if(!_.count) __.go(_.blkID);
+		},
+		
+		run: function(){var _=this;
+			for(var i=0; i<_.elements.length; i++){
+				var el = _.elements[i];
+				el.blkID = _.id;
+				function c(){
+					if(typeof(el)=="function") el();
+					else if(typeof(el.run)=="function") el.run();
+					else throw "Element #"+_.curPos+" is not executable.";
+				}
+				c.block = _;
+				c();
+			}
 		}
 	};
 	

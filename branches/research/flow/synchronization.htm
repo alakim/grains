@@ -60,10 +60,52 @@ function init(){with(Flow){
 			function(){log("Inner sequence end"); (new Continuation())();}			
 		),
 		
+		function(){
+			log("-----------------------------------------");
+			var delay = 3000;
+			log("before parallel: " + delay);
+			setTimeout(new Continuation(), delay);
+		},
+		
+		new Parallel(
+			function(){
+				var nr = 1;
+				log("run "+nr);
+				var cont = new Continuation();
+				setTimeout(function(){
+					log("end "+nr);
+					cont();
+				}, 100);
+			},
+			function(){
+				var nr = 2;
+				log("run "+nr);
+				var cont = new Continuation();
+				setTimeout(function(){
+					log("end "+nr);
+					cont();
+				}, 2000);
+			},
+			function(){
+				var nr = 3;
+				log("run "+nr);
+				var cont = new Continuation();
+				setTimeout(function(){
+					log("end "+nr);
+					cont();
+				}, 300);
+			}
+		),
+		
+		function(){
+			log("after parallel");
+			log("-----------------------------------------");
+			setTimeout(new Continuation(), 300);
+		},
+		
 		function(){log("END OF MAIN SEQUENCE REACHED")}
 	).run();
 	
-
 }}	
 </script>
 </head>
