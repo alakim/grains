@@ -27,8 +27,7 @@ function init(){with(Flow){
 		function(){f1(); setTimeout(new Continuation(), 1000);},
 		function(){
 			f2();
-			var cont = new Continuation();
-			setTimeout(cont, 500);
+			setTimeout(new Continuation(), 500);
 		},
 		function(){
 			log("TestService GetSum requested...");
