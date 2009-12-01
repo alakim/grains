@@ -10,7 +10,6 @@ var Flow = {version:"0.0.0"};
 	extend(__,{
 		Continuation: function(name){
 			var idx = arguments.callee.caller.blkID;
-			var pos = arguments.callee.caller.pos;
 			return function(){__.go(idx)};
 		},
 		
