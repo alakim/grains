@@ -26,7 +26,7 @@ function init(){with(Flow){
 	// Элементами потока может быть просто функция, либо Sequence, либо Parallel
 	// Продолжение (Continuation) должна создаваться в главной функции элемента потока
 
-	new Sequence([
+	new Sequence(
 		function(){f1(); setTimeout(new Continuation(), 1000);},
 		function(){
 			f2();
@@ -42,7 +42,7 @@ function init(){with(Flow){
 		},
 		function(){f3(); setTimeout(new Continuation(), 300);},
 		
-		new Sequence([
+		new Sequence(
 			function(){
 				var cont = new Continuation("inner 1");
 				log("Inner sequence begin");
@@ -58,10 +58,10 @@ function init(){with(Flow){
 			},
 			function(){log("Inner sequence calculation end"); (new Continuation())();},
 			function(){log("Inner sequence end"); (new Continuation())();}			
-		]),
+		),
 		
 		function(){log("END OF MAIN SEQUENCE REACHED")}
-	]).run();
+	).run();
 	
 
 }}	

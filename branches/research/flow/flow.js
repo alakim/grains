@@ -18,8 +18,9 @@ var Flow = {version:"0.0.0"};
 			if(blk)blk.doNext();
 		},
 		
-		Sequence: function(elements){
-			this.elements = elements;
+		Sequence: function(){
+			this.elements = [];
+			for(var i=0; i<arguments.length; i++) this.elements.push(arguments[i]);
 			this.curPos = 0;
 			this.id = instances.length;
 			instances.push(this);
