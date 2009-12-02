@@ -22,8 +22,6 @@ var JSFlow = {version:"1.1.0"};
 	
 	function goTo(blkNr, fromPos){
 		var blk = instances[blkNr];
-		console.log("goto ", blkNr, ",", fromPos);
-		console.log("goto blk type: ", blk.blockType);
 		if(blk)blk.doNext(fromPos);
 	}
 	
@@ -43,11 +41,8 @@ var JSFlow = {version:"1.1.0"};
 		Continuation: function(){
 			var block = arguments.callee.caller;
 			if(block.block) block = block.block;
-			console.log("Continuation constructor: blockType ", block.blockType);
 			var blkID = block.id;
-			//var blkID = block.blkID;
 			var pos = block.pos;
-			console.log("Continuation constructor: ", blkID, ", ",pos);
 			return function(){
 				goTo(blkID, pos)
 			};
@@ -114,15 +109,11 @@ var JSFlow = {version:"1.1.0"};
 		},
 		
 		logBegin: function(el, pos){
-			var id = el.$SeqID() + (pos!=null?"."+(pos+1):"");
-			var eType = pos!=null?elType(el.elements[pos]): elType(el);
-			if(eType) this.log.push(eType+" "+id+" begins");
+			this.log.push(elType(el)+" "+el.$SeqID()+" begins");
 		},
 		
 		logEnd: function(el, pos){
-			var id = el.$SeqID() + (pos!=null?"."+(pos+1):"");
-			var eType = pos!=null?elType(el.elements[pos]): elType(el);
-			if(eType) this.log.push(eType+" "+id+" ended");
+			this.log.push(elType(el)+" "+el.$SeqID()+" ended");
 		},
 		
 		write: function(){
@@ -137,15 +128,11 @@ var JSFlow = {version:"1.1.0"};
 		blockType:"Function",
 		
 		doNext: function(fromPos){var _=this;
-			console.log("Simple.doNext: ", fromPos);
-			if(_.log){
-				_.log.logEnd(_, fromPos);
-			}
+			if(_.log) _.log.logEnd(_, fromPos);
 			goTo(_.blkID, fromPos);
 		},
 		
 		run: function(){var _=this;
-			console.log("Simple run ", _.$SeqID());
 			if(_.log)_.log.logBegin(_);
 			_.elements[0]();
 		}
@@ -156,10 +143,6 @@ var JSFlow = {version:"1.1.0"};
 		blockType:"Sequence",
 		
 		doNext: function(fromPos){var _=this;
-			console.log("Sequence.doNext: ", fromPos);
-			// if(_.log){
-			// 	_.log.logEnd(_, fromPos);
-			// }
 			_.curPos++;
 			_.run();
 		},
@@ -170,7 +153,6 @@ var JSFlow = {version:"1.1.0"};
 			if(_.log){
 				if(_.blkID==null && _.curPos==0) _.log.logBegin(_);
 				else if(!el) _.log.logEnd(_);
-				//_.log.logBegin(_, _.curPos);
 			}
 			if(!el){
 				if(_.blkID) goTo(_.blkID);
@@ -192,25 +174,17 @@ var JSFlow = {version:"1.1.0"};
 		blockType:"Parallel",
 
 		doNext: function(fromPos){var _=this;
-			console.log("Parallel.doNext: ", fromPos);
-			// if(_.log){
-			// 	//var pos = arguments.callee.caller.caller.caller.pos;
-			// 	//console.log("pos: ", pos);
-			// 	//_.log.logEnd(_, pos);
-			// 	_.log.logEnd(_, fromPos);
-			// }
 			_.count--;
 			if(!_.count){
-				goTo(_.blkID);
 				if(_.log) _.log.logEnd(_);
+				goTo(_.blkID);
 			}
 		},
 		
 		run: function(){var _=this;
 			if(!_.log)_.log = __.defaultLog;
-			if(_.log){
-				_.log.logBegin(_);
-			}
+			if(_.log) _.log.logBegin(_);
+			
 			for(var i=0; i<_.elements.length; i++){
 				var el = _.elements[i];
 				if(!el.log) el.log = __.defaultLog;
@@ -220,7 +194,6 @@ var JSFlow = {version:"1.1.0"};
 					else throw "Element #"+i+" is not executable.";
 				}
 				c.block = _;
-				if(_.log) _.log.logBegin(_, i);
 				c();
 			}
 		}
