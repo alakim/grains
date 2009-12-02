@@ -1,61 +1,39 @@
-<html>
+п»ї<html>
 <head>
 <title>JSFlow Logging Tests</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
 <script type="text/javascript" src="../../tools/jsUnit.js"></script>
 <script type="text/javascript" src="../../html/html.js"></script>
 <script type="text/javascript" src="../jsflow.js"></script>
+<script type="text/javascript" src="testingLog.js"></script>
 <script type="text/javascript">
 function $(id){return document.getElementById(id);}
-function extend(o,s){for(var k in s)o[k]=s[k];}
 
-new JSUnit.Test("Подключение модуля JSFlow", "Configuration").run = function(){
-	this.assert(typeof(JSFlow), "object");
-}
-
-var log1 = new JSFlow.Log();
-extend(log1, {
-	expectations: [
-		"Sequence 1 begins",
-		"Function 1.1 begins",
-		"Function 1.1 ended",
-		"Function 1.2 begins",
-		"Function 1.2 ended",
-		"Function 1.3 begins",
-		"Function 1.3 ended",
-		"Parallel 1.4 begins",
-		"Function 1.4.1 begins",
-		"Function 1.4.1 ended",
-		"Function 1.4.2 begins",
-		"Function 1.4.2 ended",
-		"Function 1.4.3 begins",
-		"Function 1.4.3 ended",
-		"Parallel 1.4 ended",
-		"Function 1.5 begins",
-		"Function 1.5 ended",
-		"Function 1.6 begins",
-		"Function 1.6 ended",
-		"Function 1.7 begins",
-		"Function 1.7 ended",
-		"Sequence 1 ended"
-	],
-
-	render: function(){with(Html){var _=this;
-		return div(
-			apply(_.log, function(msg, i){
-				var ok = _.expectations[i]==msg;
-				return div(i+1, ": ", 
-					span({style:"color:#"+(ok?"080":"f00")},
-						msg,
-						ok?span({style:"font-weight:bold; color:#080; margin-left:25px;"}, "OK")
-							:span({style:"margin-left:20px;"}, " (Expected '", _.expectations[i], "')")
-					)
-				);
-			})
-		);
-	}}
-});
-
+var log1 = new TestingLog();
+log1.expectations = [
+	"Sequence 1 begins",
+	"Function 1.1 begins",
+	"Function 1.1 ended",
+	"Function 1.2 begins",
+	"Function 1.2 ended",
+	"Function 1.3 begins",
+	"Function 1.3 ended",
+	"Parallel 1.4 begins",
+	"Function 1.4.1 begins",
+	"Function 1.4.2 begins",
+	"Function 1.4.3 begins",
+	"Function 1.4.3 ended",
+	"Function 1.4.1 ended",
+	"Function 1.4.2 ended",
+	"Parallel 1.4 ended",
+	"Function 1.5 begins",
+	"Function 1.5 ended",
+	"Function 1.6 begins",
+	"Function 1.6 ended",
+	"Function 1.7 begins",
+	"Function 1.7 ended",
+	"Sequence 1 ended"
+];
 
 function test1(){with(JSFlow){
 	var process = new Sequence(
@@ -63,25 +41,53 @@ function test1(){with(JSFlow){
 		function(){(new Continuation())()},
 		function(){(new Continuation())()},
 		new Parallel(
-			function(){(new Continuation())()},
-			function(){(new Continuation())()},
-			function(){(new Continuation())()}
+			function(){
+				var go = new Continuation();
+				setTimeout(function(){
+					console.log("1.4.1 executed");
+					go();
+				}, 200);
+			},
+			function(){
+				var go = new Continuation();
+				setTimeout(function(){
+					console.log("1.4.2 executed");
+					go();
+				}, 2000);
+			},
+			function(){
+				var go = new Continuation();
+				setTimeout(function(){
+					console.log("1.4.3 executed");
+					go();
+				}, 100);
+			}
 		),
-		function(){(new Continuation())()},
-		function(){(new Continuation())()},
-		function(){(new Continuation())()}
+		function(){
+			var go = new Continuation();
+			go();
+		},
+		function(){
+			var go = new Continuation();
+			go();
+		},
+		function(){
+			var go = new Continuation();
+			console.log("executed!");
+			$("out").innerHTML = log1.render();
+			go();
+		}
 	);
 	
 	log1.connect(process);
+	$("out").innerHTML = Html.img({src:"../waitcircle.gif"});
 	process.run();
 	
-	$("out").innerHTML = log1.render();
 	
 }}
 
 function init(){
 	$("versionPanel").innerHTML = JSFlow.version;
-	JSUnit.init();
 	test1();
 }
 </script>
