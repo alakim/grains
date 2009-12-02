@@ -15,9 +15,10 @@ var JSFlow = {version:"1.0.0"};
 	
 	var instances = [];
 	
-	function goTo(blkNr){
+	function goTo(blkNr, fromPos){
 		var blk = instances[blkNr];
-		if(blk)blk.doNext();
+		console.log("goto ", blkNr, ",", fromPos);
+		if(blk)blk.doNext(fromPos);
 	}
 	
 	function seqID(){var _=this;
@@ -34,9 +35,11 @@ var JSFlow = {version:"1.0.0"};
 		},
 		
 		Continuation: function(){
-			var idx = arguments.callee.caller.blkID;
+			var blkID = arguments.callee.caller.blkID;
+			var pos = arguments.callee.caller.pos;
+			console.log("Continuation constructor: ", blkID, ", ",pos);
 			return function(){
-				goTo(idx)
+				goTo(blkID, pos)
 			};
 		},
 		
@@ -116,11 +119,14 @@ var JSFlow = {version:"1.0.0"};
 		$SeqID: seqID,
 		blockType:"Sequence",
 		
-		doNext: function(){var _=this;
+		doNext: function(fromPos){var _=this;
+			console.log("Sequence.doNext: ", fromPos);
 			if(_.log){
-				var pos = arguments.callee.caller.caller.caller.pos;
-				_.log.logEnd(_, _.curPos);
+				//var pos = arguments.callee.caller.caller.caller.pos;
+				//_.log.logEnd(_, _.curPos);
+				_.log.logEnd(_, fromPos);
 			}
+			console.log(2);
 			_.curPos++;
 			_.run();
 		},
@@ -152,10 +158,13 @@ var JSFlow = {version:"1.0.0"};
 		$SeqID: seqID,
 		blockType:"Parallel",
 
-		doNext: function(){var _=this;
+		doNext: function(fromPos){var _=this;
+			console.log("Parallel.doNext: ", fromPos);
 			if(_.log){
-				var pos = arguments.callee.caller.caller.caller.pos;
-				_.log.logEnd(_, pos);
+				//var pos = arguments.callee.caller.caller.caller.pos;
+				//console.log("pos: ", pos);
+				//_.log.logEnd(_, pos);
+				_.log.logEnd(_, fromPos);
 			}
 			_.count--;
 			if(!_.count) goTo(_.blkID);
