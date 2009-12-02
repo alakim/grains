@@ -1,4 +1,4 @@
-var JSFlow = {version:"1.1.240"};
+var JSFlow = {version:"1.2.242"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -31,6 +31,29 @@ var JSFlow = {version:"1.1.240"};
 		return blk.$SeqID()+"."+(_.pos+1);
 	}
 	
+			
+	function Simple(F){var _=this;
+		_.elements = [F];
+		registerInstance(_);
+		F.block = _;
+	}
+	
+	Simple.prototype = {
+		$SeqID: seqID,
+		blockType:"Function",
+		
+		doNext: function(){var _=this;
+			if(_.log) _.log.logEnd(_);
+			goTo(_.blkID);
+		},
+		
+		run: function(){var _=this;
+			if(_.log)_.log.logBegin(_);
+			_.elements[0]();
+		}
+	};
+
+	
 	extend(__,{
 		defaultLog:null,
 		
@@ -48,19 +71,13 @@ var JSFlow = {version:"1.1.240"};
 			};
 		},
 		
-		Simple: function(F){var _=this;
-			_.elements = [F];
-			registerInstance(_);
-			F.block = _;
-		},
-		
 		Sequence: function(){var _=this;
 			_.elements = [];
 			_.curPos = 0;
 			registerInstance(_);
 			for(var i=0; i<arguments.length; i++){
 				var el = arguments[i];
-				if(typeof(el)=="function") el = new __.Simple(el);
+				if(typeof(el)=="function") el = new Simple(el);
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
@@ -73,7 +90,7 @@ var JSFlow = {version:"1.1.240"};
 			registerInstance(_);
 			for(var i=0; i<arguments.length; i++){
 				var el = arguments[i];
-				if(typeof(el)=="function") el = new __.Simple(el);
+				if(typeof(el)=="function") el = new Simple(el);
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
@@ -122,22 +139,7 @@ var JSFlow = {version:"1.1.240"};
 			this.log.push(msg.join(""));
 		}
 	};
-	
-	__.Simple.prototype = {
-		$SeqID: seqID,
-		blockType:"Function",
 		
-		doNext: function(){var _=this;
-			if(_.log) _.log.logEnd(_);
-			goTo(_.blkID);
-		},
-		
-		run: function(){var _=this;
-			if(_.log)_.log.logBegin(_);
-			_.elements[0]();
-		}
-	},
-	
 	__.Sequence.prototype = {
 		$SeqID: seqID,
 		blockType:"Sequence",
