@@ -23,7 +23,7 @@ var JSFlow = {version:"1.0.0"};
 	function seqID(){var _=this;
 		if(_.pos==null) return 1;
 		var blk = instances[_.blkID];
-		return blk.$SeqID()+"."+_.pos;
+		return blk.$SeqID()+"."+(_.pos+1);
 	}
 	
 	extend(__,{
@@ -94,13 +94,13 @@ var JSFlow = {version:"1.0.0"};
 		},
 		
 		logBegin: function(el, pos){
-			var id = el.$SeqID() + (pos!=null?"."+pos:"");
+			var id = el.$SeqID() + (pos!=null?"."+(pos+1):"");
 			var eType = pos!=null?elType(el.elements[pos]): elType(el);
 			if(eType) this.log.push(eType+" "+id+" begins");
 		},
 		
 		logEnd: function(el, pos){
-			var id = el.$SeqID() + (pos!=null?"."+pos:"");
+			var id = el.$SeqID() + (pos!=null?"."+(pos+1):"");
 			var eType = pos!=null?elType(el.elements[pos]): elType(el);
 			if(eType) this.log.push(eType+" "+id+" ended");
 		},
