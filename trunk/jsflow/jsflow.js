@@ -151,7 +151,7 @@ var JSFlow = {version:"1.1.240"};
 			var el = _.elements[_.curPos];
 			if(!_.log)_.log = __.defaultLog;
 			if(_.log){
-				if(_.blkID==null && _.curPos==0) _.log.logBegin(_);
+				if(_.curPos==0) _.log.logBegin(_);
 				else if(!el) _.log.logEnd(_);
 			}
 			if(!el){

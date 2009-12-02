@@ -21,7 +21,13 @@ log1.expectations = [
 	"Function 1.4.1 begins",
 	"Function 1.4.2 begins",
 	"Function 1.4.3 begins",
+	"Sequence 1.4.4 begins",
+	"Function 1.4.4.1 begins",
+	"Function 1.4.4.1 ended",
+	"Function 1.4.4.2 begins",
 	"Function 1.4.3 ended",
+	"Function 1.4.4.2 ended",
+	"Sequence 1.4.4 ended",
 	"Function 1.4.1 ended",
 	"Function 1.4.2 ended",
 	"Parallel 1.4 ended",
@@ -44,7 +50,7 @@ function test1(){with(JSFlow){
 				var go = new Continuation();
 				setTimeout(function(){
 					go();
-				}, 200);
+				}, 500);
 			},
 			function(){
 				var go = new Continuation();
@@ -56,8 +62,22 @@ function test1(){with(JSFlow){
 				var go = new Continuation();
 				setTimeout(function(){
 					go();
-				}, 100);
-			}
+				}, 200);
+			},
+			new Sequence(
+				function(){
+					var go = new Continuation();
+					setTimeout(function(){
+						go();
+					}, 150);
+				},
+				function(){
+					var go = new Continuation();
+					setTimeout(function(){
+						go();
+					}, 100);
+				}
+			)
 		),
 		function(){
 			var go = new Continuation();
