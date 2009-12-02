@@ -43,6 +43,9 @@ var JSFlow = {version:"1.0.0"};
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
+				if(!el.$ID) el.$ID = function(){
+					return instances[this.blkID].$ID()+"."+this.id;
+				};
 				_.elements.push(el);
 			}
 		},
@@ -56,6 +59,9 @@ var JSFlow = {version:"1.0.0"};
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
+				if(!el.$ID) el.$ID = function(){
+					return instances[this.blkID].$ID()+"."+this.id;
+				};
 				_.elements.push(el);
 			}
 			_.count = _.elements.length;
@@ -72,12 +78,14 @@ var JSFlow = {version:"1.0.0"};
 	});
 		
 	__.Log.prototype = {
-		logBegin: function(blkID){
-			this.log.push(blkID+" begins");
+		logBegin: function(el, pos){
+			var id = el.$ID() + (pos!=null?"."+pos:"");
+			this.log.push(id+" begins");
 		},
 		
-		logEnd: function(blkID){
-			this.log.push(blkID+" ended");
+		logEnd: function(el, pos){
+			var id = el.$ID() + (pos!=null?"."+pos:"");
+			this.log.push(id+" ended");
 		},
 		
 		write: function(){
@@ -88,9 +96,18 @@ var JSFlow = {version:"1.0.0"};
 	};
 	
 	__.Sequence.prototype = {
+		$ID: function(){var _=this;
+			var blk = instances[_.blkID];
+			return blk?blk.$ID()+"."+_.pos
+				:_.id;
+		},
+		
 		doNext: function(){var _=this;
+			if(_.log){
+				var pos = arguments.callee.caller.caller.caller.pos;
+				_.log.logEnd(_, pos);
+			}
 			_.curPos++;
-			if(_.log) _.log.write("do next ", _.curPos);
 			_.run();
 		},
 		
@@ -98,9 +115,9 @@ var JSFlow = {version:"1.0.0"};
 			var el = _.elements[_.curPos];
 			if(!_.log)_.log = __.defaultLog;
 			if(_.log){
-				if(_.curPos==0) _.log.logBegin(_.id);
-				else if(!el) _.log.logEnd(_.id);
-				else _.log.write("sequece at pos ", _.curPos);
+				if(_.curPos==0) _.log.logBegin(_);
+				else if(!el) _.log.logEnd(_);
+				_.log.logBegin(_, _.curPos);
 			}
 			if(!el){
 				if(_.blkID) goTo(_.blkID);
@@ -118,26 +135,37 @@ var JSFlow = {version:"1.0.0"};
 	};
 	
 	__.Parallel.prototype = {
+		$ID: function(){var _=this;
+			var blk = instances[_.blkID];
+			return blk?blk.$ID()+"."+_.pos
+				:_.id;
+		},
+
 		doNext: function(){var _=this;
+			if(_.log){
+				var pos = arguments.callee.caller.caller.caller.pos;
+				_.log.write("Parallel end ", pos);
+			}
 			_.count--;
 			if(!_.count){
-				if(_.log) _.log.logEnd(_.id);
+				if(_.log) _.log.logEnd(_);
 				goTo(_.blkID);
 			}
 		},
 		
 		run: function(){var _=this;
 			if(!_.log)_.log = __.defaultLog;
-			if(_.log) _.log.logBegin(_.id);
+			if(_.log) _.log.logBegin(_);
 			for(var i=0; i<_.elements.length; i++){
 				var el = _.elements[i];
 				if(!el.log) el.log = __.defaultLog;
 				function c(){
 					if(typeof(el)=="function") el();
 					else if(typeof(el.run)=="function") el.run();
-					else throw "Element #"+_.curPos+" is not executable.";
+					else throw "Element #"+i+" is not executable.";
 				}
 				c.block = _;
+				if(_.log) _.log.write("Parallel start ", i);
 				c();
 			}
 		}
