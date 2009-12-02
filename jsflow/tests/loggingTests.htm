@@ -11,7 +11,7 @@ new JSUnit.Test("Подключение модуля JSFlow", "Configuration").run = function(){
 	this.assert(typeof(JSFlow), "object");
 }
 
-new JSUnit.Test("Simple test", "Logging").run = function(){with(JSFlow){
+function test1(){with(JSFlow){
 	JSFlow.defaultLog = new JSFlow.Log();
 	var process = new Sequence(
 		function(){(new Continuation())()},
@@ -26,7 +26,12 @@ new JSUnit.Test("Simple test", "Logging").run = function(){with(JSFlow){
 		function(){(new Continuation())()},
 		function(){(new Continuation())()}
 	);
-	process.run();
+	console.log("run...");
+	try{
+		process.run();
+	}
+	catch(e){console.log(e);}
+	console.log("res!");
 	
 	$("out").innerHTML = JSFlow.defaultLog.log.join("<br>");
 }}
@@ -34,6 +39,7 @@ new JSUnit.Test("Simple test", "Logging").run = function(){with(JSFlow){
 function init(){
 	$("versionPanel").innerHTML = JSFlow.version;
 	JSUnit.init();
+	test1();
 }
 </script>
 </head>
