@@ -2,7 +2,6 @@
 <head>
 <title>JSFlow Logging Tests</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<script type="text/javascript" src="../../tools/jsUnit.js"></script>
 <script type="text/javascript" src="../../html/html.js"></script>
 <script type="text/javascript" src="../jsflow.js"></script>
 <script type="text/javascript" src="testingLog.js"></script>
@@ -44,21 +43,18 @@ function test1(){with(JSFlow){
 			function(){
 				var go = new Continuation();
 				setTimeout(function(){
-					console.log("1.4.1 executed");
 					go();
 				}, 200);
 			},
 			function(){
 				var go = new Continuation();
 				setTimeout(function(){
-					console.log("1.4.2 executed");
 					go();
 				}, 2000);
 			},
 			function(){
 				var go = new Continuation();
 				setTimeout(function(){
-					console.log("1.4.3 executed");
 					go();
 				}, 100);
 			}
@@ -73,9 +69,8 @@ function test1(){with(JSFlow){
 		},
 		function(){
 			var go = new Continuation();
-			console.log("executed!");
-			$("out").innerHTML = log1.render();
 			go();
+			$("out").innerHTML = log1.render();
 		}
 	);
 	

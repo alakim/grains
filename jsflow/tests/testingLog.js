@@ -12,7 +12,9 @@
 		expectations:[],
 		render: function(){with(Html){var _=this;
 			return div(
-				p(_.log.length, " log entries"),
+				_.log.length!=_.expectations.length?div({style:"color:#f00"},
+					format("Log length is {0}, but {1} expected", _.log.length, _.expectations.length)
+				):null,
 				apply(_.log, function(msg, i){
 					var ok = _.expectations[i]==msg;
 					return div(i+1, ": ", 
