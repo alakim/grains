@@ -1,4 +1,4 @@
-var JSFlow = {version:"1.1.0"};
+var JSFlow = {version:"1.1.240"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
