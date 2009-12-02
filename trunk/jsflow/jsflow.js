@@ -4,6 +4,7 @@ var JSFlow = {version:"1.0.0"};
 	function extend(o,s){for(var k in s)o[k]=s[k];}
 	
 	function each(coll, F){
+		if(!coll) return;
 		if(typeof(coll.length)=="undefined" || typeof(coll.length)!="number")
 			for(var k in coll) F(coll[k], k);
 		else
@@ -87,6 +88,11 @@ var JSFlow = {version:"1.0.0"};
 	}
 	
 	__.Log.prototype = {
+		connect: function(el){var _=this;
+			el.log = _;
+			each(el.elements, function(chld){_.connect(chld);});
+		},
+		
 		logBegin: function(el, pos){
 			var id = el.$SeqID() + (pos!=null?"."+pos:"");
 			var eType = pos!=null?elType(el.elements[pos]): elType(el);

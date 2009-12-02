@@ -3,6 +3,7 @@
 <title>JSFlow Logging Tests</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
 <script type="text/javascript" src="../../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../../html/html.js"></script>
 <script type="text/javascript" src="../jsflow.js"></script>
 <script type="text/javascript">
 function $(id){return document.getElementById(id);}
@@ -11,8 +12,9 @@ new JSUnit.Test("Подключение модуля JSFlow", "Configuration").run = function(){
 	this.assert(typeof(JSFlow), "object");
 }
 
+var log1 = new JSFlow.Log();
+
 function test1(){with(JSFlow){
-	JSFlow.defaultLog = new JSFlow.Log();
 	var process = new Sequence(
 		function(){(new Continuation())()},
 		function(){(new Continuation())()},
@@ -26,14 +28,54 @@ function test1(){with(JSFlow){
 		function(){(new Continuation())()},
 		function(){(new Continuation())()}
 	);
-	console.log("run...");
 	try{
+		log1.connect(process);
+		
+		console.log("run...");
 		process.run();
 	}
 	catch(e){console.log(e);}
 	console.log("res!");
 	
-	$("out").innerHTML = JSFlow.defaultLog.log.join("<br>");
+	var expectations = [
+		"Sequence 1 begins",
+		"Function 1.0 begins",
+		"Function 1.0 ended",
+		"Function 1.1 begins",
+		"Function 1.1 ended",
+		"Function 1.2 begins",
+		"Function 1.2 ended",
+		"Parallel 1.3 begins",
+		"Function 1.3.0 begins",
+		"Function 1.3.0 ended",
+		"Function 1.3.1 begins",
+		"Function 1.3.1 ended",
+		"Function 1.3.2 begins",
+		"Function 1.3.2 ended",
+		"Parallel 1.3 ended",
+		//"Sequence 1 ended",
+		"Function 1.4 begins",
+		"Function 1.4 ended",
+		"Function 1.5 begins",
+		"Function 1.5 ended",
+		"Function 1.6 begins",
+		"Function 1.6 ended",
+		"Sequence 1 ended"
+	];
+	
+	with(Html){
+		$("out").innerHTML = div(
+			apply(log1.log, function(msg, i){
+				var ok = expectations[i]==msg;
+				return div(i+1, ": ", 
+					span({style:"color:#"+(ok?"080":"f00")},
+						msg,
+						ok?null:span(" (Expected '", expectations[i], "')")
+					)
+				);
+			})
+		);
+	}
 }}
 
 function init(){
