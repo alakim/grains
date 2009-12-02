@@ -20,9 +20,9 @@ var JSFlow = {version:"1.1.0"};
 		instances.push(inst);
 	}
 	
-	function goTo(blkNr, fromPos){
+	function goTo(blkNr){
 		var blk = instances[blkNr];
-		if(blk)blk.doNext(fromPos);
+		if(blk)blk.doNext();
 	}
 	
 	function seqID(){var _=this;
@@ -108,11 +108,11 @@ var JSFlow = {version:"1.1.0"};
 			each(el.elements, function(chld){_.connect(chld);});
 		},
 		
-		logBegin: function(el, pos){
+		logBegin: function(el){
 			this.log.push(elType(el)+" "+el.$SeqID()+" begins");
 		},
 		
-		logEnd: function(el, pos){
+		logEnd: function(el){
 			this.log.push(elType(el)+" "+el.$SeqID()+" ended");
 		},
 		
@@ -127,9 +127,9 @@ var JSFlow = {version:"1.1.0"};
 		$SeqID: seqID,
 		blockType:"Function",
 		
-		doNext: function(fromPos){var _=this;
-			if(_.log) _.log.logEnd(_, fromPos);
-			goTo(_.blkID, fromPos);
+		doNext: function(){var _=this;
+			if(_.log) _.log.logEnd(_);
+			goTo(_.blkID);
 		},
 		
 		run: function(){var _=this;
@@ -142,7 +142,7 @@ var JSFlow = {version:"1.1.0"};
 		$SeqID: seqID,
 		blockType:"Sequence",
 		
-		doNext: function(fromPos){var _=this;
+		doNext: function(){var _=this;
 			_.curPos++;
 			_.run();
 		},
@@ -173,7 +173,7 @@ var JSFlow = {version:"1.1.0"};
 		$SeqID: seqID,
 		blockType:"Parallel",
 
-		doNext: function(fromPos){var _=this;
+		doNext: function(){var _=this;
 			_.count--;
 			if(!_.count){
 				if(_.log) _.log.logEnd(_);
