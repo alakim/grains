@@ -1,4 +1,4 @@
-var JSFlow = {version:"1.0.0"};
+var JSFlow = {version:"1.1.0"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -14,6 +14,11 @@ var JSFlow = {version:"1.0.0"};
 	var __=JSFlow;
 	
 	var instances = [];
+	
+	function registerInstance(inst){
+		inst.id = instances.length;
+		instances.push(inst);
+	}
 	
 	function goTo(blkNr, fromPos){
 		var blk = instances[blkNr];
@@ -35,51 +40,60 @@ var JSFlow = {version:"1.0.0"};
 		},
 		
 		Continuation: function(){
-			var blkID = arguments.callee.caller.blkID;
-			var pos = arguments.callee.caller.pos;
+			var block = arguments.callee.caller;
+			if(block.block) block = block.block;
+			var blkID = block.blkID;
+			var pos = block.pos;
 			console.log("Continuation constructor: ", blkID, ", ",pos);
 			return function(){
 				goTo(blkID, pos)
 			};
 		},
 		
+		Simple: function(F){var _=this;
+			_.elements = [F];
+			registerInstance(_);
+			F.block = _;
+		},
+		
 		Sequence: function(){var _=this;
 			_.elements = [];
 			_.curPos = 0;
-			_.id = instances.length;
-			instances.push(_);
+			registerInstance(_);
 			for(var i=0; i<arguments.length; i++){
 				var el = arguments[i];
+				if(typeof(el)=="function") el = new __.Simple(el);
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
-				if(typeof(el)=="function") el.$SeqID = seqID;
 				_.elements.push(el);
 			}
 		},
 		
 		Parallel: function(){var _=this;
 			_.elements = [];
-			_.id = instances.length;
-			instances.push(_);
+			registerInstance(_);
 			for(var i=0; i<arguments.length; i++){
 				var el = arguments[i];
+				if(typeof(el)=="function") el = new __.Simple(el);
 				if(!el.log) el.log = _.log;
 				el.pos = i;
 				el.blkID = _.id;
-				if(typeof(el)=="function") el.$SeqID = seqID;
 				_.elements.push(el);
 			}
 			_.count = _.elements.length;
 		},
 		
-		DoWhile: function(){
+		DoWhile: function(){var _=this;
+			registerInstance(_);
 		},
 		
-		DoTimes: function(){
+		DoTimes: function(){var _=this;
+			registerInstance(_);
 		},
 		
-		Condition: function(){
+		Condition: function(){var _=this;
+			registerInstance(_);
 		}
 	});
 		
@@ -115,6 +129,23 @@ var JSFlow = {version:"1.0.0"};
 		}
 	};
 	
+	__.Simple.prototype = {
+		$SeqID: seqID,
+		blockType:"Function",
+		
+		doNext: function(fromPos){var _=this;
+			console.log("Simple.doNext: ", fromPos);
+			if(_.log){
+				_.log.logEnd(_, fromPos);
+			}
+			goTo(_.blkID);
+		},
+		
+		run: function(){var _=this;
+			_.elements[0]();
+		}
+	},
+	
 	__.Sequence.prototype = {
 		$SeqID: seqID,
 		blockType:"Sequence",
@@ -122,11 +153,8 @@ var JSFlow = {version:"1.0.0"};
 		doNext: function(fromPos){var _=this;
 			console.log("Sequence.doNext: ", fromPos);
 			if(_.log){
-				//var pos = arguments.callee.caller.caller.caller.pos;
-				//_.log.logEnd(_, _.curPos);
 				_.log.logEnd(_, fromPos);
 			}
-			console.log(2);
 			_.curPos++;
 			_.run();
 		},
