@@ -119,7 +119,7 @@ var JSFlow = {version:"1.0.0"};
 		doNext: function(){var _=this;
 			if(_.log){
 				var pos = arguments.callee.caller.caller.caller.pos;
-				_.log.logEnd(_, pos);
+				_.log.logEnd(_, _.curPos);
 			}
 			_.curPos++;
 			_.run();
@@ -158,10 +158,7 @@ var JSFlow = {version:"1.0.0"};
 				_.log.logEnd(_, pos);
 			}
 			_.count--;
-			if(!_.count){
-				if(_.log) _.log.logEnd(_);
-				goTo(_.blkID);
-			}
+			if(!_.count) goTo(_.blkID);
 		},
 		
 		run: function(){var _=this;
