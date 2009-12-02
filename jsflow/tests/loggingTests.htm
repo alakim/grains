@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>JSFlow Logging Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+<script type="text/javascript" src="../../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../jsflow.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+new JSUnit.Test("Подключение модуля JSFlow", "Configuration").run = function(){
+	this.assert(typeof(JSFlow), "object");
+}
+
+new JSUnit.Test("Simple test", "Logging").run = function(){with(JSFlow){
+	JSFlow.defaultLog = new JSFlow.Log();
+	var process = new Sequence(
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		new Parallel(
+			function(){(new Continuation())()},
+			function(){(new Continuation())()},
+			function(){(new Continuation())()}
+		),
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		function(){(new Continuation())()}
+	);
+	process.run();
+	
+	$("out").innerHTML = JSFlow.defaultLog.log.join("<br>");
+}}
+
+function init(){
+	$("versionPanel").innerHTML = JSFlow.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Logging Tests</h1>
+	<p>JSFlow v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
