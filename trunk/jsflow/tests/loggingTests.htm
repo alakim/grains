@@ -7,37 +7,15 @@
 <script type="text/javascript" src="../jsflow.js"></script>
 <script type="text/javascript">
 function $(id){return document.getElementById(id);}
+function extend(o,s){for(var k in s)o[k]=s[k];}
 
 new JSUnit.Test("Подключение модуля JSFlow", "Configuration").run = function(){
 	this.assert(typeof(JSFlow), "object");
 }
 
 var log1 = new JSFlow.Log();
-
-function test1(){with(JSFlow){
-	var process = new Sequence(
-		function(){(new Continuation())()},
-		function(){(new Continuation())()},
-		function(){(new Continuation())()},
-		new Parallel(
-			function(){(new Continuation())()},
-			function(){(new Continuation())()},
-			function(){(new Continuation())()}
-		),
-		function(){(new Continuation())()},
-		function(){(new Continuation())()},
-		function(){(new Continuation())()}
-	);
-	try{
-		log1.connect(process);
-		
-		console.log("run...");
-		process.run();
-	}
-	catch(e){console.log(e);}
-	console.log("res!");
-	
-	var expectations = [
+extend(log1, {
+	expectations: [
 		"Sequence 1 begins",
 		"Function 1.0 begins",
 		"Function 1.0 ended",
@@ -61,21 +39,45 @@ function test1(){with(JSFlow){
 		"Function 1.6 begins",
 		"Function 1.6 ended",
 		"Sequence 1 ended"
-	];
-	
-	with(Html){
-		$("out").innerHTML = div(
-			apply(log1.log, function(msg, i){
-				var ok = expectations[i]==msg;
+	],
+
+	render: function(){with(Html){var _=this;
+		return div(
+			apply(_.log, function(msg, i){
+				var ok = _.expectations[i]==msg;
 				return div(i+1, ": ", 
 					span({style:"color:#"+(ok?"080":"f00")},
 						msg,
-						ok?null:span(" (Expected '", expectations[i], "')")
+						ok?span({style:"font-weight:bold; color:#080; margin-left:25px;"}, "OK")
+							:span({style:"margin-left:20px;"}, " (Expected '", _.expectations[i], "')")
 					)
 				);
 			})
 		);
-	}
+	}}
+});
+
+
+function test1(){with(JSFlow){
+	var process = new Sequence(
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		new Parallel(
+			function(){(new Continuation())()},
+			function(){(new Continuation())()},
+			function(){(new Continuation())()}
+		),
+		function(){(new Continuation())()},
+		function(){(new Continuation())()},
+		function(){(new Continuation())()}
+	);
+	
+	log1.connect(process);
+	process.run();
+	
+	$("out").innerHTML = log1.render();
+	
 }}
 
 function init(){
