@@ -1,0 +1,77 @@
+﻿<html>
+<head>
+<title>JSFlow Loop sample</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+with(JSFlow){
+	var process = sequence(
+		function(){
+			var go = new Continuation();
+			var delay = 500;
+			log("f1: Wait for "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		},
+		function(){
+			beginLoop = new Continuation();
+			log("f3: Enter Number of Iterations and press Begin Loop button");
+		},
+		
+		function(){
+			var go = new Continuation();
+			var count = parseInt($("loopCount").value);
+			function loop(){
+				count--; // Модификация счетчика именно ПЕРЕД вызовом тела цикла
+						 // Если делать после, то в случае синхронного выполнения тела цикла
+						 // значения счетчика на всех итерациях будет одинаковым
+						 // при асинхронном работать будет, а при синхронном - зациклится.
+				if(count>=0)
+					loopBody.init().run(loop); // не забываем инициализировать тело цикла перед каждым выполнением!
+				else go();
+			}
+			loop();
+		},
+		
+		function(){
+			log("All iterations complete.");
+		}
+	);
+	
+	var loopBody = sequence(
+		function(){
+			var go = new Continuation();
+			var delay = 200;
+			log("loop: Wait for "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		}
+	);
+	
+}
+
+function beginLoop(){};
+
+function init(){
+	$("out").innerHTML = "";
+	process.init().run();
+}
+
+
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Loop sample</h1>
+	Number of Iterations <input type="text" id="loopCount" value="3">
+	<button onclick="beginLoop()">Begin Loop</button>
+	<div id="out">
+</body>
+</html>
