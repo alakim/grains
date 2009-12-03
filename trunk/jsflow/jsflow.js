@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.1.247"};
+var JSFlow = {version:"2.2.249"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -28,6 +28,7 @@ var JSFlow = {version:"2.1.247"};
 	}
 	
 	function seqID(){var _=this;
+		if(_.name) return _.name+"#1";
 		if(_.pos==null) return 1;
 		var blk = instances[_.blkID];
 		return blk.$SeqID()+"."+(_.pos+1);
