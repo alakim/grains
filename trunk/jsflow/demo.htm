@@ -27,8 +27,14 @@ function init(){with(JSFlow){
 	// Элементами потока может быть просто функция, либо Sequence, либо Parallel
 	// Продолжение (Continuation) должна создаваться в главной функции элемента потока
 
-	new Sequence(
-		function(){f1(); setTimeout(new Continuation(), 1000);},
+	sequence(
+		function(){
+			var go = new Continuation();
+			f1();
+			setTimeout(function(){
+				go();
+			}, 1000);
+		},
 		function(){
 			f2();
 			setTimeout(new Continuation(), 500);
@@ -43,7 +49,7 @@ function init(){with(JSFlow){
 		},
 		function(){f3(); setTimeout(new Continuation(), 300);},
 		
-		new Sequence(
+		sequence(
 			function(){
 				var cont = new Continuation();
 				log("Inner sequence begin");
@@ -68,7 +74,7 @@ function init(){with(JSFlow){
 			setTimeout(new Continuation(), delay);
 		},
 		
-		new Parallel(
+		parallel(
 			function(){
 				var nr = 1;
 				log("run "+nr);

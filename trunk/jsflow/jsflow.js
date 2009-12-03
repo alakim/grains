@@ -1,4 +1,4 @@
-var JSFlow = {version:"1.2.242"};
+var JSFlow = {version:"2.0.243"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -32,13 +32,13 @@ var JSFlow = {version:"1.2.242"};
 	}
 	
 			
-	function Simple(F){var _=this;
+	function Action(F){var _=this;
 		_.elements = [F];
 		registerInstance(_);
 		F.block = _;
 	}
 	
-	Simple.prototype = {
+	Action.prototype = {
 		$SeqID: seqID,
 		blockType:"Function",
 		
@@ -53,6 +53,108 @@ var JSFlow = {version:"1.2.242"};
 		}
 	};
 
+	function Sequence(){var _=this;
+		_.elements = [];
+		_.curPos = 0;
+		registerInstance(_);
+	}
+		
+	Sequence.prototype = {
+		$SeqID: seqID,
+		blockType:"Sequence",
+		
+		fill:fill,
+		
+		doNext: function(){var _=this;
+			_.curPos++;
+			_.run();
+		},
+		
+		run: function(){var _=this;
+			var el = _.elements[_.curPos];
+			if(!_.log)_.log = __.defaultLog;
+			if(_.log){
+				if(_.curPos==0) _.log.logBegin(_);
+				else if(!el) _.log.logEnd(_);
+			}
+			if(!el){
+				if(_.blkID) goTo(_.blkID);
+				return;
+			}
+			if(!el.log) el.log = __.defaultLog;
+			function c(){
+				if(typeof(el)=="function") el();
+				else if(typeof(el.run)=="function") el.run();
+				else throw "Element #"+_.curPos+" is not executable.";
+			}
+			c.block = _;
+			c();
+		}
+	};
+		
+	function Parallel(){var _=this;
+		_.elements = [];
+		registerInstance(_);
+		_.count = _.elements.length;
+	}
+	
+	Parallel.prototype = {
+		$SeqID: seqID,
+		blockType:"Parallel",
+		
+		fill:fill,
+
+		doNext: function(){var _=this;
+			_.count--;
+			if(!_.count){
+				if(_.log) _.log.logEnd(_);
+				goTo(_.blkID);
+			}
+		},
+		
+		run: function(){var _=this;
+			if(!_.log)_.log = __.defaultLog;
+			if(_.log) _.log.logBegin(_);
+			
+			for(var i=0; i<_.elements.length; i++){
+				var el = _.elements[i];
+				if(!el.log) el.log = __.defaultLog;
+				function c(){
+					if(typeof(el)=="function") el();
+					else if(typeof(el.run)=="function") el.run();
+					else throw "Element #"+i+" is not executable.";
+				}
+				c.block = _;
+				c();
+			}
+		}
+	};
+	
+	function DoWhile(){var _=this;
+		registerInstance(_);
+	}
+	
+	function DoTimes(){var _=this;
+		registerInstance(_);
+	}
+	
+	function Condition(){var _=this;
+		registerInstance(_);
+	}
+	
+	function fill(elements){var _=this;
+		_.elements = [];
+		for(var i=0; i<elements.length; i++){
+			var el = elements[i];
+			if(typeof(el)=="function") el = new Action(el);
+			if(!el.log) el.log = _.log;
+			el.pos = i;
+			el.blkID = _.id;
+			_.elements.push(el);
+		}
+		_.count = elements.length;
+		return _;
+	}
 	
 	extend(__,{
 		defaultLog:null,
@@ -71,44 +173,12 @@ var JSFlow = {version:"1.2.242"};
 			};
 		},
 		
-		Sequence: function(){var _=this;
-			_.elements = [];
-			_.curPos = 0;
-			registerInstance(_);
-			for(var i=0; i<arguments.length; i++){
-				var el = arguments[i];
-				if(typeof(el)=="function") el = new Simple(el);
-				if(!el.log) el.log = _.log;
-				el.pos = i;
-				el.blkID = _.id;
-				_.elements.push(el);
-			}
+		sequence: function(){
+			return new Sequence().fill(arguments);
 		},
 		
-		Parallel: function(){var _=this;
-			_.elements = [];
-			registerInstance(_);
-			for(var i=0; i<arguments.length; i++){
-				var el = arguments[i];
-				if(typeof(el)=="function") el = new Simple(el);
-				if(!el.log) el.log = _.log;
-				el.pos = i;
-				el.blkID = _.id;
-				_.elements.push(el);
-			}
-			_.count = _.elements.length;
-		},
-		
-		DoWhile: function(){var _=this;
-			registerInstance(_);
-		},
-		
-		DoTimes: function(){var _=this;
-			registerInstance(_);
-		},
-		
-		Condition: function(){var _=this;
-			registerInstance(_);
+		parallel: function(){
+			return new Parallel().fill(arguments);
 		}
 	});
 		
@@ -139,67 +209,6 @@ var JSFlow = {version:"1.2.242"};
 			this.log.push(msg.join(""));
 		}
 	};
-		
-	__.Sequence.prototype = {
-		$SeqID: seqID,
-		blockType:"Sequence",
-		
-		doNext: function(){var _=this;
-			_.curPos++;
-			_.run();
-		},
-		
-		run: function(){var _=this;
-			var el = _.elements[_.curPos];
-			if(!_.log)_.log = __.defaultLog;
-			if(_.log){
-				if(_.curPos==0) _.log.logBegin(_);
-				else if(!el) _.log.logEnd(_);
-			}
-			if(!el){
-				if(_.blkID) goTo(_.blkID);
-				return;
-			}
-			if(!el.log) el.log = __.defaultLog;
-			function c(){
-				if(typeof(el)=="function") el();
-				else if(typeof(el.run)=="function") el.run();
-				else throw "Element #"+_.curPos+" is not executable.";
-			}
-			c.block = _;
-			c();
-		}
-	};
-	
-	__.Parallel.prototype = {
-		$SeqID: seqID,
-		blockType:"Parallel",
 
-		doNext: function(){var _=this;
-			_.count--;
-			if(!_.count){
-				if(_.log) _.log.logEnd(_);
-				goTo(_.blkID);
-			}
-		},
-		
-		run: function(){var _=this;
-			if(!_.log)_.log = __.defaultLog;
-			if(_.log) _.log.logBegin(_);
-			
-			for(var i=0; i<_.elements.length; i++){
-				var el = _.elements[i];
-				if(!el.log) el.log = __.defaultLog;
-				function c(){
-					if(typeof(el)=="function") el();
-					else if(typeof(el.run)=="function") el.run();
-					else throw "Element #"+i+" is not executable.";
-				}
-				c.block = _;
-				c();
-			}
-		}
-	};
-	
 	
 }());
