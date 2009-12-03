@@ -41,11 +41,11 @@ log1.expectations = [
 ];
 
 function test1(){with(JSFlow){
-	var process = new Sequence(
+	var process = sequence(
 		function(){(new Continuation())()},
 		function(){(new Continuation())()},
 		function(){(new Continuation())()},
-		new Parallel(
+		parallel(
 			function(){
 				var go = new Continuation();
 				setTimeout(function(){
@@ -64,7 +64,7 @@ function test1(){with(JSFlow){
 					go();
 				}, 200);
 			},
-			new Sequence(
+			sequence(
 				function(){
 					var go = new Continuation();
 					setTimeout(function(){
