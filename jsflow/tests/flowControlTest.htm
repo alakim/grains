@@ -1,0 +1,167 @@
+﻿<html>
+<head>
+<title>JSFlow Flow Control Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<script type="text/javascript" src="../../html/html.js"></script>
+<script type="text/javascript" src="../jsflow.js"></script>
+<script type="text/javascript" src="testingLog.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+var log1 = new TestingLog();
+log1.expectations = [
+	"Sequence 1 begins",
+		"Function 1.1 begins",
+			"Sequence LoopBody#1 begins",
+				"Function LoopBody#1.1 begins",
+					"Sequence Branch_2#1 begins",
+						"Function Branch_2#1.1 begins",
+						"Function Branch_2#1.1 ended",
+						"Function Branch_2#1.2 begins",
+						"Function Branch_2#1.2 ended",
+					"Sequence Branch_2#1 ended",
+				"Function LoopBody#1.1 ended",
+				"Function LoopBody#1.2 begins",
+				"Function LoopBody#1.2 ended",
+			"Sequence LoopBody#1 ended",
+			"Sequence LoopBody#1 begins",
+				"Function LoopBody#1.1 begins",
+					"Sequence Branch_1#1 begins",
+						"Function Branch_1#1.1 begins",
+						"Function Branch_1#1.1 ended",
+						"Function Branch_1#1.2 begins",
+						"Function Branch_1#1.2 ended",
+					"Sequence Branch_1#1 ended",
+				"Function LoopBody#1.1 ended",
+				"Function LoopBody#1.2 begins",
+				"Function LoopBody#1.2 ended",
+			"Sequence LoopBody#1 ended",
+			"Sequence LoopBody#1 begins",
+				"Function LoopBody#1.1 begins",
+					"Sequence Branch_2#1 begins",
+						"Function Branch_2#1.1 begins",
+						"Function Branch_2#1.1 ended",
+						"Function Branch_2#1.2 begins",
+						"Function Branch_2#1.2 ended",
+					"Sequence Branch_2#1 ended",
+				"Function LoopBody#1.1 ended",
+				"Function LoopBody#1.2 begins",
+				"Function LoopBody#1.2 ended",
+			"Sequence LoopBody#1 ended",
+		"Function 1.1 ended",
+		"Function 1.2 begins",
+			"Sequence SynchronousLoopBody#1 begins",
+				"Function SynchronousLoopBody#1.1 begins",
+				"Function SynchronousLoopBody#1.1 ended",
+			"Sequence SynchronousLoopBody#1 ended",
+			"Sequence SynchronousLoopBody#1 begins",
+				"Function SynchronousLoopBody#1.1 begins",
+				"Function SynchronousLoopBody#1.1 ended",
+			"Sequence SynchronousLoopBody#1 ended",
+			"Sequence SynchronousLoopBody#1 begins",
+				"Function SynchronousLoopBody#1.1 begins",
+				"Function SynchronousLoopBody#1.1 ended",
+			"Sequence SynchronousLoopBody#1 ended",
+		"Function 1.2 ended",
+		"Function 1.3 begins",
+		"Function 1.3 ended",
+	"Sequence 1 ended"
+];
+
+function test1(){with(JSFlow){
+	var process = sequence(
+		function(){
+			var go = new Continuation();
+			function loop(){
+				loopBody.init().run(--count?loop:go);
+			}
+			loop();
+		},
+
+		function(){
+			var go = new Continuation();
+			var c = 3;
+			function loop(){
+				syncLoopBody.init().run(--c?loop:go);
+			}
+			loop();
+		},
+		
+		function(){
+			(new Continuation())();
+			$("out").innerHTML = log1.render();
+		}
+	);
+	
+	var count = 3;
+	
+	var branch1 = sequence(		
+		function(){
+			var go = new Continuation();
+			setTimeout(go, 200);
+		},
+		function(){
+			var go = new Continuation();
+			setTimeout(go, 100);
+		}
+	);
+
+	var branch2 = sequence(
+		function(){
+			var go = new Continuation();
+			setTimeout(go, 100);
+		},
+		function(){
+			var go = new Continuation();
+			setTimeout(go, 20);
+		}
+	);
+	
+	var loopBody = sequence(
+		function(){
+			var go = new Continuation();
+			var branch = count%2?branch1:branch2;
+			branch.init().run(go);
+		},
+		function(){
+			var go = new Continuation();
+			setTimeout(go, 100);
+		}
+	);
+	
+	var syncLoopBody = sequence(
+		function(){
+			(new Continuation())();
+		}
+	);
+
+	branch1.name = "Branch_1";
+	branch2.name = "Branch_2";
+	loopBody.name = "LoopBody";
+	syncLoopBody.name = "SynchronousLoopBody";
+	
+	log1.connect(process);
+	log1.connect(branch1);
+	log1.connect(branch2);
+	log1.connect(loopBody);
+	log1.connect(syncLoopBody);
+	
+	$("out").innerHTML = Html.img({src:"../waitcircle.gif"});
+	process.run();
+	
+	
+}}
+
+function init(){
+	$("versionPanel").innerHTML = JSFlow.version;
+	test1();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Flow Control Tests</h1>
+	<p>JSFlow v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
