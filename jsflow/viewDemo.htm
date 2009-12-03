@@ -1,0 +1,54 @@
+﻿<html>
+<head>
+<title>JSFlow Event sample</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+with(JSFlow){
+	var process = sequence(
+		function(){log("f1"), (new Continuation())()},
+		function(){
+			var go = new Continuation();
+			var delay = 2000;
+			log("f2 "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		},
+		function(){
+			var go = new Continuation();
+			sendEvent = function(){go();};
+			$("btSendEvent").disabled = false;
+			log("f3 ... Press Send Event button");
+		},
+		
+		function(){
+			$("btSendEvent").disabled = true;
+			log("f4. Button pressed!");
+		}
+	);
+}
+
+
+function sendEvent(){
+}
+
+function init(){
+	process.run();
+}
+
+
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Event sample</h1>
+	<button id="btSendEvent" disabled onclick="sendEvent()">Send Event</button>
+	<div id="out">
+</body>
+</html>
