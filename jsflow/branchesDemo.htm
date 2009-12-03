@@ -1,0 +1,93 @@
+﻿<html>
+<head>
+<title>JSFlow Branches sample</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+with(JSFlow){
+	var process = sequence(
+		function(){
+			var go = new Continuation();
+			var delay = 200;
+			log("f1: Wait for "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		},
+		function(){
+			var go = new Continuation();
+			var delay = 500;
+			log("f2: Wait for "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		},
+		function(){
+			var go = new Continuation();
+			continueExecution = go;
+			log("f3: Enter number more (for branch 2) or less (for branch 1) than 5 and press Continue Execution button");
+		},
+		
+		function(){
+			var go = new Continuation();
+			var nr = parseInt($("myNumber").value);
+			log("f4: "+nr+" entered");
+			// Выбираем ветвь для дальнейшего исполнения
+			var branch = nr>5?branch2:branch1;
+			// Назначаем ветви точку возврата по исполнении. 
+			// Т.е. когда ветвь выполнится, будет исполнена следующая команда данного потока.
+			// Иными словами, обработчику события завершения ветви назначается продолжение (Continuation) данного потока.
+			branch.onComplete = go; 
+			branch.run();
+			// Можно написать и проще - просто передать продолжение методу run: 
+			//    branch.run(go);
+			// Оба варианта эквивалентны.
+		},
+		
+		function(){
+			log("Process complete.");
+		}
+	);
+	
+	var branch1 = sequence(
+		function(){
+			var go = new Continuation();
+			log("branch 1 executed");
+			go();
+		}
+	);
+	
+	var branch2 = sequence(
+		function(){
+			var go = new Continuation();
+			log("branch 2 executed");
+			go();
+		}
+	);
+}
+
+
+function continueExecution(){
+}
+
+function init(){
+	$("out").innerHTML = "";
+	process.init().run();
+}
+
+
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Branches sample</h1>
+	<input type="text" id="myNumber" value="0">
+	<button onclick="continueExecution()">Continue Execution</button>
+	<div id="out">
+</body>
+</html>
