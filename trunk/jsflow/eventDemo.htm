@@ -12,20 +12,28 @@ function log(msg){$("out").innerHTML+=msg+"<br>";}
 
 with(JSFlow){
 	var process = sequence(
-		function(){log("f1"), (new Continuation())()},
 		function(){
 			var go = new Continuation();
-			var delay = 2000;
-			log("f2 "+ delay);
+			var delay = 200;
+			log("f1: Wait for "+ delay);
 			setTimeout(function(){
 				go();
 			}, delay);
 		},
 		function(){
 			var go = new Continuation();
-			sendEvent = function(){go();};
+			var delay = 1000;
+			log("f2: Wait for "+ delay);
+			setTimeout(function(){
+				go();
+			}, delay);
+		},
+		function(){
+			var go = new Continuation();
+			// Назначаем в качестве обработчика события продолжнение данного потока.
+			sendEvent = go;
 			$("btSendEvent").disabled = false;
-			log("f3 ... Press Send Event button");
+			log("f3: Press Send Event button");
 		},
 		
 		function(){
@@ -40,6 +48,7 @@ function sendEvent(){
 }
 
 function init(){
+	$("btSendEvent").disabled = true;
 	process.run();
 }
 

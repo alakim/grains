@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.0.244"};
+var JSFlow = {version:"2.1.247"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -46,6 +46,7 @@ var JSFlow = {version:"2.0.244"};
 		
 		doNext: function(){var _=this;
 			if(_.log) _.log.logEnd(_);
+			if(_.onComplete) _.onComplete();
 			goTo(_.blkID);
 		},
 		
@@ -66,21 +67,26 @@ var JSFlow = {version:"2.0.244"};
 		blockType:"Sequence",
 		
 		fill:fill,
-		init: doNothing,
+		init: function(){this.curPos=0; return this;},
 		
 		doNext: function(){var _=this;
 			_.curPos++;
 			_.run();
 		},
 		
-		run: function(){var _=this;
+		run: function(continuation){var _=this;
+			if(continuation) _.onComplete = continuation;
+			
 			var el = _.elements[_.curPos];
 			if(!_.log)_.log = __.defaultLog;
 			if(_.log){
 				if(_.curPos==0) _.log.logBegin(_);
-				else if(!el) _.log.logEnd(_);
+				else if(!el){
+					_.log.logEnd(_);
+				}
 			}
 			if(!el){
+				if(_.onComplete) _.onComplete();
 				if(_.blkID) goTo(_.blkID);
 				return;
 			}
@@ -107,17 +113,20 @@ var JSFlow = {version:"2.0.244"};
 		fill:fill,
 		init:function(){var _=this;
 			_.count = _.elements.length;
+			return _;
 		},
 
 		doNext: function(){var _=this;
 			_.count--;
 			if(!_.count){
 				if(_.log) _.log.logEnd(_);
+				if(_.onComplete) _.onComplete();
 				goTo(_.blkID);
 			}
 		},
 		
-		run: function(){var _=this;
+		run: function(continuation){var _=this;
+			if(continuation) _.onComplete = continuation;
 			if(!_.log)_.log = __.defaultLog;
 			if(_.log) _.log.logBegin(_);
 			
