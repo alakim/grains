@@ -1,7 +1,9 @@
-var JSFlow = {version:"2.0.243"};
+var JSFlow = {version:"2.0.244"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
+	
+	function doNothing(){}
 	
 	function each(coll, F){
 		if(!coll) return;
@@ -64,6 +66,7 @@ var JSFlow = {version:"2.0.243"};
 		blockType:"Sequence",
 		
 		fill:fill,
+		init: doNothing,
 		
 		doNext: function(){var _=this;
 			_.curPos++;
@@ -101,8 +104,10 @@ var JSFlow = {version:"2.0.243"};
 	Parallel.prototype = {
 		$SeqID: seqID,
 		blockType:"Parallel",
-		
 		fill:fill,
+		init:function(){var _=this;
+			_.count = _.elements.length;
+		},
 
 		doNext: function(){var _=this;
 			_.count--;
@@ -130,18 +135,6 @@ var JSFlow = {version:"2.0.243"};
 		}
 	};
 	
-	function DoWhile(){var _=this;
-		registerInstance(_);
-	}
-	
-	function DoTimes(){var _=this;
-		registerInstance(_);
-	}
-	
-	function Condition(){var _=this;
-		registerInstance(_);
-	}
-	
 	function fill(elements){var _=this;
 		_.elements = [];
 		for(var i=0; i<elements.length; i++){
@@ -152,7 +145,7 @@ var JSFlow = {version:"2.0.243"};
 			el.blkID = _.id;
 			_.elements.push(el);
 		}
-		_.count = elements.length;
+		_.init();
 		return _;
 	}
 	
