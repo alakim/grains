@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.2.249"};
+var JSFlow = {version:"2.3.251"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -182,7 +182,15 @@ var JSFlow = {version:"2.2.249"};
 		
 		parallel: function(){
 			return new Parallel().fill(arguments);
+		},
+		
+		wait: function(delay){
+			return function(){
+				var go = new __.Continuation();
+				setTimeout(function(){go();}, delay);
+			};
 		}
+
 	});
 		
 	function elType(el){
