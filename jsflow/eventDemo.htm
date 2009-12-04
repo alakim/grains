@@ -11,6 +11,7 @@ function $(id){return document.getElementById(id);}
 function log(msg){$("out").innerHTML+=msg+"<br>";}
 
 with(JSFlow){
+	
 	// Процесс определяем в виде функции, возвращающей исполняемый экземпляр процесса.
 	// При каждом запуске создается новый экземпляр.
 	var process = function(){
@@ -24,13 +25,10 @@ with(JSFlow){
 				}, delay);
 			},
 			function(){
-				var go = new Continuation();
-				var delay = 1000;
-				log("f2: Wait for "+ delay);
-				setTimeout(function(){
-					go();
-				}, delay);
+				log("f2: Wait for 1000");
+				(new Continuation())();
 			},
+			wait(1000),
 			function(){
 				var go = new Continuation();
 				// Назначаем в качестве обработчика события продолжнение данного потока.
