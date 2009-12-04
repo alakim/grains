@@ -28,6 +28,7 @@ with(JSFlow){
 				log("f2: Wait for 1000");
 				(new Continuation())();
 			},
+			// Специальный примитив для ожидания
 			wait(1000),
 			function(){
 				var go = new Continuation();
