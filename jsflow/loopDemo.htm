@@ -11,66 +11,78 @@ function $(id){return document.getElementById(id);}
 function log(msg){$("out").innerHTML+=msg+"<br>";}
 
 with(JSFlow){
-	var process = sequence(
-		function(){
-			var go = new Continuation();
-			var delay = 500;
-			log("f1: Wait for "+ delay);
-			setTimeout(function(){
-				go();
-			}, delay);
-		},
-		function(){
-			beginLoop = new Continuation();
-			log("f3: Enter Number of Iterations and press Begin Loop button");
-		},
-		
-		function(){
-			var go = new Continuation();
-			var count = parseInt($("loopCount").value);
-			function loop(){
-				// Модифицируем счетчик именно ПЕРЕД вызовом тела цикла
-				// Если делать после, то в случае синхронного выполнения тела цикла
-				// значения счетчика на всех итерациях будет одинаковым
-				// при асинхронном работать будет, а при синхронном - зациклится.
-				// Не забываем инициализировать тело цикла перед каждым выполнением!
-				loopBody.init().run(--count>0?loop:go);
+	// Процесс определяем в виде функции, возвращающей исполняемый экземпляр процесса.
+	// При каждом запуске создается новый экземпляр.
+	var process = function(){
+		return sequence(
+			function(){
+				var go = new Continuation();
+				var delay = 500;
+				log("f1: Wait for "+ delay);
+				setTimeout(function(){
+					go();
+				}, delay);
+			},
+			function(){
+				beginLoop = new Continuation();
+				$("inputPanel").style.display = "block";
+				log("f3: Enter Number of Iterations and press Begin Loop button");
+			},
+			
+			function(){
+				var go = new Continuation();
+				var count = parseInt($("loopCount").value);
+				function loop(){
+					// Модифицируем счетчик именно ПЕРЕД вызовом тела цикла
+					// Если делать после, то в случае синхронного выполнения тела цикла
+					// значения счетчика на всех итерациях будет одинаковым
+					// при асинхронном работать будет, а при синхронном - зациклится.
+					// Создаем экземпляр тела цикла, и запускаем его с указанием точки возврата (продолжения)
+					loopBody().run(--count>0?loop:go);
+				}
+				loop();
+			},
+			
+			function(){
+				log("All iterations complete.");
 			}
-			loop();
-		},
-		
-		function(){
-			log("All iterations complete.");
-		}
-	);
+		);
+	};
 	
-	var loopBody = sequence(
-		function(){
-			var go = new Continuation();
-			var delay = 200;
-			log("loop: Wait for "+ delay);
-			setTimeout(function(){
-				go();
-			}, delay);
-		}
-	);
-	
+	// Тело цикла определяем в виде функции, возвращающей исполняемый экземпляр тела цикла.
+	// При каждой итерации создается исполняемый экземпляр тела цикла.
+	var loopBody = function(){
+		return sequence(
+			function(){
+				var go = new Continuation();
+				var delay = 200;
+				log("loop: Wait for "+ delay);
+				setTimeout(function(){
+					go();
+				}, delay);
+			}
+		);
+	};
 }
 
 function beginLoop(){};
 
-function init(){
+function runProcess(){
+	$("inputPanel").style.display = "none";
 	$("out").innerHTML = "";
-	process.init().run();
+	process().run();
 }
 
 
 </script>
 </head>
-<body onload="init()">
+<body>
 	<h1>JSFlow Loop sample</h1>
-	Number of Iterations <input type="text" id="loopCount" value="3">
-	<button onclick="beginLoop()">Begin Loop</button>
+	<button onclick="runProcess()">Run Process</button><br><br>
+	<div id="inputPanel" style="display:none;">
+		Number of Iterations <input type="text" id="loopCount" value="3">
+		<button onclick="beginLoop()">Begin Loop</button>
+	</div>
 	<div id="out">
 </body>
 </html>
