@@ -1,0 +1,43 @@
+﻿<html>
+<head>
+<title>JSFlow Animation Demo page</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+function moveLeft(){
+	var oo = $("square");
+	var leftPos = parseInt(oo.style.left);
+	leftPos+=12;
+	oo.style.left = leftPos;
+	return leftPos;
+}
+
+function init(){with(JSFlow){
+	sequence(
+		moveLeft,
+		wait(1),
+		function(){
+			var go = new Continuation();
+			moveLeft()
+		}
+	).run();
+
+	
+}}	
+
+
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Animation Demo page</h1>
+	
+	<div id="out"></div>
+	<div id="square" style="position:absolute;left:100px;top:100px; width:10px; height:10px; background-color:red;"></div>
+</body>
+</html>
