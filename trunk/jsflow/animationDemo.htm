@@ -28,7 +28,7 @@ function pos(v){
 	};
 }
 
-function startMovingProcess(){with(JSFlow){
+function startMovingProcess1(){with(JSFlow){
 	var delay = 5;
 	pos({x:100, y:100});
 	
@@ -51,7 +51,48 @@ function startMovingProcess(){with(JSFlow){
 	
 }}	
 
-function startSimpleMoving(){
+function startMovingProcess2(){with(JSFlow){
+	var delay = 5;
+	pos({x:100, y:100});
+	
+	function xMoving(x, go){
+		return function loop(){
+			move(2, 0);
+			JSFlow.wait(delay).run(pos().x<x? loop:go);
+		};
+	}
+	
+	function yMoving(y, go){
+		return function loop(){
+			move(0, 2);
+			JSFlow.wait(delay).run(pos().y<y? loop:go);
+		};
+	}
+	
+	function blinking(count, go){
+		var i = count;
+		return function loop(){
+			$("square").style.backgroundColor = i==1?"#ff0000":i%2?"#00ff00":"#ff0000";
+			i--;
+			JSFlow.wait(300).run(i>0?loop:go);
+		};
+	}
+	
+	sequence(
+		function(){xMoving(200, new Continuation())();},
+		function(){yMoving(200, new Continuation())();},
+		function(){xMoving(250, new Continuation())();},
+		function(){blinking(10, new Continuation())();},
+		function(){yMoving(300, new Continuation())();},
+		function(){xMoving(280, new Continuation())();},
+		function(){blinking(6, new Continuation())();},
+		function(){xMoving(290, new Continuation())();},
+		function(){yMoving(310, new Continuation())();}
+	).run();
+	
+}}	
+
+function startSimpleMoving1(){
 	pos({x:100, y:100});
 	(function mv(){
 		move(2,0);
@@ -65,6 +106,21 @@ function startSimpleMoving(){
 	
 }
 
+function startSimpleMoving2(){
+	pos({x:100, y:100});
+	(function mv(){
+		move(2,0);
+		if(pos().x<200) setTimeout(mv, 5);
+		else (function mv(){
+			move(0,2);
+			if(pos().y<200) setTimeout(mv, 5);
+		})();
+	})();
+	
+	
+	
+}
+
 </script>
 </head>
 <body>
@@ -72,10 +128,16 @@ function startSimpleMoving(){
 	
 	<div id="out"></div>
 	<div>
-		<button onclick="startMovingProcess()">Start Moving Process</button>
-		<button onclick="startSimpleMoving()">Start Simple Moving</button>
+		<button onclick="startMovingProcess1()">Start Moving Process 1</button>
+		<button onclick="startMovingProcess2()">Start Moving Process 2</button>
+		<button onclick="startSimpleMoving1()">Start Simple Moving 1</button>
+		<button onclick="startSimpleMoving2()">Start Simple Moving 2</button>
 	</div>
-	<p>NB! Moving Process работает правильно - сначала горизонтальное перемещение, а потом ветикальное. Попытка анимации простыми средствами неудачна - перемещение по горизонтали и по вертикали идут одновременно.</p>
+	<p>NB! Moving Process работает правильно - сначала горизонтальное перемещение, а потом ветикальное.
+	Второй вариант процесса представлен более структурированно (определены специфические анимационные примитивы), что позволяет наглядно описывать сложную анимацию.</p>
+	<p>Первая попытка анимации простыми средствами неудачна - перемещение по горизонтали и по вертикали идут одновременно.</p>
+	<p>Вторая попытка анимации простыми средствами приводит к образованию вложенных структур, что существенно усложняет код, т.к. глубина вложенности равна числу этапов анимации.</p>
+	<p>Под IE 6.0 простые реализации вообще почему-то не работают.</p>
 	<div id="square" style="position:absolute;left:100px;top:100px; width:10px; height:10px; background-color:red;"></div>
 </body>
 </html>
