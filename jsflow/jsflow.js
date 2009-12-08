@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.3.251"};
+var JSFlow = {version:"2.4.255"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -51,7 +51,8 @@ var JSFlow = {version:"2.3.251"};
 			goTo(_.blkID);
 		},
 		
-		run: function(){var _=this;
+		run: function(continuation){var _=this;
+			if(continuation) _.onComplete = continuation;
 			if(_.log)_.log.logBegin(_);
 			_.elements[0]();
 		}
@@ -185,10 +186,10 @@ var JSFlow = {version:"2.3.251"};
 		},
 		
 		wait: function(delay){
-			return function(){
+			return new Action(function(){
 				var go = new __.Continuation();
 				setTimeout(function(){go();}, delay);
-			};
+			});
 		}
 
 	});

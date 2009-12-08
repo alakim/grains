@@ -28,33 +28,54 @@ function pos(v){
 	};
 }
 
-function init(){with(JSFlow){
+function startMovingProcess(){with(JSFlow){
+	var delay = 5;
+	pos({x:100, y:100});
+	
 	sequence(
 		function(){
 			var go = new Continuation();
-			function loop(){
-				sequence(
-					function(){
-						move(2,0);
-						(new Continuation())()
-					},
-					wait(5)
-				).run(pos().x>200?go:loop);
-			}
-			loop();
+			(function loop(){
+				move(2,0);
+				wait(delay).run(pos().x<200?loop:go);
+			})();
+		},
+		function(){
+			var go = new Continuation();
+			(function loop(){
+				move(0,2);
+				wait(delay).run(pos().y<200?loop:go);
+			})();
 		}
 	).run();
-
 	
 }}	
 
+function startSimpleMoving(){
+	pos({x:100, y:100});
+	(function mv(){
+		move(2,0);
+		if(pos().x<200) setTimeout(mv, 5);
+	})();
+	
+	(function mv(){
+		move(0,2);
+		if(pos().y<200) setTimeout(mv, 5);
+	})();
+	
+}
 
 </script>
 </head>
-<body onload="init()">
+<body>
 	<h1>JSFlow Animation Demo page</h1>
 	
 	<div id="out"></div>
+	<div>
+		<button onclick="startMovingProcess()">Start Moving Process</button>
+		<button onclick="startSimpleMoving()">Start Simple Moving</button>
+	</div>
+	<p>NB! Moving Process работает правильно - сначала горизонтальное перемещение, а потом ветикальное. Попытка анимации простыми средствами неудачна - перемещение по горизонтали и по вертикали идут одновременно.</p>
 	<div id="square" style="position:absolute;left:100px;top:100px; width:10px; height:10px; background-color:red;"></div>
 </body>
 </html>
