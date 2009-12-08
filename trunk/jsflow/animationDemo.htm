@@ -10,21 +10,38 @@ function $(id){return document.getElementById(id);}
 
 function log(msg){$("out").innerHTML+=msg+"<br>";}
 
-function moveLeft(){
+function move(x, y){
+	x = x?x:0; y = y?y:0;
+	var pos0 = pos();
+	return pos({x:pos0.x+=x, y:pos0.y+=y});
+}
+
+function pos(v){
 	var oo = $("square");
-	var leftPos = parseInt(oo.style.left);
-	leftPos+=12;
-	oo.style.left = leftPos;
-	return leftPos;
+	if(v){
+		oo.style.left = v.x+"px";
+		oo.style.top = v.y+"px";
+	}
+	return {
+		x: oo.style.left?parseInt(oo.style.left):0,
+		y: oo.style.top?parseInt(oo.style.top):0
+	};
 }
 
 function init(){with(JSFlow){
 	sequence(
-		moveLeft,
-		wait(1),
 		function(){
 			var go = new Continuation();
-			moveLeft()
+			function loop(){
+				sequence(
+					function(){
+						move(2,0);
+						(new Continuation())()
+					},
+					wait(5)
+				).run(pos().x>200?go:loop);
+			}
+			loop();
 		}
 	).run();
 
