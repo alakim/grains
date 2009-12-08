@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
 <title>JSFlow Critical Section sample</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
@@ -35,7 +35,6 @@ with(JSFlow){
 			),
 			
 			function(){with(Html){
-				console.log("displaying results...");
 				var expectation = "01234567890123456789";
 				var res = log.join("");
 				$("out").innerHTML = res==expectation?span({style:"color:#008800;"}, "OK"):span(
@@ -79,7 +78,6 @@ with(JSFlow){
 		return sequence(
 			function(){
 				var go = new Continuation();
-				go();
 				if(busy)
 					queue.add(go);
 				else {
@@ -89,18 +87,11 @@ with(JSFlow){
 			},
 			times(10, 10, function(i){
 				log.push(i);
-				console.log("i:", i);
 			}),
 			function(){
 				var next = new Continuation();
-				console.log("end: ", queue.getLength());
 				var go = queue.extractFirst();
-				if(go){
-					console.log("go:", go);
-					go();
-				}
-				else busy = false;
-				console.log("next:", next);
+				if(go) go(); else busy = false;
 				next();
 			}
 		);
