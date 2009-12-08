@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.4.255"};
+var JSFlow = {version:"2.5.257"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -189,6 +189,17 @@ var JSFlow = {version:"2.4.255"};
 			return new Action(function(){
 				var go = new __.Continuation();
 				setTimeout(function(){go();}, delay);
+			});
+		},
+		
+		times: function(count, delay, iteration){
+			return new Action(function(){
+				var go = new __.Continuation();
+				var i = 0;
+				(function loop(){
+					iteration(i++);
+					__.wait(delay).run(i<count?loop:go);
+				})();
 			});
 		}
 

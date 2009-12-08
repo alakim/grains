@@ -64,7 +64,12 @@ log1.expectations = [
 			"Sequence SynchronousLoopBody#1 ended",
 		"Function 1.2 ended",
 		"Function 1.3 begins",
+			"iteration 0",
+			"iteration 1",
+			"iteration 2",
 		"Function 1.3 ended",
+		"Function 1.4 begins",
+		"Function 1.4 ended",
 	"Sequence 1 ended"
 ];
 
@@ -86,6 +91,14 @@ function test1(){with(JSFlow){
 			}
 			loop();
 		},
+		
+		// Цикл с использованием примитива times
+		// Позволяет описывать действие на каждой итерации 
+		// как функцию от номера итерации
+		// аргументы: число итераций, интервал ожидания между итерациями, функция - обработчик итерации
+		times(3, 5, function(i){
+			log1.write("iteration ", i);
+		}),
 		
 		function(){
 			(new Continuation())();

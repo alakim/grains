@@ -116,10 +116,26 @@ function startSimpleMoving2(){
 			if(pos().y<200) setTimeout(mv, 5);
 		})();
 	})();
-	
-	
-	
 }
+
+function usingTimes(){with(JSFlow){
+	var delay = 5;
+	pos({x:100, y:100});
+	
+	sequence(
+		// Цикл с использованием примитива times
+		// Позволяет описывать действие на каждой итерации 
+		// как функцию от номера итерации
+		// аргументы: число итераций, интервал ожидания между итерациями, функция - обработчик итерации
+		times(100, delay, function(i){move(2, 0);}),
+		times(100, delay, function(i){
+			if(i%20>9) move(0, 2);
+			else move(2, 0);
+		}),
+		times(100, delay, function(i){move(0, 2);})
+	).run();
+
+}}
 
 </script>
 </head>
@@ -132,12 +148,14 @@ function startSimpleMoving2(){
 		<button onclick="startMovingProcess2()">Start Moving Process 2</button>
 		<button onclick="startSimpleMoving1()">Start Simple Moving 1</button>
 		<button onclick="startSimpleMoving2()">Start Simple Moving 2</button>
+		<button onclick="usingTimes()">Using "times" primitive</button>
 	</div>
 	<p>NB! Moving Process работает правильно - сначала горизонтальное перемещение, а потом ветикальное.
 	Второй вариант процесса представлен более структурированно (определены специфические анимационные примитивы), что позволяет наглядно описывать сложную анимацию.</p>
 	<p>Первая попытка анимации простыми средствами неудачна - перемещение по горизонтали и по вертикали идут одновременно.</p>
 	<p>Вторая попытка анимации простыми средствами приводит к образованию вложенных структур, что существенно усложняет код, т.к. глубина вложенности равна числу этапов анимации.</p>
 	<p>Под IE 6.0 простые реализации вообще почему-то не работают.</p>
+	<p>Вариант с использованием примитива "times" позволяет легко определить действие на каждой итерации цикла как функцию от номера итерации.</p>
 	<div id="square" style="position:absolute;left:100px;top:100px; width:10px; height:10px; background-color:red;"></div>
 </body>
 </html>
