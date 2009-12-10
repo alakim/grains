@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>JSFlow Mutex sample</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+var log = [];
+
+with(JSFlow){
+	
+	// Процесс определяем в виде функции, возвращающей исполняемый экземпляр процесса.
+	// При каждом запуске создается новый экземпляр.
+	var process = function(){
+		return sequence(
+			function(){
+				var go = new Continuation();
+				log = [];
+				go();
+			},
+			
+			parallel(
+				sequence(
+					wait(100),
+					function(){
+						mut.wait(new Continuation());
+					},
+					times(10, 10, function(i){
+						log.push(i);
+					}),
+					wait(500),
+					function(){mut.release(); (new Continuation())();}
+				),
+				
+				sequence(
+					wait(130),
+					function(){
+						mut.wait(new Continuation());
+					},
+					times(10, 10, function(i){
+						log.push(i);
+					}),
+					wait(500),
+					function(){mut.release(); (new Continuation())();}
+				),
+				
+				sequence(
+					wait(134),
+					function(){
+						mut.wait(new Continuation());
+					},
+					times(10, 10, function(i){
+						log.push(i);
+					}),
+					wait(500),
+					function(){mut.release(); (new Continuation())();}
+				)
+			),
+			
+			function(){with(Html){
+				var expectation = "012345678901234567890123456789";
+				var res = log.join("");
+				$("out").innerHTML = res==expectation?span({style:"color:#008800;"}, "OK"):span(
+					span({style:"color:#ff0000;"}, "Failure "),
+					br(),
+					" Expected ", expectation,
+					", but result is ", res
+				);
+			}}
+		);
+	};
+	
+	function Mutex(){
+		this.queue = [];
+	}
+
+	Mutex.prototype = {
+		wait: function(cont){var _=this;
+			var busy = _.queue.length>0;
+			_.queue.push(cont);
+			if(!busy) cont();
+		},
+		
+		release: function(){var _=this;
+			_.queue = _.queue.splice(1, _.queue.length-1);
+			var nxt = _.queue[0];
+			if(nxt) nxt();
+		}
+	};
+	
+	var mut = new Mutex();
+}
+
+function runProcess(){
+	$("out").innerHTML = "";
+	process().run();
+}
+
+</script>
+</head>
+<body>
+	<h1>JSFlow Mutex sample</h1>
+	<button onclick="runProcess()">Run Process</button><br><br><br>
+	<div id="out">
+</body>
+</html>
