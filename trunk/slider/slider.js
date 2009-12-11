@@ -40,15 +40,38 @@ Slider.version = "1.0.0";
 		};
 		
 		var settings = targetObject.sliderSettings;
+		var res = {x:0, y:0};
+		
 		if(!settings.lockX){
 			var dx = distance.x + initPos.x;
-			if(settings.xRange==null || (dx>settings.xRange.min && dx< settings.xRange.max))
+			if(settings.xRange!=null){
+				res.x = dx<settings.xRange.min?settings.xRange.min
+					:dx>settings.xRange.max?settings.xRange.max
+					:dx;
+				if(dx>=settings.xRange.min && dx<= settings.xRange.max)
+					targetObject.style.left = dx + "px";
+			}
+			else
 				targetObject.style.left = dx + "px";
 		}
 		if(!settings.lockY){
 			var dy = distance.y + initPos.y;
-			if(settings.yRange==null || (dy>settings.yRange.min && dy<settings.yRange.max))
+			if(settings.yRange!=null){
+				res.y = dy<settings.yRange.min?settings.yRange.min
+					:dy>settings.yRange.max?settings.yRange.max
+					:dy;
+				if(dy>=settings.yRange.min && dy<=settings.yRange.max)
+					targetObject.style.top  = dy + "px";
+			}
+			else
 				targetObject.style.top  = dy + "px";
+		}
+		
+		if(settings.callback){
+			var v = settings.lockX?res.y
+				:settings.lockY?res.x
+				:res;
+			settings.callback(v);
 		}
 		return false;
 	}

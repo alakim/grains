@@ -14,17 +14,24 @@
 </style>
 <script type="text/javascript" src="slider.js"></script>
 <script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function setNumber(v){
+	$("resVal").value = v;
+}
 
 function init(){
 	Slider.init("slider1", {xRange:{min:50, max:400}, yRange:{min:80, max:300}});
 	Slider.init("slider2", {lockX:true});
-	Slider.init("slider3", {lockY:true, xRange:{min:45, max:250}});
+	Slider.init("slider3", {lockY:true, xRange:{min:45, max:250}, callback:setNumber});
 }
 </script>
 </head>
 <body onload="init()">
 	<h1>Slider Demo Page</h1>
-	
+	<div>
+		<input type="text" value="0" id="resVal">
+	</div>
 	<div id="slider1" class="slider" style="left:100px;top:100px;"></div>
 	<div id="slider2" class="slider" style="left:180px;top:100px;"></div>
 	<div id="slider3" class="slider" style="left:50px;top:200px;"></div>
