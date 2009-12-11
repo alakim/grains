@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <title>Slider Demo Page</title>
 <style type="text/css">
-#slider{
+.slider{
 	position:absolute;
 	width:10px;
 	height:10px;
@@ -16,13 +16,17 @@
 <script type="text/javascript">
 
 function init(){
-	Slider.init("slider");
+	Slider.init("slider1");
+	Slider.init("slider2", {lockX:true});
+	Slider.init("slider3", {lockY:true});
 }
 </script>
 </head>
 <body onload="init()">
 	<h1>Slider Demo Page</h1>
 	
-	<div id="slider" style="left:100px;top:100px;"></div>
+	<div id="slider1" class="slider" style="left:100px;top:100px;"></div>
+	<div id="slider2" class="slider" style="left:180px;top:100px;"></div>
+	<div id="slider3" class="slider" style="left:50px;top:200px;"></div>
 </body>
 </html>
