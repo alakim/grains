@@ -40,11 +40,16 @@ Slider.version = "1.0.0";
 		};
 		
 		var settings = targetObject.sliderSettings;
-		if(!settings.lockX)
-			targetObject.style.left = (distance.x + initPos.x) + "px";
-		if(!settings.lockY)
-			targetObject.style.top  = (distance.y + initPos.y) + "px";
-		
+		if(!settings.lockX){
+			var dx = distance.x + initPos.x;
+			if(settings.xRange==null || (dx>settings.xRange.min && dx< settings.xRange.max))
+				targetObject.style.left = dx + "px";
+		}
+		if(!settings.lockY){
+			var dy = distance.y + initPos.y;
+			if(settings.yRange==null || (dy>settings.yRange.min && dy<settings.yRange.max))
+				targetObject.style.top  = dy + "px";
+		}
 		return false;
 	}
 
