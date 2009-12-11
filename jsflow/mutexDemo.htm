@@ -30,41 +30,53 @@ with(JSFlow){
 				// другой процесс не допускался бы к ресурсу.
 				sequence(
 					wait(100),
-					function(){
-						// Входим в мьютекс
-						mut.open(new Continuation());
-					},
+					// Входим в мьютекс
+					// возможны два варианта синтаксиса:
+					//   Развернутый вариант:
+					//      function(){
+					//      	// Входим в мьютекс
+					//      	mut.open(new Continuation());
+					//      },
+					openMutex(mut), // вариант с использованием специального примитива
 					// В этом цикле происходит конкурентный доступ нескольких ветвей к журналу (log)
 					times(10, 10, function(i){
 						log.push(i);
 					}),
 					wait(500),
 					// освобождаем мьютекс
-					function(){mut.release(); (new Continuation())();}
+					// Здесь тоже два варианта:
+					//     Развернутый
+					//        function(){mut.release(); (new Continuation())();}
+					//     или сокращенный
+					releaseMutex(mut)
 				),
 				
 				sequence(
 					wait(130),
-					function(){
-						mut.open(new Continuation());
-					},
+					//function(){
+					//	mut.open(new Continuation());
+					//},
+					openMutex(mut),
 					times(10, 10, function(i){
 						log.push(i);
 					}),
 					wait(500),
-					function(){mut.release(); (new Continuation())();}
+					//function(){mut.release(); (new Continuation())();}
+					releaseMutex(mut)
 				),
 				
 				sequence(
 					wait(134),
-					function(){
-						mut.open(new Continuation());
-					},
+					// function(){
+					// 	mut.open(new Continuation());
+					// },
+					openMutex(mut),
 					times(10, 10, function(i){
 						log.push(i);
 					}),
 					wait(500),
-					function(){mut.release(); (new Continuation())();}
+					//function(){mut.release(); (new Continuation())();}
+					releaseMutex(mut)
 				)
 			),
 			
