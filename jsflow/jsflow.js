@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.5.257"};
+var JSFlow = {version:"2.6.261"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -177,6 +177,10 @@ var JSFlow = {version:"2.5.257"};
 			};
 		},
 		
+		Mutex: function(){
+			this.queue = [];
+		},
+		
 		sequence: function(){
 			return new Sequence().fill(arguments);
 		},
@@ -211,6 +215,20 @@ var JSFlow = {version:"2.5.257"};
 			:typeof(el)=="function"?"Function"
 			:"undefined type";
 	}
+	
+	__.Mutex.prototype = {
+		open: function(cont){var _=this;
+			var busy = _.queue.length>0;
+			_.queue.push(cont);
+			if(!busy) cont();
+		},
+		
+		release: function(){var _=this;
+			_.queue = _.queue.splice(1, _.queue.length-1);
+			var nxt = _.queue[0];
+			if(nxt) nxt();
+		}
+	};
 	
 	__.Log.prototype = {
 		connect: function(el){var _=this;
