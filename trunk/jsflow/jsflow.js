@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.6.261"};
+var JSFlow = {version:"2.7.262"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -187,6 +187,19 @@ var JSFlow = {version:"2.6.261"};
 		
 		parallel: function(){
 			return new Parallel().fill(arguments);
+		},
+		
+		openMutex: function(mutex){
+			return new Action(function(){
+				mutex.open(new __.Continuation());
+			});
+		},
+		
+		releaseMutex: function(mutex){
+			return new Action(function(){
+				mutex.release();
+				(new __.Continuation())();
+			});
 		},
 		
 		wait: function(delay){
