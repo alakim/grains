@@ -8,6 +8,7 @@
 
 function $(id){return document.getElementById(id);}
 
+// Журнал
 var log = [];
 
 with(JSFlow){
@@ -23,22 +24,29 @@ with(JSFlow){
 			},
 			
 			parallel(
+				// Запускаем параллельно несколько однотипных процессов со смещением по времени.
+				// Все эти процессы обращаются к одному журналу (log).
+				// Необходимо обеспечить, чтобы пока один процесс не произведет все необходимые записи,
+				// другой процесс не допускался бы к ресурсу.
 				sequence(
 					wait(100),
 					function(){
-						mut.wait(new Continuation());
+						// Входим в мьютекс
+						mut.open(new Continuation());
 					},
+					// В этом цикле происходит конкурентный доступ нескольких ветвей к журналу (log)
 					times(10, 10, function(i){
 						log.push(i);
 					}),
 					wait(500),
+					// освобождаем мьютекс
 					function(){mut.release(); (new Continuation())();}
 				),
 				
 				sequence(
 					wait(130),
 					function(){
-						mut.wait(new Continuation());
+						mut.open(new Continuation());
 					},
 					times(10, 10, function(i){
 						log.push(i);
@@ -50,7 +58,7 @@ with(JSFlow){
 				sequence(
 					wait(134),
 					function(){
-						mut.wait(new Continuation());
+						mut.open(new Continuation());
 					},
 					times(10, 10, function(i){
 						log.push(i);
@@ -61,7 +69,10 @@ with(JSFlow){
 			),
 			
 			function(){with(Html){
+				// Ожидаемая последовательность записей в журнале:
 				var expectation = "012345678901234567890123456789";
+				
+				// Проверка результатовы выполнения процесса:
 				var res = log.join("");
 				$("out").innerHTML = res==expectation?span({style:"color:#008800;"}, "OK"):span(
 					span({style:"color:#ff0000;"}, "Failure "),
@@ -73,29 +84,13 @@ with(JSFlow){
 		);
 	};
 	
-	function Mutex(){
-		this.queue = [];
-	}
-
-	Mutex.prototype = {
-		wait: function(cont){var _=this;
-			var busy = _.queue.length>0;
-			_.queue.push(cont);
-			if(!busy) cont();
-		},
-		
-		release: function(){var _=this;
-			_.queue = _.queue.splice(1, _.queue.length-1);
-			var nxt = _.queue[0];
-			if(nxt) nxt();
-		}
-	};
-	
+	// Мютекс, обеспечивающий синхронизацию доступа
+	// к общему ресурсу (журналу - log).
 	var mut = new Mutex();
 }
 
 function runProcess(){
-	$("out").innerHTML = "";
+	$("out").innerHTML = "Running...";
 	process().run();
 }
 
@@ -103,6 +98,11 @@ function runProcess(){
 </head>
 <body>
 	<h1>JSFlow Mutex sample</h1>
+	<p>В данном примере производится параллельный запуск нескольких однотипных процессов со смещением по времени.
+	Каждый из этих процессов периодически обращается к общему ресурсу - журналу событий, и производит в нем записи.</p>
+	<p>Необходимо обеспечить, чтобы пока один процесс не произведет все необходимые записи, 
+	другой процесс не получал бы доступ к журналу.</p>
+</p>
 	<button onclick="runProcess()">Run Process</button><br><br><br>
 	<div id="out">
 </body>
