@@ -1,0 +1,28 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>Slider Demo Page</title>
+<style type="text/css">
+#slider{
+	position:absolute;
+	width:10px;
+	height:10px;
+	border:1px solid red;
+	background-color:#ffaaaa;
+	cursor:move;
+}
+</style>
+<script type="text/javascript" src="slider.js"></script>
+<script type="text/javascript">
+
+function init(){
+	Slider.init("slider");
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Slider Demo Page</h1>
+	
+	<div id="slider" style="left:100px;top:100px;"></div>
+</body>
+</html>
