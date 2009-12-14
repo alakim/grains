@@ -1,9 +1,20 @@
-var Slider = {};
+function Slider(elID, settings){
+	this.elID = elID;
+	this.settings = settings;
+	Slider.register(this);
+}
 
-Slider.version = "1.0.0";
+Slider.version = "2.0.268";
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];};
+	function each(coll, F){
+		if(typeof(coll.length)=="string")
+			for(var i=0; i<coll.length; i++) F(coll[i], i);
+		else
+			for(var k in coll) F(coll[k], k);
+	}
+	
 	function $(id){return document.getElementById(id);}
 	
 	function addEventHandler(element, event, handler){
@@ -19,6 +30,8 @@ Slider.version = "1.0.0";
 	var initPos;
 	var targetObject;
 	var initMousePos;
+	
+	var instances = [];
 	
 	function capture(e){
 		e = window.event || e;
@@ -90,14 +103,27 @@ Slider.version = "1.0.0";
 	}
 
 	extend(__, {
-		init: function(target, settings){
-			if(typeof(target)=="string") target = $(target);
-			settings = settings||{};
-			target.sliderSettings = settings;
+		register: function(inst){
+			inst.idx = instances.length;
+			instances.push(inst);
+		},
+		
+		init: function(){
+			each(instances, function(inst){inst.init();});
+		}
+	});
+	
+	__.prototype = {
+		init: function(){var _=this;
+			var target = $(_.elID);
+			_.settings = _.settings||{};
+			target.sliderSettings = _.settings;
 			
 			target.onmousedown = capture;
-			target.style.cursor = settings.lockY?"ew-resize":settings.lockX?"ns-resize":"move";
+			target.style.cursor = _.settings.lockY?"ew-resize":_.settings.lockX?"ns-resize":"move";
 		}		
-	});
+	};
+	
+	addEventHandler(window, "load", __.init);
 	
 })();

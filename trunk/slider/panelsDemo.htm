@@ -16,18 +16,14 @@
 <script type="text/javascript">
 function $(id){return document.getElementById(id);}
 
-function init(){
-	Slider.init("resizingSlider", {lockY:true, callback:resizeTable});
-	//Slider.init("slider2", {lockX:true});
-	//Slider.init("slider3", {lockY:true, xRange:{min:45, max:250}, callback:setNumber});
-}
+new Slider("resizingSlider", {lockY:true, callback:resizeTable});
 
 function resizeTable(v){
 	$("treePanel").width = v;
 }
 </script>
 </head>
-<body onload="init()">
+<body>
 	<h1>Panels Demo Page</h1>
 	<table border="1" cellpadding="3" cellspacing="0">
 		<tr>
