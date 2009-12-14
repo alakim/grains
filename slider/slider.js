@@ -25,7 +25,9 @@ Slider.version = "1.0.0";
 		var t=this;
 		targetObject=this;
 		initMousePos = {x:e.clientX, y:e.clientY};
-		initPos = {x:parseInt(t.style.left), y:parseInt(t.style.top)};
+		initPos = {
+			x:parseInt(t.offsetLeft), y:parseInt(t.offsetTop)
+		};
 		document.onmousemove = moving;
 		document.onmouseup = stop;
 		return false;
@@ -45,14 +47,16 @@ Slider.version = "1.0.0";
 		if(!settings.lockX){
 			var dx = distance.x + initPos.x;
 			if(settings.xRange!=null){
-				res.x = dx<settings.xRange.min?settings.xRange.min
+				res.x =	dx<settings.xRange.min?settings.xRange.min
 					:dx>settings.xRange.max?settings.xRange.max
 					:dx;
 				if(dx>=settings.xRange.min && dx<= settings.xRange.max)
 					targetObject.style.left = dx + "px";
 			}
-			else
+			else{
 				targetObject.style.left = dx + "px";
+				res.x = dx;
+			}
 		}
 		if(!settings.lockY){
 			var dy = distance.y + initPos.y;
@@ -63,8 +67,10 @@ Slider.version = "1.0.0";
 				if(dy>=settings.yRange.min && dy<=settings.yRange.max)
 					targetObject.style.top  = dy + "px";
 			}
-			else
+			else{
 				targetObject.style.top  = dy + "px";
+				res.y = dy;
+			}
 		}
 		
 		if(settings.callback){

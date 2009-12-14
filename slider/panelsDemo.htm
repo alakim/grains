@@ -1,0 +1,66 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>Panels Demo Page</title>
+<style type="text/css">
+.slider{
+	position:absolute;
+	width:10px;
+	height:10px;
+	border:1px solid red;
+	background-color:#ffaaaa;
+	cursor:move;
+}
+</style>
+<script type="text/javascript" src="slider.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function init(){
+	Slider.init("resizingSlider", {lockY:true, callback:resizeTable});
+	//Slider.init("slider2", {lockX:true});
+	//Slider.init("slider3", {lockY:true, xRange:{min:45, max:250}, callback:setNumber});
+}
+
+function resizeTable(v){
+	$("treePanel").width = v;
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Panels Demo Page</h1>
+	<table border="1" cellpadding="3" cellspacing="0">
+		<tr>
+			<td id="treePanel" width="200">
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+				<p>Tree panel</p>
+			</td>
+			<td id="resizingSlider" style="cursor:pointer; cursor:hand;" title="&lt;&gt;">
+				<div style="height:100%;">&nbsp;</div>
+			</td>
+			<td>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+				<p>Data panel</p>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
