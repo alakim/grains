@@ -1,0 +1,150 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1251">
+<script type="text/javascript" src="raphael.js"></script>
+<script type="text/javascript">
+	function each(coll, F){
+		if(!coll) return;
+		if(typeof(coll.length)=="undefined")
+			for(var k in coll) F(coll[k], k);
+		else
+			for(var i=0; i<coll.length; i++) F(coll[i], i);
+	}
+	
+	var treeData = {id:"0", title:"Sample tree", sub:[
+		{id:"1", title:"Строительство", sub:[
+			{id:"11", title:"Строительство мостов"},
+			{id:"12", title:"Строительство дорог", sub:[
+				{id:"121", title:"Строительство автомагистралей"},
+				{id:"122", title:"Прокладка грунтовых дорог"}
+			]}
+		]},
+		{id:"2", title:"Навигация", sub:[
+			{id:"21", title:"Навигация в условиях крайнего севера"},
+			{id:"22", title:"Навигационное оборудование", sub:[
+				{id:"221", title:"Магнитное оборудование"},
+				{id:"222", title:"Угломерные инструменты"},
+				{id:"223", title:"Оборудование глобальных навигационных систем"}
+			]}
+		]},
+		{id:"3", title:"Бухгалтерский учет", sub:[
+			{id:"31", title:"Программное обеспечение"},
+			{id:"32", title:"Законодательство"}
+		]}
+	]};
+	
+	var canvas;
+	
+	function buildTree(data, panelID){
+		var pnl = document.getElementById(panelID);
+		var w = parseInt(pnl.style.width);
+		var h = parseInt(pnl.style.height);
+		canvas = new Raphael(pnl, w, h);
+		buildNode(data, canvas);
+	}
+	
+	var nodeSize = {x:10, y:10};
+	var spacing = {x:5, y:8};
+	
+	var lineNr = 0;
+	
+	function draw(nd, attrs, callbacks){
+		each(attrs, function(a, k){
+			if(k=="align"){
+				var b = nd.getBBox();
+				if(a=="left") nd.translate(b.width/2, 0);
+			}
+			else nd.attr(k, a);
+		});
+		
+		each(callbacks, function(clb, k){
+			nd.node[k] = clb;
+		});
+		
+		shapes.push(nd);
+	}
+	
+	var nodeIndex = {};
+	
+	function openNode(id){
+		nodeIndex[id].open = true;
+		clear();
+		//document.getElementById("tree").innerHtml = "";
+		buildTree(treeData, "tree");
+	}
+	
+	var shapes = [];
+	
+	function clear(){
+		canvas.clear();
+		return;
+		each(shapes, function(s){
+			s.remove();
+		});
+		shapes = [];
+		lineNr = 0;
+	}
+	
+	function buildNode(nd, canvas, parent, num){
+		if(!parent) lineNr = 0;
+		num = num || 0;
+		if(nd.open==null) nd.open = !parent;
+		nodeIndex[nd.id] = nd;
+		
+		nd.parent = parent;
+		nd.level = parent?parent.level+1:1;
+		nd.pos = {x: (nodeSize.x+spacing.x)*nd.level, y: lineNr*(nodeSize.y+spacing.y)};
+		lineNr++;
+		
+		draw(canvas.rect(nd.pos.x, nd.pos.y, nodeSize.x, nodeSize.y), {
+			fill:"#fafafa",
+			stroke:"#888888",
+			cursor:"pointer"
+		}, {
+			onclick:function(){openNode(nd.id)}
+		});
+		
+		if(nd.parent){
+			draw(
+				canvas.path([
+					"M", nd.pos.x, nd.pos.y+nodeSize.y/2,
+					"L", nd.parent.pos.x+nodeSize.x/2, nd.pos.y+nodeSize.y/2,
+					"L", nd.parent.pos.x+nodeSize.x/2, nd.parent.pos.y+nodeSize.y
+				].join(" ")),
+				{stroke:"#cccccc"}
+			);
+		}
+		
+		draw(canvas.text(nd.pos.x+nodeSize.x+spacing.x*3, nd.pos.y+nodeSize.y/2, nd.title), {
+			fill:"#880000",
+			"font-size":10,
+			align:"left"
+		});
+		
+		if(nd.sub) draw(canvas.path([
+				"M", nd.pos.x+2, nd.pos.y+nodeSize.y/2,
+				"L", nd.pos.x+nodeSize.x-2, nd.pos.y+nodeSize.y/2
+			].join(" ")), 
+			{stroke:"#444444"}
+		);
+		
+		if(nd.sub&&!nd.open)draw(canvas.path([
+				"M", nd.pos.x+nodeSize.x/2, nd.pos.y+2,
+				"L", nd.pos.x+nodeSize.x/2, nd.pos.y+nodeSize.y - 2
+			].join(" ")), 
+			{stroke:"#444444"}
+		);
+		
+		if(nd.open) each(nd.sub, function(snd, i){buildNode(snd, canvas, nd, i);});
+	}
+	
+	function init(){
+		buildTree(treeData, "tree");
+	}
+</script>
+</head>
+<body onload="init()">
+	<h1>Пример формирования дерева средствами Raphael</h1>
+	<div id="tree" style="width:250px; height:400px;"></div>
+</body>
+</html>
