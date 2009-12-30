@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.2.269",
+	version: "4.2.270",
 	
 	minSize:{w:150, h:100},
 	
@@ -75,6 +75,9 @@
 	isIE: function(){
 		return navigator.appName.match(/internet\s+explorer/i);
 	},
+	
+			
+	onResize: function(t, w, h){},
 	
 	selectorLockMode:"substitute", //"off", "hide", "substitute"
 	
@@ -324,10 +327,8 @@
 			var w = Math.max(D_.width+D_.distancex, DWL.minSize.w);
 			var h = Math.max(D_.contentheight+D_.distancey, DWL.minSize.h);
 			DWL.setSize(t, w, h);
-			D_.onResize(w, h);
+			DWL.onResize(t, w, h);
 		},
-		
-		onResize: function(w, h){},
 		
 		enablecontrols:function(e){var _=DWL.__;
 			var reMin = new RegExp(DWL.locale.minimize, "i");
