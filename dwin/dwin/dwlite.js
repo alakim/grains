@@ -1,5 +1,5 @@
 ﻿var DWL={
-	version: "4.1.153",
+	version: "4.2.269",
 	
 	minSize:{w:150, h:100},
 	
@@ -324,7 +324,10 @@
 			var w = Math.max(D_.width+D_.distancex, DWL.minSize.w);
 			var h = Math.max(D_.contentheight+D_.distancey, DWL.minSize.h);
 			DWL.setSize(t, w, h);
+			D_.onResize(w, h);
 		},
+		
+		onResize: function(w, h){},
 		
 		enablecontrols:function(e){var _=DWL.__;
 			var reMin = new RegExp(DWL.locale.minimize, "i");
