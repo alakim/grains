@@ -1,9 +1,11 @@
-if(typeof(Html)=="undefined")
+﻿if(typeof(Html)=="undefined")
 	alert("Module html.js required!");
 if(typeof(DateExt)=="undefined")
 	alert("Module dateExt.js required!");
 	
-var Diary = {};
+var Diary = {
+	version: "0.0.0"
+};
 
 (function(){
 
@@ -20,6 +22,14 @@ var Diary = {};
 			}
 		}
 	}
+	
+	function find(coll, cond){
+		for(var i=0; i<coll.length; i++){
+			var el = coll[i];
+			if(cond(el)) return el;
+		}
+		return null;
+	}
 
 	function $(id){return document.getElementById(id);}
 
@@ -28,6 +38,12 @@ var Diary = {};
 	var itemCounter = 0;
 	var instances = [];
 	var selectedTags = {};
+	
+	if(typeof(JSUnit)!="undefined"){
+		_._ = {
+			SleepGraph:SleepGraph
+		};
+	}
 	
 	extend(_, {
 		diary: function(){var d = this;
@@ -131,13 +147,18 @@ var Diary = {};
 			if(instances[instId].filter && !selectedItemsFound())
 				return null;
 				
+			var onMarker = find(item.items, function(el){return el.on!=null;});
+			var offMarker = find(item.items, function(el){return el.off!=null;});
+				
 			var date = new Date(item.parent.parent.year, item.parent.month - 1, item.day);
 			return div(
 				hr(),
 				p({style:"font-weight:bold;"}, capitalize(DateExt.format.local.toString(date))),
+				onMarker?p("Подъем: ", onMarker.on, onMarker.state?span(", state:", onMarker.state):null):null,
 				div(
 					apply(item.items, function t(itm){return templates.item(itm, instId)})
-				)
+				),
+				offMarker?p("Отбой: ", offMarker.off):null
 			);
 		}},
 		dsc: function(item, id){with(Html){
@@ -203,5 +224,61 @@ var Diary = {};
 			$(pnlId).innerHTML = html.join("");
 		}
 	});
+	
+	function SleepGraph(diary){
+		this.diary = diary;
+	}
+	
+	SleepGraph.prototype = {
+		getDaysSequence: function(){var _=this;
+			var days = [];
+			function addDays(srcEl, trgColl, context){
+				context = context||{};
+				if(srcEl.year) context.year = srcEl.year;
+				if(srcEl.month) context.month = srcEl.month;
+				if(srcEl.day){
+					var data = {year:context.year, month: context.month, day:srcEl.day};
+					var onMarker = find(srcEl.items, function(e){return e.on});
+					var offMarker = find(srcEl.items, function(e){return e.off});
+					if(onMarker) extend(data, {on:onMarker.on, state:onMarker.state});
+					if(offMarker) extend(data, {off:offMarker.off});
+					
+					trgColl.push(data);
+				}
+				if(srcEl.items){
+					for(var i=0; i<srcEl.items.length; i++){
+						addDays(srcEl.items[i], trgColl, context);
+					}
+				}
+			}
+			
+			addDays(_.diary, days);
+			days.sort(function(d1, d2){
+				var t1 = d1.year*10000+d1.month*100+d1.day;
+				var t2 = d2.year*10000+d2.month*100+d2.day;
+				return t1-t2;
+			});
+			return days;
+		},
+		
+		detectGaps: function(days){
+			var wholeDay = 60*60*24*1000;
+			for(var i=0; i<days.length; i++){
+				var day = days[i];
+				if(i==0) day.gap = true;
+				else{
+					var prev = days[i-1];
+					var D = new Date(day.year, day.month-1, day.day);
+					var prevD = new Date(prev.year, prev.month-1, prev.day);
+					var dt = D.getTime() - prevD.getTime();
+					if(dt>wholeDay) day.gap = true;
+				}
+			}
+		},
+		
+		calc:function(){
+			
+		}
+	}
 })();
  
