@@ -85,13 +85,14 @@ new JSUnit.Test("Gaps detection", "SleepGraph").run = function(){
 		{year:2009, month:6, day:28, gap:true},
 		{year:2009, month:7, day:1, gap:true},
 		{year:2009, month:8, day:1, on:"07:30", state:4, off:"23:00", gap:true},
-		{year:2009, month:8, day:2, on:"07:30", off:"23:00"},
+		{year:2009, month:8, day:2, on:"07:30", off:"23:00", sleeping:{h:8, m:30}},
 		{year:2009, month:9, day:1, on:"07:30", state:4, off:"23:00", gap:true},
-		{year:2009, month:9, day:2, on:"07:30", off:"01:00"},
-		{year:2009, month:9, day:3, on:"07:30", state:4, off:"00:00"}
+		{year:2009, month:9, day:2, on:"07:30", off:"01:00", sleeping:{h:8, m:30}},
+		{year:2009, month:9, day:3, on:"07:30", state:4, off:"00:00", sleeping:{h:6, m:30}}
 	]);
 	
 }
+
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = Diary.version;
