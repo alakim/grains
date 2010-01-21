@@ -53,6 +53,7 @@ var Diary = {
 			each(arguments, function(a, i){
 				d.items.push(a);
 			});
+			d.sleepGraph = new SleepGraph(d);
 		},
 		
 		selectTag: function(id, tagName){
@@ -149,12 +150,17 @@ var Diary = {
 				
 			var onMarker = find(item.items, function(el){return el.on!=null;});
 			var offMarker = find(item.items, function(el){return el.off!=null;});
+			var sleepGraphItem = instances[instId].sleepGraph.getDay(item.parent.parent.year, item.parent.month, item.day);
 				
 			var date = new Date(item.parent.parent.year, item.parent.month - 1, item.day);
 			return div(
 				hr(),
 				p({style:"font-weight:bold;"}, capitalize(DateExt.format.local.toString(date))),
-				onMarker?p("Подъем: ", onMarker.on, onMarker.state?span(", state:", onMarker.state):null):null,
+				onMarker?p(
+					"Подъем: ", onMarker.on, 
+					sleepGraphItem&&sleepGraphItem.sleeping?span(", сна ", sleepGraphItem.sleeping.h, ":", sleepGraphItem.sleeping.m):null,
+					onMarker.state?span(", state:", onMarker.state):null
+				):null,
 				div(
 					apply(item.items, function t(itm){return templates.item(itm, instId)})
 				),
@@ -225,13 +231,20 @@ var Diary = {
 		}
 	});
 	
-	function SleepGraph(diary){
-		this.diary = diary;
+	function SleepGraph(diary){var _=this;
+		_.diary = diary;
+		_.days = _.getDaysSequence();
+		_.detectGaps(_.days);
 	}
 	
 	SleepGraph.prototype = {
+		getDay: function(y, m, d){
+			return find(this.days, function(day){return day.year==y && day.month==m && day.day==d;});
+		},
+		
 		getDaysSequence: function(){var _=this;
 			var days = [];
+			
 			function addDays(srcEl, trgColl, context){
 				context = context||{};
 				if(srcEl.year) context.year = srcEl.year;
@@ -251,7 +264,6 @@ var Diary = {
 					}
 				}
 			}
-			
 			addDays(_.diary, days);
 			days.sort(function(d1, d2){
 				var t1 = d1.year*10000+d1.month*100+d1.day;
@@ -295,10 +307,6 @@ var Diary = {
 			var d2 = dOn.h*60 + dOn.m;
 			var dt = d2 - d1;
 			day.sleeping = {h:Math.floor(dt/60), m:dt%60};
-		},
-		
-		calc:function(){
-			
 		}
 	}
 })();
