@@ -261,7 +261,7 @@ var Diary = {
 			return days;
 		},
 		
-		detectGaps: function(days){
+		detectGaps: function(days){var _=this;
 			var wholeDay = 60*60*24*1000;
 			for(var i=0; i<days.length; i++){
 				var day = days[i];
@@ -272,8 +272,29 @@ var Diary = {
 					var prevD = new Date(prev.year, prev.month-1, prev.day);
 					var dt = D.getTime() - prevD.getTime();
 					if(dt>wholeDay) day.gap = true;
+					else _.calcInterval(day, prev);
 				}
 			}
+		},
+		
+		calcInterval: function(day, prev){
+			function parse(t){
+				var mt = t.match(/^0?(\d+)[:\.]0?(\d+)$/i);
+				return {h:parseInt(mt[1]), m:parseInt(mt[2])};
+			}
+			var dOff = prev.off;
+			var dOn = day.on;
+			if(!(dOn && dOff)) return;
+			dOff = parse(dOff); 
+			dOn = parse(dOn);
+			if(dOff.h>13){
+				dOn.h = dOn.h +(24 - dOff.h);
+				dOff.h = 0;
+			}
+			var d1 = dOff.h*60 + dOff.m;
+			var d2 = dOn.h*60 + dOn.m;
+			var dt = d2 - d1;
+			day.sleeping = {h:Math.floor(dt/60), m:dt%60};
 		},
 		
 		calc:function(){
