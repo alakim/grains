@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.7.262"};
+var JSFlow = {version:"2.8.276"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -172,9 +172,11 @@ var JSFlow = {version:"2.7.262"};
 			if(block.block) block = block.block;
 			var blkID = block.id;
 			var pos = block.pos;
-			return function(){
+			var cont = function(){
 				goTo(blkID, pos)
 			};
+			cont.block = block;
+			return cont;
 		},
 		
 		Mutex: function(){
