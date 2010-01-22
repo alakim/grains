@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.0.281",
+	version: "1.0.282",
 	panelID: "FlowTestPanel"
 };
 
@@ -8,6 +8,10 @@ var FlowTest = {
 	var __ = FlowTest;
 	
 	function $(id){return document.getElementById(id);}
+	
+	function write(msg){
+		$(__.panelID).innerHTML+=msg+"<br>";
+	}
 	
 	function extend(o,s){for(var k in s)o[k]=s[k];}
 	
