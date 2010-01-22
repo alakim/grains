@@ -58,7 +58,7 @@ var FlowTest = {
 			_.log.connect(_.test.sequence);
 			
 			$(__.panelID).innerHTML += div(
-				p({style:"font-weight:bold;"}, _.test.title),
+				p({style:"font-weight:bold;"}, _.test.id, ". ", _.test.title),
 				table({border:1, cellpadding:3, cellspacing:0}, tr(
 					apply(_.test.sequence.elements, function(el, i){
 						return td({id:_.cellID(el), align:"center"}, 
