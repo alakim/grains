@@ -43,7 +43,7 @@ with(JSFlow){with(FlowTest){
 		}
 	));
 	
-	new Test("Простой тест калькулятора", sequence(
+	new Test("Еще один тест калькулятора", sequence(
 		function(){var go = new Continuation();
 			calc.mul(2, 3, function(r){assert(r, 6, go.block); go();});
 		},
@@ -53,6 +53,50 @@ with(JSFlow){with(FlowTest){
 		function(){var go = new Continuation();
 			calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
 		}
+	));
+	
+	new Test("Сложный вложенный тест", sequence(
+		function(){var go = new Continuation();
+			calc.mul(2, 3, function(r){assert(r, 6, go.block); go();});
+		},
+		sequence(
+			function(){var go = new Continuation();
+				calc.sub(2, 3, function(r){assert(r, 1, go.block); go();});
+			},
+			sequence(
+				function(){var go = new Continuation();
+					calc.sub(2, 3, function(r){assert(r, 1, go.block); go();});
+				},
+				function(){var go = new Continuation();
+					calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
+				}
+			),
+			function(){var go = new Continuation();
+				calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
+			}
+		)
+	));
+	
+	new Test("Сложный вложенный тест с параллельным участком", sequence(
+		function(){var go = new Continuation();
+			calc.mul(2, 3, function(r){assert(r, 6, go.block); go();});
+		},
+		sequence(
+			function(){var go = new Continuation();
+				calc.sub(2, 3, function(r){assert(r, 1, go.block); go();});
+			},
+			parallel(
+				function(){var go = new Continuation();
+					calc.sub(2, 3, function(r){assert(r, -1, go.block); go();});
+				},
+				function(){var go = new Continuation();
+					calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
+				}
+			),
+			function(){var go = new Continuation();
+				calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
+			}
+		)
 	));
 
 	
