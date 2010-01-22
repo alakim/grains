@@ -1,0 +1,114 @@
+﻿<html>
+<head>
+<title>Testing Framework Demo page</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../../html/html.js"></script>
+<script type="text/javascript" src="../jsflow.js"></script>
+<script type="text/javascript" src="calc.js"></script>
+
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function write(msg){
+	$("out").innerHTML+="<br>"+msg;
+}
+
+var calc = new Calc();
+function assert(x, expected, el){
+	var failure = x!=expected;
+	if(failure) write(["Assertion failed within ", el.$SeqID().replace(/^1\./, ""),": expected ", expected, ", but was ", x].join(""));
+	el.result = failure?"Failure":"OK";
+}
+
+function extend(o,s){for(var k in s)o[k]=s[k];}
+
+with(JSFlow){
+	var test = sequence(
+		function(){
+			var go = new Continuation();
+			calc.add(2, 3, function(r){
+				assert(r, 4, go.block);
+				go();
+			});
+		},
+		sequence(
+			function(){
+				var go = new Continuation();
+				calc.add(2, 3, function(r){
+					assert(r, 4, go.block);
+					go();
+				});
+			},
+			function(){
+				var go = new Continuation();
+				calc.add(2, 3, function(r){
+					assert(r, 4, go.block);
+					go();
+				});
+			}
+		),
+		function(){
+			var go = new Continuation();
+			calc.sub(2, 3, function(r){
+				assert(r, 4, go.block);
+				go();
+			});
+		},
+		function(){
+			(new Continuation())();
+		},
+		function(){
+			var go = new Continuation();
+			calc.mul(2, 3, function(r){
+				assert(r, 6, go.block);
+				go();
+			});
+		}
+	);
+	
+	var log = new Log();
+	extend(log, {
+		logBegin: function(el){
+			var cell = $("LogCell"+el.$SeqID());
+			if(cell) cell.style.backgroundColor = "#ffff00";
+		},
+		logEnd: function(el){
+			var cell = $("LogCell"+el.$SeqID());
+			var color = el.result=="OK"?"00ff00":el.result=="Failure"?"ff0000":"eeeeee";
+			if(cell) cell.style.backgroundColor = "#"+color;			
+		},
+		
+		init: function(){with(Html){var _=this;
+			$("logPnl").innerHTML = div(
+				table({border:1, cellpadding:3, cellspacing:0}, tr(
+					apply(test.elements, function(el, i){
+						return td({id:"LogCell"+el.$SeqID(), align:"center"}, 
+							i+1,
+							el.elements.length>1?div(table({border:1, cellpadding:3, cellspacing:0}, tr(
+								apply(el.elements, function(el, i){
+									return td({id:"LogCell"+el.$SeqID(), bgcolor:"white"}, i+1);
+								})
+							))):null
+						);
+					})
+				))
+			);
+		}}
+	});
+	log.connect(test);
+}
+
+function init(){
+	log.init();
+	test.run();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Testing Framework Demo page</h1>
+	<p>Пример построения простой оболочки для тестирования асинхронных процессов.</p>
+	
+	<div id="logPnl"></div>
+	<div id="out"></div>
+</body>
+</html>
