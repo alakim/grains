@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.8.276"};
+var JSFlow = {version:"2.9.277"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -150,11 +150,16 @@ var JSFlow = {version:"2.8.276"};
 		_.elements = [];
 		for(var i=0; i<elements.length; i++){
 			var el = elements[i];
-			if(typeof(el)=="function") el = new Action(el);
-			if(!el.log) el.log = _.log;
-			el.pos = i;
-			el.blkID = _.id;
-			_.elements.push(el);
+			if(el.constructor==Array){
+				_.fill(el);
+			}
+			else{
+				if(typeof(el)=="function") el = new Action(el);
+				if(!el.log) el.log = _.log;
+				el.pos = i;
+				el.blkID = _.id;
+				_.elements.push(el);
+			}
 		}
 		_.init();
 		return _;

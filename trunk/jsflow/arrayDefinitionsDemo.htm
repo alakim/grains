@@ -1,0 +1,99 @@
+﻿<html>
+<head>
+<title>JSFlow Array Definitions Demo page</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+function f1(){log("f1 called");}
+function f2(){log("f2 called");}
+function f3(){log("f3 called");}
+
+var TestService = {
+	GetSum: function(x, y, onload){
+		var res = x+y;
+		setTimeout(function(){
+			onload(res);
+		}, 200);
+	}
+};
+
+function init(){with(JSFlow){
+
+	// Элементами потока может быть просто функция, либо sequence, либо parallel
+	// Продолжение (Continuation) должна создаваться в главной функции элемента потока
+
+	var process = sequence(
+		// Сгруппируем часть элементов в массив - изменится только синтаксис, 
+		// а на поведении это никак не отразится
+		[
+			function(){
+				log("1");
+				(new Continuation())();
+			},
+			parallel([ // ветви задаются в виде массива - тоже ничего не меняется
+				function(){
+					log("2.1");
+					var go = new Continuation();
+					window.setTimeout(go, 100);
+				},
+				function(){
+					log("2.2");
+					var go = new Continuation();
+					window.setTimeout(go, 300);
+				}
+			]),
+			function(){
+				log("3");
+				(new Continuation())();
+			},
+			function(){
+				log("4");
+				(new Continuation())();
+			}
+		],
+		function(){
+			log("5");
+			(new Continuation())();
+		}
+	);
+	
+	process.run();
+	
+}}	
+
+function checkExpectations(){
+	var ok = $("out").innerHTML.replace(/\s+/ig, "").toLowerCase()==$("expectations").innerHTML.replace(/\s+/ig, "").toLowerCase();
+	$("result").innerHTML = ok?Html.span({style:"font-weight:bold; color:#008800;"}, "OK")
+		:Html.span({style:"font-weight:bold; color:#ff0000;"}, "Failure");
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JSFlow Array Definitions Demo page</h1>
+	<p>Данный пример демонстрирует, что содержимое элементов sequence, parallel, и т.п. можно передавать не только в виде списка аргументов, но и в виде массива.</p>
+	<p>Кроме того, часть аргументов может быть сгруппирована в массив, а часть - передаваться как обычно. На поведении системы это никак не отразится. Можно также использовать вложенные массивы.</p>
+	<table border=1 cellpaddin=3 cellspacing=0>
+		<tr><th>Process</th><th>Expectations</th></tr>
+		<tr>
+			<td valign="top"><div id="out"></div></td>
+			<td valign="top">
+			<div id="expectations">
+				1<br/>
+				2.1<br/>
+				2.2<br/>
+				3<br/>
+				4<br/>
+				5<br/>
+			</div>
+			</td>
+		</tr>
+	</table>
+	<div id="result"></div>
+</body>
+</html>
