@@ -19,12 +19,11 @@ var FlowTest = {
 			for(var i=0; i<coll.length; i++) F(coll[i], i);
 	}
 	
-	function map(coll, F){
-		var res = [];
-		each(coll, function(el){
-			res.push(F(el));
-		});
-		return res;
+	function contains(coll, el){
+		for(var i=0; i<coll.length; i++){
+			if(coll[i]==el) return true;
+		}
+		return false;
 	}
 	
 	var testIdCounter = 1;
@@ -86,11 +85,22 @@ var FlowTest = {
 		},
 		
 		run: function(){with(JSFlow){var _=this;
-			var sq = sequence(
-				map(_.tests, function(t){return t.sequence;})
-			);
+			var command = document.location.hash.substr(1);
+			var cmdType = command[0];
+			var numbers = command.substr(1).split(",");
+			
+			var steps = [];
+			each(_.tests, function(t, i){
+				switch(cmdType){
+					case "+": if(contains(numbers, i+1))steps.push(t.sequence); break;
+					case "-": if(!contains(numbers, i+1))steps.push(t.sequence); break;
+					default: break;
+				}
+			});
+
+			var sq = sequence(steps); // перед инициализацией логов
 			each(_.tests, function(t){t.log.init();});
-			sq.run();
+			sq.run(); // только после инициализации логов
 		}}
 	};
 	
