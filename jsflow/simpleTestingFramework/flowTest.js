@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.0.0",
+	version: "1.0.281",
 	panelID: "FlowTestPanel"
 };
 
@@ -56,20 +56,22 @@ var FlowTest = {
 			});
 			_.log.connect(_.test.sequence);
 			
-			$(__.panelID).innerHTML += div(
-				p({style:"font-weight:bold;"}, _.test.id, ". ", _.test.title),
-				table({border:1, cellpadding:3, cellspacing:0}, tr(
-					apply(_.test.sequence.elements, function(el, i){
-						return td({id:_.cellID(el), align:"center"}, 
+			function testViewTemplate(elem){with(Html){
+				return table({border:1, cellpadding:3, cellspacing:0}, tr(
+					apply(elem.elements, function(el, i){
+						return td({id:_.cellID(el), align:"center"},
 							i+1,
-							el.elements.length>1?div(table({border:1, cellpadding:3, cellspacing:0}, tr(
-								apply(el.elements, function(el, i){
-									return td({id:_.cellID(el), bgcolor:"white"}, i+1);
-								})
-							))):null
+							el.elements.length>1?div(
+								testViewTemplate(el)
+							):null
 						);
 					})
-				))
+				));
+			}}
+			
+			$(__.panelID).innerHTML += div(
+				p({style:"font-weight:bold;"}, _.test.id, ". ", _.test.title),
+				testViewTemplate(_.test.sequence)
 			);
 		}}
 	};
@@ -94,7 +96,7 @@ var FlowTest = {
 				switch(cmdType){
 					case "+": if(contains(numbers, i+1))steps.push(t.sequence); break;
 					case "-": if(!contains(numbers, i+1))steps.push(t.sequence); break;
-					default: break;
+					default: steps.push(t.sequence); break;
 				}
 			});
 
