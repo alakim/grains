@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.0.282",
+	version: "1.1.283",
 	panelID: "FlowTestPanel"
 };
 
@@ -28,6 +28,10 @@ var FlowTest = {
 			if(coll[i]==el) return true;
 		}
 		return false;
+	}
+	
+	function formatHtml(str){
+		return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;");
 	}
 	
 	var testIdCounter = 1;
@@ -110,13 +114,79 @@ var FlowTest = {
 		}}
 	};
 	
+	function json(o){
+		if(o==null) return 'null';
+		if(typeof(o)=="string") return "'"+o.replace(/\"/g, "\\\"")+"'";
+		if(typeof(o)=="boolean") return o.toString();
+		if(typeof(o)=="number") return o.toString();
+		if(typeof(o)=="function") return "";
+		if(typeof(o.length)!="undefined"){
+			var res = [];
+			for(var i=0; i<o.length; i++) res.push(json(o[i]));
+			return "["+res.join(",")+"]";
+		}
+		if(typeof(o)=="object"){
+			var res = [];
+			for(var k in o) res.push(k+":"+json(o[k]));
+			return "{"+res.join(",")+"}";
+		}
+		return "";
+	}
+	
+	function compare(x, y){ // сравнение произвольных объектов
+		if(x==null && y==null)
+			return true;
+		if((typeof(x)=="function" && typeof(y)=="undefined") || (typeof(y)=="function" && typeof(x)=="undefined"))// Это случай для работы с макетами - метод макета может быть не определен (соответствующее ожидание не запрограммировано), но ссылка на него передается среди аргументов вызова другого метода
+			return true; 
+		if((x==null && y!=null)||(x!=null && y==null))
+			return false
+		
+		if((typeof(x)=="function" && Object.getTypeName(y)=="JSUnit.CallbackMarker") || (typeof(y)=="function" && Object.getTypeName(x)=="JSUnit.CallbackMarker") )
+			return true; 
+		if(typeof(x)!=typeof(y))
+			return false;
+		if(typeof(x)=="string") return x==y;
+		if(typeof(x)=="number") return x==y;
+		if(typeof(x)=="boolean") return x==y;
+		if(typeof(x)=="function" && typeof(y)=="function")
+			return true; // методы объектов при сравнении не учитываются
+			
+		if(typeof(x.length)!="undefined"){
+			if(x.length!=y.length){
+				return false;
+			}
+			for(var i=0; i<x.length; i++){
+				if(!compare(x[i], y[i])){
+					return false;
+				}
+			}
+			return true;
+		}
+		if(typeof(x)=="object"){
+			for(var k in x){
+				if(!compare(x[k], y[k]))
+					return false;
+			}
+			return true;
+		}
+		
+		return x==y;
+	}
+	
 	var testSet = new TestSet();
 	
 	extend(__,{
-		assert: function(x, expected, el){
-			var failure = x!=expected;
-			if(failure) write(["Assertion failed within ", el.$SeqID().replace(/^1\./, ""),": expected ", expected, ", but was ", x].join(""));
-			el.result = failure?"Failure":"OK";
+		assert: function(x, expected, el, message){
+			message = message||"";
+			if(!el.result) el.result = "OK";
+			var failure = !compare(x, expected);
+			if(failure) write(["Assertion failed within ", el.$SeqID().replace(/^1\./, ""),
+				": ",
+				message,
+				" expected ", formatHtml(json(expected)), 
+				", but was ", formatHtml(json(x))
+			].join(""));
+			if(failure) el.result = "Failure";
 		},
 
 		Test: function(title, sequence){var _=this;
