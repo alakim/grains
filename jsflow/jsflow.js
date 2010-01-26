@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.10.278"};
+var JSFlow = {version:"2.11.285"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -216,7 +216,7 @@ var JSFlow = {version:"2.10.278"};
 			});
 		},
 		
-		waitFor: function(condition, pollingTime, maxCount){
+		waitFor: function(condition, pollingTime, maxCount, errorHandlingSequence){
 			pollingTime = pollingTime||100;
 			maxCount = maxCount || 100;
 			
@@ -225,7 +225,13 @@ var JSFlow = {version:"2.10.278"};
 				var counter = 0;
 				function check(){
 					if(condition()) go();
-					else if(counter>maxCount) throw "Too much attempts in block "+go.block.$SeqID();
+					else if(counter>maxCount){
+						if(!errorHandlingSequence) throw "Too much attempts in block "+go.block.$SeqID();
+						else{
+							errorHandlingSequence.onComplete = go;
+							errorHandlingSequence.run();
+						}
+					}
 					else{
 						counter++;
 						setTimeout(check, pollingTime);

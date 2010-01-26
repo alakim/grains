@@ -14,7 +14,7 @@ function log(msg){$("out").innerHTML+=msg+"<br>";}
 with(JSFlow){
 	var eventOccured = false;
 	
-	function writeMesage(msg){
+	function writeMessage(msg){
 		return function(){
 			log(msg);
 			(new Continuation())();
@@ -25,10 +25,10 @@ with(JSFlow){
 	// При каждом запуске создается новый экземпляр.
 	var process = function(){
 		return sequence(
-			writeMesage("wait for 2 seconds..."),
+			writeMessage("wait for 2 seconds..."),
 			wait(2000),
 			
-			writeMesage("wait for an event"),
+			writeMessage("wait for an event"),
 			function(){
 				setTimeout(function(){
 					eventOccured = true;
@@ -40,11 +40,22 @@ with(JSFlow){
 				return eventOccured;
 			}),
 			
-			writeMesage("Event occured!"),
+			writeMessage("Event occured!"),
 			
-			writeMesage("wait for 2 seconds..."),
-			wait(2000),
-			writeMesage("Complete!")
+			writeMessage("wait for 1 second..."),
+			wait(1000),
+			
+			writeMessage("wait for next event"),
+			
+			waitFor(function(){
+			}, 100, 2, sequence( // последовательность обработки ошибки ожидания
+				writeMessage("Не дождались..."),
+				writeMessage("Что-ж, пойдем дальше...")
+			)),
+			
+			writeMessage("wait for 1 second..."),
+			wait(1000),
+			writeMessage("Complete!")
 		);
 	};
 }
