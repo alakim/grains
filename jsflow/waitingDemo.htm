@@ -1,0 +1,72 @@
+﻿<html>
+<head>
+<title>Waiting sample</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){$("out").innerHTML+=msg+"<br>";}
+
+
+with(JSFlow){
+	var eventOccured = false;
+	
+	function writeMesage(msg){
+		return function(){
+			log(msg);
+			(new Continuation())();
+		};
+	}
+	
+	// Процесс определяем в виде функции, возвращающей исполняемый экземпляр процесса.
+	// При каждом запуске создается новый экземпляр.
+	var process = function(){
+		return sequence(
+			writeMesage("wait for 2 seconds..."),
+			wait(2000),
+			
+			writeMesage("wait for an event"),
+			function(){
+				setTimeout(function(){
+					eventOccured = true;
+				}, 1700);
+				(new Continuation())();
+			},
+			
+			waitFor(function(){
+				return eventOccured;
+			}),
+			
+			writeMesage("Event occured!"),
+			
+			writeMesage("wait for 2 seconds..."),
+			wait(2000),
+			writeMesage("Complete!")
+		);
+	};
+}
+
+function beginLoop(){};
+
+function runProcess(){
+	$("inputPanel").style.display = "none";
+	$("out").innerHTML = "";
+	process().run();
+}
+
+
+</script>
+</head>
+<body>
+	<h1>Waiting sample</h1>
+	<button onclick="runProcess()">Run Process</button><br><br>
+	<div id="inputPanel" style="display:none;">
+		Number of Iterations <input type="text" id="loopCount" value="3">
+		<button onclick="beginLoop()">Begin Loop</button>
+	</div>
+	<div id="out">
+</body>
+</html>
