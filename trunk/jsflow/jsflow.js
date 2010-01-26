@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.9.277"};
+var JSFlow = {version:"2.10.278"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -213,6 +213,25 @@ var JSFlow = {version:"2.9.277"};
 			return new Action(function(){
 				var go = new __.Continuation();
 				setTimeout(function(){go();}, delay);
+			});
+		},
+		
+		waitFor: function(condition, pollingTime, maxCount){
+			pollingTime = pollingTime||100;
+			maxCount = maxCount || 100;
+			
+			return new Action(function(){
+				var go = new __.Continuation();
+				var counter = 0;
+				function check(){
+					if(condition()) go();
+					else if(counter>maxCount) throw "Too much attempts in block "+go.block.$SeqID();
+					else{
+						counter++;
+						setTimeout(check, pollingTime);
+					}
+				}
+				check();
 			});
 		},
 		
