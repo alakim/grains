@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.1.283",
+	version: "1.2.286",
 	panelID: "FlowTestPanel"
 };
 
@@ -100,16 +100,25 @@ var FlowTest = {
 			var numbers = command.substr(1).split(",");
 			
 			var steps = [];
+			var selectedTests = [];
 			each(_.tests, function(t, i){
 				switch(cmdType){
-					case "+": if(contains(numbers, i+1))steps.push(t.sequence); break;
-					case "-": if(!contains(numbers, i+1))steps.push(t.sequence); break;
+					case "+": if(contains(numbers, i+1)){
+							steps.push(t.sequence);
+							selectedTests.push(t);
+						}
+						break;
+					case "-": if(!contains(numbers, i+1)){
+							steps.push(t.sequence); 
+							selectedTests.push(t);
+						}
+						break;
 					default: steps.push(t.sequence); break;
 				}
 			});
 
 			var sq = sequence(steps); // перед инициализацией логов
-			each(_.tests, function(t){t.log.init();});
+			each(selectedTests, function(t){t.log.init();});
 			sq.run(); // только после инициализации логов
 		}}
 	};
