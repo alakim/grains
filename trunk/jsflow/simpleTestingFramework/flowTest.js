@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.2.286",
+	version: "1.2.287",
 	panelID: "FlowTestPanel"
 };
 
@@ -113,7 +113,10 @@ var FlowTest = {
 							selectedTests.push(t);
 						}
 						break;
-					default: steps.push(t.sequence); break;
+					default: 
+						steps.push(t.sequence);
+						selectedTests.push(t);
+						break;
 				}
 			});
 
