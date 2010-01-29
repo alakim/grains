@@ -33,6 +33,7 @@ function init(){with(JSFlow){
 		},
 		function(){var go = new Continuation();
 			log("step 2");
+			// Попытка двойного вызова продолжения
 			setTimeout(function(){
 				try{go();} catch(e){log("Правильная ошибка: '"+e+"'")}
 			}, 300);
@@ -85,6 +86,11 @@ function checkExpectations(){
 </head>
 <body onload="init()">
 	<h1>Safe Continuation Demo page</h1>
+	<p>Демонстрация блокировки двойного вызова продолжений.</p>
+	<p>При попытке повторного вызова продолжения выбрасывается исключение, что свидетельствует о наличии ошибки в алгоритме.</p>
+	<p>Выбрасывание исключения можно блокировать, установив в true параметр JSFlow.suppressContinuationException.
+		В этом случае повторный вызов все равно будет заблокирован, но сообщение об ошибке выдаваться не будет.
+		По умолчанию, режим подавления исключения выключен.</p>
 	<table border=1 cellpaddin=3 cellspacing=0>
 		<tr><th>Process</th><th>Expectations</th></tr>
 		<tr>
