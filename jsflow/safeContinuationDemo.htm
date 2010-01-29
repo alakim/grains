@@ -1,0 +1,120 @@
+﻿<html>
+<head>
+<title>Safe Continuation Demo page</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="jsflow.js"></script>
+<script type="text/javascript">
+
+function $(id){return document.getElementById(id);}
+
+function log(msg){
+	$("out").innerHTML+=msg+"<br>";
+}
+
+var TestService = {
+	GetSum: function(x, y, onload){
+		var res = x+y;
+		setTimeout(function(){
+			onload(res);
+		}, 200);
+	}
+};
+
+function init(){with(JSFlow){
+
+	// Элементами потока может быть просто функция, либо sequence, либо parallel
+	// Продолжение (Continuation) должна создаваться в главной функции элемента потока
+	
+	var process = sequence(
+		function(){var go = new Continuation();
+			log("step 1");
+			go();
+		},
+		function(){var go = new Continuation();
+			log("step 2");
+			setTimeout(function(){
+				try{go();} catch(e){log("Правильная ошибка: '"+e+"'")}
+			}, 300);
+			setTimeout(function(){
+				try{go();} catch(e){log("Правильная ошибка: '"+e+"'")}
+			}, 100);
+		},
+		wait(1000),
+		function(){var go = new Continuation();
+			log("step 3");
+			go();
+		},
+		function(){var go = new Continuation();
+			log("step 4");
+			go();
+		},
+		function(){var go = new Continuation();
+			log("step 5");
+			setTimeout(checkExpectations, 300);
+			go();
+		}
+	);
+	
+	var processLog = new Log();
+	processLog.logBegin = function(el){
+		log(el.$SeqID()+" begins");
+	};
+	processLog.logEnd = function(el){
+		log(el.$SeqID()+" ends");
+	};
+	processLog.write = function(){
+		var msg = [];
+		each(arguments, function(arg){msg.push(arg);});
+		log(msg.join(""));
+	};
+	processLog.connect(process);
+	
+	process.run();
+	
+}}	
+
+function checkExpectations(){
+	var expectation = $("expectations").innerHTML.replace(/\s+/ig, "").toLowerCase();
+	var result = $("out").innerHTML.replace(/\s+/ig, "").toLowerCase();
+	var ok = result==expectation;
+	$("result").innerHTML = ok?Html.span({style:"font-weight:bold; color:#008800;"}, "OK")
+		:Html.span({style:"font-weight:bold; color:#ff0000;"}, "Failure");
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Safe Continuation Demo page</h1>
+	<table border=1 cellpaddin=3 cellspacing=0>
+		<tr><th>Process</th><th>Expectations</th></tr>
+		<tr>
+			<td valign="top"><div id="out"></div></td>
+			<td valign="top">
+			<div id="expectations">
+				1 begins<br/>
+				1.1 begins<br/>
+				step 1<br/>
+				1.1 ends<br/>
+				1.2 begins<br/>
+				step 2<br/>
+				1.2 ends<br/>
+				1.3 begins<br/>
+				Правильная ошибка: 'Double continuation from block 1.2'<br/>
+				1.3 ends<br/>
+				1.4 begins<br/>
+				step 3<br/>
+				1.4 ends<br/>
+				1.5 begins<br/>
+				step 4<br/>
+				1.5 ends<br/>
+				1.6 begins<br/>
+				step 5<br/>
+				1.6 ends<br/>
+				1 ends<br/>
+			</div>
+			</td>
+		</tr>
+	</table>
+	<div id="result"></div>
+</body>
+</html>

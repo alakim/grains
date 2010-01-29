@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.11.285"};
+var JSFlow = {version:"2.12.288"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -167,6 +167,7 @@ var JSFlow = {version:"2.11.285"};
 	
 	extend(__,{
 		defaultLog:null,
+		suppressContinuationException:false,
 		
 		Log: function(){var _=this;
 			_.log = [];
@@ -178,6 +179,13 @@ var JSFlow = {version:"2.11.285"};
 			var blkID = block.id;
 			var pos = block.pos;
 			var cont = function(){
+				if(arguments.callee.executed){
+					if(__.suppressContinuationException)
+						return;
+					else
+						throw "Double continuation from block "+block.$SeqID();						
+				}
+				arguments.callee.executed = true;
 				goTo(blkID, pos)
 			};
 			cont.block = block;
