@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.2.287",
+	version: "1.2.290",
 	panelID: "FlowTestPanel"
 };
 
@@ -96,7 +96,7 @@ var FlowTest = {
 		
 		run: function(){with(JSFlow){var _=this;
 			var command = document.location.hash.substr(1);
-			var cmdType = command[0];
+			var cmdType = command.substr(0,1);
 			var numbers = command.substr(1).split(",");
 			
 			var steps = [];
