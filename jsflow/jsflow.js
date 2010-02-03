@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.12.288"};
+var JSFlow = {version:"2.12.291"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -234,7 +234,7 @@ var JSFlow = {version:"2.12.288"};
 				function check(){
 					if(condition()) go();
 					else if(counter>maxCount){
-						if(!errorHandlingSequence) throw "Too much attempts in block "+go.block.$SeqID();
+						if(!errorHandlingSequence) throw "Waiting error: Too much checking attempts in block "+go.block.$SeqID();
 						else{
 							errorHandlingSequence.onComplete = go;
 							errorHandlingSequence.run();
