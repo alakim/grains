@@ -43,6 +43,21 @@ with(JSFlow){with(FlowTest){
 		}
 	));
 	
+	new Test("Disabled Test", sequence(
+		wait(100),
+		wait(100),
+		function(){var go = new Continuation();
+			assert(1, 0, go.block);
+			go();
+		},
+		wait(100),
+		function(){var go = new Continuation();
+			assert(1, 1, go.block);
+			go();
+		},
+		wait(100)
+	), false);
+	
 	new Test("Еще один тест калькулятора", sequence(
 		function(){var go = new Continuation();
 			calc.mul(2, 3, function(r){assert(r, 6, go.block); go();});
