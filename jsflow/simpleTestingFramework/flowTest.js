@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.2.290",
+	version: "1.3.293",
 	panelID: "FlowTestPanel"
 };
 
@@ -64,13 +64,13 @@ var FlowTest = {
 			});
 			_.log.connect(_.test.sequence);
 			
-			function testViewTemplate(elem){with(Html){
+			function testViewTemplate(elem, t){with(Html){
 				return table({border:1, cellpadding:3, cellspacing:0}, tr(
 					apply(elem.elements, function(el, i){
-						return td({id:_.cellID(el), align:"center"},
+						return td({id:_.cellID(el), align:"center", style:"background-color:#"+(t.enabled?"ffffff":"888888")+";"},
 							i+1,
 							el.elements.length>1?div(
-								testViewTemplate(el)
+								testViewTemplate(el, t)
 							):null
 						);
 					})
@@ -79,7 +79,7 @@ var FlowTest = {
 			
 			$(__.panelID).innerHTML += div(
 				p({style:"font-weight:bold;"}, _.test.id, ". ", _.test.title),
-				testViewTemplate(_.test.sequence)
+				testViewTemplate(_.test.sequence, _.test)
 			);
 		}}
 	};
@@ -104,7 +104,7 @@ var FlowTest = {
 			each(_.tests, function(t, i){
 				switch(cmdType){
 					case "+": if(contains(numbers, i+1)){
-							steps.push(t.sequence);
+							steps.push(t.enabled?t.sequence:sequence());
 							selectedTests.push(t);
 						}
 						break;
@@ -114,7 +114,7 @@ var FlowTest = {
 						}
 						break;
 					default: 
-						steps.push(t.sequence);
+						steps.push(t.enabled?t.sequence:sequence());
 						selectedTests.push(t);
 						break;
 				}
@@ -201,7 +201,8 @@ var FlowTest = {
 			if(failure) el.result = "Failure";
 		},
 
-		Test: function(title, sequence){var _=this;
+		Test: function(title, sequence, enabled){var _=this;
+			_.enabled = enabled==null?true:enabled;
 			_.title = title;
 			_.sequence = sequence;
 			testSet.addTest(_);
