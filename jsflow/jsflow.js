@@ -1,4 +1,4 @@
-var JSFlow = {version:"2.12.291"};
+var JSFlow = {version:"2.13.292"};
 
 (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
@@ -205,15 +205,21 @@ var JSFlow = {version:"2.12.291"};
 		},
 		
 		openMutex: function(mutex){
-			return new Action(function(){
-				mutex.open(new __.Continuation());
+			return new Action(function(){var go = new __.Continuation();
+				if(typeof(mutex)=="string")
+					__.Mutex.open(mutex, go);
+				else
+					mutex.open(go);
 			});
 		},
 		
 		releaseMutex: function(mutex){
-			return new Action(function(){
-				mutex.release();
-				(new __.Continuation())();
+			return new Action(function(){var go = new __.Continuation();
+				if(typeof(mutex)=="string")
+					__.Mutex.release(mutex);
+				else
+					mutex.release();
+				go();
 			});
 		},
 		
@@ -268,6 +274,27 @@ var JSFlow = {version:"2.12.291"};
 			:typeof(el)=="function"?"Function"
 			:"undefined type";
 	}
+	
+	extend(__.Mutex, {
+		instances:{},
+		
+		get: function(mutexName){
+			var mutex = __.Mutex.instances[mutexName];
+			if(!mutex){
+				mutex = new __.Mutex();
+				__.Mutex.instances[mutexName] = mutex;
+			}
+			return mutex;
+		},
+		
+		open: function(mutexName, go){
+			__.Mutex.get(mutexName).open(go);
+		},
+		
+		release: function(mutexName){
+			__.Mutex.get(mutexName).release();
+		}
+	});
 	
 	__.Mutex.prototype = {
 		open: function(cont){var _=this;
