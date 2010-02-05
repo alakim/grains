@@ -85,6 +85,19 @@ new JSUnit.Test("tagCollection", "Верстка").run = function(){
 		);
 	}
 }
+new JSUnit.Test("Arbitrary Attributes", "Верстка").run = function(){
+	with(Html){
+		var b = true;
+		this.assert(
+			div({width:4},
+				b?{height:5}:null,
+				!b?{"z-index":3}:null,
+				"xxx"
+			),
+			"<div width=\"4\" height=\"5\">xxx</div>"
+		);
+	}
+}
 new JSUnit.Test("Таблица", "Шаблоны").run = function(){
 	with(Html){
 		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
