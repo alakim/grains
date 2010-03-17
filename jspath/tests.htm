@@ -37,7 +37,7 @@ new JSUnit.Test("ѕуть в виде массива", "Attribute access").run = function(){with
 	set(obj, ["def", "ghi"], 11);
 	this.assert(obj.def.ghi, 11, "Error 2");
 	
-	set(obj, ["x", 0], "xx");
+	set(obj, ["x", 0], "xx"); // если шаг задан в виде числа, то он обозначает индекс элемента массива
 	set(obj, ["x", 1], "abc");
 	this.assert(obj.x, ["xx","abc"], "Error 3");
 }}
@@ -59,6 +59,7 @@ function init(){
 </head>
 <body onload="init()">
 	<h1>JsPath Unit Tests</h1>
+	<p style="border: 1px solid black; padding:5px; margin:10px;">ћодуль JsPath обеспечивает XPath-образную навигацию по JSON-структурам. ѕуть можно задавать как в виде строки, так и в виде массива шагов (возможен также и комбинированный вариант).</p>
 	<p>JsPath v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>
 	<div id="out"></div>
