@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"2.0.294"
+	version:"2.0.296"
 };
 
 (function(){
@@ -12,6 +12,7 @@ var JsPath = {
 	
 	function extend(o,s){for(var k in s) o[k] = s[k];}
 	function getSteps(path){
+		if(path==null) throw "Path or step of path is null";
 		if(typeof(path)=="number") return path;
 		
 		if(path.constructor==Array){
@@ -29,9 +30,11 @@ var JsPath = {
 	
 	extend(JsPath, {
 		set: function(obj, path, val){
+			if(path==null) throw "Path is null";
 			var o = obj;
 			var ss = getSteps(path);
 			each(ss, function(s, i, next){
+				if(s==null) throw "Step is null";
 				var arrMode = arrayMode(s);
 				var idx = arrMode?typeof(s)=="number"?s:parseInt(RegExp.$1):null;
 				if(next==null){
@@ -54,8 +57,12 @@ var JsPath = {
 		},
 		
 		get: function(obj, path){
+			if(path==null) throw "Path is null";
 			var o = obj;
+			if(o==null) return null;
 			each(getSteps(path), function(s){
+				if(s==null) throw "Step is null";
+				if(o==null) return;
 				if(arrayMode(s)){
 					o = o[parseInt(RegExp.$1)];
 				}
