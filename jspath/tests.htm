@@ -51,6 +51,14 @@ new JSUnit.Test("Комбинированное представление пути", "Attribute access").run = 
 	this.assert(get(obj, ["abc", ["def", "x"], 1]), 2, "Error 2");	
 }}
 
+new JSUnit.Test("Попытка обращения к несуществующим данным", "Attribute access").run = function(){with(JsPath){
+	var obj = {};
+	set(obj, ["abc/def", "x", 0], 1);
+	this.assert(get(obj, ["abc/def", "x", 5]), null, "Error 1");
+	this.assert(get(obj, ["abc/def", "xww", 5]), null, "Error 2");
+	this.assert(get(obj, ["abc/www", "xww", 5]), null, "Error 3");
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JsPath.version;
 	JSUnit.init();
