@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.3.293",
+	version: "1.4.297",
 	panelID: "FlowTestPanel"
 };
 
@@ -212,6 +212,14 @@ var FlowTest = {
 		
 		runAll: function(){
 			testSet.run();
+		},
+		
+		getTestDescriptions: function(){
+			var res = [];
+			each(testSet.tests, function(t){
+				res.push(t.title);
+			});
+			return res;
 		}
 	});
 	
