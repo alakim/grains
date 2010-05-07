@@ -22,7 +22,6 @@ var Correlator = (function(){
 	
 	function displayChart(data){with(Html){
 		$(_.outputPanelID).innerHTML = div(
-			"Result of analyzing: ", 
 			apply(data, function(el){
 				return div(
 					el.val.length?div("#", el.id, "(", el.count, "): ", el.val)
