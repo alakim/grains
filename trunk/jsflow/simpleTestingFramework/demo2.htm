@@ -1,0 +1,68 @@
+﻿<html>
+<head>
+<title>Testing Framework Demo page 2</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script type="text/javascript" src="../../html/html.js"></script>
+<script type="text/javascript" src="../jsflow.js"></script>
+<script type="text/javascript" src="calc.js"></script>
+<script type="text/javascript" src="flowTest.js"></script>
+
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function write(msg){
+	$("out").innerHTML+="<br>"+msg;
+}
+
+var calc = new Calc();
+calc.delay = 100;
+function extend(o,s){for(var k in s)o[k]=s[k];}
+
+FlowTest.panelID = "out";
+FlowTest.onSuccess = function(){$("mainResult").innerHTML = Html.span({style:"color:#008800;"}, "OK");}
+FlowTest.onFailure = function(){$("mainResult").innerHTML = Html.span({style:"color:#ff0000;"}, "Failure");}
+
+with(JSFlow){with(FlowTest){
+	new Test("Test 1", sequence(
+		function(){var go = new Continuation();
+			calc.add(2, 3, function(r){assert(r, 5, go.block); go();});
+		},
+		function(){var go = new Continuation();
+			calc.sub(2, 3, function(r){assert(r, -1, go.block); go();});
+		},
+		function(){
+			(new Continuation())();
+		},
+		function(){var go = new Continuation();
+			calc.mul(2, 3, function(r){assert(r, 6, go.block); go();});
+		}
+	));
+	
+	new Test("Test 2", sequence(
+		function(){var go = new Continuation();
+			assert($("cbMakeError").checked, false, go.block);
+			go();
+		},
+		function(){var go = new Continuation();
+			assert(1, 1, go.block);
+			go();
+		}
+	));
+}}
+
+function start(){
+	FlowTest.runAll();
+}
+</script>
+</head>
+<body>
+	<h1>Testing Framework Demo page </h1>
+	<p>Еще один простой тест.</p>
+	<div>
+		<input type="checkbox" id="cbMakeError"/> Сделать ошибку
+		<input type="button" onclick="start()" value="Start"/>
+	</div>
+	<div id="mainResult"></div>
+	<div id="out"></div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ﻿// Оболочка для тестирования
 var FlowTest = {
-	version: "1.4.297",
+	version: "1.5.299",
 	panelID: "FlowTestPanel"
 };
 
@@ -8,6 +8,7 @@ var FlowTest = {
 	var __ = FlowTest;
 	
 	function $(id){return document.getElementById(id);}
+	function doNothing(){}
 	
 	function write(msg){
 		$(__.panelID).innerHTML+=msg+"<br>";
@@ -122,6 +123,17 @@ var FlowTest = {
 
 			var sq = sequence(steps); // перед инициализацией логов
 			each(selectedTests, function(t){t.log.init();});
+			sq.onComplete = function(){
+				function isOK(el){
+					if(el.result) return el.result=="OK";
+					if(el.elements)
+						for(var i=0; i<el.elements.length; i++)
+							if(!isOK(el.elements[i]))return false;
+					return true;
+				}
+				if(isOK(sq)) FlowTest.onSuccess();
+				else FlowTest.onFailure();
+			};
 			sq.run(); // только после инициализации логов
 		}}
 	};
@@ -210,9 +222,10 @@ var FlowTest = {
 			_.id = testIdCounter++;
 		},
 		
-		runAll: function(){
-			testSet.run();
-		},
+		runAll: function(){testSet.run();},
+		
+		onSuccess:doNothing,
+		onFailure:doNothing,
 		
 		getTestDescriptions: function(){
 			var res = [];
