@@ -5,7 +5,9 @@
 <script type="text/javascript" src="draphael.js"></script>
 <script type="text/javascript">
 	function init(){
-		with(new DRaphael.Paper(20, 82, 100, 100)){
+		document.getElementById("version").innerHTML = DRaphael.version;
+		
+		with(new DRaphael.Paper(20, 120, 100, 100)){
 			path({
 				style:"fill:#ff8080;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1",
 				d:"M 10.393974,23.022068 34.15163,10.166363 29.472092,45.06042 10.393974,23.022068 z",
@@ -85,5 +87,9 @@
 <body onload="init()">
 	<h1>DRaphael sample</h1>
 	<p>ѕример отображени€ SVG-графики средствами Raphael с использованием декларативного описани€.</p>
+	<div style="margin-top:400px;">
+		<hr/>
+		<p style="font-size:80%; text-align:center;">Using DRaphael v.<span id="version"></span></p>
+	</div>
 </body>
 </html>

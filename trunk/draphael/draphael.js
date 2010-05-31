@@ -55,6 +55,7 @@ var DRaphael = (function(){// Declarative Raphael
 	}
 	
 	var _={
+		version:"1.0.303",
 		Paper:function(x, y, w, h){
 			var canvas = Raphael(x, y, w, h);
 			
