@@ -32,7 +32,6 @@ var JSVG = (function(){
 	}
 	
 	function assignEventHandlers(nd, events){
-		console.log(nd.type, nd.id);
 		if(!events) return;
 		for(var k in events) nd[k](events[k](nd));
 	}
@@ -66,7 +65,7 @@ var JSVG = (function(){
 	}
 	
 	var _={
-		version:"1.2.309",
+		version:"1.2.310",
 		Paper:function(x, y, w, h){
 			var canvas = Raphael(x, y, w, h);
 			
