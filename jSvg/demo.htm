@@ -4,6 +4,14 @@
 <script type="text/javascript" src="../lib/raphael-min.js"></script>
 <script type="text/javascript" src="jsvg.js"></script>
 <script type="text/javascript">
+	function highlightNode(on){
+		return function(nd){
+			return function(e){
+				nd.attr("opacity", on?0.5:1);
+			};
+		};
+	}
+	
 	function init(){
 		document.getElementById("version").innerHTML = JSVG.version;
 		
@@ -11,7 +19,12 @@
 			path({
 				style:"fill:#ff8080;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1",
 				d:"M 10.393974,23.022068 34.15163,10.166363 29.472092,45.06042 10.393974,23.022068 z",
-				id:"path2820"
+				id:"path2820",
+				events:{
+					mouseover:highlightNode(true),
+					mouseout:highlightNode(false),
+					click:function(nd){return function(){alert(nd.id+" clicked!");};}
+				}
 			}),
 			path({
 				style:"fill:#80f880;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1",
@@ -24,10 +37,15 @@
 			g(
 				{
 					id:"g2828",
-					style:"fill:#008800;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1",
+					style:"fill:#008800;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;cursor:pointer;",
 					transform:{
 						translate:{x:2, y:4},
 						rotate:{degree:12, isAbsolute:false}
+					},
+					events:{
+						mouseover:highlightNode(true),
+						mouseout:highlightNode(false),
+						click:function(nd){return function(){alert(nd.id+" clicked!");};}
 					}
 				},
 				path({
