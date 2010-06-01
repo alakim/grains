@@ -31,21 +31,32 @@ var JSVG = (function(){
 		}
 	}
 	
+	function assignEventHandlers(nd, events){
+		console.log(nd.type, nd.id);
+		if(!events) return;
+		for(var k in events) nd[k](events[k](nd));
+	}
+	
 	function createGroup(canvas){
 		return function(){
 			var nd = canvas.set();
 			var grpStyle;
 			var grpTransform;
+			var events;
 			for(var i=0; i<arguments.length; i++){var arg = arguments[i];
-				if(isRaphaelsObject(arg))
+				if(isRaphaelsObject(arg)){
 					nd.push(arg);
+				}
 				else{
+					if(arg.id) nd.id = arg.id;
 					if(arg.style) grpStyle = arg.style;
 					if(arg.transform) grpTransform = arg.transform;
+					if(arg.events) events = arg.events;
 				}
 			}
 			if(grpStyle) setStyle(nd, grpStyle);
 			if(grpTransform) applyTransformations(nd, grpTransform);
+			if(events) assignEventHandlers(nd, events);
 			return nd;
 		}		
 	}
@@ -55,7 +66,7 @@ var JSVG = (function(){
 	}
 	
 	var _={
-		version:"1.1.308",
+		version:"1.2.309",
 		Paper:function(x, y, w, h){
 			var canvas = Raphael(x, y, w, h);
 			
@@ -64,8 +75,10 @@ var JSVG = (function(){
 			
 			this.path = function(data){
 				var p = canvas.path(data.d);
+				if(data.id) p.id = data.id;
 				if(data.style) setStyle(p, data.style);
 				if(data.transform) applyTransformations(p, data.transform);
+				if(data.events) assignEventHandlers(p, data.events);
 				return p;
 			};
 			
