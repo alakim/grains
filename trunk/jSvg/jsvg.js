@@ -1,6 +1,6 @@
 if(typeof(Raphael)!="function") alert("Configuration error!\nRaphael module required!");
 
-var DRaphael = (function(){// Declarative Raphael
+var JSVG = (function(){
 	var paper;
 	var pos;
 	
@@ -14,7 +14,7 @@ var DRaphael = (function(){// Declarative Raphael
 	
 	function applyTransformations(nd, trsf){
 		if(!trsf) return;
-		if(trsf.translate) nd.translate(trsf.translate.x, trsf.translate.y);
+		if(trsf.translate) nd.translate(trsf.translate.x || 0, trsf.translate.y || 0);
 		if(trsf.rotate){
 			if(typeof(trsf.rotate.isAbsolute)=="boolean")
 				nd.rotate(trsf.rotate.degree, trsf.rotate.isAbsolute)
@@ -55,6 +55,7 @@ var DRaphael = (function(){// Declarative Raphael
 	}
 	
 	var _={
+		version:"1.1.308",
 		Paper:function(x, y, w, h){
 			var canvas = Raphael(x, y, w, h);
 			
@@ -84,7 +85,7 @@ var DRaphael = (function(){// Declarative Raphael
 				var txt = canvas.text(x, y, t)
 				return txt;
 			};
-		},
+		}
 		
 	};
 	
