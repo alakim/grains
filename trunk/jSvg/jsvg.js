@@ -65,7 +65,7 @@ var JSVG = (function(){
 	}
 	
 	var _={
-		version:"1.2.310",
+		version:"1.3.311",
 		Paper:function(x, y, w, h){
 			var canvas = Raphael(x, y, w, h);
 			
@@ -81,20 +81,21 @@ var JSVG = (function(){
 				return p;
 			};
 			
-			this.text = createGroup(canvas);
-			
-			this.tspan = function(){
+			this.text = function(){
 				var x = 0;
 				var y = 0;
 				var t = "";
+				var style = "";
 				for(var i=0; i<arguments.length; i++){var arg = arguments[i];
 					if(typeof(arg)=="string") t = arg;
 					else{
 						x = parseFloat(arg.x);
 						y = parseFloat(arg.y);
+						style = arg.style;
 					}
 				}
-				var txt = canvas.text(x, y, t)
+				var txt = canvas.text(x, y, t);
+				setStyle(txt, style);
 				return txt;
 			};
 		}
