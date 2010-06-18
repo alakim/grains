@@ -2,7 +2,6 @@ var jColl = (function(){
 	function lambda(F){
 		if(typeof(F)=="string"){
 			var a = F.split("|");
-			console.log(a);
 			F = new Function(a[0], "return "+a[1])
 		};
 		return F;
