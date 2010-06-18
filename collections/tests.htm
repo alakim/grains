@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>jColl Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="jcoll.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля jColl", "Configuration").run = function(){
+	this.assert(typeof(jColl), "object");
+}
+
+new JSUnit.Test("Array test", "Collection iterations").run = function(){with(jColl){
+	var arr = [1,2,3,4,5];
+	
+	this.assert(
+		$C(arr).map(function(el, i){return el*2;}).item(),
+		[2,4,6,8,10],
+		"Error 1"
+	);
+	this.assert(
+		$C(arr).filter(function(el, i){return i<2;}).item(),
+		[1,2],
+		"Error 2"
+	);
+	this.assert(
+		$C(arr).find(function(el, i){return el>3;}).item(),
+		4,
+		"Error 3"
+	);
+}}
+
+new JSUnit.Test("Objects test", "Collection iterations").run = function(){with(jColl){
+	var obj = {
+		x:12,
+		y:22,
+		z:{a:"abc", b:"def"}
+	};
+	
+	this.assert(
+		$C(obj).map(function(el, k){return typeof(el)=="number"?el*2:el;}).item(),
+		{
+			x:24,
+			y:44,
+			z:{a:"abc", b:"def"}
+		},
+		"Error 1"
+	);
+	
+	this.assert(
+		$C(obj).filter(function(el, k){return typeof(el)=="number";}).item(),
+		{
+			x:12,
+			y:22
+		},
+		"Error 2"
+	);
+	
+	this.assert(
+		$C(obj).find(function(el, k){return typeof(el)=="number" && el>20;}).item(),
+		22,
+		"Error 3"
+	);
+}}
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = jColl.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>jColl Unit Tests</h1>
+	<p>jColl v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
