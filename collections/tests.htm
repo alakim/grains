@@ -61,6 +61,31 @@ new JSUnit.Test("Objects test", "Collection iterations").run = function(){with(j
 	);
 }}
 
+new JSUnit.Test("Ruby style notation", "Collection iterations").run = function(){with(jColl){
+	var arr = [1,2,3,4,5];
+	
+	this.assert(
+		$C(arr).map("el|el*2").item(),
+		[2,4,6,8,10],
+		"Error 1"
+	);
+	this.assert(
+		$C(arr).filter("el|el>3").item(),
+		[4,5],
+		"Error 2"
+	);
+	this.assert(
+		$C(arr).filter("el,i|i<2").item(),
+		[1,2],
+		"Error 3"
+	);
+	this.assert(
+		$C(arr).find("el|el>3").item(),
+		4,
+		"Error 4"
+	);
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = jColl.version;
 	JSUnit.init();

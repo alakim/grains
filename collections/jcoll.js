@@ -1,9 +1,19 @@
 var jColl = (function(){
+	function lambda(F){
+		if(typeof(F)=="string"){
+			var a = F.split("|");
+			console.log(a);
+			F = new Function(a[0], "return "+a[1])
+		};
+		return F;
+	}
+	
 	var _ = {
 		version:"1.0.0",
 		$C: function(coll){
 			return {
 				map:function(F){
+					F = lambda(F);
 					var res;
 					if(coll instanceof Array){
 						res = [];
@@ -17,6 +27,7 @@ var jColl = (function(){
 				},
 				
 				filter: function(P){
+					P = lambda(P);
 					var res;
 					if(coll instanceof Array){
 						res = [];
@@ -34,6 +45,7 @@ var jColl = (function(){
 				},
 				
 				find: function(P){
+					P = lambda(P);
 					if(coll instanceof Array){
 						for(var i=0; i<coll.length; i++){var el = coll[i];
 							if(P(el, i)) return _.$C(el);
