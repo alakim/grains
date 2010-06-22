@@ -8,6 +8,26 @@ new JSUnit.Test("Подключение модуля jColl", "Configuration").run = function(){
 	this.assert(typeof(jColl), "object");
 }
 
+new JSUnit.Test("Iterations", "Browser capabilities").run = function(){
+	var o = [1,2,3];
+	o.x = 20;
+	
+	var res = {};
+	for(var k in o){
+		res[k] = o[k];
+	}
+	this.assert(
+		res,
+		{
+			0:1,
+			1:2,
+			2:3,
+			x:20
+		},
+		"Error 1"
+	);
+}
+
 new JSUnit.Test("Array test", "Collection iterations").run = function(){with(jColl){
 	var arr = [1,2,3,4,5];
 	
@@ -86,6 +106,16 @@ new JSUnit.Test("Ruby style notation", "Collection iterations").run = function()
 	);
 }}
 
+new JSUnit.Test("Test 1", "Path").run = function(){with(jColl){
+	var db = {
+		organizations:{
+			Mosstroi:{name:"Мосстрой"}
+		}
+	};
+	
+	this.assert($C(db).path("organizations/Mosstroi/name").item(), "Мосстрой", "Error 1");
+}}
+
 new JSUnit.Test("Integer operations", "Complex operations").run = function(){with(jColl){
 	var arr = [1,2,3,4,5];
 	this.assert(
@@ -113,6 +143,210 @@ new JSUnit.Test("Html rendering", "Complex operations").run = function(){with(jC
 		"p0. Иванов И.И.: 444-4444<br>p1. Петров П.П.: 333-3333<br>p2. Сидоров С.С.: 222-2222",
 		"Error 1"
 	);
+}}
+
+new JSUnit.Test("To List", "Data conversion").run = function(){with(jColl){
+	var persons = {
+		iiivanov:{fio:"Иванов И.И."},
+		pppetrov:{fio:"Петров П.П."},
+		sssidorov:{fio:"Сидоров С.С."}
+	};
+	this.assert(
+		$C(persons).toList(function(e, k){e.id = k; return e;}).item(),
+		[
+			{id:"iiivanov", fio:"Иванов И.И."},
+			{id:"pppetrov", fio:"Петров П.П."},
+			{id:"sssidorov", fio:"Сидоров С.С."}
+		],
+		"Error 1"
+	);
+	this.assert(
+		$C(persons).toList(function(e, k){return {id:k, fio:e.fio};}).item(),
+		[
+			{id:"iiivanov", fio:"Иванов И.И."},
+			{id:"pppetrov", fio:"Петров П.П."},
+			{id:"sssidorov", fio:"Сидоров С.С."}
+		],
+		"Error 2"
+	);
+	this.assert(
+		$C(persons).toList("e,k|{id:k, fio:e.fio}").item(),
+		[
+			{id:"iiivanov", fio:"Иванов И.И."},
+			{id:"pppetrov", fio:"Петров П.П."},
+			{id:"sssidorov", fio:"Сидоров С.С."}
+		],
+		"Error 3"
+	);
+
+	this.assert(
+		$C([1,2,3]).toList("e|e").item(),
+		[1,2,3],
+		"Error 4"
+	);
+}}
+
+new JSUnit.Test("To Dictionary", "Data conversion").run = function(){with(jColl){
+	var persons = [
+		{id:"iiivanov", fio:"Иванов И.И."},
+		{id:"pppetrov", fio:"Петров П.П."},
+		{id:"sssidorov", fio:"Сидоров С.С."}
+	];
+	
+	this.assert(
+		$C(persons).toDict(function(e){return e.id;}, function(e){return {fio:e.fio};}).item(),
+		{
+			iiivanov:{fio:"Иванов И.И."},
+			pppetrov:{fio:"Петров П.П."},
+			sssidorov:{fio:"Сидоров С.С."}
+		}, 
+		"Error 1"
+	);
+	this.assert(
+		$C(persons).toDict("e|e.id", "e|{fio:e.fio}").item(),
+		{
+			iiivanov:{fio:"Иванов И.И."},
+			pppetrov:{fio:"Петров П.П."},
+			sssidorov:{fio:"Сидоров С.С."}
+		}, 
+		"Error 2"
+	);
+	
+	this.assert(
+		$C({x:1, y:2}).toDict("e|e.x", "e|e.y").item(),
+		{},
+		"Error 3"
+	);
+
+}}
+
+new JSUnit.Test("Select 1", "Data conversion").run = function(){with(jColl){
+	var db = {
+		organizations:{
+			MosBrick:{name:"ОАО Московский кирпич", address:"112332, Москва, Силикатный пр-д, д.2а",
+				workers:["iiivanov", "pppetrov"]
+			},
+			Nauka:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
+				workers:["sssidorov", "pppetrov"]
+			}
+		},
+		persons:{
+			iiivanov:{fio:"Иванов И.И."},
+			pppetrov:{fio:"Петров П.П."},
+			sssidorov:{fio:"Сидоров С.С."}
+		}
+	};
+	
+	this.assert(
+		$C(db.organizations.MosBrick.workers).map(function(w){return db.persons[w];}).item(), 
+		[{fio:"Иванов И.И."}, {fio:"Петров П.П."}],
+		"Error 1"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers").item(),
+		["iiivanov", "pppetrov"],
+		"Error 2"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers").map(function(w){return db.persons[w];}).item(), 
+		[{fio:"Иванов И.И."}, {fio:"Петров П.П."}],
+		"Error 3"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers")
+			.map(function(w){return db.persons[w];})
+			.filter("w|w.fio.match(/тро/)")
+			.item(), 
+		[{fio:"Петров П.П."}],
+		"Error 4"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers")
+			.map(function(w){return db.persons[w];})
+			.first()
+			.item(), 
+		{fio:"Иванов И.И."},
+		"Error 5"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers")
+			.map(function(w){return db.persons[w];})
+			.last()
+			.item(), 
+		{fio:"Петров П.П."},
+		"Error 6"
+	);
+	
+	this.assert(
+		$C(db).path("organizations/MosBrick/workers")
+			.map(function(w){return db.persons[w];})
+			.find("w|w.fio.match(/тро/)")
+			.path("fio")
+			.item(), 
+		"Петров П.П.",
+		"Error 7"
+	);
+	
+}}
+
+new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
+	var db = {
+		organizations:{
+			MosBrick:{name:"ОАО Московский кирпич", address:"112332, Москва, Силикатный пр-д, д.2а",
+				workers:["iiivanov", "pppetrov"]
+			},
+			Nauka:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
+				workers:["sssidorov"]
+			}
+		},
+		persons:{
+			iiivanov:{fio:"Иванов И.И."},
+			pppetrov:{fio:"Петров П.П."},
+			sssidorov:{fio:"Сидоров С.С."}
+		}
+	};
+	
+	this.assert(
+		$C(db).path("persons")
+			.map("p,id|{id:id, fio:p.fio}")
+			.join(
+				$C(db).path("organizations"), 
+				function(pers, org){
+					for(var k in org.workers)
+						if(org.workers[k]==pers.id)
+							return {fio:pers.fio, org:org.name};
+				}
+			)
+			.item(),
+		[
+			{fio:"Иванов И.И.", org:"ОАО Московский кирпич"},
+			{fio:"Петров П.П.", org:"ОАО Московский кирпич"},
+			{fio:"Сидоров С.С.", org:"Издательский дом \"Строитель\""}
+		],
+		"Error 1"
+	);
+	
+	// this.assert(
+	// 	$C(db).path("persons")
+	// 		.map(function(w, id){
+	// 			var org = $C(db).path("organizations").find(function(o){
+	// 				return $C(o.workers).find(function(wid){return wid==id}).length;
+	// 			}).item();
+	// 			return {fio:w.fio, org:org.name};
+	// 		})
+	// 		.item(),
+	// 	[
+	// 		{fio:"Иванов И.И.", org:"ОАО Московский кирпич"},
+	// 		{fio:"Петров П.П.", org:"ОАО Московский кирпич"},
+	// 		{fio:"Сидоров С.С.", org:"Издательский дом \"Строитель\""}
+	// 	],
+	// 	"Error 1"
+	// );
 }}
 
 
