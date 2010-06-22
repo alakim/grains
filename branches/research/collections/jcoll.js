@@ -25,6 +25,40 @@ var jColl = (function(){
 					return _.$C(res);
 				},
 				
+				toList: function(F){
+					F = lambda(F);
+					var res = [];
+					for(var k in coll) res.push(F(coll[k], k));
+					return _.$C(res);
+				},
+				
+				toDict: function(keyF, valF){
+					keyF = lambda(keyF);
+					valF = lambda(valF);
+					var res = {};
+					for(var i=0; i<coll.length; i++){var e = coll[i];
+						res[keyF(e,i)] = valF(e,i);
+					}
+					return _.$C(res);
+				},
+				
+				path: function(p){
+					var steps = p.split("/");
+					var r = coll;
+					for(var i=0; i<steps.length; i++){
+						r = r[steps[i]];
+					}
+					return _.$C(r);
+				},
+				
+				first: function(){
+					return _.$C(coll[0]);
+				},
+				
+				last: function(){
+					return _.$C(coll[coll.length-1]);
+				},
+				
 				filter: function(P){
 					P = lambda(P);
 					var res;
@@ -56,6 +90,10 @@ var jColl = (function(){
 						}
 					}
 					return _.$C();
+				},
+				
+				join: function(coll2, F){
+					
 				},
 				
 				item:function(){
