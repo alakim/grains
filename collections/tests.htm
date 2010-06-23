@@ -28,6 +28,12 @@ new JSUnit.Test("Iterations", "Browser capabilities").run = function(){
 	);
 }
 
+new JSUnit.Test("Test 1", "Construction").run = function(){with(jColl){
+	var coll = [1,2,3];
+	this.assert($C(coll).item(), coll, "Error 1");
+	this.assert($C($C(coll)).item(), coll, "Error 2");
+}}
+
 new JSUnit.Test("Array test", "Collection iterations").run = function(){with(jColl){
 	var arr = [1,2,3,4,5];
 	
@@ -317,9 +323,9 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 			.join(
 				$C(db).path("organizations"), 
 				function(pers, org){
-					for(var k in org.workers)
-						if(org.workers[k]==pers.id)
-							return {fio:pers.fio, org:org.name};
+					return $C(org.workers)
+						.find(function(w){return w==pers.id;})
+						.map(function(){return {fio:pers.fio, org:org.name}});
 				}
 			)
 			.item(),
