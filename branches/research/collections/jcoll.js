@@ -96,8 +96,12 @@ var jColl = (function(){
 				F = lambda(F);
 				var r = [];
 				for(var k in coll){
-					var e = coll[k];
-					for(var m in coll2){
+					var e1 = coll[k];
+					for(var m in coll2.item()){
+						var e2 = coll2.item()[m];
+						var e = F(e1, e2);
+						if(e)
+							r.push(e);
 					}
 				}
 				return _.$C(r)

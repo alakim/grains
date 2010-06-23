@@ -26,7 +26,22 @@ new JSUnit.Test("Iterations", "Browser capabilities").run = function(){
 		},
 		"Error 1"
 	);
+	
 }
+
+	// new JSUnit.Test("String iterations", "Browser capabilities").run = function(){
+	// 	// Работает в Firefox, Google Chrome, Safari
+	// 	// Не работает в IE, Opera 9.10
+	// 	
+	// 	var o = "abc";
+	// 	var res = {};
+	// 	for(var k in o) res[k] = o[k];
+	// 	this.assert(
+	// 		res,
+	// 		{0:"a", 1:"b", 2:"c"},
+	// 		"Error 2"
+	// 	);
+	// }
 
 new JSUnit.Test("Test 1", "Construction").run = function(){with(jColl){
 	var coll = [1,2,3];
@@ -323,9 +338,12 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 			.join(
 				$C(db).path("organizations"), 
 				function(pers, org){
-					return $C(org.workers)
-						.find(function(w){return w==pers.id;})
-						.map(function(){return {fio:pers.fio, org:org.name}});
+					var r = $C(org.workers)
+						.filter(function(w){return w==pers.id;})
+						.map(function(){return {fio:pers.fio, org:org.name}})
+						.first()
+						.item();
+					return r;
 				}
 			)
 			.item(),
