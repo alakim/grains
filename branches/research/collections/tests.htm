@@ -247,7 +247,7 @@ new JSUnit.Test("Select 1", "Data conversion").run = function(){with(jColl){
 			MosBrick:{name:"ОАО Московский кирпич", address:"112332, Москва, Силикатный пр-д, д.2а",
 				workers:["iiivanov", "pppetrov"]
 			},
-			Nauka:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
+			Stroitel:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
 				workers:["sssidorov", "pppetrov"]
 			}
 		},
@@ -319,10 +319,10 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 	var db = {
 		organizations:{
 			MosBrick:{name:"ОАО Московский кирпич", address:"112332, Москва, Силикатный пр-д, д.2а",
-				workers:["iiivanov", "pppetrov"]
+				workers:["iiivanov", "pppetrov"], chief:"iiivanov"
 			},
-			Nauka:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
-				workers:["sssidorov"]
+			Stroitel:{name:"Издательский дом \"Строитель\"", address:"113235, Москва, Ленинский пр-т, д.99",
+				workers:["sssidorov"], chief:"sssidorov"
 			}
 		},
 		persons:{
@@ -355,22 +355,42 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 		"Error 1"
 	);
 	
-	// this.assert(
-	// 	$C(db).path("persons")
-	// 		.map(function(w, id){
-	// 			var org = $C(db).path("organizations").find(function(o){
-	// 				return $C(o.workers).find(function(wid){return wid==id}).length;
-	// 			}).item();
-	// 			return {fio:w.fio, org:org.name};
-	// 		})
-	// 		.item(),
-	// 	[
-	// 		{fio:"Иванов И.И.", org:"ОАО Московский кирпич"},
-	// 		{fio:"Петров П.П.", org:"ОАО Московский кирпич"},
-	// 		{fio:"Сидоров С.С.", org:"Издательский дом \"Строитель\""}
-	// 	],
-	// 	"Error 1"
-	// );
+	this.assert(
+		$C(db).path("organizations")
+			.map("org,id|{id:id, name:org.name, chief:org.chief}")
+			.join(
+				$C(db).path("persons").map("p,id|{id:id, fio:p.fio}"),
+				function(org, pers){
+					return org.chief==pers.id ?{
+						id:org.id,
+						name:org.name,
+						chief:pers.fio
+					}:null;
+				}
+			)
+			.item(),
+		[
+			{id:"MosBrick", name:"ОАО Московский кирпич", chief:"Иванов И.И."},
+			{id:"Stroitel", name:"Издательский дом \"Строитель\"", chief:"Сидоров С.С."}
+		],
+		"Error 2"
+	);
+	
+	this.assert( // предыдуший вариант, но с лямбда-выражением
+		$C(db).path("organizations")
+			.map("org,id|{id:id, name:org.name, chief:org.chief}")
+			.join(
+				$C(db).path("persons").map("p,id|{id:id, fio:p.fio}"),
+				"org,pers|org.chief==pers.id ?{id:org.id, name:org.name, chief:pers.fio}:null"
+			)
+			.item(),
+		[
+			{id:"MosBrick", name:"ОАО Московский кирпич", chief:"Иванов И.И."},
+			{id:"Stroitel", name:"Издательский дом \"Строитель\"", chief:"Сидоров С.С."}
+		],
+		"Error 3"
+	);
+
 }}
 
 
