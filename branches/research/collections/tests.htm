@@ -128,6 +128,9 @@ new JSUnit.Test("Ruby style notation", "Collection iterations").run = function()
 }}
 
 new JSUnit.Test("Test 1", "Path").run = function(){with(jColl){
+	// Функция path сделана для устойчивого к ошибкам доступа к элементам структур.
+	// Если указанный в пути элемент не существует, ошибки не происходит,
+	// а просто возвращается пустое множество.
 	var db = {
 		organizations:{
 			Mosstroi:{name:"Мосстрой"}
@@ -135,6 +138,8 @@ new JSUnit.Test("Test 1", "Path").run = function(){with(jColl){
 	};
 	
 	this.assert($C(db).path("organizations/Mosstroi/name").item(), "Мосстрой", "Error 1");
+	this.assert($C(db).path("organizations/abcdefg/xas4").item(), null, "Error 2");
+	this.assert($C(db).path("nnnh/abcdefg/xas4").item(), null, "Error 3");
 }}
 
 new JSUnit.Test("Integer operations", "Complex operations").run = function(){with(jColl){
@@ -377,10 +382,10 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 	);
 	
 	this.assert( // предыдуший вариант, но с лямбда-выражением
-		$C(db).path("organizations")
+		$C(db.organizations)
 			.map("org,id|{id:id, name:org.name, chief:org.chief}")
 			.join(
-				$C(db).path("persons").map("p,id|{id:id, fio:p.fio}"),
+				$C(db.persons).map("p,id|{id:id, fio:p.fio}"),
 				"org,pers|org.chief==pers.id ?{id:org.id, name:org.name, chief:pers.fio}:null"
 			)
 			.item(),
@@ -392,7 +397,6 @@ new JSUnit.Test("Join 1", "Data conversion").run = function(){with(jColl){
 	);
 
 }}
-
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = jColl.version;

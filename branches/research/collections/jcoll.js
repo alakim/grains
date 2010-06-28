@@ -45,7 +45,7 @@ var jColl = (function(){
 			path: function(p){
 				var steps = p.split("/");
 				var r = coll;
-				for(var i=0; i<steps.length; i++){
+				for(var i=0; r!=null&&i<steps.length; i++){
 					r = r[steps[i]];
 				}
 				return _.$C(r);
