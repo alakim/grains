@@ -5,34 +5,84 @@ var XDocument = (function(){
 		xml = xml.replace(/[\n\r\t]/g, "");
 		_.innerXML = xml;
 		_.nodes = new Array();
-		_._parseNodes();
-		_._findRoot();
+		parseNodes(_);
+		findRoot(_);
 	}
 	
+	function findRoot(_){
+		for(var i=0; i<_.nodes.length; i++){
+			var el = _.nodes[i];
+			if(el.parent==null)
+				_.root = el;
+		}
+	}
+	
+	function parseNodes(_){
+		var aMt;
+		var xml = _.innerXML;
+		while(aMt = xml.match(XNode.reSimpleNode)){
+			var nodeXml = aMt[0];
+			var nd = new XNode(nodeXml, _);
+			xml = xml.replace(nodeXml, "&node"+nd.innerId+";");
+		}
+		for(var i=0; i<_.nodes.length; i++){
+			var nd = _.nodes[i];
+			if(nd.constructor==XNode)
+				parseChildren(nd);
+		}
+	}
+	
+	function parseChildren(_){
+			var reNd = /^(.*)(&node\d+;)(?!&node\d+;)(.*)$/; 
+			var mt;
+			var str = _._innerXML;
+			var arr = new Array();
+			while(str!=null && str!="" && (mt = str.match(reNd))){
+				arr.push(mt[3]);
+				arr.push(mt[2]);
+				str = mt[1];
+			}
+			arr.push(str);            
+				
+			for(var i=arr.length-1; i>=0; i--){
+				var xc = arr[i].toString(); // child node
+				if(xc.toString()=="")
+					continue;
+				if(xc.match(reNd)){
+					var ndId = parseInt(xc.toString().match(/\d+/));
+				var el = _.doc.getElementByInnerId(ndId);
+				if(el!=null){
+					_.childNodes.push(el);
+					el.parent = _;
+				}
+			}
+			else{
+				var txt = new TextNode(xc, _.doc);
+				_.childNodes.push(txt);
+				txt.parent = _;
+			}
+		}
+		
+		parseAttributes(_);
+	}
+	
+	function parseAttributes(_){
+		var inTag = _._outerXML.match(/^<[^>]+>/)[0];
+		var reAttExp = "([a-z0-9]+)\s*=\s*\"([^\"]+)\"";
+		var reAttCollection = new RegExp(reAttExp, "ig")
+		var reAtt = new RegExp(reAttExp, "i");
+		var mtColl = inTag.match(reAttCollection);
+		if(mtColl){
+			for(var i=0; i<mtColl.length; i++){
+				var att = mtColl[i];
+				var mt =  att.match(reAtt);
+				var attNd = new AttributeNode(mt[1], mt[2], _);
+			}
+		}
+	}
+
+		
 	__.prototype = {
-		_findRoot: function(){var _=this;
-			for(var i=0; i<_.nodes.length; i++){
-				var el = _.nodes[i];
-				if(el.parent==null)
-					_.root = el;
-			}
-		},
-		
-		_parseNodes: function(){var _=this;
-			var aMt;
-			var xml = _.innerXML;
-			while(aMt = xml.match(XNode.reSimpleNode)){
-				var nodeXml = aMt[0];
-				var nd = new XNode(nodeXml, _);
-				xml = xml.replace(nodeXml, "&node"+nd.innerId+";");
-			}
-			for(var i=0; i<_.nodes.length; i++){
-				var nd = _.nodes[i];
-				if(nd.constructor==XNode)
-					nd._parseChildren();
-			}
-		},
-		
 		getElementById: function(id){var _=this;
 			for(var i=0;i<_.nodes.length;i++){
 				var nd = _.nodes[i];
@@ -114,56 +164,9 @@ var XDocument = (function(){
 					return att;
 			}
 			return null;
-		},
-		
-		_parseChildren: function(){var _=this;
-			var reNd = /^(.*)(&node\d+;)(?!&node\d+;)(.*)$/; 
-			var mt;
-			var str = _._innerXML;
-			var arr = new Array();
-			while(str!=null && str!="" && (mt = str.match(reNd))){
-				arr.push(mt[3]);
-				arr.push(mt[2]);
-				str = mt[1];
-			}
-			arr.push(str);            
-				
-			for(var i=arr.length-1; i>=0; i--){
-				var xc = arr[i].toString(); // child node
-				if(xc.toString()=="")
-					continue;
-				if(xc.match(reNd)){
-					var ndId = parseInt(xc.toString().match(/\d+/));
-					var el = _.doc.getElementByInnerId(ndId);
-					if(el!=null){
-						this.childNodes.push(el);
-						el.parent = _;
-					}
-				}
-				else{
-					var txt = new TextNode(xc, _.doc);
-					_.childNodes.push(txt);
-					txt.parent = _;
-				}
-			}
-			
-			_._parseAttributes();
-		},
-		
-		_parseAttributes: function(){
-			var inTag = this._outerXML.match(/^<[^>]+>/)[0];
-			var reAttExp = "([a-z0-9]+)\s*=\s*\"([^\"]+)\"";
-			var reAttCollection = new RegExp(reAttExp, "ig")
-			var reAtt = new RegExp(reAttExp, "i");
-			var mtColl = inTag.match(reAttCollection);
-			if(mtColl){
-				for(var i=0; i<mtColl.length; i++){
-					var att = mtColl[i];
-					var mt =  att.match(reAtt);
-					var attNd = new AttributeNode(mt[1], mt[2], this);
-				}
-			}
 		}
+		
+		
 	});
 	
 	extend(XNode, {

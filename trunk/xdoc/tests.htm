@@ -35,7 +35,7 @@ new JSUnit.Test("testNodes", "Source code tests").run = function(){
 	this.assert(aRoot.length, 1, "Ошибка 1");
 	var root = aRoot[0];
 	this.assert(root!=null, true, "Ошибка 1.1: не найден кореневой элемент");
-	this.assert(root.constructor, XDocument.XNode, "Ошибка 1.2");
+	this.assert(root instanceof XDocument.XNode, true, "Ошибка 1.2");
 	this.assert(root.getOuterXML(), xml, "Ошибка 1.3");
 	var aFld = xDoc.getElementsByTagName("field");
 	this.assert(aFld.length, 2, "Ошибка 2");
