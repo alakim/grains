@@ -23,6 +23,8 @@ new JSUnit.Test("Simple parsing", "Parsing").run = function(){
 	this.assert(xdoc.root.childNodes.length, 3);
 }
 
+
+// ========== Группа тестов, которые были встроены в исходную версию модуля =======================
 new JSUnit.Test("testNodes", "Source code tests").run = function(){
 	var f1xml = "<field name=\"x\">abc</field>";
 	var f2xml = "<field name=\"y\">123</field>";
@@ -33,7 +35,7 @@ new JSUnit.Test("testNodes", "Source code tests").run = function(){
 	this.assert(aRoot.length, 1, "Ошибка 1");
 	var root = aRoot[0];
 	this.assert(root!=null, true, "Ошибка 1.1: не найден кореневой элемент");
-	this.assert(root.constructor, XNode, "Ошибка 1.2");
+	this.assert(root.constructor, XDocument.XNode, "Ошибка 1.2");
 	this.assert(root.getOuterXML(), xml, "Ошибка 1.3");
 	var aFld = xDoc.getElementsByTagName("field");
 	this.assert(aFld.length, 2, "Ошибка 2");
