@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>XDocument Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="xdoc.js"></script>
+<script type="text/javascript">
+var doc1 = 	["<root>",
+				"<Field name=\"Назначение\" multiline=\"yes\" />",
+				"<Field name=\"Технические характеристики\" multiline=\"yes\" />",
+				"<Field name=\"Описание\" multiline=\"yes\" required=\"yes\" />",
+			"</root>"].join("");
+
+
+new JSUnit.Test("Подключение модуля XDocument", "Configuration").run = function(){
+	this.assert(typeof(XDocument), "function");
+	this.assert(doc1.length, 171, "Bad doc1 length");
+}
+
+new JSUnit.Test("Simple parsing", "Parsing").run = function(){
+	var xdoc = new XDocument(doc1);
+	this.assert(xdoc.nodes.length, 4);
+	this.assert(xdoc.root.tagName, "root");
+	this.assert(xdoc.root.childNodes.length, 3);
+}
+
+new JSUnit.Test("testNodes", "Source code tests").run = function(){
+	var f1xml = "<field name=\"x\">abc</field>";
+	var f2xml = "<field name=\"y\">123</field>";
+	var xml = "<root>"+f1xml+f2xml+"</root>";
+	var xDoc = new XDocument(xml);
+	var aRoot = xDoc.getElementsByTagName("root");
+	
+	this.assert(aRoot.length, 1, "Ошибка 1");
+	var root = aRoot[0];
+	this.assert(root!=null, true, "Ошибка 1.1: не найден кореневой элемент");
+	this.assert(root.constructor, XNode, "Ошибка 1.2");
+	this.assert(root.getOuterXML(), xml, "Ошибка 1.3");
+	var aFld = xDoc.getElementsByTagName("field");
+	this.assert(aFld.length, 2, "Ошибка 2");
+	this.assert(aFld[0].getOuterXML(), f1xml, "Ошибка 2.1");
+	this.assert(aFld[1].getOuterXML(), f2xml, "Ошибка 2.2");
+}
+new JSUnit.Test("testAccessors", "Source code tests").run = function(){
+	var f1xml = "<field id=\"f1\" name=\"x\">abc</field>";
+	var f2xml = "<field id=\"f2\" name=\"y\">123</field>";
+	var xml = "<root>\n\t"+f1xml+"\n\t"+f2xml+"\n</root>";
+	var xDoc = new XDocument(xml);
+	var f1 = xDoc.getElementById("f1");
+	this.assert(f1!=null, true, "Ошибка 1.1: не найдено поле");
+	this.assert(f1.getOuterXML(), f1xml, "Ошибка 1.2");
+	var f2 = xDoc.getElementById("f2");
+	this.assert(f2!=null, true, "Ошибка 2.1: не найдено поле");
+	this.assert(f2.getOuterXML(), f2xml, "Ошибка 2.2");
+	
+	var aFld = xDoc.getElementsByTagName("field");
+	this.assert(aFld.length, 2, "Ошибка 3");
+	this.assert(aFld[0].getOuterXML(), f1xml, "Ошибка 3.1");
+	this.assert(aFld[1].getOuterXML(), f2xml, "Ошибка 3.2");
+}
+new JSUnit.Test("testLargeDoc", "Source code tests").run = function(){
+	var xml = "";
+	for(var i=0; i<10; i++){
+		xml+="\n\t<field name=\"fld"+i+"\">value "+i+"</field>";
+	}
+	xml = "<root>"+xml+"\n</root>";
+	var xDoc = new XDocument(xml);
+	var root = xDoc.getElementsByTagName("root")[0];
+	this.assert(root.childNodes.length, 10);
+}
+new JSUnit.Test("testComplexDoc", "Source code tests").run = function(){
+	var xml = "";
+	for(var j=0; j<20; j++){
+		xml+="\n\t<chapter id=\"c"+j+"\">";
+		for(var i=0; i<10; i++){
+			xml+="\n\t\t<field name=\"fld"+i+"\">value "+i+"</field>";
+		}
+		xml+="\n\t</chapter>";
+	}
+	xml = "<root>"+xml+"\n</root>";
+	var xDoc = new XDocument(xml);
+	var root = xDoc.getElementsByTagName("root")[0];
+	this.assert(root.childNodes.length, 20, "Ошибка 1");
+	for(var i=0;i<root.childNodes.length;i++){
+		var ch = root.childNodes[i];
+		this.assert(ch.childNodes.length, 10, "Ошибка 2."+i);
+	}
+}
+new JSUnit.Test("testChildNodes", "Source code tests").run = function(){
+		var f1xml = "<field name=\"x\">abc</field>";
+		var f2xml = "<field name=\"y\">123</field>";
+		var xml = "<root>\n\t"+f1xml+"\n\t"+f2xml+"\n</root>";
+		var resultXml = xml.replace(/[\n\t]/g, "");
+		var xDoc = new XDocument(xml);
+		var root = xDoc.getElementsByTagName("root")[0];
+		this.assert(root.childNodes.length, 2, "Ошибка 1");
+		this.assert(root.childNodes[0].getOuterXML(), f1xml, "Ошибка 2.1");
+		this.assert(root.childNodes[1].getOuterXML(), f2xml, "Ошибка 2.2");
+		this.assert(root.childNodes[0].parent!=null, true, "Ошибка 3");
+		this.assert(root.childNodes[0].parent.getOuterXML(), resultXml, "Ошибка 3.1");
+}
+new JSUnit.Test("testChangeChildNodesCollection", "Source code tests").run = function(){
+		var f1xml = "<field id=\"f1\" name=\"x\">abc</field>";
+		var f2xml = "<field id=\"f2\" name=\"y\">123</field>";
+		var xml = "<root>\n\t"+f1xml+"\n\t"+f2xml+"\n</root>";
+		var resultXml = xml.replace(/[\n\t]/g, "");
+		var xDoc = new XDocument(xml);
+		var root = xDoc.getElementsByTagName("root")[0];
+		var a = [];
+		for(var i=0;i<root.childNodes.length;i++){
+			var nd = root.childNodes[i];
+			a.push(nd);
+		}
+		root.childNodes = a;
+		this.assert(root.getOuterXML(), resultXml, "Ошибка 1");
+		this.assert(root.childNodes[0].getOuterXML(), f1xml, "Ошибка 2.1");
+		this.assert(root.childNodes[1].getOuterXML(), f2xml, "Ошибка 2.2");
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = XDocument.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>XDocument Unit Tests</h1>
+	<p>XDocument v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
