@@ -5,15 +5,15 @@
 <script type="text/javascript" src="xdoc.js"></script>
 <script type="text/javascript">
 var doc1 = 	["<root>",
-				"<Field name=\"Назначение\" multiline=\"yes\" />",
-				"<Field name=\"Технические характеристики\" multiline=\"yes\" />",
-				"<Field name=\"Описание\" multiline=\"yes\" required=\"yes\" />",
+				"<Field id=\"n1\" name=\"Назначение\" multiline=\"yes\"/>",
+				"<Field name=\"Технические характеристики\" multiline=\"yes\"/>",
+				"<Field name=\"Описание\" multiline=\"yes\" required=\"yes\"/>",
 			"</root>"].join("");
 
 
 new JSUnit.Test("Подключение модуля XDocument", "Configuration").run = function(){
 	this.assert(typeof(XDocument), "function");
-	this.assert(doc1.length, 171, "Bad doc1 length");
+	this.assert(doc1.length, 176, "Bad doc1 length");
 }
 
 new JSUnit.Test("Simple parsing", "Parsing").run = function(){
@@ -23,6 +23,28 @@ new JSUnit.Test("Simple parsing", "Parsing").run = function(){
 	this.assert(xdoc.root.childNodes.length, 3);
 }
 
+new JSUnit.Test("innerId", "Node access").run = function(){
+	var xDoc = new XDocument(doc1);
+	this.assert(xDoc.root.innerId, xDoc.nodes.length);
+}
+
+new JSUnit.Test("select", "Node access").run = function(){
+	var xDoc = new XDocument(doc1);
+	this.assert(xDoc.getElementsByTagName("Field").length, 3, "Error 1");
+	this.assert(xDoc.getElementById("n1")!=null, true, "Error 2.1");
+	this.assert(xDoc.getElementById("n1").getAttribute("name")!=null, true, "Error 2.2");
+	this.assert(xDoc.getElementById("n1").getAttribute("name"), "Назначение", "Error 2.3");
+}
+new JSUnit.Test("getInnerXML", "Node access").run = function(){
+	var xDoc = new XDocument(doc1);
+	this.assert(xDoc.getElementById("n1").getInnerXML(), "", "Error 1");
+	this.assert(xDoc.root.getInnerXML(), doc1.replace(/<\/?root>/g, ""), "Error 2");
+}
+new JSUnit.Test("getOuterXML", "Node access").run = function(){
+	var xDoc = new XDocument(doc1);
+	this.assert(xDoc.getElementById("n1").getOuterXML(), "<Field id=\"n1\" name=\"Назначение\" multiline=\"yes\"/>", "Error 1");
+	
+}
 
 // ========== Группа тестов, которые были встроены в исходную версию модуля =======================
 new JSUnit.Test("testNodes", "Source code tests").run = function(){
