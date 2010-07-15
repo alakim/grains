@@ -140,6 +140,20 @@ new JSUnit.Test("testChangeChildNodesCollection", "Source code tests").run = fun
 		this.assert(root.childNodes[1].getOuterXML(), f2xml, "Ошибка 2.2");
 }
 
+new JSUnit.Test("appendNode", "Node manipulations").run = function(){
+	var xDoc = new XDocument(doc1);
+	var nd = xDoc.createElement("Field");
+	xDoc.root.appendChild(nd);
+	new XDocument.AttributeNode("name", "newField", nd);
+	new XDocument.AttributeNode("required", "yes", nd);
+	this.assert(xDoc.root.getInnerXML(), "<Field id=\"n1\" name=\"Назначение\" multiline=\"yes\"/><Field name=\"Технические характеристики\" multiline=\"yes\"/><Field name=\"Описание\" multiline=\"yes\" required=\"yes\"/><Field name=\"newField\" required=\"yes\"/>", "Error 1");
+}
+
+new JSUnit.Test("removeNode", "Node manipulations").run = function(){
+	var xDoc = new XDocument(doc1);
+	xDoc.removeNode(xDoc.root.childNodes[1]);
+	this.assert(xDoc.root.getInnerXML(), "<Field id=\"n1\" name=\"Назначение\" multiline=\"yes\"/><Field name=\"Описание\" multiline=\"yes\" required=\"yes\"/>", "Error 1");
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = XDocument.version;

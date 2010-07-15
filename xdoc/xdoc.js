@@ -41,12 +41,22 @@ var XDocument = (function(){
 		var xml = _.innerXML;
 		while(aMt = xml.match(XNode.reSimpleNode)){
 			var nodeXml = aMt[0];
-			var nd = new XNode(nodeXml, _);
+			var nd = parseXmlNode(nodeXml, _);
 			xml = xml.replace(nodeXml, "&node"+nd.innerId+";");
 		}
 		each(_.nodes, function(nd){
 			if(nd instanceof XNode) parseChildren(nd);
 		});
+	}
+	
+	function parseXmlNode(xml, doc){
+		var nd = new XNode(doc);
+		nd._outerXML = xml;
+		nd._innerXML = nd._outerXML.replace(/^<[^>]+>/i, "");
+		nd._innerXML = nd._innerXML.replace(/<\/[^>]+>$/i, "");
+		var mtTgNm = nd._outerXML.match(/^<([^ >]+)/i);
+		nd.tagName = mtTgNm[1];
+		return nd;
 	}
 	
 	function parseChildren(_){
@@ -109,23 +119,29 @@ var XDocument = (function(){
 			return select(_.nodes, function(nd){
 				return nd.tagName==tgNm;
 			});
+		},
+		
+		createElement: function(elName){var _=this;
+			var el = new XNode(_);
+			el.tagName = elName;
+			return el;
+		},
+		
+		removeNode: function(node){var _=this;
+			function notThis(n){return n.innerId!=node.innerId;};
+			_.nodes = select(_.nodes, notThis);
+			node.parent.childNodes = select(node.parent.childNodes, notThis);
 		}
-	
 	};
 	
 
-	function XNode(xml, doc){var _=this;
-		_._outerXML = xml;
-		_._innerXML = _._outerXML.replace(/^<[^>]+>/i, "");
-		_._innerXML = _._innerXML.replace(/<\/[^>]+>$/i, "");
-		var mtTgNm = this._outerXML.match(/^<([^ >]+)/i);
-		_.tagName = mtTgNm[1];
+	function XNode(doc){var _=this;
 		doc.nodes.push(_);
 		_.innerId = doc.nodes.length;
 		_.doc = doc;
-		_.childNodes = new Array();
+		_.childNodes = [];
 		_.parent = null;
-		_.attributes = new Array();
+		_.attributes = [];
 	};
 	
 	extend(XNode.prototype, {
@@ -153,9 +169,11 @@ var XDocument = (function(){
 			return find(_.attributes, function(att){
 				return att.name==name;
 			});
+		},
+		
+		appendChild: function(nd){var _=this;
+			_.childNodes.push(nd);
 		}
-		
-		
 	});
 	
 	extend(XNode, {
@@ -167,7 +185,7 @@ var XDocument = (function(){
 		this.name = name;
 		this.value = value;
 		this.parent = xNode;
-		xNode.attributes.push(this);
+		if(xNode) xNode.attributes.push(this);
 	}
 
 	function TextNode(text, doc){
@@ -189,7 +207,7 @@ var XDocument = (function(){
 	});
 
 	extend(__, {
-		version: "1.0.325",
+		version: "1.1.326",
 		XNode:XNode,
 		TextNode:TextNode,
 		AttributeNode:AttributeNode
