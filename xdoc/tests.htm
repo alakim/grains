@@ -155,6 +155,20 @@ new JSUnit.Test("removeNode", "Node manipulations").run = function(){
 	this.assert(xDoc.root.getInnerXML(), "<Field id=\"n1\" name=\"Назначение\" multiline=\"yes\"/><Field name=\"Описание\" multiline=\"yes\" required=\"yes\"/>", "Error 1");
 }
 
+new JSUnit.Test("setAttribute", "Node manipulations").run = function(){
+	var xDoc = new XDocument(doc1);
+	var row = xDoc.root.childNodes[1];
+	row.setAttribute("name", "nm1");
+	this.assert(row.getOuterXML(), "<Field name=\"nm1\" multiline=\"yes\"/>", "Error 1");
+}
+
+new JSUnit.Test("removeAttribute", "Node manipulations").run = function(){
+	var xDoc = new XDocument(doc1);
+	var row = xDoc.root.childNodes[1];
+	row.removeAttribute("name");
+	this.assert(row.getOuterXML(), "<Field multiline=\"yes\"/>", "Error 1");
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = XDocument.version;
 	JSUnit.init();

@@ -173,6 +173,14 @@ var XDocument = (function(){
 		
 		appendChild: function(nd){var _=this;
 			_.childNodes.push(nd);
+		},
+		
+		setAttribute: function(name, value){var _=this;
+			_.getAttributeNode(name).value = value;
+		},
+		
+		removeAttribute: function(name){var _=this;
+			_.attributes = select(_.attributes, function(a){return a.name!=name;});
 		}
 	});
 	
@@ -207,7 +215,7 @@ var XDocument = (function(){
 	});
 
 	extend(__, {
-		version: "1.1.326",
+		version: "1.2.327",
 		XNode:XNode,
 		TextNode:TextNode,
 		AttributeNode:AttributeNode
