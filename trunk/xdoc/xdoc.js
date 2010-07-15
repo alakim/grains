@@ -176,7 +176,9 @@ var XDocument = (function(){
 		},
 		
 		setAttribute: function(name, value){var _=this;
-			_.getAttributeNode(name).value = value;
+			var att = _.getAttributeNode(name);
+			if(att) att.value = value;
+			else new XDocument.AttributeNode(name, value, _);
 		},
 		
 		removeAttribute: function(name){var _=this;
@@ -215,7 +217,7 @@ var XDocument = (function(){
 	});
 
 	extend(__, {
-		version: "1.2.327",
+		version: "1.2.328",
 		XNode:XNode,
 		TextNode:TextNode,
 		AttributeNode:AttributeNode
