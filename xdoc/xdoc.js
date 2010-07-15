@@ -1,20 +1,39 @@
 var XDocument = (function(){
 	function extend(o,s){for(var k in s)o[k]=s[k];}
 	
+	function lambda(F){
+		if(typeof(F)=="function") return F;
+		var lmb = F.split("|");
+		return new Function(lmb[0], "return "+lmb[1]);
+	}
+	
+	function find(coll, F){
+		F = lambda(F);
+		for(var i=0; i<coll.length; i++){
+			var e = coll[i];
+			if(F(e, i)) return e;
+		}
+	}
+	function select(coll, F){
+		F = lambda(F);
+		var res = [];
+		each(coll, function(e, i){
+			if(F(e, i)) res.push(e);
+		});
+		return res;
+	}
+	
+	function each(coll, F){
+		if(!coll || !coll.length) return;
+		for(var i=0; i<coll.length; i++)F(coll[i],i);
+	}
+	
 	var __ = function(xml){var _=this;
 		xml = xml.replace(/[\n\r\t]/g, "");
 		_.innerXML = xml;
 		_.nodes = new Array();
 		parseNodes(_);
-		findRoot(_);
-	}
-	
-	function findRoot(_){
-		for(var i=0; i<_.nodes.length; i++){
-			var el = _.nodes[i];
-			if(el.parent==null)
-				_.root = el;
-		}
+		_.root = find(_.nodes, "e|e.parent==null");
 	}
 	
 	function parseNodes(_){
@@ -25,11 +44,9 @@ var XDocument = (function(){
 			var nd = new XNode(nodeXml, _);
 			xml = xml.replace(nodeXml, "&node"+nd.innerId+";");
 		}
-		for(var i=0; i<_.nodes.length; i++){
-			var nd = _.nodes[i];
-			if(nd.constructor==XNode)
-				parseChildren(nd);
-		}
+		each(_.nodes, function(nd){
+			if(nd instanceof XNode) parseChildren(nd);
+		});
 	}
 	
 	function parseChildren(_){
@@ -72,43 +89,26 @@ var XDocument = (function(){
 		var reAttCollection = new RegExp(reAttExp, "ig")
 		var reAtt = new RegExp(reAttExp, "i");
 		var mtColl = inTag.match(reAttCollection);
-		if(mtColl){
-			for(var i=0; i<mtColl.length; i++){
-				var att = mtColl[i];
-				var mt =  att.match(reAtt);
-				var attNd = new AttributeNode(mt[1], mt[2], _);
-			}
-		}
+		each(mtColl, function(att){
+			var mt =  att.match(reAtt);
+			new AttributeNode(mt[1], mt[2], _);
+		});
 	}
 
 		
 	__.prototype = {
 		getElementById: function(id){var _=this;
-			for(var i=0;i<_.nodes.length;i++){
-				var nd = _.nodes[i];
-				if(nd.getAttribute("id")==id)
-					return nd;
-			}
-			return null;
+			return find(_.nodes, function(nd){return nd.getAttribute("id")==id;});
 		},
 		
 		getElementByInnerId: function(id){var _=this;
-			for(var i=0; i<_.nodes.length; i++){
-				var el = _.nodes[i];
-				if(el.innerId==id)
-					return el;
-			}
-			return null;
+			return find(_.nodes, function(el){return el.innerId==id;});
 		},
 		
-		getElementsByTagName: function(tgNm){
-			var coll = new Array();
-			for(var i=0; i<this.nodes.length; i++){
-				var el = this.nodes[i];
-				if(el.tagName==tgNm)
-					coll.push(el);
-			}
-			return coll;
+		getElementsByTagName: function(tgNm){var _=this;
+			return select(_.nodes, function(nd){
+				return nd.tagName==tgNm;
+			});
 		}
 	
 	};
@@ -131,25 +131,17 @@ var XDocument = (function(){
 	extend(XNode.prototype, {
 		getInnerXML: function(){var _=this;
 			var xml = "";
-			for(var i=0; i<_.childNodes.length; i++){
-				var nd = _.childNodes[i];
-				xml+=nd.getOuterXML();
-			}
+			each(_.childNodes, function(nd){xml+=nd.getOuterXML();});
 			return xml;
 		},
 		
 		getOuterXML: function(){var _=this;
 			var xml = "<"+_.tagName;
-			for(var i=0; i<_.attributes.length; i++){
-				var ndAtt = _.attributes[i];
+			each(_.attributes, function(ndAtt){
 				xml+=" "+ndAtt.name+"=\""+ndAtt.value+"\"";
-			}
+			});
 			var inner = _.getInnerXML();
-			if(inner=="")
-				xml+="/>";
-			else
-				xml+=">"+inner+"</"+_.tagName+">";
-			return xml;
+			return xml + (inner.length?">"+inner+"</"+_.tagName+">" : "/>");
 		},
 		
 		getAttribute: function(name){
@@ -158,12 +150,9 @@ var XDocument = (function(){
 		},
 		
 		getAttributeNode: function(name){var _=this;
-			for(var i=0; i<_.attributes.length; i++){
-				var att = _.attributes[i];
-				if(att.name==name)
-					return att;
-			}
-			return null;
+			return find(_.attributes, function(att){
+				return att.name==name;
+			});
 		}
 		
 		
@@ -200,7 +189,7 @@ var XDocument = (function(){
 	});
 
 	extend(__, {
-		version: "1.0.0",
+		version: "1.0.325",
 		XNode:XNode,
 		TextNode:TextNode,
 		AttributeNode:AttributeNode
