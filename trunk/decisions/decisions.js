@@ -1,9 +1,17 @@
 var Decisions = (function(){
-	var version = "2.0.330";
+	var version = "2.0.331";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
 		else for(var k in coll)F(coll[k], k);
+	}
+	
+	function addEventHandler(trgEl, eventNm, handler){
+		var eventNm=(window.addEventListener)? eventNm : "on"+eventNm;
+		if (trgEl.addEventListener)
+			trgEl.addEventListener(eventNm, handler, false);
+		else if (trgEl.attachEvent)
+			trgEl.attachEvent(eventNm, handler);
 	}
 	
 	var items = {};
@@ -327,7 +335,8 @@ var Decisions = (function(){
 		Advantage: Advantage,
 		Disadvantage: Disadvantage
 	};
-	
+
+	addEventHandler(window, "load", __.display);
 	return __;
 })();
 
