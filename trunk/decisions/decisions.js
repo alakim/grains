@@ -1,4 +1,6 @@
 var Decisions = (function(){
+	var version = "2.0.330";
+	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
 		else for(var k in coll)F(coll[k], k);
@@ -55,7 +57,7 @@ var Decisions = (function(){
 			name:name,
 			html: function(){with(Html){
 				return div(
-					h1("Reasoning ", this.name),
+					h1(this.name),
 					apply(this.children, function(c){
 						return div({style:"margin-left:20px;"},
 							c.html()
@@ -103,7 +105,7 @@ var Decisions = (function(){
 						_.criteria?div({
 							style:"color:#000088; text-decoration:underline; cursor:hand;cursor:pointer",
 							onclick:callFunction("UI.toggleCriteria", _.id)
-						}, "toggle criteria view"):null
+						}, "таблица критериев"):null
 					)
 				);
 			}}
@@ -152,21 +154,29 @@ var Decisions = (function(){
 		return _;
 	}
 	
+	function advantageTemplate(title, color){
+		return function(){with(Html){var _=this;
+			return div(
+				div(
+					span({style:"color:"+color}, title+": "),
+					_.children.length==1?(function(){
+						var c1 = _.children[0];
+						return typeof(c1.html)=="function"?c1.html():c1;
+					})():null
+				),
+				_.children.length>1?div({style:"margin-left:15px;"},
+					apply(_.children, function(c, i){
+						return div(typeof(c.html)=="function"?c.html():c);
+					})
+				):null
+			);
+		}};
+	}
+	
 	function Advantage(){var _=this;
 		var _={
 			type:"Advantage",
-			html: function(){with(Html){var _=this;
-
-	
-				return div(
-					div({style:"color:#008800"}, "Advantage "),
-					div({style:"margin-left:20px;"},
-						apply(_.children, function(c){
-							return div(typeof(c.html)=="function"?c.html():c);
-						})
-					)
-				);
-			}}
+			html: advantageTemplate("Преимущество", "#008800")
 		};
 		buildChildren(_, arguments, 0);
 		register(_);
@@ -176,16 +186,7 @@ var Decisions = (function(){
 	function Disadvantage(){var _=this;
 		var _={
 			type:"Disadvantage",
-			html: function(){with(Html){
-				return div(
-					div({style:"color:#880000"}, "Disadvantage "),
-					div({style:"margin-left:20px;"},
-						apply(this.children, function(c){
-							return div(typeof(c.html)=="function"?c.html():c);
-						})
-					)
-				);
-			}}
+			html: advantageTemplate("Недостаток", "#880000")
 		};
 		buildChildren(_, arguments, 0);
 		register(_);
@@ -298,12 +299,20 @@ var Decisions = (function(){
 		return _;
 	}
 	
+	function footerTemplate(){with(Html){
+		return div({"class":"footer"},
+			"Powered by. ",
+			"Decisions v.", __.version, ", ",
+			"Html.js v.", Html.version
+		);
+	}}
+	
 	var __ = {
-		version:"2.0.0",
+		version:version,
 		display: function(pnlID){
 			var html = [];
 			each(roots, function(r){html.push(r.html());});
-			document.body.innerHTML = html.join(" ");
+			document.body.innerHTML = html.join(" ")+footerTemplate();
 		},
 		Reasoning: Reasoning,
 		Problem: Problem,

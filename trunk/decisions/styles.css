@@ -59,3 +59,10 @@ p{
 .transparent a:link{color:#aaaaaa;}
 .transparent a:hover{color:#8888ff;}
 .transparent .section{border-left: 1 solid #aaaaaa;}
+
+.footer{
+	color:#cccccc;
+	text-align: center;
+	margin-top:20px;
+	font-size:12px;
+}
