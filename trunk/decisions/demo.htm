@@ -1,28 +1,51 @@
 <html>
 <head>
-<script type="text/javascript" src="../html/html.js"></script>
+<title>Пример использования Brain Jumble</title>
+<meta http-equiv="Content-Type" content="text/html;charset=windows-1251"/>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/html.js"></script>
 <script type="text/javascript" src="decisions.js"></script>
 <script type="text/javascript">
-Decision("Пример принятия решения",
-	Problem("Стоит ли развивать этот проект?",
-		Description("Найдет ли этот проект хоть какое-то применение?"),
-		Solution("Надо развивать",
-			Advantage("Пригодится когда-нибудь"),
-			Disadvantage("Да сколько уже таких проектов было!"),
-			Problem("Время и другие ресурсы",
-				Description("Проект-то хоть и небольшой, однако, трудоемкость какая-никакая, все-таки имеется.")
-			)
+with(Decisions){
+Reasoning("Развитие проекта XPlanning",
+	Problem("Обработка XML-документов",
+		Description(
+			p("Как загружать и обрабатывать XML-документы?"),
+			p("Вопрос совсем не праздный.")
 		),
-		Solution("Забросить, и больше не вспоминать",
-			Advantage("Нет проекта - нет и проблем!")
+		Criterion("Сохранение документа", Rating(40),
+			SolutionRating("singleXDoc", 20, "Сложности с сохранением документов - требуется сначала выделить соответствующую \"ветвь\" в отдельный DOM-документ, и только потом сохранять"),
+			SolutionRating("separateDocs", 80, "Просто сохранять документы")
+		),
+		Criterion("Отображение", Rating(60),
+			SolutionRating("singleXDoc", 80, "Все данные будут храниться в едином XML-дереве, что позволит свести формирование любой экранной формы к простому применению XSLT."),
+			SolutionRating("separateDocs", 20, "Трудности формирования экранных форм непредсказуемы.")
+		),
+		Solution("Единый XML-документ", ID("singleXDoc"), 
+			Description("Загружать все документы в ветви единого XML-документа, и сохранять из них.")
+		),
+		Solution("Отдельный DOM-объект под каждый документ", ID("separateDocs"),
+			Description("Можно загружать каждый XML-документ в отдельный DOM-объект.")
+		),
+		Conclusion("Формировать единый документ",
+			p("Проблемы с сохранением отдельных ветвей документа не так страшны (решаются раз и навсегда) по сравнению с возможными трудностями формирования экранных форм.")
 		)
 	),
-	Problem("Что сказать начальству.")
+	Problem("Преобразования документов",
+		Description(
+			p("Что лучше использовать для преобразования документов - DOM, или XSLT?"),
+			p("Вопрос не праздный!")
+		),
+		Solution("Использовать чистое XSLT",
+			Advantage("Будет единый подход к преобразованию документов"),
+			Advantage("Программный код XSLT лаконичнее и надежнее, т.к. в основе XSLT лежат принципы функционального программирования."),
+			Disadvantage("Недостатки какие-то тоже должны быть ;)")
+		)
+	)
 );
-
+}
 </script>
 </head>
-<body>
-
+<body onload="Decisions.display()">
 </body>
 </html>
