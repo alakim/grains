@@ -1,5 +1,5 @@
 var Decisions = (function(){
-	var version = "2.0.331";
+	var version = "2.1.332";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -336,7 +336,12 @@ var Decisions = (function(){
 		Disadvantage: Disadvantage
 	};
 
-	addEventHandler(window, "load", __.display);
+	addEventHandler(window, "load", function(){
+		if(!document.title.length){
+			document.title = roots[0].name;
+		}
+		__.display();
+	});
 	return __;
 })();
 
