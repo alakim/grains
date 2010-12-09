@@ -1,5 +1,5 @@
 var Decisions = (function(){
-	var version = "2.1.332";
+	var version = "2.2.333";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -129,15 +129,18 @@ var Decisions = (function(){
 			name:name,
 			html: function(){with(Html){
 				function criteriaTable(){with(Html){
+					var sum = 0;
 					return _.parent.criteria?div({style:"margin-top:10px;"},
 						span({style:"font-weight:bold;"}, "ќценки:&#160;"),
 						apply(_.parent.criteria, function(cr){
-							return Html.a(
-								cr.name, ":",
-								cr.ratings[_.id].value,
-								"&#160;"
-							);
-						})
+							var rating = cr.ratings[_.id];
+							if(rating){
+								sum+=rating.value*cr.rating;
+								return Html.a(cr.name, ":", rating.value, "&#160;");
+							}
+						}),
+						" ",
+						span("»того: ", sum)
 					):null;
 				}}
 
