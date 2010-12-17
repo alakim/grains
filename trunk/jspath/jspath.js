@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"2.0.296"
+	version:"2.1.334"
 };
 
 (function(){
@@ -69,6 +69,42 @@ var JsPath = {
 				else o = o[s];
 			});
 			return o;
-		}
+		},
+		
+		delItem: function(obj, path){with(JsPath){
+			var elPath = getSteps(path);
+			var collPath = elPath.splice(0, elPath.length-1);
+			elPath = elPath.join("");
+			var coll = get(obj, collPath);
+			if(coll instanceof Array)
+				coll.splice(parseInt(elPath.match(/\d+/)),1);
+			else{
+				var newC = {};
+				for(var k in coll){
+					if(k!=elPath) newC[k] = coll[k];
+				}
+				set(obj, collPath, newC);
+			}
+		}},
+		
+		move: function(obj, path, up){with(JsPath){
+			var elPath = getSteps(path);
+			var collPath = elPath.splice(0, elPath.length-1);
+			elPath = elPath.join("");
+			var coll = get(obj, collPath);
+			if(coll instanceof Array){
+				var idx = parseInt(elPath.match(/\d+/));
+				if(idx==0 && up) throw "Can't move first element up.";
+				if(idx==coll.length-1 && !up) throw "Can't move last element down.";
+				var el = coll[idx];
+				coll.splice(idx,1);
+				coll.splice(up?idx-1:idx+1, 0, el);
+			}
+			else
+				throw "Moving object attribute is meaningless";
+		}},
+		
+		moveUp: function(obj, path){JsPath.move(obj, path, true);},
+		moveDown: function(obj, path){JsPath.move(obj, path, false);}
 	});
 })();
