@@ -59,6 +59,50 @@ new JSUnit.Test("Попытка обращения к несуществующим данным", "Attribute access")
 	this.assert(get(obj, ["abc/www", "xww", 5]), null, "Error 3");
 }}
 
+new JSUnit.Test("Delete Array element", "Element operations").run = function(){with(JsPath){
+	var obj = {
+		a:{
+			b:{
+				c:[1,2,3]
+			}
+		}
+	};
+	this.assert(get(obj, "a/b/c/#1"), 2, "Error 1");
+	delItem(obj, "a/b/c/#1");
+	this.assert(get(obj, "a/b/c/#1"), 3, "Error 2");
+	this.assert(obj, {a:{b:{c:[1,3]}}});
+}}
+
+new JSUnit.Test("Move Array element", "Element operations").run = function(){with(JsPath){
+	var obj = {
+		a:{
+			b:{
+				c:[1,2,3,4,5]
+			}
+		}
+	};
+	this.assert(obj, {a:{b:{c:[1,2,3,4,5]}}}, "Error 1");
+	moveDown(obj, "a/b/c/#1");
+	this.assert(obj, {a:{b:{c:[1,3,2,4,5]}}}, "Error 2");
+	moveUp(obj, "a/b/c/#1");
+	this.assert(obj, {a:{b:{c:[3,1,2,4,5]}}}, "Error 3");
+}}
+
+new JSUnit.Test("Delete Object attribute", "Element operations").run = function(){with(JsPath){
+	var obj = {
+		a:{
+			b:{
+				c:1,
+				d:2,
+				e:3
+			}
+		}
+	};
+	this.assert(get(obj, "a/b/d"), 2, "Error 1");
+	delItem(obj, "a/b/d");
+	this.assert(obj, {a:{b:{c:1, e:3}}});
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JsPath.version;
 	JSUnit.init();
@@ -67,7 +111,7 @@ function init(){
 </head>
 <body onload="init()">
 	<h1>JsPath Unit Tests</h1>
-	<p style="border: 1px solid black; padding:5px; margin:10px;">Модуль JsPath обеспечивает XPath-образную навигацию по JSON-структурам. Путь можно задавать как в виде строки, так и в виде массива шагов (возможен также и комбинированный вариант).</p>
+	<p style="border: 1px solid black; padding:5px; margin:10px;">Модуль JsPath обеспечивает XPath-образную навигацию по JSON-структурам, а также простейшие операции над ее элементами. Путь можно задавать как в виде строки, так и в виде массива шагов (возможен также и комбинированный вариант).</p>
 	<p>JsPath v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>
 	<div id="out"></div>
