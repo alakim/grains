@@ -18,6 +18,8 @@ a:hover {
 	margin-left:15px;
 	border-left: 1px solid #000000;
 	padding-left:10px;
+	border-bottom: 1px solid #000000;
+	padding-bottom: 5px;
 	margin-bottom:2px;
 	background-color:#ffffff;
 }
