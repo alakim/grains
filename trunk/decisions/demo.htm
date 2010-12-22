@@ -8,7 +8,7 @@
 <script type="text/javascript">
 with(Decisions){
 Reasoning("Развитие проекта XPlanning",
-	Problem("Обработка XML-документов",
+	Problem("Обработка XML-документов", Tags("XML"),
 		Description(
 			p("Как загружать и обрабатывать XML-документы?"),
 			p("Вопрос совсем не праздный.")
@@ -24,7 +24,7 @@ Reasoning("Развитие проекта XPlanning",
 		Solution("Единый XML-документ", ID("singleXDoc"), 
 			Description("Загружать все документы в ветви единого XML-документа, и сохранять из них.")
 		),
-		Solution("Отдельный DOM-объект под каждый документ", ID("separateDocs"),
+		Solution("Отдельный DOM-объект под каждый документ", Tags("DOM"), ID("separateDocs"),
 			Description("Можно загружать каждый XML-документ в отдельный DOM-объект.")
 		),
 		Solution("Еще какое-нибудь решение должно быть непременно."),
