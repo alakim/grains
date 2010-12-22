@@ -1,5 +1,6 @@
+var UI;
 var Decisions = (function(){
-	var version = "2.2.333";
+	var version = "2.3.336";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -22,11 +23,58 @@ var Decisions = (function(){
 		if(itm.type=="Reasoning") roots.push(itm);
 	}
 	
+	var tagIndex = {};
+	function buildTagIndex(){
+		each(items, function(itm, id){
+			if(!itm.tags) return;
+			if(!(itm.tags instanceof Array)) itm.tags = itm.tags.split(";");
+			each(itm.tags, function(t){
+				var indexList = tagIndex[t];
+				if(!indexList){
+					indexList = [];
+					tagIndex[t] = indexList;
+				}
+				indexList.push(itm);
+			});
+		});
+	}
+	
+	function tagsTemplate(){with(Html){
+		return div({"class":"tagsPanel"},
+			span({style:"font-weight:bold;"}, "Tags: "),
+			apply(tagIndex, function(items, tag){
+				return span(
+					span({
+						style:"cursor:hand;cursor:pointer;",
+						color:"#000088",
+						onclick:callFunction("UI.showItems", tag)
+					}, tag),
+					" "
+				);
+			}),
+			div({id:"taggedItemsPanel"})
+		);
+	}}
+	
+	function taggedItemsTemplate(t){with(Html){
+		console.log(2, t);
+		return div(
+			console.log(tagIndex, t),
+			apply(tagIndex[t], function(itm, i){
+				return span(
+					a({href:"#"+itm.id}, itm.name),
+					" "
+				);
+			})
+		);
+	}}
+	
 	function buildChildren(item, args, argIdx){
 		item.children = [];
 		for(var i=argIdx; i<args.length; i++){var v = args[i];
 			if(v.type=="ID") item.id = v.name;
 			else if(v.type=="Rating") item.rating = v.value;
+			else if(v.type=="Tags") item.tags = v.value;
 			else if(v.type=="SolutionRating"){
 				if(item.type!="Criterion") throw "SolutionRating item applicable only to Criterion item.";
 				if(!item.ratings) item.ratings = {};
@@ -212,6 +260,10 @@ var Decisions = (function(){
 		return {type:"Rating", value:val};
 	}
 	
+	function Tags(val){var _=this;
+		return {type:"Tags", value:val};
+	}
+	
 	function SolutionRating(solutionID, val, comment){var _=this;
 		return {
 			type:"SolutionRating",
@@ -321,7 +373,9 @@ var Decisions = (function(){
 	var __ = {
 		version:version,
 		display: function(pnlID){
+			buildTagIndex();
 			var html = [];
+			html.push(tagsTemplate());
 			each(roots, function(r){html.push(r.html());});
 			document.body.innerHTML = html.join(" ")+footerTemplate();
 		},
@@ -330,6 +384,7 @@ var Decisions = (function(){
 		Description: Description,
 		Criterion: Criterion,
 		Rating: Rating,
+		Tags:Tags,
 		SolutionRating: SolutionRating,
 		Solution:Solution,
 		ID:ID,
@@ -345,31 +400,38 @@ var Decisions = (function(){
 		}
 		__.display();
 	});
+	
+	UI = {
+		highlight:function(ref){
+			var arr = document.getElementsByTagName("A");
+			for(var i=0; i<arr.length; i++){
+				var el = arr[i];
+				el.style.backgroundColor = el.name==ref?"yellow":"white";
+			}
+		},
+		toggleCriteria: function(problemId){
+			var a = document.getElementsByTagName("DIV");
+			for(var i=0; i<a.length; i++){
+				var el = a[i];
+				if(el.attributes.problemId&&el.attributes.problemId.value==problemId){
+					el.style.display = el.style.display!="none"?"none":"block";
+				}
+			}
+		},
+		toggle: function(id){
+			var div = document.getElementById("div"+id);
+			var hdr = document.getElementById("hdr"+id);
+			var collapse = div.style.display!="none";
+			div.style.display  = collapse?"none":"block";
+			hdr.title = collapse?"Развернуть":"Свернуть";
+		},
+		showItems: function(tag){
+			var div = document.getElementById("taggedItemsPanel");
+			console.log(1, tag);
+			div.innerHTML = taggedItemsTemplate(tag);
+		}
+	};
+
 	return __;
 })();
 
-var UI = {
-	highlight:function(ref){
-		var arr = document.getElementsByTagName("A");
-		for(var i=0; i<arr.length; i++){
-			var el = arr[i];
-			el.style.backgroundColor = el.name==ref?"yellow":"white";
-		}
-	},
-	toggleCriteria: function(problemId){
-		var a = document.getElementsByTagName("DIV");
-		for(var i=0; i<a.length; i++){
-			var el = a[i];
-			if(el.attributes.problemId&&el.attributes.problemId.value==problemId){
-				el.style.display = el.style.display!="none"?"none":"block";
-			}
-		}
-	},
-	toggle: function(id){
-		var div = document.getElementById("div"+id);
-		var hdr = document.getElementById("hdr"+id);
-		var collapse = div.style.display!="none";
-		div.style.display  = collapse?"none":"block";
-		hdr.title = collapse?"Развернуть":"Свернуть";
-	}
-};
