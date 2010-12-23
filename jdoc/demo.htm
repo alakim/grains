@@ -1,0 +1,41 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="lib/jdoc.css"/>
+<script type="text/javascript" src="lib/external/html.js"></script>
+<script type="text/javascript" src="lib/external/jquery.js"></script>
+<script type="text/javascript" src="lib/jdoc.js"></script>
+
+<script type="text/javascript" src="testModule.js"></script>
+
+<script type="text/javascript">with(JDoc){
+	Module("testModule.js",
+		// Class("Calc",
+			// Description("Простой калькулятор"),
+			// Constructor(
+				// Description("Конструктор класса"),
+				// Param("name", {type:"string", description:"имя калькулятора"})
+			// )
+		// ),
+		Obj("Display", 
+			Description("Дисплей для отображения чего-то."),
+			Obj("prop", {description:"дополнительные свойства дисплея"}),
+			Attribute("width", {type:"int", description:"Ширина дисплея"}),
+			Attribute("height", {type:"int"}, Description(
+				p("Высота дисплея."),
+				p("Высота может быть больше, меньше, или равна ширине.")
+			)),
+			Method("show",
+				Description(
+					p("Отображает дисплей."),
+					p("Отображение происходит с заданной задержкой.")
+				),
+				Param("time", {type:"int", optional:true, description:"Задержка отображения (мс)"})
+			)
+		)
+	)
+}</script>
+	
+</head>
+<body>
+</body>
+</html>

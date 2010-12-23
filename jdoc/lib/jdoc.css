@@ -1,0 +1,15 @@
+body{	
+	font-family:verdana, sans-serif;
+	font-size:12px;
+}
+
+.section{margin-left:20px;}
+.itemName{font-weight:bold;}
+.description{font-style:italic;}
+
+.footer{
+	color:#cccccc;
+	text-align: center;
+	margin-top:20px;
+	font-size:12px;
+}
