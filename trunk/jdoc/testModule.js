@@ -34,8 +34,10 @@ var Display = {
 	width:100,
 	height:199,
 	panelID:"displayPanel",
+	subscribers:[], // недокументированное свойство
 	show: function(time){var _=this;
 		function s(){document.getElementById(_.panelID).style.display = "block";}
 		if(!time) s(); else setTimeout(s, time);
-	}
+	},
+	update: function(){}// недокументированный метод
 };
