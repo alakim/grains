@@ -20,10 +20,12 @@ var Calc = (function(){
 		add: function(x, y){return x+y;},
 		sub: function(x, y){return x-y;},
 		div: function(x, y){return x/y;},
-		mul: function(x, y){return x*y;}
+		mul: function(x, y){return x*y;},
+		cos: function(x){return Math.cos(x);}
 	};
 	
 	extend(__, {
+		version:"1.1",
 		getInstance: function(idx){return instances[idx];}
 	});
 	

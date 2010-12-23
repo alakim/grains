@@ -9,13 +9,25 @@
 
 <script type="text/javascript">with(JDoc){
 	Module("testModule.js",
-		// Class("Calc",
-			// Description("Простой калькулятор"),
-			// Constructor(
-				// Description("Конструктор класса"),
-				// Param("name", {type:"string", description:"имя калькулятора"})
-			// )
-		// ),
+		Class("Calc",
+			Description("Простой калькулятор"),
+			Constructor(
+				Description("Конструктор класса"),
+				Param("name", {type:"string", description:"имя калькулятора"})
+			),
+			Prototype(
+				Method("add", {description:"Операция сложения"}),
+				Method("sub", {description:"Операция вычитания"}),
+				Method("div", {description:"Операция деления"}),
+				Method("mul", {description:"Операция умножения"}),
+				Method("sin", {description:"Функция синус"})
+			),
+			Method("getInstance", {description:"Возвращает экземпляр калькулятора, заданный индексом"},
+				Param("idx", Description("индекс экземпляра калькулятора"))
+			),
+			Method("copy", Description("Копирует результат вычисления в буфер")),
+			Attribute("helpRef", Description("Гиперссылка на документацию"))
+		),
 		Obj("Display", 
 			Description("Дисплей для отображения чего-то."),
 			Obj("prop", {description:"дополнительные свойства дисплея"}),
