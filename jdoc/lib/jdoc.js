@@ -1,7 +1,7 @@
 if(typeof(Html)!="object") alert("html.js module required!");
 
 var JDoc = (function(){
-	var version = "1.1.340";
+	var version = "1.2.341";
 	
 	function each(c,F){
 		if(c instanceof Array) for(var i=0; i<c.length; i++) F(c[i], i);
@@ -70,7 +70,7 @@ var JDoc = (function(){
 	}}
 
 	function existenceTemplate(itm){with(Html){
-		return itm.$source()?span({"class":"exists"}, " [exists]"):span({"class":"notExists"}, " [not exists]");
+		return typeof(itm.$source())!="undefined"?span({"class":"exists"}, " [exists]"):span({"class":"notExists"}, " [not exists]");
 	}}
 	
 	function notDocumentedFieldsTemplate(itm){with(Html){
