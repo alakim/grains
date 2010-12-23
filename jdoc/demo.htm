@@ -24,13 +24,15 @@
 				p("Высота дисплея."),
 				p("Высота может быть больше, меньше, или равна ширине.")
 			)),
+			Attribute("layer", {description:"Не реализованный атрибут"}),
 			Method("show",
 				Description(
 					p("Отображает дисплей."),
 					p("Отображение происходит с заданной задержкой.")
 				),
 				Param("time", {type:"int", optional:true, description:"Задержка отображения (мс)"})
-			)
+			),
+			Method("setDelay", {description:"Не реализованный метод"})
 		)
 	)
 }</script>

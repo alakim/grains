@@ -7,6 +7,13 @@ body{
 .itemName{font-weight:bold;}
 .description{font-style:italic;}
 
+.exists{font-weight:bold; color:#008800; /*display:none;*/}
+.notExists{font-weight:bold; color:#ff0000;}
+
+.notDocumented{
+	color:#8888cc;
+}
+
 .footer{
 	color:#cccccc;
 	text-align: center;

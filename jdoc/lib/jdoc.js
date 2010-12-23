@@ -8,10 +8,17 @@ var JDoc = (function(){
 		
 	var items = {};
 	var roots = [];
+	
 	function register(itm){
 		itm.id = itm.id || Uid.getNew();
 		items[itm.id] = itm;
 		if(itm.itemType=="Module") roots.push(itm);
+	}
+	
+	function buildSourceLink(itm){
+		itm.$source = function(){var _=this; 
+			return itm.parent&&itm.parent.$source?itm.parent.$source()[itm.name]:eval(itm.name);
+		};
 	}
 	
 	var Uid = (function(){
@@ -28,6 +35,7 @@ var JDoc = (function(){
 	
 	function buildChildren(item, args, argIdx){
 		item.children = [];
+		item.childrenIdx = {};
 		for(var i=argIdx; i<args.length; i++){var v = args[i];
 			if(v.itemType=="Description"){
 				item.description = v.html();
@@ -40,27 +48,8 @@ var JDoc = (function(){
 			else{
 				if(typeof(v)=="object") v.parent = item;
 				item.children.push(v);
+				if(v.name) item.childrenIdx[v.name] = v;
 			}
-			
-			// else if(v.type=="Rating") item.rating = v.value;
-			// else if(v.type=="Tags") item.tags = v.value;
-			// else if(v.type=="SolutionRating"){
-				// if(item.type!="Criterion") throw "SolutionRating item applicable only to Criterion item.";
-				// if(!item.ratings) item.ratings = {};
-				// item.ratings[v.solutionID] = v;
-			// }
-			// else if(v.type=="Criterion"){
-				// if(!item.criteria) item.criteria = [];
-				// item.criteria.push(v);
-				
-				// if(typeof(v)=="object")v.parent = item;
-				// item.children.push(v)
-			// }
-			// else{
-				// if(typeof(v)=="object")
-					// v.parent = item;
-				// item.children.push(v);
-			// }
 		}
 	}
 	
@@ -132,23 +121,41 @@ var JDoc = (function(){
 		return _;
 	}
 
+	function existenceTemplate(itm){with(Html){
+		return itm.$source()?span({"class":"exists"}, " [exists]"):span({"class":"notExists"}, " [not exists]");
+	}}
+	
+	function notDocumentedFieldsTemplate(itm){with(Html){
+		var src = itm.$source&&itm.$source();
+		return src?div(
+			apply(src, function(fld, nm){
+				return itm.childrenIdx[nm]==null?div({"class":"section"},
+					span({"class":"itemName"}, nm), ":", typeof(fld), span({"class":"notDocumented"}, " [not documented]")
+				):null;
+			})
+		):null;
+	}}
+	
 	function Obj(name){
 		var _ = {
 			itemType:"Obj",
 			name:name,
-			html: function(){with(Html){
+			html: function(){with(Html){var _=this;
 				return div(
-					span({"class":"itemName"}, this.name), ":object ",
-					commonPropertiesTemplate(this),
-					apply(this.children, function(c){
+					span({"class":"itemName"}, _.name), ":object ",
+					existenceTemplate(_),
+					commonPropertiesTemplate(_),
+					apply(_.children, function(c){
 						return div({"class":"section"}, c.html());
-					})
+					}),
+					notDocumentedFieldsTemplate(_)
 				);
 			}}
 		};
 		
 		buildChildren(_, arguments, 1);
 		register(_);
+		buildSourceLink(_);
 		return _;
 	}
 
@@ -156,11 +163,12 @@ var JDoc = (function(){
 		var _ = {
 			itemType:"Attribute",
 			name:name,
-			html: function(){with(Html){
+			html: function(){with(Html){var _=this;
 				return div(
-					span({"class":"itemName"}, this.name), this.type?span(":", this.type):null,
-					commonPropertiesTemplate(this),
-					apply(this.children, function(c){
+					span({"class":"itemName"}, _.name), _.type?span(":", _.type):null,
+					existenceTemplate(_),
+					commonPropertiesTemplate(_),
+					apply(_.children, function(c){
 						console.log(c);
 						return div({"class":"section"}, c.html());
 					})
@@ -170,6 +178,7 @@ var JDoc = (function(){
 		
 		buildChildren(_, arguments, 1);
 		register(_);
+		buildSourceLink(_);
 		return _;
 	}
 
@@ -180,6 +189,7 @@ var JDoc = (function(){
 			html: function(){with(Html){
 				return div(
 					span({"class":"itemName"}, this.name), ":function",
+					existenceTemplate(_),
 					commonPropertiesTemplate(this),
 					apply(this.children, function(c){
 						return div({"class":"section"}, c.html());
@@ -190,6 +200,7 @@ var JDoc = (function(){
 		
 		buildChildren(_, arguments, 1);
 		register(_);
+		buildSourceLink(_);
 		return _;
 	}
 	
