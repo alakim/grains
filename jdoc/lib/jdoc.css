@@ -1,13 +1,35 @@
 body{	
 	font-family:verdana, sans-serif;
 	font-size:12px;
+	margin:0px;
+	padding:0px;
 }
 
-.section{margin-left:20px;}
+.module{
+	background-color:#eee;
+	margin:0px;
+	padding:3px;
+}
+
+.section{
+	padding:2px;
+	margin-left:25px;
+	margin-bottom:2px;
+	border-left: 1px solid #ddd;;
+	border-bottom: 1px solid #ddd;
+}
+
+.module >.section{
+	margin-left:15px;
+	margin-bottom:20px;
+	background-color:#fff;
+}
+
+.commonProperties{margin-left:20px;}
 .itemName{font-weight:bold;}
 .description{font-style:italic;}
 
-.exists{font-weight:bold; color:#008800; /*display:none;*/}
+.exists{font-weight:bold; color:#008800; display:none;}
 .notExists{font-weight:bold; color:#ff0000;}
 
 .notDocumented{

@@ -1,5 +1,5 @@
 var JDoc = (function(){
-	var version = "0.0.0";
+	var version = "1.0.339";
 	
 	function each(c,F){
 		if(c instanceof Array) for(var i=0; i<c.length; i++) F(c[i], i);
@@ -16,8 +16,15 @@ var JDoc = (function(){
 	}
 	
 	function buildSourceLink(itm){
-		itm.$source = function(){var _=this; 
-			return itm.parent&&itm.parent.$source?itm.parent.$source()[itm.name]:eval(itm.name);
+		itm.$source = function(){var _=this;
+			if(itm.itemType=="Prototype")
+				return itm.parent.$source().prototype;
+			try{
+				return itm.parent&&itm.parent.$source?itm.parent.$source()[itm.name]:eval(itm.name);
+			}
+			catch(e){
+				return null;
+			}
 		};
 	}
 	
@@ -56,9 +63,25 @@ var JDoc = (function(){
 	function commonPropertiesTemplate(itm){with(Html){
 		var html = [];
 		if(itm.description) html.push(div({"class":"description"}, itm.description));
-		if(itm.type){}// html.push(itm.type);
 		
-		return html.length?div({"class":"section"}, html.join("")):null;
+		return html.length?div({"class":"commonProperties"}, html.join("")):null;
+	}}
+
+	function existenceTemplate(itm){with(Html){
+		return itm.$source()?span({"class":"exists"}, " [exists]"):span({"class":"notExists"}, " [not exists]");
+	}}
+	
+	function notDocumentedFieldsTemplate(itm){with(Html){
+		var src = itm.$source&&itm.$source();
+		var coll = []; for(var k in src)coll.push({fld:src[k], nm:k});
+		
+		return src?div(
+			apply(coll, function(el){
+				return el.nm!="prototype"&&itm.childrenIdx[el.nm]==null?div({"class":"section"},
+					span({"class":"itemName"}, el.nm), ":", typeof(el.fld), span({"class":"notDocumented"}, " [not documented]")
+				):null;
+			})
+		):null;
 	}}
 
 	function Module(name){
@@ -66,8 +89,8 @@ var JDoc = (function(){
 			itemType:"Module",
 			name:name,
 			html: function(){with(Html){
-				return div(
-					h1(this.name),
+				return div({"class":"module"},
+					h1("Модуль ", this.name),
 					commonPropertiesTemplate(this),
 					apply(this.children, function(c){
 						return div({"class":"section"}, c.html());
@@ -85,19 +108,21 @@ var JDoc = (function(){
 		var _ = {
 			itemType:"Class",
 			name:name,
-			html: function(){with(Html){
+			html: function(){with(Html){var _=this;
 				return div(
-					h1(this.name),
-					commonPropertiesTemplate(this),
-					apply(this.children, function(c){
+					span({"class":"itemName"}, _.name), ":class",
+					commonPropertiesTemplate(_),
+					apply(_.children, function(c){
 						return div({"class":"section"}, c.html());
-					})
+					}),
+					notDocumentedFieldsTemplate(_)
 				);
 			}}
 		};
 		
 		buildChildren(_, arguments, 1);
 		register(_);
+		buildSourceLink(_);
 		return _;
 	}
 
@@ -120,21 +145,6 @@ var JDoc = (function(){
 		register(_);
 		return _;
 	}
-
-	function existenceTemplate(itm){with(Html){
-		return itm.$source()?span({"class":"exists"}, " [exists]"):span({"class":"notExists"}, " [not exists]");
-	}}
-	
-	function notDocumentedFieldsTemplate(itm){with(Html){
-		var src = itm.$source&&itm.$source();
-		return src?div(
-			apply(src, function(fld, nm){
-				return itm.childrenIdx[nm]==null?div({"class":"section"},
-					span({"class":"itemName"}, nm), ":", typeof(fld), span({"class":"notDocumented"}, " [not documented]")
-				):null;
-			})
-		):null;
-	}}
 	
 	function Obj(name){
 		var _ = {
@@ -169,7 +179,6 @@ var JDoc = (function(){
 					existenceTemplate(_),
 					commonPropertiesTemplate(_),
 					apply(_.children, function(c){
-						console.log(c);
 						return div({"class":"section"}, c.html());
 					})
 				);
@@ -226,8 +235,9 @@ var JDoc = (function(){
 			itemType:"Constructor",
 			html: function(){with(Html){
 				return div(
+					span({"class":"itemName"}, "constructor"),					
 					apply(this.children, function(c){
-						return typeof(c.html)=="function"?c.html():c.toString();
+						return div({"class":"section"}, c.html());
 					})
 				);
 			}}
@@ -235,6 +245,27 @@ var JDoc = (function(){
 		
 		buildChildren(_, arguments, 0);
 		register(_);
+		buildSourceLink(_);
+		return _;
+	}
+	
+	function Prototype(){
+		var _ = {
+			itemType:"Prototype",
+			html: function(){with(Html){
+				return div(
+					span({"class":"itemName"}, "prototype"),					
+					apply(this.children, function(c){
+						return div({"class":"section"}, c.html());
+					}),
+					notDocumentedFieldsTemplate(_)
+				);
+			}}
+		};
+		
+		buildChildren(_, arguments, 0);
+		register(_);
+		buildSourceLink(_);
 		return _;
 	}
 
@@ -269,6 +300,7 @@ var JDoc = (function(){
 		Description: Description,
 		p:p,
 		Constructor: Constructor,
+		Prototype: Prototype,
 		Param: Param,
 		Obj: Obj,
 		Attribute: Attribute,
