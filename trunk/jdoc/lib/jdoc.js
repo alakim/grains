@@ -1,5 +1,7 @@
+if(typeof(Html)!="object") alert("html.js module required!");
+
 var JDoc = (function(){
-	var version = "1.0.339";
+	var version = "1.1.340";
 	
 	function each(c,F){
 		if(c instanceof Array) for(var i=0; i<c.length; i++) F(c[i], i);
@@ -307,14 +309,20 @@ var JDoc = (function(){
 		Method: Method
 	};
 	
-	function init(){
+	function addEventHandler(trgEl, eventNm, handler){
+		var eventNm=(window.addEventListener)? eventNm : "on"+eventNm;
+		if (trgEl.addEventListener)
+			trgEl.addEventListener(eventNm, handler, false);
+		else if (trgEl.attachEvent)
+			trgEl.attachEvent(eventNm, handler);
+	}
+	
+	addEventHandler(window, "load", function(){
 		if(!document.title.length){
 			document.title = roots[0]&&roots[0].name + " documentation";
 		}
 		_.display()
-	}
-	
-	$(function(){init();});
+	});
 	
 	return _;
 })();
