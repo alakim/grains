@@ -6,7 +6,7 @@
 <script type="text/javascript" src="lib/html.js"></script>
 <script type="text/javascript" src="decisions.js"></script>
 <script type="text/javascript">
-with(Decisions){
+with(Decisions.Language){
 Reasoning("Развитие проекта XPlanning",
 	Problem("Обработка XML-документов", Tags("XML"),
 		Description(
@@ -37,7 +37,7 @@ Reasoning("Развитие проекта XPlanning",
 			p("Что лучше использовать для преобразования документов - DOM, или XSLT?"),
 			p("Вопрос не праздный!")
 		),
-		Solution("Использовать чистое XSLT",
+		Solution("Использовать чистое XSLT", Tags("XML"),
 			Advantage("Будет единый подход к преобразованию документов"),
 			Advantage(
 				p("Программный код XSLT лаконичнее и надежнее"),
