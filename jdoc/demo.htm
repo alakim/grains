@@ -12,7 +12,11 @@
 			Description("Простой калькулятор"),
 			Constructor(
 				Description("Конструктор класса"),
-				Param("name", {type:"string", description:"имя калькулятора"})
+				Param("name", {type:"string", description:"имя калькулятора"}),
+				Param("delay", Type("int"), Description("Задержка")),
+				Param("settings", Optional(), Type(Obj(
+					Attribute("")
+				)), Description("Дополнительные настройки"))
 			),
 			Prototype(
 				Method("add", {description:"Операция сложения"}),

@@ -1,5 +1,5 @@
 var DateExt = {
-	version: "1.1.173"
+	version: "1.2.344"
 };
 
 (function(){
@@ -92,6 +92,16 @@ var DateExt = {
 						twoDigits(date.getMonth()+1),
 						date.getFullYear()
 					].join(".");
+				},
+				parse: function(str){
+					var mt = str.match(/^0?(\d+)\.0?(\d+)\.(\d+)$/i);
+					if(!mt){
+						throw "Error parsing date '"+str+"'";
+					}
+					var Y = parseInt(mt[3]);
+					var M = parseInt(mt[2])-1;
+					var D = parseInt(mt[1]);
+					return new Date(Y, M, D);
 				}
 			},
 			

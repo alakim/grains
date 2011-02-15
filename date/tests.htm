@@ -39,7 +39,17 @@ new JSUnit.Test("xsd", "parsing").run = function(){
 	this.assert(d.getMinutes(), 34);
 	this.assert(d.getSeconds(), 0);
 }
-
+new JSUnit.Test("shorDigits", "parsing").run = function(){
+	var d = DateExt.format.shortDigits.parse("01.01.2001");
+	this.assert(d.getFullYear(), 2001, "Error 1");
+	this.assert(d.getMonth(), 0, "Error 2");
+	this.assert(d.getDate(), 1, "Error 3");
+	
+	d = DateExt.format.shortDigits.parse("11.12.2011");
+	this.assert(d.getFullYear(), 2011, "Error 4");
+	this.assert(d.getMonth(), 11, "Error 5");
+	this.assert(d.getDate(), 11, "Error 6");
+}
 new JSUnit.Test("days", "internals").run = function(){
 	this.assert(DateExt.internals.days[0].nameAccusative, "воскресенье", "Error 1");
 	this.assert(DateExt.internals.days[1].nameAccusative, "понедельник", "Error 2");
