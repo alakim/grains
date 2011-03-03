@@ -23,7 +23,7 @@ var LyTr = {
 	
 	var scale = {
 		sharpMode:"c cis d dis e f fis g gis a ais b".split(" "),
-		flatMode:"c des d es e f ges g aes a bes b".split(" "),
+		flatMode:"c des d es e f ges g as a bes b".split(" "),
 		index:{}
 	}
 	
