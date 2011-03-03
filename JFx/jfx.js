@@ -1,10 +1,37 @@
 ﻿var JFx = (function(){
 	function extend(o,s){for(var k in s) o[k] = s[k]; return o;}
 	function each(coll, F){
-		if(typeof(coll.length)!="undefined")
+		if(coll instanceof Array)
 			for(var i=0; i<coll.length; i++) F(coll[i], i);
 		else
 			for(var k in coll) F(coll[k], k);
+	}
+	function eachArgument(coll, F){
+		for(var i=0; i<coll.length; i++) F(coll[i], i);
+	}
+	
+	function json(obj){
+		if(!(obj instanceof Array))
+			return obj;
+		
+		var res = [];
+		if(obj._){
+			if(obj.elementType) res._elementType = obj._.name;
+			else res.elementType = obj._.name;
+		}
+		for(var k in obj){
+			if(k=="_") continue;
+			var idx = parseInt(k);
+			if(isNaN(idx) || idx>=obj.length){
+				res[k] = obj[k];
+			}
+		}
+		if(obj instanceof Array) {
+			for(var i=0; i<obj.length; i++){
+				res.push(json(obj[i]));
+			}
+		}
+		return res;
 	}
 	
 	var ID = (function(){
@@ -31,7 +58,7 @@
 				ID: ID
 			};
 			schema._ = {};
-			each(arguments, function(itmDef, i){
+			eachArgument(arguments, function(itmDef, i){
 				schema[itmDef.name] = itmDef;
 				if(i==0) schema._.root = itmDef;
 			});
@@ -40,10 +67,14 @@
 		},
 		Item: function(name){
 			function itmConstructor(){
-				var item = extend([], {
-					_:{name:name}
+				var item = [];
+				extend(item, {
+					_:{
+						name:name,
+						$json:function(){return json(item)}
+					}
 				});
-				each(arguments, function(el, i){
+				eachArgument(arguments, function(el, i){
 					switch(el.type){
 						case "id": item._.id = el.id; break;
 						default:
@@ -58,7 +89,7 @@
 				name:name,
 				schema:{attributes:{}, items:[]}
 			});
-			each(arguments, function(el){
+			eachArgument(arguments, function(el){
 				switch(el.type){
 					case "attribute": itmConstructor.schema.attributes[el.idx] = el; break;
 					case "item": itmConstructor.schema.items.push(el); break;
