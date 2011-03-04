@@ -41,11 +41,24 @@
 		return res;
 	}
 	
+	function validate(root){
+		var idIdx = {};
+		function indexIds(el){
+			if(el._ && el._.id){
+				if(idIdx[el._.id]) throw "Indentifier '"+el._.id+"' already used!";
+				idIdx[el._.id] = el;
+			}
+			if(el instanceof Array){
+				for(var i=0; i<el.length; i++){
+					indexIds(el[i]);
+				}
+			}
+		}
+		indexIds(root);
+	}
+	
 	var ID = (function(){
-		var ids = {};
 		var f = function(id){
-			if(ids[id]) throw "Identifier "+id+" already used!";
-			ids[id] = true;
 			return {type:"id", id:id};
 		};
 		var counter = 0;
@@ -66,14 +79,18 @@
 			};
 			schema._ = {};
 			eachArgument(arguments, function(itmDef, i){
-				schema[itmDef.type] = itmDef;
-				if(i==0) schema._.root = itmDef;
+				schema[itmDef.type] = itmDef; 
+				if(i==0){
+					schema._.root = itmDef;
+					itmDef.isRoot = true;
+				}
 			});
 			// console.log("schema: ", schema);
 			return schema;
 		},
 		Item: function(type){
 			function itmConstructor(){
+				var itmDef = arguments.callee;
 				var item = [];
 				extend(item, {
 					_:{
@@ -90,6 +107,9 @@
 					}
 				});
 				// console.log("item: ", item);
+				
+				if(itmDef.isRoot)
+					validate(item);
 				return item;
 			}
 			extend(itmConstructor, {

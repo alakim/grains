@@ -29,7 +29,7 @@ function BuildSampleDoc(){
 new JSUnit.Test("Формирование простого документа", "Building Document").run = function(){
 	var persons = BuildSampleDoc();
 	
-	this.assert(persons.length, 3);
+	this.assert(persons.length, 3, "Persons length error.");
 	this.assert(persons[0].length, 1);
 	
 	this.assert(persons[0].fio, "Иванов");
