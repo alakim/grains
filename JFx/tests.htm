@@ -72,6 +72,24 @@ new JSUnit.Test("Доступ к коллекции атрибутов", "Building Document").run = funct
 	this.assert(JFx.count(attrs), 3);
 }
 
+new JSUnit.Test("Простой запрос", "Queries").run = function(){
+	var persons = BuildSampleDoc();
+	
+	var path = [
+		"/",
+		"Person",
+		"Description"
+	];
+	
+	var items = persons._.select(path);
+	this.assert(items.length, 3);
+	this.assert(items[0]._.type, "Description");
+	this.assert(items[1]._.type, "Description");
+	this.assert(items[2]._.type, "Description");
+	
+	this.assert(items[0][0], "iiivanov@mail.ru");
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JFx.version;
 	JSUnit.init();

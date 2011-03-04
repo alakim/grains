@@ -8,7 +8,7 @@
 		else
 			for(var k in coll) F(coll[k], k);
 	}
-	function eachArgument(coll, F){
+	function eachIdx(coll, F){
 		for(var i=0; i<coll.length; i++) F(coll[i], i);
 	}
 	
@@ -24,6 +24,37 @@
 			}
 		}
 		return attrCount?attributes:null;
+	}
+	
+	function parsePath(path){
+		return {firstStep:path[0], tail:path.splice(1)};
+	}
+	
+	var cnt = 0;
+	
+	function selectItems(itm, path){
+		if(cnt++>10) throw "что-то зациклилось";
+		
+		path = parsePath(path);
+		var step = path.firstStep;
+		var tail = path.tail;
+		
+		if(step=="/")
+			return selectItems(itm._.$root(), tail);
+		
+		var coll = [];
+		eachIdx(itm, function(el){
+			if(el._&&el._.type==step)
+				coll.push(el);
+		});
+		if(!tail.length)
+			return coll;
+		var chColl = [];
+		eachIdx(coll, function(el){
+			chColl.push(selectItems(el, tail));
+		});
+		coll.concat(chColl);
+		return coll;
 	}
 	
 	function jxml(obj){
@@ -90,7 +121,7 @@
 				ID: ID
 			};
 			schema._ = {};
-			eachArgument(arguments, function(itmDef, i){
+			eachIdx(arguments, function(itmDef, i){
 				schema[itmDef.type] = itmDef; 
 				if(i==0){
 					schema._.root = itmDef;
@@ -108,10 +139,12 @@
 					_:{
 						type:type,
 						$jxml:function(){return jxml(item)},
-						$attributes: function(){return getAttributes(item);}
+						$attributes: function(){return getAttributes(item);},
+						$root: function(){return item._.parent?item._.parent.$root():item;},
+						select: function(path){return selectItems(item, path);}
 					}
 				});
-				eachArgument(arguments, function(el, i){
+				eachIdx(arguments, function(el, i){
 					switch(el.type){
 						case "id": item._.id = el.id; break;
 						default:
@@ -129,7 +162,7 @@
 				type:type,
 				schema:{attributes:{}, items:[]}
 			});
-			eachArgument(arguments, function(el){
+			eachIdx(arguments, function(el){
 				switch(el.type){
 					case "attribute": itmConstructor.schema.attributes[el.idx] = el; break;
 					case "item": itmConstructor.schema.items.push(el); break;
