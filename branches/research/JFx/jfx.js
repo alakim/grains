@@ -1,4 +1,6 @@
 ﻿var JFx = (function(){
+	var version = "0.0.0";
+	
 	function extend(o,s){for(var k in s) o[k] = s[k]; return o;}
 	function each(coll, F){
 		if(coll instanceof Array)
@@ -16,8 +18,8 @@
 		
 		var res = [];
 		if(obj._){
-			if(obj.elementType) res._elementType = obj._.name;
-			else res.elementType = obj._.name;
+			if(obj.elementType) res._elementType = obj._.type;
+			else res.elementType = obj._.type;
 		}
 		for(var k in obj){
 			if(k=="_") continue;
@@ -52,25 +54,25 @@
 	})();
 	
 	var _ = {
-		version: "0.0.0",
+		version: version,
 		Schema: function(){
 			var schema = {
 				ID: ID
 			};
 			schema._ = {};
 			eachArgument(arguments, function(itmDef, i){
-				schema[itmDef.name] = itmDef;
+				schema[itmDef.type] = itmDef;
 				if(i==0) schema._.root = itmDef;
 			});
-			console.log("schema: ", schema);
+			// console.log("schema: ", schema);
 			return schema;
 		},
-		Item: function(name){
+		Item: function(type){
 			function itmConstructor(){
 				var item = [];
 				extend(item, {
 					_:{
-						name:name,
+						type:type,
 						$json:function(){return json(item)}
 					}
 				});
@@ -86,7 +88,7 @@
 				return item;
 			}
 			extend(itmConstructor, {
-				name:name,
+				type:type,
 				schema:{attributes:{}, items:[]}
 			});
 			eachArgument(arguments, function(el){
@@ -113,8 +115,8 @@
 			}
 			return itmConstructor;
 		},
-		Child: function(name, mult){
-			return {type:"item", name:name, mult:mult};
+		Child: function(type, mult){
+			return {type:"item", type:type, mult:mult};
 		},
 		Attr: function(name, idx){
 			return {type:"attribute", name:name, idx:idx};
