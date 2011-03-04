@@ -158,6 +158,12 @@
 		},
 		Attr: function(name, idx){
 			return {type:"attribute", name:name, idx:idx};
+		},
+		count: function(coll){
+			if(coll instanceof Array) return coll.length;
+			var count = 0;
+			for(var k in coll) count++;
+			return count;
 		}
 	};
 	
