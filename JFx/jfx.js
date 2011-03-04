@@ -12,27 +12,32 @@
 		for(var i=0; i<coll.length; i++) F(coll[i], i);
 	}
 	
-	function json(obj){
+	function jxml(obj){
 		if(!(obj instanceof Array))
 			return obj;
+		if(!(obj._)) return obj;
 		
-		var res = [];
-		if(obj._){
-			if(obj.elementType) res._elementType = obj._.type;
-			else res.elementType = obj._.type;
-		}
+		var attributes = {};
+		var attrCount = 0;
 		for(var k in obj){
 			if(k=="_") continue;
 			var idx = parseInt(k);
 			if(isNaN(idx) || idx>=obj.length){
-				res[k] = obj[k];
+				attributes[k] = obj[k];
+				attrCount++;
 			}
 		}
-		if(obj instanceof Array) {
-			for(var i=0; i<obj.length; i++){
-				res.push(json(obj[i]));
-			}
+		if(obj._.id){
+			attributes.id = obj._.id;
+			attrCount++;
 		}
+		var children = [];
+		for(var i=0; i<obj.length; i++){
+			children.push(jxml(obj[i]));
+		}
+		var res = [obj._.type];
+		if(attrCount) res.push(attributes);
+		if(children.length) res.push(children);
 		return res;
 	}
 	
@@ -73,7 +78,7 @@
 				extend(item, {
 					_:{
 						type:type,
-						$json:function(){return json(item)}
+						$jxml:function(){return jxml(item)}
 					}
 				});
 				eachArgument(arguments, function(el, i){

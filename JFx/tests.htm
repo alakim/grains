@@ -38,6 +38,18 @@ new JSUnit.Test("Формирование простого документа", "Building Document").run = fu
 	
 	this.assert(data[0]._.parent._.type, "Persons");
 	
+	this.assert(data._.$jxml(), ["Persons", [
+		["Person", {fio:"Иванов", id:"iiivanov"},[
+			["Description", ["iiivanov@mail.ru"]]
+		]],
+		["Person", {fio:"Петров", phone:"444-4444", address:"ул.3-я Строителей, д.111, кв.2223."},[
+			["Description", ["pppetrov@mail.ru"]]
+		]],
+		["Person", {fio:"Сидоров"},[
+			["Description", ["sssidorov@mail.ru"]]
+		]]
+	]]);
+	
 }
 
 
