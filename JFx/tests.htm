@@ -59,6 +59,9 @@ new JSUnit.Test("Формирование простого документа", "Building Document").run = fu
 
 new JSUnit.Test("Поиск по ID", "Building Document").run = function(){
 	var persons = BuildSampleDoc();
+	
+	var iiivanov = persons._.getByID("iiivanov");
+	this.assert(iiivanov.fio, "Иванов");
 }
 
 
