@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>Пример использования Brain Jumble</title>
+<meta http-equiv="Content-Type" content="text/html;charset=windows-1251"/>
+<link rel="stylesheet" type="text/css" href="tools/styles.css"/>
+<script type="text/javascript" src="tools/html.js"></script>
+<script type="text/javascript" src="tools/decisions.js"></script>
+<script type="text/javascript">
+with(Decisions.Language){
+Reasoning("Решения по проекту JFx",
+	Problem("Валидация документа",
+		Problem("Определить момент запуска валидации",
+			Description(
+				p("Функции, формирующие элементы документа не знают, является ли данный элемент корневым, соответственно, могут по окончании формирования элемента запустить лишь его валидацию в отдельности, но не валидацию документа в целом"),
+				p("Валидация документа в целом совершенно необходима. Например, это может быть проверка уникальности идентификаторов внутри документа, или проверка целостности по ссылкам."),
+				p("Кроме того, построение индексов элементов имеет смысл начинать уже после того, как документ будет сформирован полностью.")
+			)
+		)
+	)
+);
+}
+</script>
+</head>
+<body/>
+</html>
