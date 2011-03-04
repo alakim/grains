@@ -8,7 +8,7 @@ new JSUnit.Test("Подключение модуля JFx", "Configuration").run = function(){
 	this.assert(typeof(JFx), "object");
 }
 
-new JSUnit.Test("Формирование простого документа", "Building Document").run = function(){
+function BuildSampleDoc(){
 	with(JFx){
 		var PersonsDoc = Schema(
 			Item("Persons"),
@@ -17,28 +17,33 @@ new JSUnit.Test("Формирование простого документа", "Building Document").run = fu
 		);
 	}
 	with(PersonsDoc){
-		var data = Persons(
+		var persons = Persons(
 			Person("Иванов", ID("iiivanov"), Description("iiivanov@mail.ru")),
 			Person("Петров", Description("pppetrov@mail.ru"), {phone:"444-4444", address:"ул.3-я Строителей, д.111, кв.2223."}),
 			Person("Сидоров", Description("sssidorov@mail.ru"))
 		);
 	}
-		
-	this.assert(data.length, 3);
-	this.assert(data[0].length, 1);
+	return persons;
+}
+
+new JSUnit.Test("Формирование простого документа", "Building Document").run = function(){
+	var persons = BuildSampleDoc();
 	
-	this.assert(data[0].fio, "Иванов");
-	this.assert(data[0]._.type, "Person");
-	this.assert(data[0]._.id, "iiivanov");
+	this.assert(persons.length, 3);
+	this.assert(persons[0].length, 1);
 	
-	this.assert(data[1].fio, "Петров");
-	this.assert(data[1]._.id, null);
-	this.assert(data[1].phone, "444-4444");
-	this.assert(data[1].address, "ул.3-я Строителей, д.111, кв.2223.");
+	this.assert(persons[0].fio, "Иванов");
+	this.assert(persons[0]._.type, "Person");
+	this.assert(persons[0]._.id, "iiivanov");
 	
-	this.assert(data[0]._.parent._.type, "Persons");
+	this.assert(persons[1].fio, "Петров");
+	this.assert(persons[1]._.id, null);
+	this.assert(persons[1].phone, "444-4444");
+	this.assert(persons[1].address, "ул.3-я Строителей, д.111, кв.2223.");
 	
-	this.assert(data._.$jxml(), ["Persons", [
+	this.assert(persons[0]._.parent._.type, "Persons");
+	
+	this.assert(persons._.$jxml(), ["Persons", [
 		["Person", {fio:"Иванов", id:"iiivanov"},[
 			["Description", ["iiivanov@mail.ru"]]
 		]],
@@ -50,6 +55,10 @@ new JSUnit.Test("Формирование простого документа", "Building Document").run = fu
 		]]
 	]]);
 	
+}
+
+new JSUnit.Test("Поиск по ID", "Building Document").run = function(){
+	var persons = BuildSampleDoc();
 }
 
 
