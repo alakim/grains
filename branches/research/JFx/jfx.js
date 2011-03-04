@@ -12,11 +12,7 @@
 		for(var i=0; i<coll.length; i++) F(coll[i], i);
 	}
 	
-	function jxml(obj){
-		if(!(obj instanceof Array))
-			return obj;
-		if(!(obj._)) return obj;
-		
+	function getAttributes(obj){
 		var attributes = {};
 		var attrCount = 0;
 		for(var k in obj){
@@ -27,16 +23,25 @@
 				attrCount++;
 			}
 		}
+		return attrCount?attributes:null;
+	}
+	
+	function jxml(obj){
+		if(!(obj instanceof Array))
+			return obj;
+		if(!(obj._)) return obj;
+		
+		var attributes = getAttributes(obj);
 		if(obj._.id){
+			if(!attributes) attributes = {};
 			attributes.id = obj._.id;
-			attrCount++;
 		}
 		var children = [];
 		for(var i=0; i<obj.length; i++){
 			children.push(jxml(obj[i]));
 		}
 		var res = [obj._.type];
-		if(attrCount) res.push(attributes);
+		if(attributes) res.push(attributes);
 		if(children.length) res.push(children);
 		return res;
 	}
@@ -102,7 +107,8 @@
 				extend(item, {
 					_:{
 						type:type,
-						$jxml:function(){return jxml(item)}
+						$jxml:function(){return jxml(item)},
+						$attributes: function(){return getAttributes(item);}
 					}
 				});
 				eachArgument(arguments, function(el, i){
