@@ -8,23 +8,21 @@ new JSUnit.Test("Подключение модуля JFx", "Configuration").run = function(){
 	this.assert(typeof(JFx), "object");
 }
 
-function BuildSampleDoc(){
-	with(JFx){
-		var PersonsDoc = Schema(
+function BuildSampleDoc(){with(JFx){
+	with(
+		Schema(
 			Item("Persons"),
 			Item("Person", Attr("fio", 0)),
 			Item("Description")
-		);
-	}
-	with(PersonsDoc){
-		var persons = Persons(
+		)
+	){
+		return Persons(
 			Person("Иванов", ID("iiivanov"), Description("iiivanov@mail.ru")),
 			Person("Петров", Description("pppetrov@mail.ru"), {phone:"444-4444", address:"ул.3-я Строителей, д.111, кв.2223."}),
 			Person("Сидоров", Description("sssidorov@mail.ru"))
 		);
 	}
-	return persons;
-}
+}}
 
 new JSUnit.Test("Формирование простого документа", "Building Document").run = function(){
 	var persons = BuildSampleDoc();
