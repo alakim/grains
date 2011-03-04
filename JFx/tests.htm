@@ -62,6 +62,15 @@ new JSUnit.Test("Поиск по ID", "Building Document").run = function(){
 	this.assert(iiivanov.fio, "Иванов");
 }
 
+new JSUnit.Test("Доступ к коллекции атрибутов", "Building Document").run = function(){
+	var persons = BuildSampleDoc();
+	
+	var attrs = persons[1]._.$attributes();
+	this.assert(attrs.fio, "Петров");
+	this.assert(attrs.phone!=null, true);
+	this.assert(attrs.address!=null, true);
+	this.assert(JFx.count(attrs), 3);
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = JFx.version;
