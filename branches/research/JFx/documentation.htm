@@ -1,0 +1,25 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="tools/jdoc.css"/>
+<script type="text/javascript" src="tools/html.js"></script>
+<script type="text/javascript" src="tools/jdoc.js"></script>
+
+<script type="text/javascript" src="jfx.js"></script>
+
+<script type="text/javascript">with(JDoc){
+	Module("jfx.js v."+JFx.version,
+		Description("Модуль предназначен для формирования XML-подобных структур данных в функциональном стиле."),
+		Obj("JFx", Description("Главный объект модуля"),
+			Attribute("version", Description("Версия модуля")),
+			Method("Schema", Description("Формирует схему данных")),
+			Method("Item", Description("Применяется в схеме данных. Объявляет использование заданного элемента.")),
+			Method("Child", Description("Применяется в схеме данных (пока не реализован). Объявляет наличие вложенного элемента заданного типа.")),
+			Method("Attr", Description("Применяется в схеме данных. Указывает наличие обязательного атрибута, и устанавливает номер аргумента конструктора, в котором передается этот атрибут.")),
+			Method("count", Description("Вспомогательный метод. Возвращает число элементов переданной ему коллекции (массива или структуры)."))
+		)
+	)
+}</script>
+	
+</head>
+<body/>
+</html>
