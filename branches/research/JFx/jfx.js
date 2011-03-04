@@ -42,6 +42,10 @@
 	}
 	
 	function validate(root){
+		verifyIDs(root);
+	}
+	
+	function verifyIDs(root){
 		var idIdx = {};
 		function indexIds(el){
 			if(el._ && el._.id){
@@ -55,6 +59,9 @@
 			}
 		}
 		indexIds(root);
+		root._.getByID = function(id){
+			return idIdx[id];
+		};
 	}
 	
 	var ID = (function(){
