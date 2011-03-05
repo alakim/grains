@@ -121,10 +121,21 @@ new JSUnit.Test("Монадический запрос", "Queries").run = function(){
 	this.assert(items[0]._.type, "Description", "Error 5.1");
 	this.assert(items[1]._.type, "Description", "Error 5.2");
 	this.assert(items[2]._.type, "Description", "Error 5.3");
-
+	
+}
+new JSUnit.Test("Текстовые узлы", "Queries").run = function(){
+	var persons = BuildSampleDoc();
+	
+	var q = JFx.Query(persons);
+	
+	var res = q.Children("Person").Children("Description").Text();
+	this.assert(res.length, 3, "Error 1");
+	this.assert(res[0], "iiivanov@mail.ru", "Error 1.1");
+	this.assert(res[1], "pppetrov@mail.ru", "Error 1.2");
+	this.assert(res[2], "sssidorov@mail.ru", "Error 1.3");
 }
 
-new JSUnit.Test("Простое преобразование", "Data Processing").run = function(){
+new JSUnit.Test("Простое преобразование в HTML", "Data Processing").run = function(){
 	var persons = BuildSampleDoc();
 	
 	with(JFx){
@@ -140,6 +151,30 @@ new JSUnit.Test("Простое преобразование", "Data Processing").run = function(){
 	
 	var res = proc.process(persons);
 	this.assert(res, "<ul><li>Иванов</li><li>Петров</li><li>Сидоров</li></ul>");
+}
+
+new JSUnit.Test("Простое преобразование в JSON", "Data Processing").run = function(){
+	var persons = BuildSampleDoc();
+	
+	with(JFx){
+		var proc = Processor(
+			function(doc){
+				return {persons:this.applyTemplates(doc)};
+			},
+			Template("/Person", function(el){
+				return {fio:el.fio, mail:el._.select("Description/text()").join("")};
+			})
+		);
+	}
+	
+	var res = proc.process(persons);
+	this.assert(res, {
+		persons:[
+			{fio:"Иванов", mail:"iiivanov@mail.ru"},
+			{fio:"Петров", mail:"pppetrov@mail.ru"},
+			{fio:"Сидоров", mail:"sssidorov@mail.ru"}
+		]
+	});
 }
 
 function init(){
