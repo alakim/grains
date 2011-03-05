@@ -9,7 +9,10 @@
 			for(var k in coll) F(coll[k], k);
 	}
 	function eachIdx(coll, F){
-		for(var i=0; i<coll.length; i++) F(coll[i], i);
+		for(var i=0; i<coll.length; i++) {
+			if(F(coll[i], i)==false)
+				break;
+		}
 	}
 	
 	function getAttributes(obj){
@@ -33,7 +36,17 @@
 			if(!step.length){q = q.Root(); return;}
 			var mt = step.match(/^@(.+)$/);
 			if(mt) {q = q.Attribute(mt[1]); return;}
-			else {q = q.Children(step); return}
+			else {
+				mt = step.match(/^([^\[]+)\[(\d+)\]/);
+				if(mt){
+					q = q.Children(mt[1], parseInt(mt[2]));
+					return;
+				}
+				else{
+					q = q.Children(step);
+					return;
+				}
+			}
 		});
 		return q;
 	}
@@ -186,13 +199,20 @@
 				if(!this.length) throw "Query.Root error: No elements in collection.";
 				return buildSet([this[0]._.$root()]);
 			}
-			function children(type){
+			function children(type, idx){
 				var coll = [];
 				eachIdx(this, function(el){
+					var c1 = [];
 					eachIdx(el, function(ch){
-						if(!type || ch._.type==type)
-							coll.push(ch);
+						if(!type || ch._.type==type){
+							c1.push(ch);
+							if(idx!=null && c1.length==idx+1){
+								c1 = [c1[idx]];
+								return false;
+							}
+						}
 					});
+					coll = coll.concat(c1);
 				});
 				return buildSet(coll);
 			}
