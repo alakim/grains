@@ -82,12 +82,12 @@ new JSUnit.Test("Простой запрос", "Queries").run = function(){
 	];
 	
 	var items = persons._.select(path);
-	this.assert(items.length, 3);
-	this.assert(items[0]._.type, "Description");
-	this.assert(items[1]._.type, "Description");
-	this.assert(items[2]._.type, "Description");
+	this.assert(items.length, 3, "Error 1");
+	this.assert(items[0]._.type, "Description", "Error 2");
+	this.assert(items[1]._.type, "Description", "Error 3");
+	this.assert(items[2]._.type, "Description", "Error 4");
 	
-	this.assert(items[0][0], "iiivanov@mail.ru");
+	this.assert(items[0][0], "iiivanov@mail.ru", "Error 5");
 }
 
 function init(){

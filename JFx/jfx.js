@@ -27,18 +27,15 @@
 	}
 	
 	function parsePath(path){
-		return {firstStep:path[0], tail:path.splice(1)};
+		return {firstStep:path[0], tail:path.splice(1, path.length-1)};
 	}
 	
-	var cnt = 0;
-	
 	function selectItems(itm, path){
-		if(cnt++>10) throw "что-то зациклилось";
+		if(selectItems.counter++>1000) throw "Too many iterations in selectItems.";
 		
 		path = parsePath(path);
 		var step = path.firstStep;
 		var tail = path.tail;
-		
 		if(step=="/")
 			return selectItems(itm._.$root(), tail);
 		
@@ -51,11 +48,11 @@
 			return coll;
 		var chColl = [];
 		eachIdx(coll, function(el){
-			chColl.push(selectItems(el, tail));
+			chColl = chColl.concat(selectItems(el, tail));
 		});
-		coll.concat(chColl);
-		return coll;
+		return chColl;
 	}
+	selectItems.counter = 0;
 	
 	function jxml(obj){
 		if(!(obj instanceof Array))
