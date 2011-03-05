@@ -226,6 +226,29 @@
 			}
 			
 			return buildSet([obj]);
+		},
+		
+		Processor: function(root){
+			function processObject(obj){
+			}
+			function processSet(set){
+			}
+			var proc = {
+				root:root,
+				templates:[],
+				process:function(o){
+					if(o._) return processObject(o);
+					else if(o instanceof Array) return processSet(o);
+					else return processObject(o);
+				}
+			};
+			for(var i=1; i<arguments.length; i++){
+				proc.templates.push(arguments[i])
+			}
+			return proc;
+		},
+		Template: function(selector, templateFunc){
+			return {selector: selector, template:templateFunc}
 		}
 	};
 	

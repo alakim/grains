@@ -117,7 +117,22 @@ new JSUnit.Test("Монадический запрос", "Queries").run = function(){
 	this.assert(res[0].fio, "Петров", "Error 4.2");
 }
 
-
+new JSUnit.Test("Простое преобразование", "Data Processing").run = function(){
+	var persons = BuildSampleDoc();
+	
+	with(JFx){
+		var proc = Processor(
+			function(doc){
+			},
+			Template("/Person", function(el){
+				return el.fio;
+			})
+		);
+	}
+	
+	var res = proc.process(persons);
+	this.assert(res, "ИвановПетровСидоров");
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = JFx.version;
