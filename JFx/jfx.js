@@ -201,7 +201,7 @@
 			}
 			
 			function buildSet(coll){
-				return extend(coll, {Root: root, Children:children, Attribute:attribute})
+				return extend(coll, {Root: root, Children:children, Attribute:attribute, Text:text})
 			}
 			function root(){
 				if(!this.length) throw "Query.Root error: No elements in collection.";
@@ -212,7 +212,7 @@
 				eachIdx(this, function(el){
 					var c1 = [];
 					eachIdx(el, function(ch){
-						if(!type || ch._.type==type){
+						if(!type || (type=="text()"&&typeof(ch)=="string") || ch._.type==type){
 							c1.push(ch);
 							if(idx!=null && c1.length==idx+1){
 								c1 = [c1[idx]];
@@ -231,6 +231,10 @@
 						coll.push(el[name]);
 				});
 				return buildSet(coll);
+			}
+			
+			function text(){
+				return this.Children("text()")
 			}
 			
 			return buildSet([obj]);
