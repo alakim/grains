@@ -4,9 +4,13 @@
 	function extend(o,s){for(var k in s) o[k] = s[k]; return o;}
 	function each(coll, F){
 		if(coll instanceof Array)
-			for(var i=0; i<coll.length; i++) F(coll[i], i);
+			for(var i=0; i<coll.length; i++){
+				if(F(coll[i], i)==false) break;
+			}
 		else
-			for(var k in coll) F(coll[k], k);
+			for(var k in coll) {
+				if(F(coll[k], k)==false) break;
+			}
 	}
 	function eachIdx(coll, F){
 		for(var i=0; i<coll.length; i++) {
@@ -191,7 +195,11 @@
 			return count;
 		},
 		
-		Query: function(obj){
+		Query: function(obj, path){
+			if(path){
+				return selectItems(obj, path);
+			}
+			
 			function buildSet(coll){
 				return extend(coll, {Root: root, Children:children, Attribute:attribute})
 			}
@@ -229,17 +237,36 @@
 		},
 		
 		Processor: function(root){
-			function processObject(obj){
+			function processObject(obj, proc){
+				var res = [];
+				each(proc.templates, function(tpl){
+					var set = JFx.Query(obj, tpl.selector);
+					if(set){
+						each(set, function(el){
+							res.push(tpl(el));
+						});
+						return false;
+					}
+				});
+				return res;
 			}
-			function processSet(set){
+			function processSet(set, proc){
+				var res = [];
+				each(set, function(el){
+					res = res.concat(processObject(el, proc));
+				});
+				return res;
 			}
 			var proc = {
 				root:root,
 				templates:[],
-				process:function(o){
-					if(o._) return processObject(o);
-					else if(o instanceof Array) return processSet(o);
-					else return processObject(o);
+				process:function(obj){
+					return this.root(obj);
+				},
+				applyTemplates: function(o){
+					if(o._) return processObject(o, this);
+					else if(o instanceof Array) return processSet(o, this);
+					else return processObject(o, this);
 				}
 			};
 			for(var i=1; i<arguments.length; i++){
@@ -248,7 +275,8 @@
 			return proc;
 		},
 		Template: function(selector, templateFunc){
-			return {selector: selector, template:templateFunc}
+			templateFunc.selector = selector;
+			return templateFunc;
 		}
 	};
 	
