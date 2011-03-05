@@ -177,6 +177,50 @@ new JSUnit.Test("Простое преобразование в JSON", "Data Processing").run = functi
 	});
 }
 
+new JSUnit.Test("Пример исполняемого документа", "Data Processing").run = function(){
+	var mail = (function(){ // модель почтового сервера
+		var log = [];
+		return {
+			send: function(address, message){ // отправить сообщение
+				log.push({address:address, message:message});
+			},
+			$log: function(){return log;} // возвращает буфер отправленных сообщений
+		};
+	})();
+	
+	with(JFx){
+		var MailListDoc = Schema( // схема данных списка рассылки
+			Item("MailList"),
+			Item("Message", Attr("address", 0))
+		);
+		
+		with(MailListDoc){
+			var mailingList = MailList( // конкретный список рассылки
+				Message("iiivanov@mail.ru", "Срочно составьте отчет!"),
+				Message("pppetrov@mail.ru", "Рассмотрите отчет Иванова!")
+			);
+		}
+		
+		var mailAgent = Processor( // обработчик списка рассылки
+			function(doc){
+				this.applyTemplates(doc);
+			},
+			Template("/Message", function(el){
+				mail.send(el.address, el.join(""));
+				return true;
+			})
+		);
+		
+		mailAgent.process(mailingList); // запустили рассылку
+		
+		this.assert(mail.$log().length, 2);
+		this.assert(mail.$log()[0].address, "iiivanov@mail.ru");
+		this.assert(mail.$log()[0].message, "Срочно составьте отчет!");
+		this.assert(mail.$log()[1].address, "pppetrov@mail.ru");
+		this.assert(mail.$log()[1].message, "Рассмотрите отчет Иванова!");
+	}
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JFx.version;
 	JSUnit.init();
