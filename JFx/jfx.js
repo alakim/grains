@@ -26,33 +26,17 @@
 		return attrCount?attributes:null;
 	}
 	
-	function parsePath(path){
-		return {firstStep:path[0], tail:path.splice(1, path.length-1)};
-	}
-	
 	function selectItems(itm, path){
-		if(selectItems.counter++>1000) throw "Too many iterations in selectItems.";
-		
-		path = parsePath(path);
-		var step = path.firstStep;
-		var tail = path.tail;
-		if(step=="/")
-			return selectItems(itm._.$root(), tail);
-		
-		var coll = [];
-		eachIdx(itm, function(el){
-			if(el._&&el._.type==step)
-				coll.push(el);
+		var path = path.split("/");
+		var q = _.Query(itm);
+		eachIdx(path, function(step){
+			if(!step.length){q = q.Root(); return;}
+			var mt = step.match(/^@(.+)$/);
+			if(mt) {q = q.Attribute(mt[1]); return;}
+			else {q = q.Children(step); return}
 		});
-		if(!tail.length)
-			return coll;
-		var chColl = [];
-		eachIdx(coll, function(el){
-			chColl = chColl.concat(selectItems(el, tail));
-		});
-		return chColl;
+		return q;
 	}
-	selectItems.counter = 0;
 	
 	function jxml(obj){
 		if(!(obj instanceof Array))
@@ -193,6 +177,7 @@
 			for(var k in coll) count++;
 			return count;
 		},
+		
 		Query: function(obj){
 			function buildSet(coll){
 				return extend(coll, {Root: root, Children:children, Attribute:attribute})
