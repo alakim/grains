@@ -125,7 +125,6 @@
 					itmDef.isRoot = true;
 				}
 			});
-			// console.log("schema: ", schema);
 			return schema;
 		},
 		Item: function(type){
@@ -149,7 +148,6 @@
 							break;
 					}
 				});
-				// console.log("item: ", item);
 				
 				if(itmDef.isRoot)
 					validate(item);
@@ -194,6 +192,27 @@
 			var count = 0;
 			for(var k in coll) count++;
 			return count;
+		},
+		Query: function(obj){
+			function buildSet(coll){
+				return extend(coll, {Root: root, Children:children})
+			}
+			function root(){
+				if(!this.length) throw "Query.Root error: No elements in collection.";
+				return buildSet([this[0]._.$root()]);
+			}
+			function children(type){
+				var coll = [];
+				eachIdx(this, function(el){
+					eachIdx(el, function(ch){
+						if(!type || ch._.type==type)
+							coll.push(ch);
+					});
+				});
+				return buildSet(coll);
+			}
+			
+			return buildSet([obj]);
 		}
 	};
 	
