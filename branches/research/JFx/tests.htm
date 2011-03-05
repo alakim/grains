@@ -74,12 +74,7 @@ new JSUnit.Test("Доступ к коллекции атрибутов", "Building Document").run = funct
 
 new JSUnit.Test("Простой запрос", "Queries").run = function(){
 	var persons = BuildSampleDoc();
-	
-	var path = [
-		"/",
-		"Person",
-		"Description"
-	];
+	var path = "/Person/Description";
 	
 	var items = persons._.select(path);
 	this.assert(items.length, 3, "Error 1");
