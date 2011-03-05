@@ -115,6 +115,13 @@ new JSUnit.Test("Монадический запрос", "Queries").run = function(){
 	this.assert(res.length, 1, "Error 4");
 	this.assert(res[0]._.type, "Person", "Error 4.1");
 	this.assert(res[0].fio, "Петров", "Error 4.2");
+	
+	var items = JFx.Query(persons, "/Person/Description");
+	this.assert(items.length, 3, "Error 5");
+	this.assert(items[0]._.type, "Description", "Error 5.1");
+	this.assert(items[1]._.type, "Description", "Error 5.2");
+	this.assert(items[2]._.type, "Description", "Error 5.3");
+
 }
 
 new JSUnit.Test("Простое преобразование", "Data Processing").run = function(){
@@ -123,15 +130,16 @@ new JSUnit.Test("Простое преобразование", "Data Processing").run = function(){
 	with(JFx){
 		var proc = Processor(
 			function(doc){
+				return "<ul>"+this.applyTemplates(doc).join("")+"</ul>";
 			},
 			Template("/Person", function(el){
-				return el.fio;
+				return "<li>"+el.fio+"</li>";
 			})
 		);
 	}
 	
 	var res = proc.process(persons);
-	this.assert(res, "ИвановПетровСидоров");
+	this.assert(res, "<ul><li>Иванов</li><li>Петров</li><li>Сидоров</li></ul>");
 }
 
 function init(){
