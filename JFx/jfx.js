@@ -195,7 +195,7 @@
 		},
 		Query: function(obj){
 			function buildSet(coll){
-				return extend(coll, {Root: root, Children:children})
+				return extend(coll, {Root: root, Children:children, Attribute:attribute})
 			}
 			function root(){
 				if(!this.length) throw "Query.Root error: No elements in collection.";
@@ -208,6 +208,14 @@
 						if(!type || ch._.type==type)
 							coll.push(ch);
 					});
+				});
+				return buildSet(coll);
+			}
+			function attribute(name){
+				var coll = [];
+				eachIdx(this, function(el){
+					if(el[name])
+						coll.push(el[name]);
 				});
 				return buildSet(coll);
 			}
