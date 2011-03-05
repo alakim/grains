@@ -221,6 +221,28 @@ new JSUnit.Test("Пример исполняемого документа", "Data Processing").run = functi
 	}
 }
 
+new JSUnit.Test("Простой пример реализации отношений", "Relations", true).run = function(){
+	with(JFx){
+		var PersonsDoc = Schema(
+			Item("Employees"),
+			Item("Organization", Attr("name", 0)),
+			Item("Person", Attr("fio", 0)),
+			Item("WorksOn", Attr("orgID", 0))
+		);
+	}
+	
+	with(PersonsDoc){
+		var persons = Employees(
+			Organization("ОАО Большой Кирпич", ID("bigBrick")),
+			Organization("ОАО Табуретка", ID("stool")),
+			Person("Иванов", WorksOn("bigBrick")),
+			Person("Петров", WorksOn("stool")),
+			Person("Сидоров", WorksOn("bigBrick"))
+		);
+	}
+	throw "Test not implemented";
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JFx.version;
 	JSUnit.init();
