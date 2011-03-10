@@ -38,19 +38,17 @@
 		var q = _.Query(itm);
 		eachIdx(path, function(step){
 			if(!step.length){q = q.Root(); return;}
-			var mt = step.match(/^@(.+)$/);
+			
+			var mt = step.match(/^@(.+)$/); //по атрибуту
 			if(mt) {q = q.Attribute(mt[1]); return;}
-			else {
-				mt = step.match(/^([^\[]+)\[(\d+)\]/);
-				if(mt){
-					q = q.Children(mt[1], parseInt(mt[2]));
-					return;
-				}
-				else{
-					q = q.Children(step);
-					return;
-				}
-			}
+			
+			mt = step.match(/#(.+)/); // по ID
+			if(mt){q = q.ID(mt[1]); return;}
+			
+			mt = step.match(/^([^\[]+)\[(\d+)\]/); // по индексу
+			if(mt){q = q.Children(mt[1], parseInt(mt[2])); return;}
+			
+			q = q.Children(step);
 		});
 		return q;
 	}
@@ -195,13 +193,28 @@
 			return count;
 		},
 		
+		Lambda: function(f){
+			if(typeof(f)=="function")return f;
+			if(typeof(f)!="string") throw "Lambda: string expected";
+			f = f.split("=>");
+			return new Function(f[0], "return "+f[1]);
+		},
+		
 		Query: function(obj, path){
 			if(path){
 				return selectItems(obj, path);
 			}
 			
 			function buildSet(coll){
-				return extend(coll, {Root: root, Children:children, Attribute:attribute, Text:text})
+				return extend(coll, {
+					Root: root,
+					Children:children,
+					ID:id,
+					Where:where,
+					First:first,
+					Attribute:attribute,
+					Text:text
+				})
 			}
 			function root(){
 				if(!this.length) throw "Query.Root error: No elements in collection.";
@@ -232,7 +245,20 @@
 				});
 				return buildSet(coll);
 			}
-			
+			function where(cond){
+				cond = JFx.Lambda(cond);
+				var res = [];
+				eachIdx(this, function(el){
+					if(cond(el)) res.push(el);
+				});
+				return buildSet(res);
+			}
+			function first(){
+				return this[0];
+			}
+			function id(id){
+				return buildSet([this[0]._.getByID(id)]);
+			}
 			function text(){
 				return this.Children("text()")
 			}
