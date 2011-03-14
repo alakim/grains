@@ -200,9 +200,14 @@
 			return new Function(f[0], "return "+f[1]);
 		},
 		
-		Query: function(obj, path){
-			if(path){
-				return selectItems(obj, path);
+		Query: function(obj, selector){
+			if(typeof(selector)=="string"){
+				return selectItems(obj, selector);
+			}
+			if(typeof(selector)=="function"){
+				var res = selector(obj);
+				console.log("res: ", res);
+				return res;
 			}
 			
 			function buildSet(coll){
@@ -271,6 +276,7 @@
 				var res = [];
 				each(proc.templates, function(tpl){
 					var set = JFx.Query(obj, tpl.selector);
+					console.log("set: ", set);
 					if(set){
 						each(set, function(el){
 							res.push(tpl(el));

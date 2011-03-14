@@ -157,6 +157,16 @@ new JSUnit.Test("Запрос с условием", "Queries").run = function(){
 	this.assert(res.fio, "Петров");
 
 }
+new JSUnit.Test("Запрос с условием 2", "Queries").run = function(){
+	var persons = BuildSampleDoc();
+	// Запись, эквивалентная следующей: 
+	// var res = JFx.Query(persons).Children("Person").Attribute("fio");
+	// удобна для построения шаблонов преобразования со сложными условиями
+	var res = JFx.Query(persons, function(el){
+		return JFx.Query(el).Children("Person").Attribute("fio");
+	});
+	this.assert(res, ["Иванов", "Петров", "Сидоров"]);
+}
 
 new JSUnit.Test("Текстовые узлы", "Queries").run = function(){
 	var persons = BuildSampleDoc();
@@ -270,11 +280,27 @@ new JSUnit.Test("Простой пример реализации отношений", "Relations", true).run = 
 				function(doc){
 					return this.applyTemplates(doc);
 				},
-				Template("/Person", function(prs){
-					// var cond = Query(prs).Children("WorksOn").Attribute("orgID")==orgID;
-					var cond = Query(prs, "WorksOn/@orgID")==orgID;
-					return cond?{fio:prs.fio}:null;
-				})
+				Template(
+					// "Person",
+					function(el){
+						var q = JFx.Query(el);
+						console.log(q, q[0]._.type, q.length);
+						q = q.Children("Person").Children("WorksOn");
+						console.log(q, q[0]._.type, q.length);
+						q = q.Where("w=>w.orgID=='"+orgID+"'");
+						console.log(q, q[0]._.type, q.length);
+						return q;
+						// return JFx.Query(el).Children("WorksOn").Where("w=>w.orgID=='"+orgID+"'");
+					},
+					function(prs){
+						console.log(prs._.type);
+						// var cond = Query(prs).Children("WorksOn").Attribute("orgID")==orgID;
+						
+						// var cond = Query(prs, "WorksOn/@orgID")==orgID;
+						// return cond?{fio:prs.fio}:null;
+						return {fio:prs.fio};
+					}
+				)
 			).process(persons);
 		}
 	}
