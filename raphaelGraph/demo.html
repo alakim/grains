@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Graph demo</title>
+        <link rel="stylesheet" href="lib/demo.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="lib/demo-print.css" type="text/css" media="print">
+        <script src="lib/raphael.js"></script>
+        <script src="lib/popup.js"></script>
+        <script src="lib/jquery.js"></script>
+        <script src="lib/graph.js"></script>
+        <style type="text/css" media="screen">
+            body {
+                background: #000;
+            }
+            #holder {
+                height: 250px;
+                margin: -125px 0 0 -400px;
+                width: 800px;
+            }
+        </style>
+		
+		<script type="text/javascript">
+		Graph.Func = {
+			xMin:0, xMax:3, step:0.2,
+			F: function(x){return Math.exp(-x*x);}
+		};
+		$(Graph.draw);
+		</script>
+    </head>
+    <body>
+        <div id="holder"></div>
+    </body>
+</html>
