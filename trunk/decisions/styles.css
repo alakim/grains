@@ -73,6 +73,14 @@ p{
 	background-color:#eeeeee;
 	padding:5px;
 }
+.advantage{
+	color:#008800;
+	font-weight:bold;
+}
+.disadvantage{
+	color:#dd4444;
+	font-weight:bold;
+}
 .contra{
-	color:#dd8844;
+	color:#882200;
 }

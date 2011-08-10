@@ -1,7 +1,7 @@
 if(typeof(Html)!="object") alert("html.js module required!");
 
 var Decisions = (function(){
-	var version = "2.5.381";
+	var version = "2.5.382";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -114,11 +114,11 @@ var Decisions = (function(){
 				div({id:"taggedItemsPanel"})
 			);
 		}},
-		advantage: function (title, color){ //advantageTemplate
+		advantage: function (title, className){ //advantageTemplate
 			return function(){with(Html){var _=this;
 				return div(
 					div(
-						span({style:"color:"+color}, title+": "),
+						span({"class":className}, title+": "),
 						_.children.length==1?(function(){
 							var c1 = _.children[0];
 							return typeof(c1.html)=="function"?c1.html():c1;
@@ -367,7 +367,7 @@ var Decisions = (function(){
 			Advantage: function(){var _=this;
 				var _={
 					type:"Advantage",
-					html: templates.advantage("Преимущество", "#008800")
+					html: templates.advantage("Преимущество", "advantage")
 				};
 				buildChildren(_, arguments, 0);
 				register(_);
@@ -376,7 +376,7 @@ var Decisions = (function(){
 			Disadvantage: function(){var _=this;
 				var _={
 					type:"Disadvantage",
-					html: templates.advantage("Недостаток", "#880000")
+					html: templates.advantage("Недостаток", "disadvantage")
 				};
 				buildChildren(_, arguments, 0);
 				register(_);
