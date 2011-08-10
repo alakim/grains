@@ -1,7 +1,7 @@
 if(typeof(Html)!="object") alert("html.js module required!");
 
 var Decisions = (function(){
-	var version = "2.5.382";
+	var version = "2.6.384";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -187,7 +187,10 @@ var Decisions = (function(){
 								},
 								a({name:_.id},
 									"Задача: ", _.name,
-									Uid.isUid(_.id)?null:span({style:"color:#aaaaee;"}, " [", _.id, "]")
+									Uid.isUid(_.id)?null:tagCollection(
+										"<a name=\"", _.id,"\"></a>",
+										span({style:"color:#aaaaee;"}, " [", _.id, "]")
+									)
 								)
 							),
 							criteriaNorm(),
@@ -302,7 +305,10 @@ var Decisions = (function(){
 							h2({"class":"solution"},
 								a({"name":_.id}, "Решение: ", _.name,
 									_.date?span(" - ",_.date):null,
-									Uid.isUid(_.id)?null:span({style:"color:#aaaaee;"}, " [", _.id, "]")
+									Uid.isUid(_.id)?null:tagCollection(
+										"<a name=\"", _.id, "\"></a>",
+										span({style:"color:#aaaaee;"}, " [", _.id, "]")
+									)
 								)
 							),
 							div({"class":"section"},
@@ -335,6 +341,18 @@ var Decisions = (function(){
 					}}
 				};
 				buildChildren(_, arguments, 0);
+				return _;
+			},
+			Ref: function(refID){
+				var _={
+					refID: refID,
+					html: function(){with(Html){
+						return a({href:"#"+refID},
+							refID
+						);
+					}}
+				};
+				buildChildren(_, arguments, 1);
 				return _;
 			},
 			Contra: function(){
