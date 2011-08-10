@@ -1,7 +1,7 @@
 if(typeof(Html)!="object") alert("html.js module required!");
 
 var Decisions = (function(){
-	var version = "2.4.342";
+	var version = "2.5.381";
 	
 	function each(coll, F){
 		if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i], i);
@@ -331,6 +331,20 @@ var Decisions = (function(){
 									return typeof(c.html)=="function"?c.html():c;
 								})
 							)
+						);
+					}}
+				};
+				buildChildren(_, arguments, 0);
+				return _;
+			},
+			Contra: function(){
+				var _={
+					html: function(){with(Html){
+						return span({"class":"contra"},
+							span({style:"font-weight:bold;"}, "contra: "),
+							apply(this.children, function(c){
+								return typeof(c.html)=="function"?c.html():c;
+							})
 						);
 					}}
 				};
