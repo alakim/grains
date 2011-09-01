@@ -30,6 +30,7 @@ Slider.version = "2.0.268";
 	var initPos;
 	var targetObject;
 	var initMousePos;
+	var curValue;
 	
 	var instances = [];
 	
@@ -87,16 +88,20 @@ Slider.version = "2.0.268";
 		}
 		
 		if(settings.callback){
-			var v = settings.lockX?res.y
+			curValue = settings.lockX?res.y
 				:settings.lockY?res.x
 				:res;
-			settings.callback(v);
+			settings.callback(curValue);
 		}
 		return false;
 	}
 
 					
 	function stop(){
+		var settings = targetObject.sliderSettings;
+		if(settings.onstop)
+			settings.onstop(curValue);
+			
 		targetObject = null;
 		document.onmousemove = null;
 		document.onmouseup = null;

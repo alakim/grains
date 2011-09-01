@@ -20,9 +20,13 @@ function setNumber(v){
 	$("resVal").value = v;
 }
 
+function stop(v){
+	alert("stopped on "+v);
+}
+
 new Slider("slider1", {xRange:{min:50, max:400}, yRange:{min:80, max:300}});
 new Slider("slider2", {lockX:true});
-new Slider("slider3", {lockY:true, xRange:{min:45, max:250}, callback:setNumber});
+new Slider("slider3", {lockY:true, xRange:{min:45, max:250}, callback:setNumber, onstop:stop});
 
 </script>
 </head>
