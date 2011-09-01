@@ -342,7 +342,10 @@
 		$("res").innerHTML = div(
 			apply(res, function(vv){
 				return p(
-					vv.val, " ",
+					a({href:"#"+vv.id},
+						vv.val
+					), 
+					" ",
 					span({style:"color:#888888;"}, vv.rate)
 				);
 			})

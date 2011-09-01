@@ -126,7 +126,7 @@
 			var res = [];
 			each(arr, function(w){
 				var word = _.words[w.id];
-				res.push({val:w.val, rate:w.count/maxCount});
+				res.push({val:w.val, id:w.id, rate:w.count/maxCount});
 			});
 			
 			res = filterByThreshold(res, _.threshold);
