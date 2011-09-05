@@ -4,15 +4,33 @@
 	<title>Пример отрисовки диаграмм</title>
 	<script src="raphael.js" type="text/javascript" charset="utf-8"></script>
 	<script src="graffle.js" type="text/javascript" charset="utf-8"></script>
-	<style type="text/css" media="screen">
+	<style type="text/css">
 		#holder {
 			border: solid 1px #333;
 			width:640px;
 			height:480px;
 		}
 	</style>
+	<script type="text/javascript">
+		function init(){
+			var r = Raphael("holder", 640, 480);
+			var shapes = [
+				r.ellipse(190, 100, 30, 20),
+				r.rect(290, 80, 60, 40, 10),
+				r.rect(290, 180, 60, 40, 2),
+				r.ellipse(450, 100, 20, 20)
+			];
+			var connections = [
+				r.connection(shapes[0], shapes[1], "#400"),
+				r.connection(shapes[1], shapes[2], "#004", "#004|5"),
+				r.connection(shapes[1], shapes[3], "#000", "#400")
+			];
+			initGraffle(r, shapes, connections);
+		}
+		
+	</script>
 </head>
-<body>
+<body onload="init()">
 	<h1>Пример отрисовки диаграмм</h1>
 	<p>Drag shapes around.</p>
 	<p><a href="http://raphaeljs.com/graffle.html">Source</a></p>
