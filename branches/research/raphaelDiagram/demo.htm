@@ -2,6 +2,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=windows-1251"/>
 	<title>Пример отрисовки диаграмм</title>
+	<script src="jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="raphael.js" type="text/javascript" charset="utf-8"></script>
 	<script src="graffle.js" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css">
@@ -13,19 +14,24 @@
 	</style>
 	<script type="text/javascript">
 		function init(){
-			var r = Raphael("holder", 640, 480);
-			var shapes = [
-				r.ellipse(190, 100, 30, 20),
-				r.rect(290, 80, 60, 40, 10),
-				r.rect(290, 180, 60, 40, 2),
-				r.ellipse(450, 100, 20, 20)
-			];
-			var connections = [
-				r.connection(shapes[0], shapes[1], "#400"),
-				r.connection(shapes[1], shapes[2], "#004", "#004|5"),
-				r.connection(shapes[1], shapes[3], "#000", "#400")
-			];
-			initGraffle(r, shapes, connections);
+			var r, shapes;
+			new Graffle(
+				r=Raphael("holder", 640, 480),
+				shapes = [
+					r.ellipse(190, 40, 30, 20),
+					r.rect(290, 80, 60, 40, 10),
+					r.rect(210, 180, 60, 40, 2),
+					r.ellipse(550, 110, 20, 20)
+				],
+				[
+					r.connection(shapes[0], shapes[1], "#400"),
+					r.connection(shapes[1], shapes[2], "#004", "#004|5"),
+					r.connection(shapes[1], shapes[3], "#000", "#400"),
+					r.connection(shapes[3], shapes[0], "#000", "#400"),
+					r.connection(shapes[2], shapes[3], "#000", "#400"),
+					r.connection(shapes[2], shapes[0], "#000", "#400")
+				]
+			);
 		}
 		
 	</script>
