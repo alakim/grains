@@ -1,13 +1,3 @@
-var Graffle = (function(){
-	var __ = function(holderID, nodes, connections){var _=this;
-		_.holderID = holderID;
-		_.nodes = nodes;
-		_.connections = connections;
-	};
-	
-	return __;
-})();
-
 Raphael.fn.connection = function (obj1, obj2, line, bg) {
     if (obj1.line && obj1.from && obj1.to) {
         line = obj1;
@@ -65,27 +55,40 @@ Raphael.fn.connection = function (obj1, obj2, line, bg) {
     }
 };
 
-function initGraffle (r, shapes, connections) {
-	var dragger = function () {
-		this.ox = this.type == "rect" ? this.attr("x") : this.attr("cx");
-		this.oy = this.type == "rect" ? this.attr("y") : this.attr("cy");
-		this.animate({"fill-opacity": .2}, 500);
-	},
-	move = function (dx, dy) {
-		var att = this.type == "rect" ? {x: this.ox + dx, y: this.oy + dy} : {cx: this.ox + dx, cy: this.oy + dy};
-		this.attr(att);
-		for (var i = connections.length; i--;) {
-			r.connection(connections[i]);
+var Graffle = (function(){
+	function init(r, shapes, connections) {
+		function dragger(){
+			this.ox = this.type == "rect" ? this.attr("x") : this.attr("cx");
+			this.oy = this.type == "rect" ? this.attr("y") : this.attr("cy");
+			this.animate({"fill-opacity": .2}, 500);
 		}
-		r.safari();
-	},
-	up = function () {
-		this.animate({"fill-opacity": 0}, 500);
-	};
+		function move(dx, dy){
+			var att = this.type == "rect" ? {x: this.ox + dx, y: this.oy + dy} : {cx: this.ox + dx, cy: this.oy + dy};
+			this.attr(att);
+			for (var i = connections.length; i--;) 
+				r.connection(connections[i]);
+			
+			r.safari();
+		}
+		function up(){
+			this.animate({"fill-opacity": 0}, 500);
+		}
 
-	for (var i = 0, ii = shapes.length; i < ii; i++) {
-		var color = Raphael.getColor();
-		shapes[i].attr({fill: color, stroke: color, "fill-opacity": 0, "stroke-width": 2, cursor: "move"});
-		shapes[i].drag(move, dragger, up);
-	}
-};
+		for (var i = 0; i < shapes.length; i++) {
+			var color = Raphael.getColor();
+			shapes[i].attr({fill: color, stroke: color, "fill-opacity": 0, "stroke-width": 2, cursor: "move"});
+			shapes[i].drag(move, dragger, up);
+		}
+	};
+	
+	var __ = function(canvas, nodes, connections){
+		init(canvas, nodes, connections);
+	};
+	
+	return __;
+})();
+
+
+
+
+
