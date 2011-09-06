@@ -58,29 +58,54 @@ Raphael.fn.connection = function (obj1, obj2, line, bg) {
 var Graffle = (function(){
 	function init(r, shapes, connections) {
 		function dragger(){var _=this;
-			_.ox = _.type == "rect" ? _.attr("x") : _.type == "text"?_.attr("x"): _.attr("cx");
-			_.oy = _.type == "rect" ? _.attr("y") : _.type == "text"?_.attr("y"):_.attr("cy");
-			if(_.type!="text") _.animate({"fill-opacity": .2}, 500);
+			_.ox = _.type=="rect" || _.type=="text" || _.type=="set" ? _.attr("x") : _.attr("cx");
+			_.oy = _.type=="rect" || _.type=="text" || _.type=="set"?_.attr("y"):_.attr("cy");
+			// if(_.type!="text") _.animate({"fill-opacity": .2}, 500);
 		}
 		function move(dx, dy){
-			var att = this.type == "rect" ? {x: this.ox + dx, y: this.oy + dy} 
-				: this.type == "text"?{x: this.ox + dx, y: this.oy + dy} 
-				: {cx: this.ox + dx, cy: this.oy + dy};
-			this.attr(att);
+			var _ = this;
+			if(_.set!=null){
+				//console.log("set index:", _.set);
+				var st = sets[_.set];
+				st.translate(dx, dy);
+			}
+			else{
+				var att = _.type == "rect" ? {x: _.ox + dx, y: _.oy + dy} 
+					: _.type == "text"?{x: _.ox + dx, y: _.oy + dy} 
+					//: _.type == "set"?{x: _.ox + dx, y: _.oy + dy} 
+					: {cx: _.ox + dx, cy: _.oy + dy};
+				_.attr(att);
+			}
 			for (var i = connections.length; i--;) 
 				r.connection(connections[i]);
 			
 			r.safari();
 		}
 		function up(){
-			if(this.type!="text") this.animate({"fill-opacity": 0}, 500);
+			//console.log(this);
+			// if(this.type!="text") this.animate({"fill-opacity": 0}, 500);
 		}
+		
+		var sets = [];
 		
 		for (var i = 0; i < shapes.length; i++) {
 			var color = Raphael.getColor();
 			var shp = shapes[i];
-			if(shp.type!="text")
-				shp.attr({fill: color, stroke: color, "fill-opacity": 0, "stroke-width": 2, cursor: "move"})
+			// console.log(shp.attr("fill")=="none");
+			if(shp.type!="set"){
+				if(shp.attr("fill")=="none") shp.attr({fill:color, stroke:color});
+			}
+			if(shp.type!="text"){
+				// shp.attr({fill: color, stroke: color});
+				shp.attr({"fill-opacity": 0, "stroke-width": 2});
+			}
+			shp.attr({cursor: "move"});
+			if(shp.type=="set"){
+				for(var j=0; j<shp.items.length; j++){
+					shp.items[j].set = sets.length;
+				}
+				sets.push(shp);
+			}
 			shp.drag(move, dragger, up);
 		}
 	};
