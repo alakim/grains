@@ -18,14 +18,18 @@
 			new Graffle(
 				r=Raphael("holder", 640, 480),
 				shapes = [
-					r.ellipse(190, 40, 30, 20),
+					r.ellipse(190, 40, 30, 20).attr({fill:"#f00", stroke:"#f00"}),
 					r.rect(290, 80, 60, 40, 10),
 					r.rect(210, 180, 60, 40, 2),
 					r.ellipse(550, 110, 20, 20),
 					r.text(100, 100, "Node #1").attr({
 						font: "16px Helvetica, Arial", 
 						fill:"#222"
-					})
+					}),
+					r.set(
+						r.circle(10, 10, 15),
+						r.circle(30, 10, 15)
+					).translate(50, 50)
 				],
 				[
 					r.connection(shapes[0], shapes[1], "#400"),
@@ -34,7 +38,8 @@
 					r.connection(shapes[3], shapes[0], "#000", "#400"),
 					r.connection(shapes[2], shapes[3], "#000", "#400"),
 					r.connection(shapes[2], shapes[0], "#000", "#400"),
-					r.connection(shapes[2], shapes[4], "#000", "#400")
+					r.connection(shapes[2], shapes[4], "#000", "#400"),
+					r.connection(shapes[5], shapes[4], "#000", "#400")
 				]
 			);
 		}
