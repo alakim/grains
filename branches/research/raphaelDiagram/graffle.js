@@ -57,13 +57,15 @@ Raphael.fn.connection = function (obj1, obj2, line, bg) {
 
 var Graffle = (function(){
 	function init(r, shapes, connections) {
-		function dragger(){
-			this.ox = this.type == "rect" ? this.attr("x") : this.attr("cx");
-			this.oy = this.type == "rect" ? this.attr("y") : this.attr("cy");
-			this.animate({"fill-opacity": .2}, 500);
+		function dragger(){var _=this;
+			_.ox = _.type == "rect" ? _.attr("x") : _.type == "text"?_.attr("x"): _.attr("cx");
+			_.oy = _.type == "rect" ? _.attr("y") : _.type == "text"?_.attr("y"):_.attr("cy");
+			if(_.type!="text") _.animate({"fill-opacity": .2}, 500);
 		}
 		function move(dx, dy){
-			var att = this.type == "rect" ? {x: this.ox + dx, y: this.oy + dy} : {cx: this.ox + dx, cy: this.oy + dy};
+			var att = this.type == "rect" ? {x: this.ox + dx, y: this.oy + dy} 
+				: this.type == "text"?{x: this.ox + dx, y: this.oy + dy} 
+				: {cx: this.ox + dx, cy: this.oy + dy};
 			this.attr(att);
 			for (var i = connections.length; i--;) 
 				r.connection(connections[i]);
@@ -71,13 +73,15 @@ var Graffle = (function(){
 			r.safari();
 		}
 		function up(){
-			this.animate({"fill-opacity": 0}, 500);
+			if(this.type!="text") this.animate({"fill-opacity": 0}, 500);
 		}
-
+		
 		for (var i = 0; i < shapes.length; i++) {
 			var color = Raphael.getColor();
-			shapes[i].attr({fill: color, stroke: color, "fill-opacity": 0, "stroke-width": 2, cursor: "move"});
-			shapes[i].drag(move, dragger, up);
+			var shp = shapes[i];
+			if(shp.type!="text")
+				shp.attr({fill: color, stroke: color, "fill-opacity": 0, "stroke-width": 2, cursor: "move"})
+			shp.drag(move, dragger, up);
 		}
 	};
 	
