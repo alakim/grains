@@ -1,0 +1,36 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=windows-1251"/>
+	<title>Пример отрисовки диаграмм</title>
+	<script src="jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="raphael.js" type="text/javascript" charset="utf-8"></script>
+	<script src="graffle.js" type="text/javascript" charset="utf-8"></script>
+	<script src="graph.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#holder {
+			border: solid 1px #333;
+			width:640px;
+			height:480px;
+		}
+	</style>
+	<script type="text/javascript">
+		$(function(){with(Graph){
+			Graph("holder",
+				Node("Nd1"),
+				Node({id:"n2", title:"Nd2"}),
+				Node("Nd3"),
+				Node({id:"n4", title:"Nd4"}),
+				
+				Conn("n4", "n2")
+			);
+		}});
+	</script>
+</head>
+<body>
+	<h1>Пример отрисовки диаграмм</h1>
+	<p>Drag shapes around.</p>
+	<p><a href="http://raphaeljs.com/graffle.html">Source</a></p>
+	<div id="holder"></div>
+
+</body>
+</html>
