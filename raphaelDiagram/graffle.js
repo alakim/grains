@@ -60,19 +60,19 @@ var Graffle = (function(){
 		function dragger(){var _=this;
 			_.ox = _.type=="rect" || _.type=="text" || _.type=="set" ? _.attr("x") : _.attr("cx");
 			_.oy = _.type=="rect" || _.type=="text" || _.type=="set"?_.attr("y"):_.attr("cy");
-			// if(_.type!="text") _.animate({"fill-opacity": .2}, 500);
 		}
+		var ddx = 0, ddy = 0;
+		
 		function move(dx, dy){
 			var _ = this;
 			if(_.set!=null){
-				//console.log("set index:", _.set);
 				var st = sets[_.set];
-				st.translate(dx, dy);
+				st.translate(dx-ddx, dy-ddy);
+				ddx = dx; ddy = dy;
 			}
 			else{
 				var att = _.type == "rect" ? {x: _.ox + dx, y: _.oy + dy} 
 					: _.type == "text"?{x: _.ox + dx, y: _.oy + dy} 
-					//: _.type == "set"?{x: _.ox + dx, y: _.oy + dy} 
 					: {cx: _.ox + dx, cy: _.oy + dy};
 				_.attr(att);
 			}
@@ -82,8 +82,8 @@ var Graffle = (function(){
 			r.safari();
 		}
 		function up(){
-			//console.log(this);
-			// if(this.type!="text") this.animate({"fill-opacity": 0}, 500);
+			ddx = 0;
+			ddy = 0;
 		}
 		
 		var sets = [];
@@ -91,12 +91,10 @@ var Graffle = (function(){
 		for (var i = 0; i < shapes.length; i++) {
 			var color = Raphael.getColor();
 			var shp = shapes[i];
-			// console.log(shp.attr("fill")=="none");
 			if(shp.type!="set"){
 				if(shp.attr("fill")=="none") shp.attr({fill:color, stroke:color});
 			}
 			if(shp.type!="text"){
-				// shp.attr({fill: color, stroke: color});
 				shp.attr({"fill-opacity": 0, "stroke-width": 2});
 			}
 			shp.attr({cursor: "move"});
