@@ -100,7 +100,9 @@ var Graffle = (function(){
 			shp.attr({cursor: "move"});
 			if(shp.type=="set"){
 				for(var j=0; j<shp.items.length; j++){
-					shp.items[j].set = sets.length;
+					var itm = shp.items[j];
+					itm.set = sets.length;
+					if(itm.type=="text")itm.attr({"fill-opacity": 1});
 				}
 				sets.push(shp);
 			}
