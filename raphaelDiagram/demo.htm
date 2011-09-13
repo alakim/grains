@@ -13,12 +13,14 @@
 		}
 	</style>
 	<script type="text/javascript">
+		Graffle.defaultFill = "#efe";
+		Graffle.defaultStroke = "#d00";
 		function init(){
 			var r, shapes;
 			new Graffle(
 				r=Raphael("holder", 640, 480),
 				shapes = [
-					r.ellipse(190, 40, 30, 20).attr({fill:"#f00", stroke:"#f00"}),
+					r.ellipse(190, 40, 30, 20).attr({fill:"#fee", stroke:"#f00"}),
 					r.rect(290, 80, 60, 40, 10),
 					r.rect(210, 180, 60, 40, 2),
 					r.ellipse(550, 110, 20, 20),
@@ -27,8 +29,8 @@
 						fill:"#222"
 					}),
 					r.set(
-						r.circle(10, 10, 15).attr({fill:"#f00", stroke:"#f00"}),
-						r.circle(30, 10, 5).attr({fill:"#f00", stroke:"#f00"}),
+						r.circle(10, 10, 15).attr({fill:"#eef", stroke:"#00f"}),
+						r.circle(30, 10, 5).attr({fill:"#eef", stroke:"#00f"}),
 						r.text(10, 10, "N2").attr({
 							font: "16px Helvetica, Arial", 
 							fill:"#222"

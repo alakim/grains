@@ -89,20 +89,15 @@ var Graffle = (function(){
 		var sets = [];
 		
 		for (var i = 0; i < shapes.length; i++) {
-			var color = Raphael.getColor();
 			var shp = shapes[i];
-			if(shp.type!="set"){
-				if(shp.attr("fill")=="none") shp.attr({fill:color, stroke:color});
-			}
-			if(shp.type!="text"){
-				shp.attr({"fill-opacity": 0, "stroke-width": 2});
+			if(shp.type!="set" && shp.type!="text"){
+				if(shp.attr("fill")=="none") shp.attr({fill:__.defaultFill});
+				if(shp.attr("stroke")=="#000") shp.attr({stroke:__.defaultStroke});
 			}
 			shp.attr({cursor: "move"});
 			if(shp.type=="set"){
 				for(var j=0; j<shp.items.length; j++){
-					var itm = shp.items[j];
-					itm.set = sets.length;
-					if(itm.type=="text")itm.attr({"fill-opacity": 1});
+					shp.items[j].set = sets.length;
 				}
 				sets.push(shp);
 			}
@@ -113,6 +108,9 @@ var Graffle = (function(){
 	var __ = function(canvas, nodes, connections){
 		init(canvas, nodes, connections);
 	};
+	
+	__.defaultFill = "#eee";
+	__.defaultStroke = "#888";
 	
 	return __;
 })();
