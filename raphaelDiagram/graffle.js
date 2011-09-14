@@ -41,20 +41,22 @@ Raphael.fn.connection = function (obj1, obj2, line, bg, directed) {
         x3 = [0, 0, 0, 0, x4, x4, x4 - dx, x4 + dx][res[1]].toFixed(3),
         y3 = [0, 0, 0, 0, y1 + dy, y1 - dy, y4, y4][res[1]].toFixed(3);
     var path = ["M", x1.toFixed(3), y1.toFixed(3), "C", x2, y2, x3, y3, x4.toFixed(3), y4.toFixed(3)].join(",");
-	// if(directed){
-		// this.path(["M", x1.toFixed(3), y1.toFixed(3)]);
-	// }
+	
+	function getMarkPos(conn){
+		return conn.getPointAtLength(conn.getTotalLength()*3/4);
+	}
+	
     if (line && line.line) {
         line.bg && line.bg.attr({path: path});
         line.line.attr({path: path});
 		if(line.mark){
-			var cc = line.line.getPointAtLength(line.line.getTotalLength()/2);
-			line.mark.attr({cx:cc.x, cy:cc.y});
+			var pos = getMarkPos(line.line);
+			line.mark.attr({cx:pos.x, cy:pos.y});
 		}
     } else {
         var color = typeof line == "string" ? line : "#000";
 		var pp = this.path(path).attr({stroke: color, fill: "none"});
-		var center = pp.getPointAtLength(pp.getTotalLength()/2);
+		var markPos = getMarkPos(pp);
         var res = {
             bg: bg && bg.split && this.path(path).attr({stroke: bg.split("|")[0], fill: "none", "stroke-width": bg.split("|")[1] || 3}),
             line: pp,
@@ -62,7 +64,7 @@ Raphael.fn.connection = function (obj1, obj2, line, bg, directed) {
             to: obj2
         };
 		if(directed)
-			res.mark = this.circle(center.x, center.y, 10);
+			res.mark = this.circle(markPos.x, markPos.y, 3).attr({fill:res.line.attr("stroke")});
 		return res;
     }
 };
