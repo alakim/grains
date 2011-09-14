@@ -47,14 +47,23 @@ Raphael.fn.connection = function (obj1, obj2, line, bg, directed) {
     if (line && line.line) {
         line.bg && line.bg.attr({path: path});
         line.line.attr({path: path});
+		if(line.mark){
+			var cc = line.line.getPointAtLength(line.line.getTotalLength()/2);
+			line.mark.attr({cx:cc.x, cy:cc.y});
+		}
     } else {
         var color = typeof line == "string" ? line : "#000";
-        return {
+		var pp = this.path(path).attr({stroke: color, fill: "none"});
+		var center = pp.getPointAtLength(pp.getTotalLength()/2);
+        var res = {
             bg: bg && bg.split && this.path(path).attr({stroke: bg.split("|")[0], fill: "none", "stroke-width": bg.split("|")[1] || 3}),
-            line: this.path(path).attr({stroke: color, fill: "none"}),
+            line: pp,
             from: obj1,
             to: obj2
         };
+		if(directed)
+			res.mark = this.circle(center.x, center.y, 10);
+		return res;
     }
 };
 
