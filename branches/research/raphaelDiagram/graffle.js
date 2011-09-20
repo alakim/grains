@@ -66,6 +66,7 @@ Raphael.fn.connection = function (obj1, obj2, line, bg, directed) {
 		if(directed){
 			var w = res.line.attr("stroke-width") || res.bg && res.bg.attr("stroke-width") || 3;
 			res.mark = this.circle(markPos.x, markPos.y, w).attr({fill:res.line.attr("stroke")});
+			// res.mark = this.EndArrow(res.line, w, w, "#f00", "#f00");
 		}
 		return res;
     }
