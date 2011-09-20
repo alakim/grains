@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>Arrows Drawing Sample</title>
+	<style type="text/css">
+		body{
+			font-family:Verdana, Arial, Sans-serif;
+		}
+		#canvas1{
+			width:400px;
+			height:300px;
+			border:1px solid #aaa;
+		}
+	</style>
+	<script type="text/javascript" src="jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="raphael.js"></script>
+	<script type="text/javascript" src="arrows.js"></script>
+	<script type="text/javascript">
+		var r;
+		
+		
+		function init(){
+			r = Raphael("canvas1", $("#canvas1").width(), $("#canvas1").height());
+			
+			r.Arrow(10, 10, 45, 34, 15, "#cc0", "#222");
+			r.Arrow(80, 10, 85, 54, 10, "#8d0", "#222");
+			r.Arrow(10, 50, 45, 34, 5, "#2a2", "#222");
+			r.Arrow(53, 5, 55, 34, 5, "#a44", "#222");
+			
+			var p = r.path("M100 10L120 125");
+			var pt = p.getPointAtLength(p.getTotalLength()-25);
+			r.Arrow(pt.x, pt.y, 120, 125, 10, "#cc0");
+			
+			var p2 = r.path("M200 30L150 220");
+			r.EndArrow(p2, 5, 8, "#f00", "#f00");
+		}
+		
+		$(init);
+	</script>
+</head>
+<body>
+	<h1>Arrows Drawing Sample</h1>
+	<div id="canvas1"></div>
+</body>
+</html>
