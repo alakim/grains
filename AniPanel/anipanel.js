@@ -48,8 +48,7 @@ var AniPanel = (function(){
 		};
 		$("#"+frmID).css(styles);
 		pnl.panel.css({
-			left:pnl.size.x, top:pnl.size.y,
-			width:pnl.size.w, height:pnl.size.h
+			left:pnl.size.x, top:pnl.size.y
 		});
 		
 		
@@ -69,12 +68,35 @@ var AniPanel = (function(){
 			stroke: "#888"
 		})
 		
-		frm.text(pnl.size.w*0.4, __.title.size*0.7, pnl.options.open.title);
-		var btn = frm.text(pnl.size.w*0.9, __.title.size*0.7, "[x]")
-			.click(function(){pnl.hide();});
-		btn[0].style.cursor = "pointer";
-		btn[0].title = "скрыть";
+		frm.text(pnl.size.w*0.4, __.title.size*0.7, pnl.options.open.title)
+			.attr({"font-size":12});
+		
+		buildHideButton(pnl, frm);
+	}
 	
+	function buildHideButton(pnl, frm){
+		var x = pnl.size.w*0.9;
+		var y = 5;
+		var sz = 12;
+		var padding = 3;
+		
+		function stylize(o){
+			o.click(function(){pnl.hide();});
+			o[0].style.cursor = "pointer";
+			o[0].title = "скрыть";
+		}
+		var style = {stroke:"#444"};
+		stylize(frm.rect(x, y, sz, sz)
+			.attr({fill:"90-#888-#fff", stroke:"#aaa"}));
+		stylize(frm.path(
+			"M"+(x+padding)+","+(y+padding)+
+			"L"+(x+sz-padding)+","+(y+sz-padding)
+		).attr(style));
+		stylize(frm.path(
+			"M"+(x+sz-padding)+","+(y+padding)+
+			"L"+(x+padding)+","+(y+sz-padding)
+		).attr(style));
+		
 	}
 	
 	function buildButton(pnl){
@@ -121,9 +143,9 @@ var AniPanel = (function(){
 			var opt = _.options;
 			$("#"+_.buttonID)
 				.animate({
-					left:opt.open.x,
+					left:opt.open.x+opt.open.w*0.8,
 					top:opt.open.y
-				}, function(){
+				}, __.delay/2, function(){
 					$("#"+_.buttonID).hide();
 					$("#"+_.frameID).fadeIn(__.delay);
 					_.panel.fadeIn(__.delay);
@@ -137,7 +159,7 @@ var AniPanel = (function(){
 			setTimeout(function(){
 				$("#"+_.buttonID)
 					.css({
-						left:opt.open.x, 
+						left:opt.open.x+opt.open.w*0.8, 
 						top:opt.open.y
 					})
 					.show()
@@ -157,7 +179,7 @@ var AniPanel = (function(){
 		zIndex: 100,
 		title:{size:14, fill:"#444", color:"#fff"},
 		fill: "#fff",
-		delay:500
+		delay:200
 	});
 	
 	return __;
