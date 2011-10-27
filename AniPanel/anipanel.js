@@ -102,17 +102,27 @@ var AniPanel = (function(){
 	function buildButton(pnl){
 		var opt = pnl.options.hidden;
 		var btnID = "AniPanelBtn"+buttons.length;
-		$("body").append("<div id=\""+btnID+"\"></div>");
+		$("body").append("<div id=\""+btnID+"\">s</div>");
 		$("#"+btnID).css({
 			position: "absolute",
 			left: opt.x,
 			top: opt.y,
 			display:"none"
 		});
+		pnl.buttonID = btnID;
+		if(opt.img){
+			buttons.push(btnID);
+			$("#"+btnID)
+				.html("<img src=\""+opt.img+"\"/>")
+				.click(function(){pnl.show();})
+				.css({cursor:"pointer"})
+				.show();
+			return;
+		}
+		
 		var btn = Raphael(document.getElementById(btnID), opt.w, opt.h);
 		buttons.push(btn);
 		pnl.button = btn;
-		pnl.buttonID = btnID;
 		
 		function click(){pnl.show();}
 		
