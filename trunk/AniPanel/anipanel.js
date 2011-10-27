@@ -68,8 +68,8 @@ var AniPanel = (function(){
 			stroke: "#888"
 		})
 		
-		frm.text(pnl.size.w*0.4, __.title.size*0.7, pnl.options.open.title)
-			.attr({"font-size":12});
+		frm.text(pnl.size.w*0.4, __.title.size*0.9, pnl.options.open.title)
+			.attr({"font-size":12, "font-weight":"bold", fill:"#5C3D24"});
 		
 		buildHideButton(pnl, frm);
 	}
