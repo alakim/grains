@@ -99,7 +99,7 @@ var AniPanel = (function(){
 			stroke:"#222"
 		}).click(click);
 		b[0].style.cursor = "pointer";
-		b = btn.text(opt.w/2, opt.h*0.70, opt.title).attr({
+		b = btn.text(opt.w/2, opt.h*0.60, opt.title).attr({
 			fill:"#000"
 		}).click(click);
 		b[0].style.cursor = "pointer";
