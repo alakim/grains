@@ -94,13 +94,15 @@ var AniPanel = (function(){
 		
 		function click(){pnl.show();}
 		
-		btn.rect(0, 0, opt.w, opt.h).attr({
-			fill:"#ffe",
-			stroke:"#f00"
+		var b = btn.rect(0, 0, opt.w, opt.h, 10).attr({
+			fill:"90-#888-#fff",
+			stroke:"#222"
 		}).click(click);
-		btn.text(opt.w/2, opt.h/2, opt.title).attr({
-			fill:"#f00"
+		b[0].style.cursor = "pointer";
+		b = btn.text(opt.w/2, opt.h*0.70, opt.title).attr({
+			fill:"#000"
 		}).click(click);
+		b[0].style.cursor = "pointer";
 	}
 	
 	function build(_){
