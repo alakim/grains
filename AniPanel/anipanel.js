@@ -102,7 +102,7 @@ var AniPanel = (function(){
 	function buildButton(pnl){
 		var opt = pnl.options.hidden;
 		var btnID = "AniPanelBtn"+buttons.length;
-		$("body").append("<div id=\""+btnID+"\">s</div>");
+		$("body").append("<div id=\""+btnID+"\"></div>");
 		$("#"+btnID).css({
 			position: "absolute",
 			left: opt.x,
@@ -112,11 +112,14 @@ var AniPanel = (function(){
 		pnl.buttonID = btnID;
 		if(opt.img){
 			buttons.push(btnID);
+			var arr = opt.img instanceof Array?opt.img:[opt.img];
+			var html = [];
+			for(var i=0; i<arr.length; i++)
+				html.push("<img src=\""+arr[i]+"\" />");
 			$("#"+btnID)
-				.html("<img src=\""+opt.img+"\"/>")
+				.html(html.join(" "))
 				.click(function(){pnl.show();})
 				.css({cursor:"pointer"})
-				.show();
 			return;
 		}
 		
