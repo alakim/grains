@@ -26,11 +26,35 @@ var CrlMatrix = (function(){
 		}
 	};
 	
+	function Grid(data){var _=this;
+		_.data = data;
+		_.x = {min:data[0].x, max:data[0].x};
+		_.y = {min:data[0].y, max:data[0].y};
+		for(var i=0; i<data.length; i++){
+			var d = data[i];
+			if(_.x.min>d.x)_.x.min = d.x;
+			if(_.x.max<d.x)_.x.max = d.x;
+			if(_.y.min>d.y)_.y.min = d.y;
+			if(_.y.max<d.y)_.y.max = d.y;
+		}
+	}
+	Grid.prototype = {
+		step:10,
+		setSize: function(size){var _=this;
+			_.size = size;
+			
+		},
+		getPos: function(dataItem){var _=this;
+			
+		}
+	};
+	
 	function __(pnlID, data){var _=this;
 		_.pnlID = pnlID;
 		_.data = data;
 		_.idx = instances.length;
 		_.colorTable = new ColorTable(data);
+		_.grid = new Grid(data);
 		instances.push(_);
 	}
 	
@@ -72,6 +96,7 @@ var CrlMatrix = (function(){
 		build: function(){var _=this;
 			var pnl = $("#"+_.pnlID);
 			var size = {w:pnl.width(), h:pnl.height()};
+			_.grid.setSize(size);
 			var r = Raphael(pnl[0], size.w, size.h);
 			extend(_,{
 				size: size,
