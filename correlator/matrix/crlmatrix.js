@@ -40,12 +40,22 @@ var CrlMatrix = (function(){
 	}
 	Grid.prototype = {
 		step:10,
+		margin:{x:10, y:10},
 		setSize: function(size){var _=this;
 			_.size = size;
-			
+			_.rate = {
+				x: (_.size.w - 2*_.margin.x)/(_.x.max - _.x.min),
+				y: (_.size.h - 2*_.margin.y)/(_.y.max - _.y.min)
+			};
+			console.log("rate:", _.rate);
 		},
 		getPos: function(dataItem){var _=this;
-			
+			var p = {
+				x: (dataItem.x - _.x.min)*_.rate.x + _.margin.x,
+				y: (dataItem.y - _.y.min)*_.rate.y + _.margin.y
+			};
+			console.log(p);
+			return p;
 		}
 	};
 	
@@ -85,7 +95,8 @@ var CrlMatrix = (function(){
 			templates.grid(_);
 			
 			$.each(_.data, function(i, d){
-				_.r.circle(d.x, d.y, 3).attr({
+				var p = _.grid.getPos(d);
+				_.r.circle(p.x, p.y, 3).attr({
 					fill:_.colorTable.getColor(d.v), "stroke-width":0
 				});
 			});
