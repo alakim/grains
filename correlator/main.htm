@@ -2,14 +2,30 @@
 <head>
 <title>Correlator main page</title>
 <script type="text/javascript" src="../../trunk/html/html.js"></script>
+<script type="text/javascript" src="matrix/lib/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="matrix/lib/raphael-min.js.txt"></script>
+<script type="text/javascript" src="matrix/crlmatrix.js"></script>
 <script type="text/javascript" src="correlator.js"></script>
+<script type="text/javascript">
+function displayCorrelation(){
+	var txt = $("#taInput").val();
+	var mtx = Correlator.getMatrix(txt);
+	console.log(mtx);
+	new CrlMatrix("matrix", mtx).build();
+}
+</script>
+<style type="text/css">
+	#matrix{
+		width:600px;
+		height:350px;
+	}
+</style>
 </head>
 <body>
 	<h1>Correlator main page</h1>
 	<p>Попытка поиска похожих фрагментов в тексте. Пока просто подсчитывает количество вхождений каждой строки в анализируемый текст.</p>
 	<div><textarea id="taInput" style="width:600px; height:400px;"></textarea></div>
-	<input type="button" value="Start" onclick="Correlator.start()"/>
-	<p>Выводятся идентификатор строки, число ее вхождений, и сама строка:</p>
-	<div id="outPnl"></div>
+	<input type="button" value="Start" onclick="displayCorrelation()"/>
+	<div id="matrix"></div>
 </body>
 </html>
