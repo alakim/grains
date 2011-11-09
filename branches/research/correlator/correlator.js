@@ -36,10 +36,11 @@ var Correlator = (function(){
 					var x = parseInt(sline.id);
 					if(x!=y && lines[x].length>minLineLength && lines[y].length>minLineLength && !differentLength(lines[x], lines[y])){
 						res.push({
-							x:x,
-							y:y,
-							v:sline.rate,
-							d: lines[x]+"("+lines[x].length+")"+"<br/>"+lines[y]+"("+lines[y].length+")"
+							x: x,
+							y: y,
+							v: sline.rate,
+							d1: lines[x],
+							d2: lines[y]
 						});
 					}
 				});
