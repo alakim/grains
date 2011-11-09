@@ -76,17 +76,21 @@ var CrlMatrix = (function(){
 	
 	
 	function displayData(dataItem, pos){
-		$("#display").html(
+		var offset = 20;
+		var pnl = $("#display").html(
 			dataItem?"x:"+dataItem.x+", y:"+dataItem.y+", v:"+dataItem.v + "<br/>"+dataItem.d
 				:""
-		);
+		)
+		pnl.offset(pos?{top:pos.y+offset+$(window).scrollTop()*2, left:pos.x+offset}:{top:0, left:0});
+		if(dataItem) pnl.show(); 
+		else pnl.hide();
 	}
 	
 	var instances = [];
 	
 	var templates = {
 		grid: function(matrix){var _=matrix;
-			var step = 10;
+			var step = 14;
 			var style = {"stroke-width":1, stroke:"#ccc"};
 			_.r.rect(0, 0, _.size.w, _.size.h).attr({
 				fill:"#fff",
@@ -108,13 +112,16 @@ var CrlMatrix = (function(){
 			
 			$.each(_.data, function(i, d){
 				var p = _.grid.getPos(d);
-				_.r.circle(p.x, p.y, 3).attr({
-					fill:_.colorTable.getColor(d.v), "stroke-width":0
+				_.r.circle(p.x, p.y, 5).attr({
+					fill:_.colorTable.getColor(d.v), "stroke-width":0.5
 				}).mouseover(function(evt){
 					var pos = {x:evt.clientX, y:evt.clientY};
+					this._fill = this.attr("fill");
+					this.attr({fill:"#f00"});
 					displayData(d, pos);
 				}).mouseout(function(){
 					displayData();
+					this.attr({fill:this._fill});
 				});
 			});
 		}
