@@ -74,11 +74,16 @@ var CrlMatrix = (function(){
 		instances.push(_);
 	}
 	
-	
+	function prepareHTML(s){
+		return s.replace("&", "&amp;")
+			.replace("<", "&lt;")
+			.replace(">", "&gt;");
+	}
 	function displayData(dataItem, pos){
 		var offset = 20;
 		var pnl = $("#display").html(
-			dataItem?"x:"+dataItem.x+", y:"+dataItem.y+", v:"+dataItem.v + "<br/>"+dataItem.d
+			dataItem?"x:"+dataItem.x+", y:"+dataItem.y+", v:"+dataItem.v + "<br/><ol><li>"+
+					prepareHTML(dataItem.d1)+"</li><li>"+prepareHTML(dataItem.d2)+"</li></ol>"
 				:""
 		)
 		pnl.offset(pos?{top:pos.y+offset+$(window).scrollTop()*2, left:pos.x+offset}:{top:0, left:0});
