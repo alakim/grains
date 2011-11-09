@@ -1,7 +1,10 @@
 if(typeof($)!="function") alert("jquery.js module required!");
 if(typeof(FDict)!="function") alert("fdict.js module required!");
+FDict.windowSize = 5;
 
 var Correlator = (function(){
+	var minLineLength = 3;
+	
 	function trim(str){
 		return str.replace(/^\s+/, "").replace(/\s+$/, "");
 	}
@@ -13,21 +16,32 @@ var Correlator = (function(){
 			for(var k in coll){F(coll[k], k);}
 	}
 	
+	function differentLength(s1, s2){
+		var l1 = s1.length, l2 = s2.length;
+		var diff = Math.min(l1, l2) / Math.max(l1, l2);
+		return diff<0.6;
+	}
+	
 	var _ = {
 		getMatrix: function(txt){
 			var lines = txt.split("\n");
+			for(var i=0; i<lines.length; i++){
+				lines[i] = trim(lines[i]);
+			}
 			var dict = new FDict(lines);
 			var res = [];
 			each(lines, function(line, y){
 				var sim = dict.find(line);
 				each(sim, function(sline){
 					var x = parseInt(sline.id);
-					res.push({
-						x:x,
-						y:y,
-						v:sline.rate,
-						d: lines[x]+"<br/>"+lines[y]
-					});
+					if(x!=y && lines[x].length>minLineLength && lines[y].length>minLineLength && !differentLength(lines[x], lines[y])){
+						res.push({
+							x:x,
+							y:y,
+							v:sline.rate,
+							d: lines[x]+"("+lines[x].length+")"+"<br/>"+lines[y]+"("+lines[y].length+")"
+						});
+					}
 				});
 			});
 			return res;
