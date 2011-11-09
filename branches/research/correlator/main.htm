@@ -5,12 +5,14 @@
 <script type="text/javascript" src="matrix/lib/jquery-1.6.4.min.js"></script>
 <script type="text/javascript" src="matrix/lib/raphael-min.js.txt"></script>
 <script type="text/javascript" src="matrix/crlmatrix.js"></script>
+<script type="text/javascript" src="../fuzzyDictionary/fdict.js"></script>
 <script type="text/javascript" src="correlator.js"></script>
 <script type="text/javascript">
+	
 function displayCorrelation(){
+	$("#matrix").html("");
 	var txt = $("#taInput").val();
 	var mtx = Correlator.getMatrix(txt);
-	console.log(mtx);
 	new CrlMatrix("matrix", mtx).build();
 }
 </script>
@@ -19,13 +21,19 @@ function displayCorrelation(){
 		width:600px;
 		height:350px;
 	}
+	#display{
+		width:600px;
+		height:150px;
+		margin-bottom:10px;
+	}
 </style>
 </head>
 <body>
 	<h1>Correlator main page</h1>
 	<p>Попытка поиска похожих фрагментов в тексте. Пока просто подсчитывает количество вхождений каждой строки в анализируемый текст.</p>
-	<div><textarea id="taInput" style="width:600px; height:400px;"></textarea></div>
+	<div><textarea id="taInput" style="width:600px; height:200px;"></textarea></div>
 	<input type="button" value="Start" onclick="displayCorrelation()"/>
 	<div id="matrix"></div>
+	<div id="display"></div>
 </body>
 </html>
