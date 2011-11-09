@@ -4,10 +4,11 @@ if(typeof(Raphael)!="function") alert("raphael.js module required!");
 var CrlMatrix = (function(){
 	function extend(o,s){for(var k in s){o[k]=s[k];}}
 	
-	function ColorTable(data){var _=this;
+	function ColorTable(data, grayscaleMode){var _=this;
 		_.data = data;
 		_.maxV = data[0].v;
 		_.minV = data[0].v;
+		_.grayscaleMode = grayscaleMode || false;
 		for(var i=0; i<data.length; i++){
 			var v = data[i].v;
 			if(_.maxV<v)_.maxV = v;
@@ -20,9 +21,16 @@ var CrlMatrix = (function(){
 			"#a00", "#f00"
 		],
 		getColor: function(v){var _=this;
-			var step = (_.maxV - _.minV)/(_.palette.length-1);
+			var lng = _.grayscaleMode?15:_.palette.length-1
+			var step = (_.maxV - _.minV)/lng;
+			step = step || 1;
 			var idx = Math.floor((v - _.minV)/step);
-			return _.palette[idx];
+			if(!_.grayscaleMode)
+				return idx;
+			else{
+				var d = (lng-idx).toString(16);
+				return "#"+d+d+d;
+			}
 		}
 	};
 	
@@ -61,7 +69,7 @@ var CrlMatrix = (function(){
 		_.pnlID = pnlID;
 		_.data = data;
 		_.idx = instances.length;
-		_.colorTable = new ColorTable(data);
+		_.colorTable = new ColorTable(data, true);
 		_.grid = new Grid(data);
 		instances.push(_);
 	}
@@ -69,7 +77,7 @@ var CrlMatrix = (function(){
 	
 	function displayData(dataItem, pos){
 		$("#display").html(
-			dataItem?"x:"+dataItem.x+", y:"+dataItem.y+", v:"+dataItem.v
+			dataItem?"x:"+dataItem.x+", y:"+dataItem.y+", v:"+dataItem.v + "<br/>"+dataItem.d
 				:""
 		);
 	}
