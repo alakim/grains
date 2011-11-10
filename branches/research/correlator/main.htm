@@ -1,19 +1,46 @@
 <html>
 <head>
 <title>Correlator main page</title>
-<script type="text/javascript" src="../../trunk/html/html.js"></script>
 <script type="text/javascript" src="matrix/lib/jquery-1.6.4.min.js"></script>
 <script type="text/javascript" src="matrix/lib/raphael-min.js.txt"></script>
 <script type="text/javascript" src="matrix/crlmatrix.js"></script>
 <script type="text/javascript" src="../fuzzyDictionary/fdict.js"></script>
 <script type="text/javascript" src="correlator.js"></script>
+<style type="text/css">
+	body{
+		font-family: Verdana, Arial, Sans-Serif;
+	}
+</style>
 <script type="text/javascript">
 	
 function displayCorrelation(){
 	$("#matrix").html("");
+	var mtx;
 	var txt = $("#taInput").val();
-	var mtx = Correlator.getMatrix(txt);
-	new CrlMatrix("matrix", mtx).build();
+	if(crossCorrelation){
+		var txt2 = $("#taInput2").val();
+		mtx = Correlator.getMatrix(txt, txt2);
+	}
+	else
+		mtx = Correlator.getMatrix(txt);
+		
+	if(!(mtx && mtx.length))
+		$("#matrix").html("<div style='color:red; font-weight:bold; font-size:20px;'>No correlation</div>");
+	else 
+		new CrlMatrix("matrix", mtx).build();
+}
+
+var crossCorrelation = false;
+function toggleMode(){
+	$("#btMode").attr({
+		value:"To "+(crossCorrelation?"Cross":"Auto")+"-correlation mode"
+	});
+	crossCorrelation = !crossCorrelation;
+	$("#taInput").width(crossCorrelation?450:600);
+	if(crossCorrelation)
+		$("#taInput2").show();
+	else
+		$("#taInput2").hide();
 }
 </script>
 <style type="text/css">
@@ -35,8 +62,14 @@ function displayCorrelation(){
 <body>
 	<h1>Correlator main page</h1>
 	<p>Попытка поиска похожих фрагментов в тексте.</p>
-	<div><textarea id="taInput" style="width:600px; height:200px;"></textarea></div>
+	<div>
+		<table border="0"><tr>
+			<td><textarea id="taInput" style="width:600px; height:200px;"></textarea></td>
+			<td><textarea id="taInput2" style="display:none; width:450px; height:200px;"></textarea></td>
+		</tr></table>
+	</div>
 	<input type="button" value="Start" onclick="displayCorrelation()"/>
+	<input type="button" id="btMode" value="To Cross-Correlation Mode" onclick="toggleMode()"/>
 	<div id="matrix"></div>
 	<div id="display"></div>
 </body>
