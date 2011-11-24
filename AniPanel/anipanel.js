@@ -5,18 +5,6 @@ var AniPanel = (function(){
 	var version = "1.0.0";
 	function extend(o,s){for(var k in s){o[k] = s[k]}}
 	
-	function traceObject(o){
-		if(typeof(console.log)=="function"){
-			console.log(o);
-		}
-		else{
-			var s = [];
-			for(var k in o)
-				s.push(k+": "+o[k]);
-			alert(s.join("\n"));
-		}
-	}
-	
 	function __(pnl, options){var _=this;
 		if(typeof(pnl)=="string")
 			pnl = document.getElementById(pnl);
@@ -26,6 +14,7 @@ var AniPanel = (function(){
 		_.size = {x: opt.x, y: opt.y, w: opt.w, h:opt.h};
 		
 		build(_);
+		setTimeout(function(){_.show();}, __.delay);
 	}
 	
 	var frames = [];
@@ -44,11 +33,13 @@ var AniPanel = (function(){
 			left: (pnl.size.x-borderWidth/2-padding)+"px", 
 			top: (pnl.size.y-borderWidth/2-padding-__.title.size)+"px",
 			width: pnl.w+borderWidth2 + padding+__.shadow.offset, 
-			height: pnl.h+borderWidth2 + padding+__.shadow.offset+__.title.size
+			height: pnl.h+borderWidth2 + padding+__.shadow.offset+__.title.size,
+			display: "none"
 		};
 		$("#"+frmID).css(styles);
 		pnl.panel.css({
-			left:pnl.size.x, top:pnl.size.y
+			left:pnl.size.x, top:pnl.size.y,
+			display: "none"
 		});
 		
 		
@@ -107,7 +98,7 @@ var AniPanel = (function(){
 			position: "absolute",
 			left: opt.x,
 			top: opt.y,
-			display:"none"
+			display:"block"
 		});
 		pnl.buttonID = btnID;
 		if(opt.img){
