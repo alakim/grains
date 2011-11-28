@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Catalog</title>
+<meta http-equiv="Content-Type" content="text/html;charset=windows-1251">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<script type="text/javascript" src="../html/html.js"></script>
+<script type="text/javascript" src="catalog.js"></script>
+<script type="text/javascript">
+
+
+
+var catalog = new Catalog({
+	synonyms:[
+		"music;музыка",
+		"guitar;гитара;гитары",
+		"кларнет;clarinet",
+		"computers;CS;компьютеры",
+		"tutorial;tutorials;учебник;учебники",
+		"работа;job"
+	],
+	catalogs:{}, 
+	items:[
+		{url:"http://ajaxian.com/archives/new-javascriptcanvas-graph-library", label:"Ajaxian » New Javascript/Canvas Graph library", tags:["Canvas","Javascript","software"]},
+		{url:"http://excanvas.sourceforge.net/", label:"ExplorerCanvas", tags:["Canvas","Javascript","software"]},
+		{url:"http://developer.mozilla.org/en/docs/Canvas_tutorial", label:"Canvas tutorial - MDC", tags:["Canvas","tutorial"]},
+		{url:"http://fastcoder.org/javascript/38.html", label:"JavaScript :: Canvas - создание многоугольников", tags:["Canvas","Javascript","примеры","руководство"]},
+		{url:"http://hubblesite.org/", label:"HubbleSite -- Out of the ordinary...out of this world.", tags:["Hubble","анимация","астрономия","space","фотографии"]},
+		{url:"http://tldp.org/", label:"The Linux Documentation Project", tags:["Linux"]},
+		{url:"http://oreilly.com/catalog/debian/chapter/book/index.html", label:"Learning Debian GNU/Linux", tags:["Linux","книга","tutorial"]},
+		{url:"http://www.caliban.org/bash/index.shtml", label:"Working more productively with bash 2.x/3.x", tags:["Linux","Bash"]},
+		{url:"http://www.codecoffee.com/tipsforlinux/index.html", label:"Tips For Linux - Home", tags:["Linux","tutorial"]},
+		{url:"http://www.ss64.com/bash/", label:"Linux bash commands - MAN Pages", tags:["Linux"]},
+		{url:"http://www.hypexr.org/bash_tutorial.php", label:"BASH Help - A Bash Tutorial", tags:["Linux","Bash"]},
+		{url:"http://swik.net/XSLT+linux", label:"XSLT + linux - SWiK", tags:["Linux","XML"]},
+		{url:"http://www.yolinux.com/TUTORIALS/unix_for_dos_users.html", label:"Linux/UNIX For DOS Users", tags:["Linux"]},
+		{url:"http://www.xmlsoft.org/", label:"The XML C parser and toolkit of Gnome", tags:["Linux","Gnome","XML"]},
+		{url:"http://linux.die.net/man/1/xsltproc", label:"xsltproc(1): XSLT processor - Linux man page", tags:["Linux","Gnome","XML"]},
+		{url:"http://www.livefirelabs.com/unix_tip_trick_shell_script/unix_tip_archive.htm", label:"Popular UNIX Tips", tags:["Linux","tutorial"]},
+		{url:"http://en.tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html#toc2", label:"BASH Programming - Introduction HOW-TO", tags:["Linux","Bash"]},
+		{url:"http://vikos.lrn.ru/book/first_start.htm#3.7.1.", label:"ОС Linux на Вашем персональном компьютере", tags:["Linux"]},
+		{url:"http://www.brothersoft.com/rapid-xslt-for-linux-128231.html", label:"Download Rapid XSLT for linux, Rapid XSLT for linux 0.1 Download", tags:["Linux","XML"]},
+		{url:"http://www.sbin.org/doc/HOWTO/mini/Man-Page.html", label:"Linux Man Page Howto", tags:["Linux"]},
+		{url:"http://www.linux-tutorial.info/index.php", label:"Linux Knowledge Base and Tutorial", tags:["Linux","tutorial"]},
+		{url:"http://www.linuxshare.ru/", label:"LinuxShare | Кто владеет информацией - владеет всем!", tags:["Linux"]},
+		{url:"http://corpuscul.net/", label:"Corpuscul.net. Экспериментируем с созданием звука и музыки", tags:"music;акустика;наука;теория;звукозапись;звукорежиссура;библиотека", dsc:"Очень полезный сайт по звукозаписи. Есть целый раздел по акустике инструментов (с формулами!). Есть даже библиотека звуков"}
+	]
+});
+
+function init(){
+	catalog.display();
+}
+</script>
+</head>
+<body onload="init()">
+</body>
+</html>
