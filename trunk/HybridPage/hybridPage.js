@@ -1,10 +1,11 @@
 if(typeof(jQuery)!="function") alert("jquery.js module required!");
+if(typeof(Html)!="object") alert("html.js module required!");
 
 var HybridPage = (function(){
 	
 	function menuClick(pgID){
 		if(!__.ws) throw "Missing web service link";
-		$("#pageContent").html("wait...");
+		$("#pageContent").html(Html.img({src:"wait.gif"}));
 		__.ws.getData(pgID, function(data){
 			__.pageID = pgID;
 			__.data = data;
