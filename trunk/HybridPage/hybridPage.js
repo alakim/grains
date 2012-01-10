@@ -3,9 +3,15 @@ if(typeof(jQuery)!="function") alert("jquery.js module required!");
 var HybridPage = (function(){
 	
 	function menuClick(pgID){
-		$("#pageContent").html(__.templates.page(pgID));
-		$("#header").html(__.templates.header(pgID));
-		$("#pageLink").html(__.templates.pageLink(pgID));
+		if(!__.ws) throw "Missing web service link";
+		$("#pageContent").html("wait...");
+		__.ws.getData(pgID, function(data){
+			__.pageID = pgID;
+			__.data = data;
+			$("#pageContent").html(__.templates.page());
+			$("#header").html(__.templates.header());
+			$("#pageLink").html(__.templates.pageLink());
+		}, __.displayError);
 	}
 	
 	var userMode = false;
@@ -28,23 +34,36 @@ var HybridPage = (function(){
 	
 	function initForm(){
 		if(document.location.hash){
-			document.location.href = __.getPageLink(document.location.hash);
+			var id = __.getHashPageID(document.location.hash);
+			document.location.href = __.getPageLink(id);
 		}
 		$("body").one("mousemove", setUserMode);
 	}
+	
 		
 	var __ = {
+		set: function(settings){
+			for(var k in settings)
+				__[k] = settings[k];
+		},
+		ws:null,
+		pageID:null,
+		data:null,
 		templates:{
-			page: function(pgID){with(Html){
-				return div(
-					"Page ", pgID.match(/\d+/i)[0], " content."
-				);
-			}},
-			header: function(pgID){
-				return "Page "+pgID.match(/\d+/i)[0]
+			set: function(settings){
+				for(var k in settings)
+					__.templates[k] = settings[k];
 			},
-			pageLink: function(pgID){with(Html){
-				return a({href:__.getPageLink(pgID)},
+			page: function(){with(Html){
+				return __.data?div(
+					__.data.content
+				):null;
+			}},
+			header: function(){
+				return __.data?__.data.title:null
+			},
+			pageLink: function(){with(Html){
+				return a({href:__.getPageLink(__.pageID)},
 					"Постоянная ссылка на данную страницу"
 				);
 			}}
@@ -53,10 +72,16 @@ var HybridPage = (function(){
 			return ref.match(/main\.htm$/i)!=null;
 		},
 		getPageID: function(ref){
-			return "p"+ref.match(/(\d+)\.htm/i)[1];
+			return ref.match(/(\d+)\.htm/i)[1];
+		},
+		getHashPageID: function(hash){
+			return hash.match(/\d+/i);
 		},
 		getPageLink: function(pgID){
 			return "page"+(pgID.match(/\d+/i)[0])+".htm";
+		},
+		displayError: function(err){
+			alert(err);
 		}
 	}
 
