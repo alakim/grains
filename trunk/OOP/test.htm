@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>OOP Unit Tests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251"> 
+
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="oop.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля OOP", "Configuration").run = function(){
+	this.assert(typeof(OOP), "object");
+}
+
+new JSUnit.Test("Inheritance", "Basic tests").run = function(){
+	function Person (id, name, age) {
+		this.id = id;
+		this.name = name;
+		this.age = age;
+	}
+	Person.prototype = {
+		wake_up: function () {
+			return "A person is awake.";
+		},
+		get_age: function () {
+			return this.age;
+		}
+	}
+	
+	function Manager(id, name, age, salary) {
+		Manager.baseConstructor.call(this, id, name, age);
+		this.salary = salary;
+	}    
+
+	OOP.Inheritance(Manager, Person);    
+
+	Manager.prototype.wake_up =  function () {
+		return Manager.superClass.wake_up() + " I am in control.";
+		return "I am in control.";
+	}
+	
+	var person1 = new Person(1, 'Joe Tester', 26);
+	var person2 = new Manager(1, 'Joe Tester', 26, '20.000');    
+	
+	this.assert(person1.get_age(), 26);
+	this.assert(person1.wake_up(), "A person is awake.");
+	this.assert(person2.get_age(), 26);
+	this.assert(person2.wake_up(), "A person is awake. I am in control.");
+
+}
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = OOP.version;
+	JSUnit.init();
+}
+
+</script>
+
+</head>
+<body onload="init()">
+	<h1>OOP Unit Tests</h1>
+	<p style="border: 1px solid black; padding:5px; margin:10px;">Модуль OOP обеспечивает возможность применения техники объектно-ориентированного программирования в JavaScript.</p>
+	<p>OOP v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
