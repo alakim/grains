@@ -4,6 +4,7 @@ FDict.windowSize = 5;
 
 var Correlator = (function(){
 	var minLineLength = 3;
+	var threshold = 0.5;
 	
 	function trim(str){
 		return str.replace(/^\s+/, "").replace(/\s+$/, "");
@@ -39,6 +40,7 @@ var Correlator = (function(){
 			if(crossCorrelation) lines2 = buildLines(txt2);
 			
 			var dict = new FDict(lines);
+			dict.threshold = threshold;
 			var res = [];
 			(function(lines1, lines2){
 			each(lines2, function(line, y){
