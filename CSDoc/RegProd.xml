@@ -1,0 +1,1875 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RegProd</name>
+    </assembly>
+    <members>
+        <member name="T:IVC.IS.RegProd.ws.production">
+            <summary>Каталог продукции</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.ws.production.WriteProductionFields(IVC.IS.RegProd.Data.Production,System.Collections.Generic.Dictionary{System.String,System.Boolean},System.Web.UI.HtmlTextWriter,System.Data.Linq.DataContext)">
+            <summary>Выводит данные полей записи продукции</summary>
+            <param name="prod">данные продукции</param>
+            <param name="writer">компонент вывода</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.ws.production.WriteColumns(System.Linq.IQueryable{IVC.IS.RegProd.Data.sysWorkColumn},System.Web.UI.HtmlTextWriter)">
+            <summary>Выводит данные рабочих колонок</summary>
+            <param name="writer">компонент вывода</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.room.ws.production">
+            <summary>Возвращает данные для таблицы продукции</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.production.orgID">
+            <summary>Идентификатор организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.production.pageSize">
+            <summary>Размер страницы списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.production.pageNumber">
+            <summary>Номер страницы списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.production.pageCount">
+            <summary>Количество страниц списка</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.ws.production.GetGuidParameter(System.String)">
+            <summary>Извлекает из запроса параметр типа GUID</summary>
+            <param name="prmName">имя параметра</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.ws.production.GetIntParameter(System.String,System.Int32)">
+            <summary>Извлекает из запроса параметр типа int</summary>
+            <param name="prmName">имя параметра</param>
+            <param name="defaultValue">значение по умолчанию</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.production.db">
+            <summary>БД</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.rptAlbums">
+            <summary>
+            rptAlbums control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.rptPhotos">
+            <summary>
+            rptPhotos control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.fldUpload">
+            <summary>
+            fldUpload control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.btUpload">
+            <summary>
+            btUpload control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.tbDescription">
+            <summary>
+            tbDescription control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.photos.PhotoPath(System.Object)">
+            <summary>Возвращает путь к веб-версии фотографии</summary>
+            <param name="dataItem">данные фотографии</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.photos.ThumbnailPath(System.Object)">
+            <summary>Возвращает путь к пиктограмме фотографии</summary>
+            <param name="dataItem">данные фотографии</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.photos.PhotoDescription(System.Object)">
+            <summary>Возвращает описание фотографии</summary>
+            <param name="dataItem">данные фотографии</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.prm">
+            <summary>Параметры запроса</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.db">
+            <summary>База данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.photos.user">
+            <summary>Авторизованный пользователь</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RegionSelector.lblCurrentRegion">
+            <summary>
+            lblCurrentRegion control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Header.rptTopMenu">
+            <summary>
+            rptTopMenu control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Header.authorized">
+            <summary>Признак авторизованного пользователя</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.ws.regions.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.regions.Json">
+            <summary>Шаблон для формирования выходного кода</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.ws.regions.Json.#ctor(System.Data.Linq.Table{IVC.IS.RegProd.Data.Region})">
+            <summary>Конструктор</summary>
+            <param name="regions">список регионов</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.catalogtree">
+            <summary>Возвращает узлы дерева каталогов, построенных на базе модуля DBTree</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.catalogtree.ResponseBuilder">
+            <summary>Шаблон для формирования ответа</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.favourites.rptStarredUsers">
+            <summary>
+            rptStarredUsers control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.favourites.rptStarredGroups">
+            <summary>
+            rptStarredGroups control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.HashCalculator">
+            <summary>Вычисляет хэш-функции по алгоритму MD5</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.HashCalculator.GetHashCode(System.String)">
+            <summary>Вычисляет строку, содержащую значение хэш-функции заданной строки</summary>
+            <param name="src">исходная строка</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.Catalogs">
+            <summary>Содержит кэшированные данные каталогов рабочих таблиц</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.Refresh">
+            <summary>Обновляет кэшированные данные</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.GetCatalog(System.String)">
+            <summary>Возвращает полную структуру каталогов заданной рабочей таблицы</summary>
+            <param name="tableName">имя рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.GetCatalog(System.String,System.Guid)">
+            <summary>Возвращает полную структуру каталогов заданной рабочей таблицы</summary>
+            <param name="tableName">имя рабочей таблицы</param>
+            <param name="catID">идентификатор текущего каталога</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.GetCatalogPath(System.String,System.Guid)">
+            <summary>Возвращает путь к заданному каталогу в виде списка каталогов от корня к заданному</summary>
+            <param name="catID">идентификатор текущего каталога</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.AddToPath(System.Guid,System.Collections.Generic.List{IVC.IS.RegProd.Data.CatalogInfo})">
+            <summary>Добавляет данные заданного каталога к пути</summary>
+            <param name="catID">идентификатор каталога</param>
+            <param name="path">путь</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.Catalogs.LoadCatalogs(System.String)">
+            <summary>Загружает из БД и возвращает полную структуру каталогов заданной рабочей таблицы</summary>
+            <param name="tableName">имя рабочей таблицы</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.Catalogs.catalogs">
+            <summary>Кэшированные данные каталогов. Ключ - физическое имя рабочей таблицы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.Catalogs.catDict">
+            <summary>Словарь данных каталогов. Ключ - идентификатор каталога.</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.CatalogInfo">
+            <summary>Данные каталога рабочей таблицы</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.CatalogInfo.SetLinks(IVC.IS.RegProd.Data.CatalogInfo)">
+            <summary>Устанавливает связи с другими узлами каталогов</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.CatalogInfo.SetLinks(IVC.IS.RegProd.Data.CatalogInfo,System.Collections.Generic.List{IVC.IS.RegProd.Data.CatalogInfo})">
+            <summary>Устанавливает связи с другими узлами каталогов</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.id">
+            <summary>Идентификатор каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.parentID">
+            <summary>Идентификатор родительского каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.name">
+            <summary>Имя каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.http">
+            <summary>Ссылочный URL</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.children">
+            <summary>Дочерние каталоги</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.parent">
+            <summary>Родительский каталог</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.priority">
+            <summary>Приоритет</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.CatalogInfo.settings">
+            <summary>Дополнительные настройки</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.ID">
+            <summary>Идентификатор каталога</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.ParentID">
+            <summary>Идентификатор родительского каталога</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Name">
+            <summary>Имя каталога</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Children">
+            <summary>Дочерние каталоги</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Parent">
+            <summary>Родительский каталог</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Priority">
+            <summary>Приоритет</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Http">
+            <summary>Ссылочный URL</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.Settings">
+            <summary>Дополнительные настройки</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.CatalogInfo.AuthorizationRequired">
+            <summary>Признак, что данный раздел доступен только авторизованным пользователям</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.catalogtable">
+            <summary>Возвращает таблицу данных для заданного раздела меню, построенного на базе модуля DBTree</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.ws.catalogtable.defaultColumnCount">
+            <summary>Количество отображаемых по умолчанию колонок</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.catalogtable.ResponseBuilder">
+            <summary>Шаблон для формирования ответа</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.editMode">
+            <summary>Режим редактирования</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.user.DisplayError(System.String)">
+            <summary>Выводит сообщение об ошибке</summary>
+            <param name="msg">сообщение об ошибке</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.db">
+            <summary>Подключение к БД</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.userData">
+            <summary>Авторизованный пользователь</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.btStar">
+            <summary>
+            btStar control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbLogin">
+            <summary>
+            tbLogin control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.pnlPasswordChange">
+            <summary>
+            pnlPasswordChange control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbPassword1">
+            <summary>
+            tbPassword1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbPassword2">
+            <summary>
+            tbPassword2 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbFamilyName">
+            <summary>
+            tbFamilyName control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbFirstName">
+            <summary>
+            tbFirstName control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.tbPatronymic">
+            <summary>
+            tbPatronymic control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.btSave">
+            <summary>
+            btSave control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.user.lblError">
+            <summary>
+            lblError control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room._default.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.authTimeout">
+            <summary>Таймаут авторизации в минутах</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.pnlLogon">
+            <summary>
+            pnlLogon control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.tbLogin">
+            <summary>
+            tbLogin control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.tbPassword">
+            <summary>
+            tbPassword control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.btLogon">
+            <summary>
+            btLogon control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.pnlLogoff">
+            <summary>
+            pnlLogoff control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.btLogoff">
+            <summary>
+            btLogoff control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.LogonMode">
+            <summary>Режим авторизованного пользователя</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Logon.respect">
+            <summary>Обращение к авторизованному пользователю</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Logon.SetLogonMode(System.Boolean)">
+            <summary>Устанавливает режим отображения</summary>
+            <param name="logon">признак режима авторизации (если сброшен, то это режим выхода)</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Logon.AddCookie(System.String,System.String)">
+            <summary>Добавляет авторизационный cookie</summary>
+            <param name="name">имя пользователя</param>
+            <param name="userData">данные пользователя</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.DataSource">
+            <summary>Источник данных</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetDB">
+            <summary>Возвращает объект доступа к БД</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetWorkColumns(System.String)">
+            <summary>Возвращает данные колонок заданной рабочей таблицы</summary>
+            <param name="tableName">физическое имя рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetRefPointer(IVC.IS.RegProd.Data.sysWorkColumn)">
+            <summary>Возвращает указатель ссылочные данные</summary>
+            <param name="col">метаданные колонки, ссылающейся на данное значение</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetMetatable(System.String)">
+            <summary>Возвращает данные мэппинга рабочей таблицы</summary>
+            <param name="tableName">физическое имя рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetRefValue(System.Object,System.String)">
+            <summary>Возвращает значение, полученное из ссылочной таблицы</summary>
+            <param name="data">объект, содержащий данные исходной записи БД</param>
+            <param name="fldName">имя свойства исходного объекта, содержащего ссылку на внешние данные</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetRefValue(System.Object,IVC.IS.RegProd.Data.sysWorkColumn)">
+            <summary>Возвращает значение, полученное из ссылочной таблицы</summary>
+            <param name="data">объект, содержащий данные исходной записи БД</param>
+            <pparam name="col">метаданные колонки записи, содержащей ссылку</pparam>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetRefValue(System.Object,IVC.IS.RegProd.Data.sysWorkColumn,IVC.IS.RegProd.Data.DBDataContext)">
+            <summary>Возвращает значение, полученное из ссылочной таблицы</summary>
+            <param name="data">объект, содержащий данные исходной записи БД</param>
+            <pparam name="col">метаданные колонки записи, содержащей ссылку</pparam>
+            <param name="db">база данных</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetRefValue(System.Object,System.String,IVC.IS.RegProd.Data.DBDataContext)">
+            <summary>Возвращает значение, полученное из ссылочной таблицы</summary>
+            <param name="data">объект, содержащий данные исходной записи БД</param>
+            <param name="fldName">имя свойства исходного объекта, содержащего ссылку на внешние данные</param>
+            <param name="db">база данных</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.RefreshCaches">
+            <summary>Очищает содержимое кэшей для перезагрузки метаданных</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetWorkTable(System.String)">
+            <summary>Возвращает метаданные рабочей таблицы</summary>
+            <param name="tableName">физическое имя рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.GetWorkTable(System.Guid)">
+            <summary>Возвращает метаданные рабочей таблицы</summary>
+            <param name="tableID">внутренний идентификатор рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.LoadWorkTables">
+            <summary>Загружает метаданные рабочих таблиц</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.reSpaces">
+            <summary>Регулярное выражение для нормализации пробелов</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.FormatJSON(System.Object)">
+            <summary>Преобразует данные в строку JSON</summary>
+            <param name="data">исходные данные</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.workTables">
+            <summary>Кэш данных о рабочих таблицах</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.workTablesByID">
+            <summary>Кэш данных о рабочих таблицах</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.workColumns">
+            <summary>Кэш данных о колонках рабочих таблиц</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.metaTables">
+            <summary>Кэш данных о мэппинге таблиц</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.DataSource.RefValue">
+            <summary>Ссылочное значение</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.DataSource.RefValue.#ctor(System.Guid,System.Guid,System.String)">
+            <summary>Конструктор</summary>
+            <param name="refTableID">идентификатор ссылочной таблицы</param>
+            <param name="refRowID">идентификатор ссылочной записи</param>
+            <param name="text">отображаемый текст</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.RefValue.RefTableID">
+            <summary>Идентификатор ссылочной таблицы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.RefValue.RefRowID">
+            <summary>Идентификатор ссылочной записи</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.DataSource.RefValue.Text">
+            <summary>Отображаемый текст</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.RefPointer">
+            <summary>Указатель на ссылочные данные</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RefPointer.#ctor(System.Type,System.Reflection.PropertyInfo)">
+            <summary>Конструктор</summary>
+            <param name="targetType">класс, содержащий ссылочные данные</param>
+            <param name="targetField">свойство класса, содержащее ссылочные данные</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.table">
+            <summary>Возвращает таблицу данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.ws.table.defaultColumnCount">
+            <summary>Количество отображаемых по умолчанию колонок</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.columns">
+            <summary>Возвращает список колонок заданной рабочей таблицы</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.columns.ResponseBuilder">
+            <summary>Шаблон для формирования ответа</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.GroupActions.btLeave">
+            <summary>
+            btLeave control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.GroupActions.btJoin">
+            <summary>
+            btJoin control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.GroupActions.adminAccess">
+            <summary>Признак, что пользователь работает с группой как администратор</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.GroupActions.isMember">
+            <summary>Признак, что пользователь является членом группы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.GroupActions.groupID">
+            <summary>Идентификатор группы</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.GroupActions.btJoin_Click(System.Object,System.EventArgs)">
+            <summary>Кнопка "Вступить в группу"</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.GroupActions.btLeave_Click(System.Object,System.EventArgs)">
+            <summary>Кнопка "Покинуть группу"</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.GroupName">
+            <summary>Имя группы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.GroupDescription">
+            <summary>Описание группы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.db">
+            <summary>База данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.userGroup">
+            <summary>Редактируемая группа пользователей</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.newGroupMode">
+            <summary>Признак режима создания новой группы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.btStar">
+            <summary>
+            btStar control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.rptOrganization">
+            <summary>
+            rptOrganization control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.rptMembers">
+            <summary>
+            rptMembers control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.group.rptAdmins">
+            <summary>
+            rptAdmins control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.production.rptTable">
+            <summary>
+            rptTable control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.RowView`1">
+            <summary>Содержит данные для отображения записи</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowView`1.#ctor(`0)">
+            <summary>Конструктор</summary>
+            <param name="row">отображаемые данные</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowView`1.AddTemplate(System.String,System.String)">
+            <summary>Добавляет шаблон отображения для заданного поля</summary>
+            <param name="fieldName">имя поля</param>
+            <param name="template">шаблон</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowView`1.Build">
+            <summary>Формирует отображение данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.RowView`1.row">
+            <summary>Отображаемые данные</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.RowView`1.columns">
+            <summary>Описания колонок</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.RowView`1.fields">
+            <summary>Значения полей</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.RowView`1.itemTemplates">
+            <summary>Шаблоны форматирования для заданных полей. Ключ - имя поля.</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.RowView`1.Fields">
+            <summary>Значения полей</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.FieldValue">
+            <summary>Значение поля</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.FieldValue.Build(IVC.IS.RegProd.Data.sysWorkColumn,System.Object,System.Object,System.String)">
+            <summary>Виртуальный конструктор</summary>
+            <param name="col">данные колонки</param>
+            <param name="data">исходные данные поля</param>
+            <param name="row">объект, содержащий данное поле</param>
+            <param name="template">шаблон форматирования</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.FieldValue.#ctor(IVC.IS.RegProd.Data.sysWorkColumn)">
+            <summary>Конструктор</summary>
+            <param name="col">данные колонки</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.FieldValue.col">
+            <summary>Данные колонки</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.FieldValue.Html">
+            <summary>Возвращает HTML-код для вставки в форму отображения</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.FieldValue.Json">
+            <summary>Возвращает JSON-код для передачи по технологии Ajax</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.FieldValue.Name">
+            <summary>Отображаемое имя поля</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.FieldValue.Column">
+            <summary>Данные колонки</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.StringField">
+            <summary>Строковое значение</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.StringField.#ctor(IVC.IS.RegProd.Data.sysWorkColumn,System.Object,System.Object,System.String)">
+            <summary>Конструктор</summary>
+            <param name="col">данные колонки</param>
+            <param name="data">исходные данные поля</param>
+            <param name="row">объект, содержащий данное поле</param>
+            <param name="template">шаблон форматирования</param>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.StringField.Json">
+            <summary>Возвращает JSON-код для передачи по технологии Ajax</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.ImageRefField">
+            <summary>Ссылка на картинку</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.ImageRefField.#ctor(IVC.IS.RegProd.Data.sysWorkColumn,System.Object,System.Object,System.String)">
+            <summary>Конструктор</summary>
+            <param name="col">данные колонки</param>
+            <param name="data">исходные данные поля</param>
+            <param name="row">объект, содержащий данное поле</param>
+            <param name="template">шаблон форматирования</param>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.ImageRefField.Json">
+            <summary>Возвращает JSON-код для передачи по технологии Ajax</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.RefField">
+            <summary>Ссылочное значение</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RefField.#ctor(IVC.IS.RegProd.Data.sysWorkColumn,System.Object,System.Object,System.String)">
+            <summary>Конструктор</summary>
+            <param name="col">метаданные колонки</param>
+            <param name="data">исходные данные поля</param>
+            <param name="row">объект, содержащий данное поле</param>
+            <param name="template">шаблон форматирования</param>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.RefField.Json">
+            <summary>Возвращает JSON-код для передачи по технологии Ajax</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.XmlField">
+            <summary>XML-поле</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.XmlField.#ctor(IVC.IS.RegProd.Data.sysWorkColumn,System.Object,System.Object,System.String)">
+            <summary>Конструктор</summary>
+            <param name="col">метаданные колонки</param>
+            <param name="data">исходные данные поля</param>
+            <param name="row">объект, содержащий данное поле</param>
+            <param name="template">шаблон форматирования</param>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.XmlField.Json">
+            <summary>Возвращает JSON-код для передачи по технологии Ajax</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.Star.starred">
+            <summary>Признак наличия отметки</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.room.Star.ItemType">
+            <summary>Типы отмечаемых элементов</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Menu.catTree">
+            <summary>
+            catTree control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Menu.authorized">
+            <summary>Признак авторизованного пользователя</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Menu.prm">
+            <summary>Параметры запроса</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.admin.refresh.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.organization.rptPassport">
+            <summary>
+            rptPassport control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.room.editgroup">
+            <summary>Управление группой пользователей</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.tbGroupName">
+            <summary>
+            tbGroupName control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.tbDescription">
+            <summary>
+            tbDescription control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.lblOrganization">
+            <summary>
+            lblOrganization control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.hdnOrganization">
+            <summary>
+            hdnOrganization control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.hdnOrgName">
+            <summary>
+            hdnOrgName control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.btOK">
+            <summary>
+            btOK control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.group">
+            <summary>Данные редактируемой группы пользователей</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.newGroupMode">
+            <summary>Признак использования формы для создания новой группы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.editgroup.db">
+            <summary>База данных</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.RowDialog">
+            <summary>Содержит данные для отображения диалога записи</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowDialog.ColumnDefs(System.String)">
+            <summary>Возвращает JSON-описание колонок заданной рабочей таблицы</summary>
+            <param name="tableName">имя рабочей таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowDialog.AdditionalAttributes(IVC.IS.RegProd.Data.sysWorkColumn)">
+            <summary>Возвращает строку, содержащую дополнительные данные описания колонки</summary>
+            <param name="col">описание колонки</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.RowDialog.WriteTypes(System.Collections.Generic.Dictionary{System.Int32,System.Boolean},System.IO.StringWriter)">
+            <summary>Выводит список типов</summary>
+            <param name="types">коллекция используемых типов</param>
+            <param name="json">компонент вывода в формате JSON</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.RowDialog.appTypes">
+            <summary>Словать типов данных для приложения</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.RowDialog.ColumnAppTypes">
+            <summary>Возвращает словарь имен типов колонок. Ключ - код типа.</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.ColumnType">
+            <summary>Тип данный, хранящихся в полях информационной базы. 
+            Значения перечислений соответствуют типам ADO Scheme для MS SQL сервера версии 6.х, 7.0, 2000. 
+            Для приложений данный тип является в любом случае чисто условным.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbZero">
+            <summary>
+            Тип данных поля информационной базы не определен - 0.
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbBigint">
+            <summary>
+            Типом данных в информационной базе является длинное целое число - 20. 
+            Данный тип может принимать значения от -9223372036854775808 до 9223372036854775807.
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbBinary">
+            <summary>
+            Типом данных в информационной базе является блок бинарных объектов 
+            большого объема (BLOB, binary large objects block) фиксированной длины - 128.
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbBit">
+            <summary>
+            Типом данных в информационной базе является целое число, которое может 
+            принимать значения 0,1 или NULL - 11
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbChar">
+            <summary>
+            Типом данных является строка, набор символов, фиксированной длины 
+            от 1 до 8000 символов - 129
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbDatetime">
+            <summary>
+            Типом данных информационной базы является дата и время с точностью 
+            до миллисекунд - 135
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbDecimal">
+            <summary>
+            Типом данных информационной базы является число с фиксированной 
+            точность и дробной частью (decimal[(precision[, scale])] , может принимать 
+            значения от -10^38+1 до 10^38-1, по умолчанию decimal(18,0), аналогичет numeric - 10131
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbFloat">
+            <summary>
+            Типом данных информационной базы является число с плаваяющей запятой (точкой) 
+            от -1,79E+308 до +1,79E+308, - 5
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbImage">
+            <summary>
+            Типом данных в информационной базе является бинарный блок произвольной длины, 
+            максимальная длина в байтах до 2 147 483 647 (BLOB, binary large objects block) - 10128
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbInt">
+            <summary>
+            Типом данных в информационной базе является целое число от -2 147 483 648 
+            до 2 147 483 647, - 3
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbMoney">
+            <summary>
+            Типом данных в информационной базе является денежное и валютное представление 
+            числа, которое может принимать значение от -922 337 203 685 477.5808 
+            до +922 337 203 685 477.5807, - 6
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbNchar">
+            <summary>
+            Типом данных является Unicode строка, набор символов, фиксированной длины 
+            от 1 до 8000 символов с поддержкой многих языков - 130
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbNtext">
+            <summary>
+            Типом данных является текст любой длины в Unicode формате с поддержкой 
+            многих языков, максимальное количество символов до 1 073 741 823 - 10130
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbNumeric">
+            <summary>
+            Типом данных информационной базы является число с фиксированной 
+            точность и дробной частью (numeric[(precision[, scale])] , может принимать 
+            значения от -10^38+1 до 10^38-1, по умолчанию numeric(18,0), аналогичет decimal - 10131
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbNvarchar">
+            <summary>
+            Типом данных является Unicode строка, набор символов, переменной длины 
+            от 1 до 8000 символов с поддержкой многих языков - 11130
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbReal">
+            <summary>
+            Типом данных информационной базы является число с плаваяющей запятой (точкой) 
+            от –3,40E+38 до +3,40E+38, - 4
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbSmalldatetime">
+            <summary>
+            Типом данных информационной базы является дата и время с точностью 
+            до минут, секундная точность будет потеряна и вместо секунд 
+            будут возвращаться нули - 10135
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbSmallint">
+            <summary>
+            Типом данных в информационной базе является целое число от -32 768 
+            до 32 767, - 2
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbSmallmoney">
+            <summary>
+            Типом данных в информационной базе является денежное и валютное представление 
+            числа, которое может принимать значение от -214 748.3648 до +214 748.3647, - 10006
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbSql_variant">
+            <summary>
+            Тип данных используется информационной базой для поддержания и преобразвания 
+            других типов данных
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbText">
+            <summary>
+            Типом данных является текст любой длины в не-Unicode формате,  
+            максимальное количество символов до 2 147 483 647 - 10129
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbTimestamp">
+            <summary>
+            Тип данных используется информационной базой для формирования и поддержки 
+            версии верификации записей в таблицах
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbTinyint">
+            <summary>
+            Типом данных в информационной базе является целое число от 0 
+            до 255, - 17
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbUniqueidentifier">
+            <summary>
+            Типом данных является 16-ти байтное шестнадцатиричное число, представляющее 
+            глобальный уникальный идентификатор (globally unique identifier - GUID) - 72. 
+            Формат представления данного типа - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbVarbinary">
+            <summary>
+            Типом данных в информационной базе является блок бинарных объектов 
+            большого объема (BLOB, binary large objects block) произвольной длины - 11128.
+            </summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnType.dbVarchar">
+            <summary>
+            Типом данных является строка, набор символов, переменной длины 
+            от 1 до 8000 символов - 11129
+            </summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.room.ws.saverow">
+            <summary>Сохраняет запись заданной таблицы</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.ws.saverow.ExtractData">
+            <summary>Извлекает сохраняемые данные из формы запроса</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.ws.saverow.BuildSql(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>Формирует SQL запрос на сохранение данных</summary>
+            <param name="data">сохраняемые данные</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.room.ws.saverow.FormatValue(System.String,System.String)">
+            <summary>Форматирует значение поля для вставки в SQL-запрос в зависимости от типа колонки</summary>
+            <param name="colName">имя колонки</param>
+            <param name="colValue">значение поля</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.saverow.reDataKey">
+            <summary>Выражение для парсинга ключей данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.ws.saverow.createNewRow">
+            <summary>Признак создания новой записи</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.Room.HeadSection">
+            <summary>
+            HeadSection control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.Room.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.Room.PageContent">
+            <summary>
+            PageContent control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.groups.pnlGroupList">
+            <summary>
+            pnlGroupList control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.groups.rptGroups">
+            <summary>
+            rptGroups control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.groups.lblNoGroups">
+            <summary>
+            lblNoGroups control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.ws.row">
+            <summary>Возвращает данные заданной записи</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.ws.row.LoadData">
+            <summary>Загружает данные из БД</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.ws.row.BuildSql">
+            <summary>Формирует SQL-запрос на получение данных</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.orgName">
+            <summary>Наименование организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.orgNameJ">
+            <summary>Наименование организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.orgID">
+            <summary>Идентификатор организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.pageSize">
+            <summary>Размер страницы списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.pageNumber">
+            <summary>Номер страницы списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.pageCount">
+            <summary>Количество страниц списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.regionID">
+            <summary>Идентификатор региона организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.regionName">
+            <summary>Название региона организации</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.db">
+            <summary>БД</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.production.rptProduction">
+            <summary>
+            rptProduction control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.RequestParameters">
+            <summary>Обеспечивает доступ к параметрам запроса</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.AuthCookieName">
+            <summary>Имя cookie, используемое для авторизации</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.RequestParameters.#ctor(System.Web.HttpContext)">
+            <summary>Конструктор</summary>
+            <param name="context">контекст веб-приложения</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.RequestParameters.GetGuid(System.String)">
+            <summary>Извлекает GUID из заданного параметра строки запроса. Если параметр не задан, или задан как-то криво, возвращает Guid.Empty</summary>
+            <param name="prmName">имя параметра</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.RequestParameters.BuildCatalogLink(System.Guid)">
+            <summary>Формирует гиперссылку на заданный каталог</summary>
+            <param name="catID">идентификатор каталога</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.context">
+            <summary>Контекст веб-приложения</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.CatalogID">
+            <summary>Идентификатор текущего каталога</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.RegionID">
+            <summary>Идентификатор текущего региона</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.RowID">
+            <summary>Идентификатор текущей записи</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.GroupID">
+            <summary>Идентификатор группы пользователей</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.UserID">
+            <summary>Идентификатор пользователя (не авторизованного, а произвольного - для просмотра)</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.OrganizationID">
+            <summary>Идентификатор организации</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.ProductID">
+            <summary>Идентификатор продукции</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.PageID">
+            <summary>Идентификатор страницы</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.NewsCatalogID">
+            <summary>Идентификатор каталога новостей строительства</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.RequestParameters.AuthorizedUserID">
+            <summary>Возвращает идентификатор авторизованного пользователя системы</summary>
+            <param name="request">HTTP-запрос</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.RequestParameters.ParamNames">
+            <summary>Содержит имена параметров строки запроса</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.menu">
+            <summary>Идентификатор текущего узла меню сайта</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.catalog2">
+            <summary>Идентификатор дополнительного каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.catalog">
+            <summary>Идентификатор каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.row">
+            <summary>Идентификатор записи</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.page">
+            <summary>Идентификатор страницы списка</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.RequestParameters.ParamNames.refresh">
+            <summary>Команда на обновление кэшей</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Main.HeadSection">
+            <summary>
+            HeadSection control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Main.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Main.Hints">
+            <summary>
+            Hints control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Main.LeftPanel">
+            <summary>
+            LeftPanel control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.Main.PageContent">
+            <summary>
+            PageContent control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.TableLoader">
+            <summary>Реализует постраничную загрузку данных из рабочей таблицы БД</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>Конструктор</summary>
+            <param name="tableName">физическое имя таблицы</param>
+            <param name="pageSize">размер страницы</param>
+            <param name="columnsCount">количество колонок</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.#ctor(System.String)">
+            <summary>Конструктор</summary>
+            <param name="tableName">физическое имя таблицы</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.LoadData(System.Guid,System.Int32)">
+            <summary>Загружает данные из БД, возвращает таблицу данных.</summary>
+            <param name="columns">список загружаемых колонок</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.GetPagesCount(System.Guid)">
+            <summary>Количество страниц</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.BuildQuery(System.Guid,System.Int32,System.Linq.IQueryable{IVC.IS.RegProd.Data.sysWorkColumn})">
+            <summary>Формирует текст SQL-запроса к БД</summary>
+            <param name="columns">список загружаемых колонок</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.Data.TableLoader.GetColumnList(System.String,System.Linq.IQueryable{IVC.IS.RegProd.Data.sysWorkColumn})">
+            <summary>Возвращает фрагмент SQL-запроса, содержащего список колонок</summary>
+            <param name="alias">алиас целевой таблицы БД</param>
+            <param name="columns">список колонок</param>
+        </member>
+        <member name="P:IVC.IS.RegProd.Data.TableLoader.Columns">
+            <summary>Список отображаемых колонок рабочей таблицы</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.Data.ColumnAppType">
+            <summary>Тип поля данных, определяемый на уровне приложения. Уточняет физический тип данных.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appZero">
+            <summary>Тип поля не определен - 0.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appString">
+            <summary>Тип поля для приложений - строка. Длина строки может быть максимально 
+            8000 символов - 1. Данный тип может объединять данные типа dbChar, dbNchar, 
+            dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appMoney">
+            <summary>Тип поля представляет десятичное числовое значение - 2. Данный тип может объединять 
+            данные типа dbDecimal, dbMoney, dbNumeric, dbSmallmoney (см. подробнее ColumnType), 
+            число с плавающей запятой и точность после запятой 4 знака.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appInt">
+            <summary>Тип поля представляет целое число - 3. Данный тип может объединять данные типа 
+            dbSmallint, dbTinyint (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appLongInt">
+            <summary>Тип поля представляет длинное целое число - 4. Даный тип может объединять 
+            данные типа dbBigint, dbInt, dbNumeric (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appDouble">
+            <summary>Тип поля представляет числовое значение с двойной точностью - 5. Данный тип 
+            может объединять данные типа dbDecimal, dbFloat, dbReal (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appDate">
+            <summary>Тип поля представляет дату и время - 6. Данный тип может объединять данные типа 
+            dbDatetime, dbSmalldatetime (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appText">
+            <summary>Тип поля представляет текст большого объема (до 2 Гбайт) - 7. Данный тип может 
+            объединять данные типа dbNtext, dbText (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appUID">
+            <summary>Тип поля представляет уникальный идентификатор, например, записи, каталога, 
+            пользователя и т.п. Данный тип соответствует только dbUniqueidentifier - 8.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appImage">
+            <summary>Тип поля представляет объект, например, графический файл, документ не 
+            текстового формата и т.п. Объем информации - до 2 Гбайт. Данный тип поля 
+            соответствует только dbImage - 9.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appRecordRef">
+            <summary>Тип поля представляет ссылку на другую запись в данной таблице или другой 
+            таблицы - 10. Данный тип соответствует только dbUniqueidentifier.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appListRef">
+            <summary>Тип поля не содержит данных и поля физически может не быть в структуре 
+            информационной базы, поле является виртуальным и соответствует только dbZero, 
+            т.е. не определенное - 11.</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appHTTPRef">
+            <summary>Тип поля является строкой и представляет ссылку на веб-ресурс, длина поля, 
+            как правило не может быть больше 512 символов - 12. Данный тип может объединять 
+            данные типа dbChar, dbNchar, dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appImageSrc">
+            <summary>Тип поля является строкой и представляет ссылку на картинку, размещенную на веб-ресурсе, длина 
+            поля, как правило не может быть больше 512 символов - 13. Данный тип может объединять 
+            данные типа dbChar, dbNchar, dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appEmail">
+            <summary>Тип поля является строкой и представляет адрес электронной почты, длина поля, 
+            как правило не может быть больше 512 символов - 14. Данный тип может объединять 
+            данные типа dbChar, dbNchar, dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appDownMenu">
+            <summary>Тип поля является строкой, информация которой заполняется автоматически значением 
+            при выборе из списка, формируемого из другой таблицы - 15. Данный тип может объединять 
+            данные типа dbChar, dbNchar, dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appVideo">
+            <summary>Тип поля является строкой и представляет ссылку на видео материал, размещенный на 
+            веб-ресурсе, длина поля, как правило не может быть больше 512 символов - 16. Данный тип 
+            может объединять данные типа dbChar, dbNchar, dbNvarchar, dbVarchar (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appLogic">
+            <summary>Тип поля представляет собой логическое значение (ДА или НЕТ, TRUE или FALSE) - 17. 
+            Данный тип может объединять данные типа dbInt, dbSmallint, dbTinyint (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appHTMLText">
+            <summary>Тип поля представляет текст большого объема (до 2 Гбайт) в формате HTML документа - 18. 
+            Данный тип может объединять данные типа dbNtext, dbText (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.Data.ColumnAppType.appXMLText">
+            <summary>Тип поля представляет текст большого объема (до 2 Гбайт) в формате XML документа - 19. 
+            Данный тип может объединять данные типа dbNtext, dbText (см. подробнее ColumnType).</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.news.catTree">
+            <summary>
+            catTree control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.news.rptNews">
+            <summary>
+            rptNews control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.product.prodName">
+            <summary>Наименование продукции</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.product.db">
+            <summary>БД</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.product.rptFields">
+            <summary>
+            rptFields control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblOrgName">
+            <summary>
+            lblOrgName control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblLegalAddress">
+            <summary>
+            lblLegalAddress control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblAddress">
+            <summary>
+            lblAddress control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblBank">
+            <summary>
+            lblBank control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblEMail">
+            <summary>
+            lblEMail control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblPhone">
+            <summary>
+            lblPhone control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblFax">
+            <summary>
+            lblFax control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblManagership">
+            <summary>
+            lblManagership control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblManagerFIO">
+            <summary>
+            lblManagerFIO control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblICQ">
+            <summary>
+            lblICQ control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblINN">
+            <summary>
+            lblINN control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblHistory">
+            <summary>
+            lblHistory control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.lblRegion">
+            <summary>
+            lblRegion control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.room.organization.rptGroups">
+            <summary>
+            rptGroups control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.captchaVStateName">
+            <summary>Ключ для доступа к параметрам CAPTCHA через View State</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.minPasswordLength">
+            <summary>Минимальная длина пароля</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.Head1">
+            <summary>
+            Head1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.form1">
+            <summary>
+            form1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.Header1">
+            <summary>
+            Header1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.pnlDialog">
+            <summary>
+            pnlDialog control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.tbLogin">
+            <summary>
+            tbLogin control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.tbPassword1">
+            <summary>
+            tbPassword1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.tbPassword2">
+            <summary>
+            tbPassword2 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.tbCaptcha">
+            <summary>
+            tbCaptcha control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.btOK">
+            <summary>
+            btOK control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.lblError">
+            <summary>
+            lblError control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.pnlConfirmation">
+            <summary>
+            pnlConfirmation control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.Footer1">
+            <summary>
+            Footer1 control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd.registration.captchaKey">
+            <summary>Ключ для проверки пользователя</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.registration.SaveUser">
+            <summary>Регистрирует пользователя в БД</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.registration.CheckFields">
+            <summary>Проверяет введенные данные</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.registration.UpdateCaptcha">
+            <summary>Обновляет картинку CAPTCHA</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.registration.DisplayError(System.String)">
+            <summary>Выводит сообщение об ошибке</summary>
+            <param name="msg">сообщение об ошибке</param>
+        </member>
+        <member name="F:IVC.IS.RegProd._Default.rptNews">
+            <summary>
+            rptNews control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd._Default.rptHints">
+            <summary>
+            rptHints control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="F:IVC.IS.RegProd._Default.rptContent">
+            <summary>
+            rptContent control.
+            </summary>
+            <remarks>
+            Auto-generated field.
+            To modify move field declaration from designer file to code-behind file.
+            </remarks>
+        </member>
+        <member name="M:IVC.IS.RegProd._Default.LoadNews">
+            <summary>Загружает данные новостных блоков</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd._Default.LoadMainPageArticles">
+            <summary>Загружает статьи главной страницы</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd._Default.LoadHints">
+            <summary>Загружает данные верхних блоков</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd._Default.db">
+            <summary>База данных</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.MultimediaStorage">
+            <summary>Управляет хранилищем мультимедиа-контента на диске</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.Init(System.Web.HttpContext)">
+            <summary>Инициализация хранилища</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.MultimediaStorage.rootDir">
+            <summary>Корневая директория хранилища</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.MultimediaStorage.rootUrl">
+            <summary>Корневой URL хранилища</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.MultimediaStorage.reMime">
+            <summary>Регулярное выражение для распознавания типа контента</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetFilePath(System.String,System.String)">
+            <summary>Возвращает путь для загрузки файла</summary>
+            <param name="fileName">имя файла на клиенте</param>
+            <param name="mimeType">MIME-тип файла</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.BuildOptimizedImages(System.String,System.String)">
+            <summary>Создает оптимизированные версии фотографий</summary>
+            <param name="filePath">путь к исходному файлу</param>
+            <param name="mimeType">MIME-тип файла</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetWebVersionPath(System.String)">
+            <summary>Возвращает путь к веб-версии фотографии</summary>
+            <param name="srcPath">исходный путь фотографии</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetThumbnailPath(System.String)">
+            <summary>Возвращает путь к пиктограмме фотографии</summary>
+            <param name="srcPath">исходный путь фотографии</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.ResizeImage(System.String,System.String,System.String,System.Int32)">
+            <summary>Создает новую версию картинки с заданными размерами</summary>
+            <param name="srcPath">путь к исходному файлу</param>
+            <param name="trgPath">путь к целевому файлу</param>
+            <param name="mimeType">MIME-тип картинки</param>
+            <param name="h">новый размер по вертикали</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetEncoderInfo(System.String)">
+            <summary>Возвращает информацию о кодеке заданного графического формата</summary>
+            <param name="mimeType">MIME-тип графического формата</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetFileUrl(System.String)">
+            <summary>Возвращает URL файла, соответствующий заданному физическому пути на диске</summary>
+            <param name="filePath">путь файла на диске</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.CheckDirectory(System.String)">
+            <summary>Проверяет существование директории, и если ее нет, то создает ее.</summary>
+            <param name="path">путь к директории</param>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.GetExtension(System.String)">
+            <summary>Возвращает расширение файла в соотстветствии с типом контента</summary>
+            <param name="mimeType">тип контента</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.MultimediaStorage.Configuration">
+            <summary>Настройки</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.Configuration.#ctor(System.Xml.XmlNode)">
+            <summary>Конструктор</summary>
+            <param name="section">секция XML-настроек</param>
+        </member>
+        <member name="F:IVC.IS.RegProd.MultimediaStorage.Configuration.section">
+            <summary>XML-описание настроек</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.MultimediaStorage.Configuration.instance">
+            <summary>Текущий экземпляр настроек</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.MultimediaStorage.Configuration.Settings">
+            <summary>Возвращает текущие настройки</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.MultimediaStorage.Configuration.RootUrl">
+            <summary>URL корневой директории хранилища</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.MultimediaStorage.Configuration.PhotoWebHeight">
+            <summary>Высота веб-версии фотографии</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.MultimediaStorage.Configuration.PhotoThumbnailHeight">
+            <summary>Высота пиктограммы фотографии</summary>
+        </member>
+        <member name="T:IVC.IS.RegProd.MultimediaStorage.ConfigHandler">
+            <summary>Обработчик блока настроек</summary>
+        </member>
+        <member name="M:IVC.IS.RegProd.MultimediaStorage.ConfigHandler.Create(System.Object,System.Object,System.Xml.XmlNode)">
+            <summary>Виртуальный конструктор описания настроек</summary>
+            <param name="parent">родительский объекть</param>
+            <param name="configContext">контекст</param>
+            <param name="section">раздел конфигурационного файла</param>
+        </member>
+        <member name="T:IVC.IS.RegProd.CatalogTreeView">
+            <summary>Отображает дерево каталогов БД</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.CatalogTreeView.catID">
+            <summary>Идентификатор текущего каталога</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.CatalogTreeView.workTable">
+            <summary>Физическое имя рабочей таблицы</summary>
+        </member>
+        <member name="F:IVC.IS.RegProd.CatalogTreeView.rootName">
+            <summary>Название корневого уровня</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.CatalogTreeView.CatalogID">
+            <summary>Идентификатор текущего каталога</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.CatalogTreeView.WorkTable">
+            <summary>Физическое имя рабочей таблицы</summary>
+        </member>
+        <member name="P:IVC.IS.RegProd.CatalogTreeView.RootName">
+            <summary>Название корневого уровня</summary>
+        </member>
+    </members>
+</doc>

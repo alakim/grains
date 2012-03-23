@@ -1,0 +1,25 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="lib/csdoc.css"/>
+	<script type="text/javascript" src="lib/xmldoc.js"></script>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="lib/csdoc.js"></script>
+	<script type="text/javascript">
+		function display(){
+			var fileNm = $("#tbXmlFileName").val();
+			CSDoc.display(fileNm);
+		}
+	</script>
+</head>
+<body>
+	<h1>C# XML Documentation browser</h1>
+	<div>
+		<input type="text" id="tbXmlFileName" />
+		<input type="button" value="Display" onclick="display()"/>
+	</div>
+	
+	<div id="out"></div>
+</body>
+</html>
