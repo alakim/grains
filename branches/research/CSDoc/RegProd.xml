@@ -6,6 +6,7 @@
     <members>
         <member name="T:IVC.IS.RegProd.ws.production">
             <summary>Каталог продукции</summary>
+			<tags>продукция;каталог</tags>
         </member>
         <member name="M:IVC.IS.RegProd.ws.production.WriteProductionFields(IVC.IS.RegProd.Data.Production,System.Collections.Generic.Dictionary{System.String,System.Boolean},System.Web.UI.HtmlTextWriter,System.Data.Linq.DataContext)">
             <summary>Выводит данные полей записи продукции</summary>
@@ -15,9 +16,11 @@
         <member name="M:IVC.IS.RegProd.ws.production.WriteColumns(System.Linq.IQueryable{IVC.IS.RegProd.Data.sysWorkColumn},System.Web.UI.HtmlTextWriter)">
             <summary>Выводит данные рабочих колонок</summary>
             <param name="writer">компонент вывода</param>
+			<tags>БД;просмотр;метаданные</tags>
         </member>
         <member name="T:IVC.IS.RegProd.room.ws.production">
             <summary>Возвращает данные для таблицы продукции</summary>
+			<tags>продукция;таблица;просмотр</tags>
         </member>
         <member name="F:IVC.IS.RegProd.room.ws.production.orgID">
             <summary>Идентификатор организации</summary>

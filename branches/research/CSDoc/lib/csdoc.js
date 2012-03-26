@@ -15,22 +15,15 @@ var CSDoc = (function(){
 	}
 	
 	var templates = {
-		// namesList: function(){with(Html){
-			// return div(
-				// table(
-					// apply(memberIndex, function(mmb, nm){
-						// return tr(
-							// td(mmb.type),
-							// td(mmb.fullName)
-						// );
-					// })
-				// )
-			// );
-		// }},
+
 		table: function(){with(Html){
-			// console.log(tree);
 			return div(
-				// templates.namesList(),
+				div({id:"tagsList"},
+					apply(tags, function(lst, t){
+						return span(span({"class":"action", onclick:callFunction("CSDoc.displayMembers", t)}, t), " ");
+					})
+				),
+				div({id:"selectedMembersPnl"}),
 				hr(),
 				ul(
 					apply(tree, templates.item)
@@ -46,18 +39,38 @@ var CSDoc = (function(){
 		},
 		item: function(nd){with(Html){
 			return li(
-				nd.member?span({"class":"member"}, templates.type(nd.member.type), " ", nd.name)
+				nd.member?span({"class":"member", title:nd.member.description},
+						templates.type(nd.member.type), " ",
+						nd.name, " ",
+						templates.tagsList(nd.member)
+						// nd.member.tags?span({"class":"tagList"}, "&lt;", nd.member.tags, "&gt;"):null
+					)
 					:span({"class":"module"}, nd.name),
-				ul(
+				ul({"class":"tree", title:nd.name},
 					apply(nd.children, templates.item)
 				)
 			);
+		}},
+		selectedMembers: function(tagName){with(Html){
+			return div(
+				div({style:"font-weight:bold;"}, tagName, ":"),
+				apply(tags[tagName], function(mmb){
+					return div({title:mmb.description},
+						mmb.fullName.replace(/\([^\)]*\)/, "()"), " ",
+						templates.tagsList(mmb)
+					);
+				})
+			);
+		}},
+		tagsList: function(mmb){with(Html){
+			return mmb.tags?span({"class":"tagList"}, "&lt;", mmb.tags, "&gt;"):null;
 		}}
 	};
 	
 	var memberIndex = {};
 	var entities = {};
 	var tree = {};
+	var tags = {};
 	
 	function addTreeNode(mmb){
 		var nms = mmb.fullName.replace(/\([^\)]*\)/, "").split(".");
@@ -66,8 +79,6 @@ var CSDoc = (function(){
 			var nd = curNode?curNode.children[nm]:tree[nm];
 			if(!nd){
 				nd = {name:nm, children:{}};
-				// if(i==nms.length-1)
-					// nd.member = mmb;
 				if(curNode){
 					nd.parent = curNode;
 					curNode.children[nd.name] = nd;
@@ -83,14 +94,14 @@ var CSDoc = (function(){
 
 	
 	function displayDoc(xdoc){
-		// console.log(xdoc.selectNodes("//member").length);
-		// traceDoc(xdoc);
 		var members = xdoc.getElementsByTagName("member");
 		each(members, function(mmb){
 			var mmbNm = mmb.getAttribute("name");
 			var nms = mmbNm.split(":");
 			var nm = nms[1], t = nms[0];
-			memberIndex[nm] = {fullName:nm, type:t};
+			var itm = {fullName:nm, type:t};
+			var tags = getAttributes(mmb, itm);
+			memberIndex[nm] = itm;
 		});
 		each(memberIndex, addTreeNode);
 		
@@ -98,11 +109,40 @@ var CSDoc = (function(){
 		$("#out").html(templates.table());
 	}
 	
+	function getAttributes(mmb, itm){
+		var tagNames = [];
+		each(mmb.children, function(ch){
+			switch(ch.tagName){
+				case "tags":
+					var tagsList = ch.childNodes[0].wholeText;
+					tagNames.push(tagsList);
+					indexTags(itm, tagsList);
+					break;
+				case "summary":
+					itm.description = ch.childNodes[0].wholeText;
+					break;
+				default:break;
+			}
+		});
+		if(tagNames.length) itm.tags = tagNames.join(";");
+	}
+	
+	function indexTags(mmb, tagsList){
+		var lst = tagsList.split(";");
+		each(lst, function(t){
+			if(!tags[t]) tags[t] = [];
+			tags[t].push(mmb);
+		});
+	}
+	
 	var __ = {
 		display: function(xmlDocFile){
 			XmlDoc.load(xmlDocFile, function(xdoc){
 				displayDoc(xdoc);
 			});
+		},
+		displayMembers: function(tagName){
+			$("#selectedMembersPnl").html(templates.selectedMembers(tagName));
 		}
 	};
 	
