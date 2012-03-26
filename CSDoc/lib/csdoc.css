@@ -15,3 +15,23 @@
 .module{
 	font-weight:bold;
 }
+
+.action{
+	cursor:hand;cursor:pointer;
+	text-decoration:underline;
+	color:#008;
+}
+
+ul.tree{
+	border-left: 1px solid #aaa;
+	cursor:default;
+}
+
+#selectedMembersPnl{
+	cursor:default;
+}
+
+.tagList{
+	text-style:italic;
+	color:#080;
+}
