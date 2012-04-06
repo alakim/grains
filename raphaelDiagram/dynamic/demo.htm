@@ -1,0 +1,98 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<script type="text/javascript" src="../jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="raphael-min.js"></script>
+	<style type="text/css">
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+			background-color:#aaa;
+		}
+		#viewPnl{
+			width:400px;
+			height:400px;
+			margin:20px;
+			border:1px solid #000;
+			background-color:#fff;
+		}
+	</style>
+	<script type="text/javascript">
+		function each(coll, F){
+			if(coll instanceof Array) for(var i=0; i<coll.length; i++)F(coll[i],i);
+			else for(var k in coll)F(coll[k],k);
+		}
+		
+		var delay = 100;
+		var size = 400;
+		var minD = 0.5;
+		var R;
+		var nodes = [];
+		
+		function init(){
+			R = Raphael("viewPnl", size, size);
+			var prev;
+			for(var i=0; i<10; i++){
+				var c = R.circle(Math.floor(Math.random()*size/2), Math.floor(Math.random()*size/2), 4);
+				var nd = {
+					shape:c,
+					connections:prev?[prev]:[]
+				};
+				nodes.push(nd);
+				prev = nd;
+				// console.log(nd.shape.attrs.cx);
+			}
+			window.setInterval(process, delay);
+		}
+		
+		function sumDir(d1, d2){
+			return {x:d1.x+d2.x, y:d1.y+d2.y};
+		}
+		function distance(dir){
+			return Math.sqrt(dir.x*dir.x+dir.y*dir.y);
+		}
+		function direction(n1, n2){
+			var x = [n1.shape.attrs.cx, n2.shape.attrs.cx];
+			var y = [n1.shape.attrs.cy, n2.shape.attrs.cy];
+			return {x:x[1]-x[0], y:y[1]-y[0]};
+		}
+		
+		function process(){
+			each(nodes,function(nd){
+				var dS;
+				each(/*nd.connections*/nodes, function(prev){
+					if(prev==nd)return;
+					//console.log(nd);
+					var dir = direction(nd, prev);
+					var dist = distance(dir);
+					//console.log(dist);
+					if(dist<110){
+						var d = {x:dir.x/dist*4, y:dir.y/dist*4};
+						//console.log(dir, d);
+						if(Math.abs(d.x)<minD) d.x = 0; if(Math.abs(d.y)<minD) d.y = 0;
+						
+						dS = dS?sumDir(dS, d):d;
+					}
+				});
+				if(!dS) return;
+				var anim = {
+					cx:nd.shape.attrs.cx-dS.x,
+					cy:nd.shape.attrs.cy-dS.y
+				};
+				if(anim.cx<0)anim.cx=0; if(anim.cx>size)anim.cx = size;
+				if(anim.cy<0)anim.cy=0; if(anim.cy>size)anim.cy = size;
+				var anim = Raphael.animation(anim, delay, "<");
+				//console.log(anim);
+				nd.shape.animate(anim);
+			});
+		}
+		
+		$(init);
+	</script>
+	
+</head>
+<body>
+
+	<div id="viewPnl">
+	</div>
+</body>
+</html>
