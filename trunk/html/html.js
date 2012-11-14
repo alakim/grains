@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.3.215",
+	version: "2.4.429",
 	xhtmlMode: true	
 };
 
@@ -22,6 +22,13 @@ var Html = {
 	
 	function defineSelfClosingTags(tags){defineTags(tags, true, false);}
 	function defineNotEmptyTags(tags){defineTags(tags, false, true)}
+	function markup(){
+		var res = [];
+		each(arguments, function(tag){
+			res.push(tag);
+		});
+		return res.join("");
+	}
 	
 	extend(Html, {
 		tag: function(name, content, selfClosing, notEmpty){
@@ -64,13 +71,8 @@ var Html = {
 			return h.join("");
 		},
 		
-		tagCollection: function(){
-			var res = [];
-			each(arguments, function(tag){
-				res.push(tag);
-			});
-			return res.join("");
-		},
+		markup: markup,
+		tagCollection: markup,
 		
 		json: function(o){
 			if(o==null) return 'null';
@@ -110,7 +112,7 @@ var Html = {
 		}
 	});
 	
-	defineTags(["div", "a", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "h1", "h2", "h3", "h4", "h5", "h6", "button"]);
+	defineTags(["div", "a", "p", "span", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "h1", "h2", "h3", "h4", "h5", "h6", "button", "form"]);
 	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
 	defineNotEmptyTags(["th", "td"]);
 })();
