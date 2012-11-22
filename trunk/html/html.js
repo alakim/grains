@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.4.429",
+	version: "2.5.433",
 	xhtmlMode: true	
 };
 
@@ -98,6 +98,23 @@ var Html = {
 				str = str.replace(new RegExp("{\s*"+i+"\s*}", "ig"), arguments[i+1])
 			}
 			return str;
+		},
+		
+		style: function(){
+			function addUnits(nm, val){
+				if((nm=="width"||nm=="height"||nm=="top"||nm=="left")&&typeof(val)=="number") return val+"px";
+				return val;
+			}
+			
+			var s = {};
+			for(var i=0; i<arguments.length; i++){
+				extend(s, arguments[i]);
+			}
+			var r = [];
+			for(var k in s){
+				r.push(k+":"+addUnits(k, s[k]));
+			}
+			return r.join(";");
 		},
 		
 		callFunction: function(name, a1, a2){
