@@ -251,6 +251,14 @@ new JSUnit.Test("JSON serialization", "Formatting").run = function(){ with(Html)
 	this.assert(json([1,2,{x:1,y:2}]), "[1,2,{x:1,y:2}]", "Error 5.4");
 }}
 
+new JSUnit.Test("Style attribute", "Formatting").run = function(){ with(Html){
+	var style = Html.style({
+		width:100,
+		color:"#f00"
+	});
+	this.assert(style, "width:100px;color:#f00");
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;
 	JSUnit.init();
