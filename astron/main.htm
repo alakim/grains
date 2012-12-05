@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+	<title>Astron Test Page</title>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="js/lib/html.js"></script>
+	<script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/lib/raphael-min.js"></script>
+	<script type="text/javascript" src="js/solarSystem.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#solar").solarSystem({
+				w:400, h:300, 
+				color:{back:"#004", fore:"#ccf"}
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Astron Test Page</h1>
+	<div id="solar"></div>
+</body>
+</html>

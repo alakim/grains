@@ -22,13 +22,16 @@
 			else for(var k in coll)F(coll[k],k);
 		}
 		
-		var delay = 100;
+		var delay = 200;
 		var size = 400;
 		var minD = 0.5;
 		var R;
 		var nodes = [];
 		
 		function init(){
+		}
+		
+		function start(){
 			R = Raphael("viewPnl", size, size);
 			var prev;
 			for(var i=0; i<10; i++){
@@ -80,7 +83,7 @@
 				};
 				if(anim.cx<0)anim.cx=0; if(anim.cx>size)anim.cx = size;
 				if(anim.cy<0)anim.cy=0; if(anim.cy>size)anim.cy = size;
-				var anim = Raphael.animation(anim, delay, "<");
+				var anim = Raphael.animation(anim, delay);
 				//console.log(anim);
 				nd.shape.animate(anim);
 			});
@@ -89,10 +92,35 @@
 		$(init);
 	</script>
 	
+	<script type="text/javascript">
+		var R2, c;
+		var pos = 100;
+		var delay = 1000;
+		function start2(){
+			if(!R2) R2 = Raphael("view2", 300, 300);
+			if(!c) c = R2.circle(pos, pos, 20);
+			pos = pos==100?200:100;
+			var anim = Raphael.animation({cx:pos, cy:pos}, delay, "<");
+			c.animate(anim);
+			setTimeout(start2, delay);
+		}
+		
+	</script>
+	
 </head>
 <body>
-
-	<div id="viewPnl">
-	</div>
+	<table border="0">
+		<tr>
+			<td>
+				<div id="viewPnl">
+				</div>
+				<input type="button" value="Start" onclick="start()"/>
+			</td>
+			<td>
+				<div id="view2" style="width:300px; height:300px; border:1px solid #000; background-color:#fff; margin:20px;"></div>
+				<input type="button" value="Start" onclick="start2()"/>
+				
+			</td>
+		</tr>
 </body>
 </html>
