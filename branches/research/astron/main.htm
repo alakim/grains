@@ -2,14 +2,28 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-	<title>Astron Test Page</title>
+	<title>Solar System</title>
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="js/lib/dateExt.js"></script>
 	<script type="text/javascript" src="js/lib/html.js"></script>
 	<script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="js/lib/raphael-min.js"></script>
 	<script type="text/javascript" src="js/solarSystem.js"></script>
 	<script type="text/javascript">
 		$(function(){
+			$("#date").val(DateExt.format.shortDigits.toString(new Date()))
+				.change(function(){
+					try{
+						var dd = DateExt.format.shortDigits.parse($("#date").val());
+						$("#solar").html("");
+						$("#solar").solarSystem({
+							today:dd,
+							w:400, h:300, 
+							color:{back:"#004", fore:"#ccf"}
+						});
+					}
+					catch(e){}
+				});
 			$("#solar").solarSystem({
 				w:400, h:300, 
 				color:{back:"#004", fore:"#ccf"}
@@ -18,7 +32,9 @@
 	</script>
 </head>
 <body>
-	<h1>Astron Test Page</h1>
+	<h1>Solar System</h1>
 	<div id="solar"></div>
+	Date: <input type="text" id="date"/>
+	<p><a href="http://aki-net.narod.ru/kb/Astronomy/">More astronomy</a></p>
 </body>
 </html>
