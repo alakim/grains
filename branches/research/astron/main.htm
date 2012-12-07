@@ -14,13 +14,7 @@
 			$("#date").val(DateExt.format.shortDigits.toString(new Date()))
 				.change(function(){
 					try{
-						var dd = DateExt.format.shortDigits.parse($("#date").val());
-						$("#solar").html("");
-						$("#solar").solarSystem({
-							today:dd,
-							w:400, h:300, 
-							color:{back:"#004", fore:"#ccf"}
-						});
+						$("#solar").solarSystem({today: DateExt.format.shortDigits.parse($("#date").val())});
 					}
 					catch(e){}
 				});
