@@ -18,9 +18,14 @@
 					}
 					catch(e){}
 				});
+			$("#viewType").change(function(){
+				$("#solar").solarSystem({viewType:$("#viewType").val()});
+			});
+			
 			$("#solar").solarSystem({
-				w:400, h:300, 
-				color:{back:"#004", fore:"#ccf"}
+				w:600, h:550, 
+				color:{back:"#004", fore:"#ccf"},
+				viewType: $("#viewType").val()
 			});
 		});
 	</script>
@@ -29,6 +34,12 @@
 	<h1>Solar System</h1>
 	<div id="solar"></div>
 	Date: <input type="text" id="date"/>
+	View:
+	<select id="viewType">
+		<option value="reg" selected>regular</option>
+		<option value="log">logarithmic</option>
+		<option value="prop">proportional</option>
+	</select>
 	<p><a href="http://aki-net.narod.ru/kb/Astronomy/">More astronomy</a></p>
 	<p><a href="http://www.solarsystemscope.com/">Advanced Solar System Model</a></p>
 </body>
