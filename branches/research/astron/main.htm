@@ -10,7 +10,29 @@
 	<script type="text/javascript" src="js/lib/raphael-min.js"></script>
 	<script type="text/javascript" src="js/solarSystem.js"></script>
 	<script type="text/javascript">
+		function buildPlanetBoxes(){with(Html){
+			var planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"];
+			$("#planetBoxes").html(markup(
+				apply(planets, function(pln){
+					return div(
+						span(pln),
+						input({type:"checkbox", value:pln, checked:true})
+					);
+				})
+			));
+			
+			$("#planetBoxes input").click(function(){var _=$(this);
+				var planets = {};
+				$("#planetBoxes input").each(function(i, inp){inp = $(inp);
+					if(inp.attr("checked")) planets[inp.val()] = true;
+				});
+				$("#solar").solarSystem({displayPlanets:planets});
+			});
+		}}
+		
 		$(function(){
+			buildPlanetBoxes();
+			
 			$("#date").val(DateExt.format.shortDigits.toString(new Date()))
 				.change(function(){
 					try{
@@ -40,6 +62,7 @@
 		<option value="log">logarithmic</option>
 		<option value="prop">proportional</option>
 	</select>
+	<div id="planetBoxes"></div>
 	<p><a href="http://aki-net.narod.ru/kb/Astronomy/">More astronomy</a></p>
 	<p><a href="http://www.solarsystemscope.com/">Advanced Solar System Model</a></p>
 </body>
