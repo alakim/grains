@@ -18,7 +18,11 @@
 						span(pln),
 						input({type:"checkbox", value:pln, checked:true})
 					);
-				})
+				}),
+				div(
+					span("satellites"),
+					input({type:"checkbox", value:"satellites"})
+				)
 			));
 			
 			$("#planetBoxes input").click(function(){var _=$(this);
