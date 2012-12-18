@@ -191,6 +191,20 @@ new JSUnit.Test("Нумерация с разделителем", "Шаблоны").run = function(){
 	}
 }
 
+new JSUnit.Test("Нумерация с разделителем 2", "Шаблоны").run = function(){
+	with(Html){
+		var data = [1, 2, null, 3, ""];
+		this.assert(
+			div(
+				apply(data, function(el, i){
+					return span(el);
+				}, ", ")
+			),
+			"<div><span>1</span>, <span>2</span>, <span>3</span></div>"
+		)
+	}
+}
+
 new JSUnit.Test("Итерация 1", "Шаблоны").run = function(){
 	with(Html){
 		this.assert(
