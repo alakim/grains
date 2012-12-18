@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.5.433",
+	version: "2.6.434",
 	xhtmlMode: true	
 };
 
@@ -56,19 +56,19 @@ var Html = {
 				return "<"+name+a.join("")+">"+h+"</"+name+">";
 		},
 		
-		apply: function(coll, F){
+		apply: function(coll, F, delim){
 			var h = [];
 			each(coll, function(el, i){
 				h.push(F(el, i));
 			});
-			return h.join("");
+			return h.join(delim||"");
 		},
 		
-		times: function(count, F){
+		times: function(count, F, delim){
 			var h = [];
 			for(var i=0; i<count; i++)
 				h.push(F(i+1));
-			return h.join("");
+			return h.join(delim||"");
 		},
 		
 		markup: markup,

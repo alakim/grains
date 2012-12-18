@@ -177,6 +177,20 @@ new JSUnit.Test("Нумерация", "Шаблоны").run = function(){
 	}
 }
 
+new JSUnit.Test("Нумерация с разделителем", "Шаблоны").run = function(){
+	with(Html){
+		var data = [{nm:"abc", nr:1}, {nm:"def", nr:2}];
+		this.assert(
+			div(
+				apply(data, function(el, i){
+					return span((i+1)+". "+el.nm);
+				}, ", ")
+			),
+			"<div><span>1. abc</span>, <span>2. def</span></div>"
+		)
+	}
+}
+
 new JSUnit.Test("Итерация 1", "Шаблоны").run = function(){
 	with(Html){
 		this.assert(
@@ -201,6 +215,19 @@ new JSUnit.Test("Итерация 2", "Шаблоны").run = function(){
 				p("abc")
 			),
 			"<div><p>xyz</p><span>1</span><span>2</span><p>abc</p></div>"
+		);
+	}
+}
+
+new JSUnit.Test("Итерация с разделителем", "Шаблоны").run = function(){
+	with(Html){
+		this.assert(
+			div(
+				times(2, function(i){
+					return span(i);
+				}, ", ")
+			),
+			"<div><span>1</span>, <span>2</span></div>"
 		);
 	}
 }
