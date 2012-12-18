@@ -197,10 +197,22 @@ new JSUnit.Test("Нумерация с разделителем 2", "Шаблоны").run = function(){
 		this.assert(
 			div(
 				apply(data, function(el, i){
+					if(el==3) return null;
 					return span(el);
-				}, ", ")
+				}, ", ", true)
 			),
-			"<div><span>1</span>, <span>2</span>, <span>3</span></div>"
+			"<div><span>1</span>, <span>2</span></div>",
+			"Error 1"
+		)
+		this.assert(
+			div(
+				apply(data, function(el, i){
+					if(el==3) return null;
+					return span(el);
+				}, ", ", false)
+			),
+			"<div><span>1</span>, <span>2</span>, <span></span>, , <span></span></div>",
+			"Error 2"
 		)
 	}
 }

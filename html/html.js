@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.6.435",
+	version: "2.6.436",
 	xhtmlMode: true	
 };
 
@@ -30,6 +30,8 @@ var Html = {
 		return res.join("");
 	}
 	
+	function emptyValue(v){return !v ||(typeof(v)=="string"&&v.length==0);}
+	
 	extend(Html, {
 		tag: function(name, content, selfClosing, notEmpty){
 			var h = [];
@@ -56,11 +58,14 @@ var Html = {
 				return "<"+name+a.join("")+">"+h+"</"+name+">";
 		},
 		
-		apply: function(coll, F, delim){
+		apply: function(coll, F, delim, hideEmpty){
 			var h = [];
 			each(coll, function(el, i){
-				if(el || (typeof(el)=="string" && el.length))
-					h.push(F(el, i));
+				if(!emptyValue(el) || !hideEmpty){
+					var v = F(el, i);
+					if(!emptyValue(v) || !hideEmpty)
+						h.push(v);
+				}
 			});
 			return h.join(delim||"");
 		},
