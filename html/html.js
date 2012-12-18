@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.6.434",
+	version: "2.6.435",
 	xhtmlMode: true	
 };
 
@@ -59,7 +59,8 @@ var Html = {
 		apply: function(coll, F, delim){
 			var h = [];
 			each(coll, function(el, i){
-				h.push(F(el, i));
+				if(el || (typeof(el)=="string" && el.length))
+					h.push(F(el, i));
 			});
 			return h.join(delim||"");
 		},
