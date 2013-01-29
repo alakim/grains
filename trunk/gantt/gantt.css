@@ -1,12 +1,12 @@
 .ganttChart{
 	float:left;
 	border:1px solid blue;
-	width:100px;
-	height:100px;
+	/*width:100px;
+	height:100px;*/
 }
 .ganttSlider{
 	float:left;
 	background-color:#f00;
-	width:2px;
-	height:300px;
+	/*width:2px;
+	height:300px;*/
 }
