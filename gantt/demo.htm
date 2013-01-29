@@ -1,0 +1,29 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>Gantt chart demo</title>
+	<style type="text/css">
+		body{
+			font-family: Verdana, Arial, Sans-serif;
+			font-size:14px;
+		}
+	</style>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="lib/raphael-min.js"></script>
+	<script type="text/javascript" src="gantt.js"></script>
+	<script type="text/javascript">
+		var ganttData = {
+		};
+		
+		$(function(){
+			$("#gantt").gantt(ganttData);
+		});
+	</script>
+</head>
+<body>
+	<h1>Gantt chart demo</h1>
+	<div id="gantt">
+	</div>
+</body>
+</html>
