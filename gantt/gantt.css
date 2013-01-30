@@ -1,12 +1,13 @@
 .ganttChart{
-	float:left;
 	border:1px solid blue;
-	/*width:100px;
-	height:100px;*/
 }
 .ganttSlider{
-	float:left;
 	background-color:#f00;
-	/*width:2px;
-	height:300px;*/
+}
+.ganttCell{
+	padding-left:3px;
+	overflow:hidden;
+	border:1px solid #ccc;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
