@@ -12,24 +12,22 @@
 		var templates = {
 			main: function(data){with(Html){
 				var rowHeight = 20, timeCellWidth = 80;
-				var cellAttr = {height:rowHeight, "class":"ganttCell"};
+				var cellAttr = {height:rowHeight};
 				return div(
-					table({border:1, cellpadding:3, cellspacing:1, width:options.width},
+					table({border:0, cellpadding:3, cellspacing:1, width:options.width},
 						tr(
 							td({"class":"ganttTable", width:options.width/2, valign:"top"},
-								div({style:"float:left;"},
-									apply(data.tasks, function(t,i){return div(cellAttr, t.id);})
-								),
-								div({style:style({float:"left", width:options.width/4})},
-								//div({style:style({float:"left"})},
-									apply(data.tasks, function(t,i){return div(cellAttr, t.name);})
-								),
-								div({style:"float:left;", width:timeCellWidth},
-								 apply(data.tasks, function(t,i){return div(cellAttr, t.actualStart);})
-								),
-								div({style:"float:left;", width:timeCellWidth},
-									apply(data.tasks, function(t,i){return div(cellAttr, t.actualEnd);})
-								)
+							   table({width:"100%", border:1, cellspacing:0, cellpadding:0},
+									 tr(th("#"), th("Name"), th("Start Time"), th("End Time")),
+									 apply(data.tasks, function(t,i){
+										return tr(
+											td(cellAttr, t.id),
+											td(cellAttr, div({"class":"ganttCell", style:"width:200px;"}, t.name)),
+											td(cellAttr, t.actualStart),
+											td(cellAttr, t.actualEnd)
+										);
+									 })
+							   )
 							),
 							td({"class":"ganttSlider"}),
 							td({"class":"ganttChart", valign:"top"})
