@@ -15,14 +15,14 @@
 				var rowHeight = options.rowHeight, timeCellWidth = 80;
 				var cellAttr = {height:rowHeight};
 				return div(
-					table({border:0, cellpadding:3, cellspacing:1, width:options.width},
+					table({border:1, cellpadding:3, cellspacing:1, width:options.width},
 						tr(
 							td({"class":"ganttTable", width:options.width/2, valign:"top"},
 							   table({width:"100%", border:1, cellspacing:0, cellpadding:0},
 									 tr(th("#"), th("Name"), th("Start Time"), th("End Time")),
 									 apply(data.tasks, function(t,i){
 										return tr(
-											td(cellAttr, t.id),
+											td(cellAttr, div({"class":"ganttCell"}, t.id)),
 											td(cellAttr, div({"class":"ganttCell", style:"width:200px;"}, t.name)),
 											td(cellAttr, div({"class":"ganttCell"}, t.actualStart)),
 											td(cellAttr, div({"class":"ganttCell"}, t.actualEnd))
@@ -43,7 +43,7 @@
 		function drawChart(container, data){
 			$(".ganttChart").css({
 				height: container.height(),
-				width: 800
+				width: 800 //$(".ganttChart").parent().width()
 			});
 			var width = $(".ganttChart").width();
 			

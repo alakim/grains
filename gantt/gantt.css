@@ -11,4 +11,5 @@
 	border:1px solid #ccc;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	/*font-size:12px;*/
 }
