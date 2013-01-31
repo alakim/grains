@@ -4,17 +4,26 @@
 			rowHeight: 20,
 			fontSize: 12,
 			headHeight: 25,
+			taskLevelOffset: 15,
 			grid:{
 				color:"#ccc"
 			}
 		}, options);
 		
 		var taskIndex = {};
+		var dateRange = {};
 		$.each(data.tasks, function(i,t){
-			taskIndex[t.id] = {id:t.id, parent:t.parent, level:0};
+			taskIndex[t.id] = {id:t.id, parent:t.parent};
 			t.actualStart = parseDate(t.actualStart);
 			t.actualEnd = parseDate(t.actualEnd);
+			
 		});
+		
+		function taskLevel(id){
+			var tDef = taskIndex[id];
+			if(tDef.level!=null) return tDef.level;
+			return tDef.level = tDef.parent?taskLevel(tDef.parent)+1:0;
+		}
 		
 		function parseDate(sDate){
 			var a = sDate.split(" ");
@@ -83,7 +92,8 @@
 					
 					R.rect(x, 0, col.w, height).attr({fill:"#fff", stroke:options.grid.color});
 					$.each(data.tasks, function(i,task){
-						var txt = R.text(x+txtX, taskYPos(i), col.f?col.f(task[col.fld]):task[col.fld])
+						var levelOffset = col.fld=="name"?options.taskLevelOffset*taskLevel(task.id):0;
+						var txt = R.text(x+txtX+levelOffset, taskYPos(i), col.f?col.f(task[col.fld]):task[col.fld])
 							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
 					});
 				}
