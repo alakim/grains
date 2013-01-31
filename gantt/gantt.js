@@ -1,75 +1,74 @@
 ﻿(function($){
 	$.fn.gantt = function(options, data){
 		options = $.extend({
-			height: 400,
-			width: 900,
 			rowHeight: 20,
+			fontSize: 12,
+			headHeight: 25,
+			grid:{
+				color:"#ccc"
+			}
 		}, options);
 		
 		var taskIndex = {};
 		$.each(data.tasks, function(i,t){
 			taskIndex[t.id] = {id:t.id, parent:t.parent, level:0};
 		});
-		var templates = {
-			main: function(data){with(Html){
-				var rowHeight = options.rowHeight, timeCellWidth = 80;
-				var cellAttr = {height:rowHeight};
-				return div(
-					table({border:1, cellpadding:3, cellspacing:1, width:options.width},
-						tr(
-							td({"class":"ganttTable", width:options.width/2, valign:"top"},
-							   table({width:"100%", border:1, cellspacing:0, cellpadding:0},
-									 tr(th("#"), th("Name"), th("Start Time"), th("End Time")),
-									 apply(data.tasks, function(t,i){
-										return tr(
-											td(cellAttr, div({"class":"ganttCell"}, t.id)),
-											td(cellAttr, div({"class":"ganttCell", style:"width:200px;"}, t.name)),
-											td(cellAttr, div({"class":"ganttCell"}, t.actualStart)),
-											td(cellAttr, div({"class":"ganttCell"}, t.actualEnd))
-										);
-									 })
-							   )
-							),
-							td({"class":"ganttSlider"}),
-							td({valign:"top"}, div({"class":"ganttChart"}))
-						)
-					)
-					
-					
-				);
-			}}
-		};
+	
 		
 		function drawChart(container, data){
-			$(".ganttChart").css({
-				height: container.height(),
-				width: 800 //$(".ganttChart").parent().width()
-			});
-			var width = $(".ganttChart").width();
+
+			var width = container.width(),
+				height = container.height();
+			var columns = [
+				{w:25, fld:"id"},
+				{w:125, fld:"name", mrgLeft:5},
+				{w:65, fld:"actualStart", mrgLeft:5},
+				{w:65, fld:"actualEnd", mrgLeft:5}
+			];
 			
-			var R = Raphael($(".ganttChart").get(0));
+			var R = Raphael(container.get(0));
+			
 			function drawGrid(){
-				var step = options.rowHeight+5;
-				var headHeight = 25;
+				var step = options.rowHeight;
 				for(var i=0; i<data.tasks.length; i++){
-					var y = i*step+headHeight;
-					R.path(["M0,", y, "L", width, y]).attr({stroke:"#ccc"});
-					R.text(12, y+13, data.tasks[i].id);
+					var y = i*step+options.headHeight;
+					R.path(["M0,", y, "L", width, y]).attr({stroke:options.grid.color});
 				}
 			}
-			//R.rect(10, 10, 100, 100).attr({fill:"red"});
 			
+			function drawTable(){
+				function colPos(colNr){
+					var pos = 0;
+					for(var i=0; i<columns.length; i++){
+						if(i>=colNr) return pos;
+						pos+=columns[i].w;
+					}
+					return pos;
+				}
+				function drawCol(colNr){
+					var col = columns[colNr];
+					var x = colPos(colNr);
+					var txtX = col.mrgLeft==null?col.w/2:col.mrgLeft;
+					
+					R.rect(x, 0, col.w, height).attr({fill:"#fff", stroke:options.grid.color});
+					$.each(data.tasks, function(i,task){
+						var y = i*options.rowHeight+options.headHeight;
+						var txt = R.text(x+txtX, y+options.rowHeight/2, task[col.fld])
+							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
+					});
+				}
+				
+				for(var i=0; i<columns.length; i++){
+					drawCol(i);
+				}
+			}
+			
+			drawTable();
 			drawGrid();
 		}
 		
-		$(this).html(templates.main(data));
+		
 		drawChart($(this), data);
-		$(".ganttSlider")
-			.mousedown(function(e){
-			})
-			.mousemove(function(e){
-			})
-			.mouseup(function(e){
-			});
+		
 	};
 })(jQuery);
