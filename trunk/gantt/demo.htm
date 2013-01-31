@@ -7,8 +7,11 @@
 			font-family: Verdana, Arial, Sans-serif;
 			font-size:14px;
 		}
-		gantt{
+		#gantt{
 			border:1px solid red;
+			width:800px;
+			height:550px;
+			padding:1px;
 		}
 	</style>
 	<link rel="stylesheet" type="text/css" href="gantt.css"/>
@@ -25,7 +28,9 @@
 				{"id":4,"name":"Identify available skills, information and support","parent":2,"progress":0,"actualStart":"2000.1.25 16.0","actualEnd":"2000.1.26 1.0"},
 				{"id":5,"name":"Decide whether to proceed","parent":2,"progress":0,"actualStart":"2000.1.28 16.0","actualEnd":"2000.1.29 1.0"},
 				{"id":6,"name":"Define the Opportunity","parent":1,"progress":0.27,"actualStart":"2000.1.29 0.0","actualEnd":"2000.2.14 0.0"},
-				{"id":7,"name":"Research the market and competition","parent":6,"progress":0,"actualStart":"2000.1.29 16.0","actualEnd":"2000.2.1 1.0"},
+				{"id":7,"name":"Research the market and competition","parent":6,"progress":0,"actualStart":"2000.1.29 16.0","actualEnd":"2000.2.1 1.0"}
+			],
+			moreTasks:[
 				{"id":8,"name":"Interview owners of similar businesses","parent":6,"progress":0.6,"actualStart":"2000.2.1 0.0","actualEnd":"2000.2.8 0.0"},
 				{"id":9,"name":"Identify needed resources","parent":6,"progress":0,"actualStart":"2000.2.8 16.0","actualEnd":"2000.2.10 1.0"},
 				{"id":10,"name":"Identify operating cost elements","parent":6,"progress":0,"actualStart":"2000.2.10 16.0","actualEnd":"2000.2.14 1.0"},
@@ -125,7 +130,7 @@
 		
 		$(function(){
 			$("#gantt").gantt({
-				width:1300
+				//width:1300
 			}, ganttData);
 		});
 	</script>
