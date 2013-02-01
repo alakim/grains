@@ -3,7 +3,7 @@
 		options = $.extend({
 			rowHeight: 20,
 			fontSize: 12,
-			headHeight: 25,
+			headHeight: 35,
 			taskLevelOffset: 15,
 			grid:{
 				color:"#ccc"
@@ -11,13 +11,16 @@
 		}, options);
 		
 		var taskIndex = {};
-		var dateRange = {};
+		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
 		$.each(data.tasks, function(i,t){
 			taskIndex[t.id] = {id:t.id, parent:t.parent};
 			t.actualStart = parseDate(t.actualStart);
 			t.actualEnd = parseDate(t.actualEnd);
-			
+			if(t.actualStart<dateRange.min) dateRange.min = t.actualStart;
+			if(t.actualEnd>dateRange.max) dateRange.max = t.actualEnd;
 		});
+		
+		dateRange.days = (dateRange.max - dateRange.min)/(1000*60*60*24);
 		
 		function taskLevel(id){
 			var tDef = taskIndex[id];
@@ -40,6 +43,12 @@
 				res.setMinutes(parseInt(b[1]));
 			}
 			return res;
+		}
+		
+		function formatMonth(date){
+			return [
+				"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+			][date.getMonth()];
 		}
 		
 		function dateString(dt){
@@ -73,7 +82,9 @@
 				R.rect(0, 0, width, height).attr({stroke:options.grid.color});
 				for(var i=0; i<data.tasks.length; i++){
 					var y = i*step+options.headHeight;
-					R.path(["M0,", y, "L", width, y]).attr({stroke:options.grid.color});
+					var p = R.path(["M0,", y, "L", width, y]).attr({stroke:options.grid.color});
+					if(i==0) p.attr({"stroke-width":2});
+					
 				}
 			}
 			
@@ -136,9 +147,29 @@
 				
 				var chartSet = R.set();
 				chartSet.push(R.rect(left, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
+				
+				
+				(function buildHeader(){
+					var w = width - left;
+					var dayStep = w/dateRange.days;
+					var middle = options.headHeight/2;
+					chartSet.push(R.path(["M",left,middle,"L",width+left,middle]).attr({stroke:options.grid.color}));
+					var d = dateRange.min;
+					for(var i=0; i<width/dayStep; i++){
+						var x = left+i*dayStep;
+						chartSet.push(R.path(["M",x,middle,"L",x,height]).attr({stroke:options.grid.color}));
+						chartSet.push(R.text(x+dayStep/2, options.headHeight*.75, d.getDate()).attr({"text-anchor":"middle"}));
+						d.setDate(d.getDate()+1);
+						if(d.getDate()==2)
+							chartSet.push(R.path(["M",x,0,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
+						if(d.getDate()==15)
+							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)).attr({"text-anchor":"middle"}));
+					}
+				})();
+				
 				$.each(data.tasks, function(i,task){
 					chartSet.push(
-						R.text(left+20, taskYPos(i), "slslslsl")
+						//R.text(left+20, taskYPos(i), "slslslsl")
 					);
 				});
 				
