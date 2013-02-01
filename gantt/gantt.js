@@ -76,6 +76,11 @@
 				}
 			}
 			
+			function Capture(evt){
+				this.evt = evt;
+				this.target = evt.currentTarget;
+			}
+			
 			function drawTable(){
 				function colPos(colNr){
 					var pos = 0;
@@ -90,11 +95,31 @@
 					var x = colPos(colNr);
 					var txtX = col.mrgLeft==null?col.w/2:col.mrgLeft;
 					
-					R.rect(x, 0, col.w, height).attr({fill:"#fff", stroke:options.grid.color});
+					col.set = R.set();
+					
+					col.set.push(R.rect(x, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
+					if(colNr>1){
+						col.set.attr({cursor:"pointer"})
+							.drag(
+								function(dx, dy, x, y, evt){//move
+									if(!Capture.current) return;
+									col.set.attr({transform:["t", dx, 0]});
+								},
+								function(x, y, evt){ //start
+									console.log(evt);
+									Capture.current = new Capture(evt);
+								},
+								function(){ //end
+									Capture.current = null;
+								}
+							);
+					}
+					
 					$.each(data.tasks, function(i,task){
 						var levelOffset = col.fld=="name"?options.taskLevelOffset*taskLevel(task.id):0;
 						var txt = R.text(x+txtX+levelOffset, taskYPos(i), col.f?col.f(task[col.fld]):task[col.fld])
 							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
+						col.set.push(txt);
 					});
 				}
 				
