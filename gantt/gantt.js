@@ -70,6 +70,7 @@
 			
 			function drawGrid(){
 				var step = options.rowHeight;
+				R.rect(0, 0, width, height).attr({stroke:options.grid.color});
 				for(var i=0; i<data.tasks.length; i++){
 					var y = i*step+options.headHeight;
 					R.path(["M0,", y, "L", width, y]).attr({stroke:options.grid.color});
@@ -79,6 +80,21 @@
 			function Capture(evt){
 				this.evt = evt;
 				this.target = evt.currentTarget;
+			}
+			Capture.buildColumn = function(set){
+				set.attr({cursor:"pointer"})
+					.drag(
+						function(dx, dy, x, y, evt){//move
+							if(!Capture.current) return;
+							set.attr({transform:["t", dx, 0]});
+						},
+						function(x, y, evt){ //start
+							Capture.current = new Capture(evt);
+						},
+						function(){ //end
+							Capture.current = null;
+						}
+					);
 			}
 			
 			function drawTable(){
@@ -98,22 +114,7 @@
 					col.set = R.set();
 					
 					col.set.push(R.rect(x, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
-					if(colNr>1){
-						col.set.attr({cursor:"pointer"})
-							.drag(
-								function(dx, dy, x, y, evt){//move
-									if(!Capture.current) return;
-									col.set.attr({transform:["t", dx, 0]});
-								},
-								function(x, y, evt){ //start
-									console.log(evt);
-									Capture.current = new Capture(evt);
-								},
-								function(){ //end
-									Capture.current = null;
-								}
-							);
-					}
+					if(colNr>1) Capture.buildColumn(col.set);
 					
 					$.each(data.tasks, function(i,task){
 						var levelOffset = col.fld=="name"?options.taskLevelOffset*taskLevel(task.id):0;
@@ -131,11 +132,16 @@
 			function drawChart(){
 				var left = 0;
 				for(var i=0; i<columns.length; i++) left+=columns[i].w;
-				var chartBg = R.rect(left, 0, width-left, height).attr({fill:"#fff", stroke:options.grid.color});
+				
+				var chartSet = R.set();
+				chartSet.push(R.rect(left, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
 				$.each(data.tasks, function(i,task){
-					R.text(left+20, taskYPos(i), "slslslsl");
-
+					chartSet.push(
+						R.text(left+20, taskYPos(i), "slslslsl")
+					);
 				});
+				
+				Capture.buildColumn(chartSet);
 			}
 			
 			drawTable();
