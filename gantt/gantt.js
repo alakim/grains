@@ -5,9 +5,9 @@
 			fontSize: 12,
 			headHeight: 35,
 			taskLevelOffset: 15,
-			grid:{
-				color:"#ccc"
-			}
+			grid:{color:"#ccc"},
+			task:{color:"#88f"},
+			complexTask:{color:"#888"}
 		}, options);
 		
 		var taskIndex = {};
@@ -19,13 +19,23 @@
 			if(t.actualStart<dateRange.min) dateRange.min = t.actualStart;
 			if(t.actualEnd>dateRange.max) dateRange.max = t.actualEnd;
 		});
-		
-		dateRange.days = (dateRange.max - dateRange.min)/(1000*60*60*24);
+		dateRange.getDays = function(d1, d2){
+			return (d2-d1)/(1000*60*60*24);
+		};
+		dateRange.days = dateRange.getDays(dateRange.min, dateRange.max);
 		
 		function taskLevel(id){
 			var tDef = taskIndex[id];
 			if(tDef.level!=null) return tDef.level;
-			return tDef.level = tDef.parent?taskLevel(tDef.parent)+1:0;
+			if(tDef.parent){
+				tDef.level = taskLevel(tDef.parent)+1;
+				if(taskIndex[tDef.parent].children==null)
+					taskIndex[tDef.parent].children = [];
+				taskIndex[tDef.parent].children.push(id);
+			}
+			else
+				tDef.level = 0;
+			return tDef.level;
 		}
 		
 		function parseDate(sDate){
@@ -148,13 +158,13 @@
 				var chartSet = R.set();
 				chartSet.push(R.rect(left, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
 				
+				var chartWidth = width - left;
+				var dayStep = chartWidth/dateRange.days;
 				
 				(function buildHeader(){
-					var w = width - left;
-					var dayStep = w/dateRange.days;
 					var middle = options.headHeight/2;
 					chartSet.push(R.path(["M",left,middle,"L",width+left,middle]).attr({stroke:options.grid.color}));
-					var d = dateRange.min;
+					var d = new Date(dateRange.min);
 					for(var i=0; i<width/dayStep; i++){
 						var x = left+i*dayStep;
 						chartSet.push(R.path(["M",x,middle,"L",x,height]).attr({stroke:options.grid.color}));
@@ -167,11 +177,16 @@
 					}
 				})();
 				
-				$.each(data.tasks, function(i,task){
-					chartSet.push(
-						//R.text(left+20, taskYPos(i), "slslslsl")
-					);
-				});
+				(function drawTasks(){
+					$.each(data.tasks, function(i,task){
+						var begin = Math.floor(dateRange.getDays(dateRange.min, task.actualStart));
+						var length = Math.ceil(dateRange.getDays(task.actualStart, task.actualEnd))+1;
+						var isComplex = taskIndex[task.id].children!=null;
+						chartSet.push(
+							R.rect(left+begin*dayStep, taskYPos(i)-options.rowHeight*.25, length*dayStep, options.rowHeight/2).attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
+						);
+					});
+				})();
 				
 				Capture.buildColumn(chartSet);
 			}
