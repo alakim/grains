@@ -56,10 +56,10 @@
 			var width = container.width(),
 				height = container.height();
 			var columns = [
-				{w:25, fld:"id"},
-				{w:125, fld:"name", mrgLeft:5},
-				{w:65, fld:"actualStart", mrgLeft:5, f:dateString},
-				{w:65, fld:"actualEnd", mrgLeft:5, f:dateString}
+				{w:25, fld:"id", title:"№"},
+				{w:125, fld:"name", title:"Наименование", mrgLeft:5},
+				{w:65, fld:"actualStart", title:"Вр.нач.", mrgLeft:5, f:dateString},
+				{w:65, fld:"actualEnd", title:"Вр.кон.", mrgLeft:5, f:dateString}
 			];
 			
 			function taskYPos(taskNr){
@@ -114,7 +114,7 @@
 					col.set = R.set();
 					
 					col.set.push(R.rect(x, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
-					if(colNr>1) Capture.buildColumn(col.set);
+					col.set.push(R.text(x+col.w/2, options.headHeight/2, col.title).attr({"text-anchor":"middle", "font-weight":"bold"}));
 					
 					$.each(data.tasks, function(i,task){
 						var levelOffset = col.fld=="name"?options.taskLevelOffset*taskLevel(task.id):0;
@@ -122,6 +122,7 @@
 							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
 						col.set.push(txt);
 					});
+					if(colNr>1) Capture.buildColumn(col.set);
 				}
 				
 				for(var i=0; i<columns.length; i++){
