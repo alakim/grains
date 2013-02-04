@@ -198,6 +198,15 @@
 				}
 				
 				(function drawTasks(){
+					var arrowSize = 5;
+					function drawArrow(x, y){
+						chartSet.push(R.path([
+							"M", x, y,
+							"L", x+arrowSize, y+arrowSize,
+							"L", x+arrowSize*2, y,
+							"Z"
+						]).attr({stroke:null, fill:options.complexTask.color}));
+					}
 					$.each(data.tasks, function(i,task){
 						var tReg = taskIndex[task.id];
 						var isComplex = tReg.children!=null;
@@ -206,6 +215,10 @@
 						chartSet.push(
 							R.rect(tRect.x, tRect.y, tRect.w, tRect.h).attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
 						);
+						if(isComplex){
+							drawArrow(tRect.x, tRect.y+tRect.h);
+							drawArrow(tRect.x+tRect.w-arrowSize*2, tRect.y+tRect.h);
+						}
 					});
 				})();
 				
