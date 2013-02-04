@@ -9,6 +9,7 @@
 			task:{color:"#88f", progressColor:"#aca"},
 			complexTask:{color:"#888"},
 			link:{color:"#008"},
+			popup:{size:{w:200, h:150}}
 		}, options);
 		
 		var taskIndex = {};
@@ -152,6 +153,23 @@
 				}
 			}
 			
+			var popup = {
+				init: function(){
+					popup.window = R.rect(0, 0, options.popup.size.w, options.popup.size.h)
+						.attr({stroke:"#000", fill:"#ffe"})
+						.hide();
+				},
+				show: function(task, evt){
+					var offset = 10;
+					popup.window
+						.attr({transform:["t", evt.layerX+offset, evt.layerY+offset]})
+						.show();
+				},
+				hide: function(){
+					popup.window.hide();
+				}
+			};
+			
 			function drawChart(){
 				var left = 0;
 				for(var i=0; i<columns.length; i++) left+=columns[i].w;
@@ -213,7 +231,10 @@
 						tReg.row = i;
 						var tRect = getTaskRect(i, task);
 						chartSet.push(
-							R.rect(tRect.x, tRect.y, tRect.w, tRect.h).attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
+							R.rect(tRect.x, tRect.y, tRect.w, tRect.h)
+								.attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
+								.mouseover(function(evt){popup.show(task, evt);})
+								.mouseout(popup.hide)
 						);
 						if(isComplex){
 							drawArrow(tRect.x, tRect.y+tRect.h);
@@ -222,7 +243,10 @@
 						if(task.progress){
 							var margin = tRect.h*.2;
 							chartSet.push(
-								R.rect(tRect.x+margin, tRect.y+margin, (tRect.w-margin*2)*task.progress, tRect.h-margin*2).attr({stroke:null, fill:options.task.progressColor})
+								R.rect(tRect.x+margin, tRect.y+margin, (tRect.w-margin*2)*task.progress, tRect.h-margin*2)
+									.attr({stroke:null, fill:options.task.progressColor})
+									.mouseover(function(evt){popup.show(task, evt);})
+									.mouseout(popup.hide)
 							);
 						}
 					});
@@ -280,10 +304,12 @@
 			if(options.grid.draw)
 				drawGrid();
 			R.path(["M",0,options.headHeight, "L",width,options.headHeight]).attr({stroke:options.grid.color, "stroke-width":2});
+			popup.init();
 		}
 		
 		
 		draw($(this), data);
+			
 		
 	};
 })(jQuery);
