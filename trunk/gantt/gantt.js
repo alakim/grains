@@ -8,7 +8,7 @@
 			grid:{color:"#ccc"},
 			task:{color:"#88f", progressColor:"#aca"},
 			complexTask:{color:"#888"},
-			link:{color:"red"}
+			link:{color:"#008"}
 		}, options);
 		
 		var taskIndex = {};
@@ -174,7 +174,7 @@
 						if(d.getDate()==2)
 							chartSet.push(R.path(["M",x,0,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
 						if(d.getDate()==15)
-							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)).attr({"text-anchor":"middle"}));
+							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)+" "+(1900+d.getYear())).attr({"text-anchor":"middle"}));
 					}
 				})();
 				
