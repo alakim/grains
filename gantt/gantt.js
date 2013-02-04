@@ -221,17 +221,21 @@
 							var nxtRect = getTaskRect(tNext.row, tNext.task);
 							var y1 = tRect.y+tRect.h/2, 
 								y2 = nxtRect.y+nxtRect.h/2;
-							var dy = y2-y1;
-							chartSet.push(
-								R.path([
+							var dy = y2-y1,
+								dx = (nxtRect.x-stubLng-arrowSize) - (tRect.x+tRect.w+stubLng);
+								
+							var path = [
 									"M", tRect.x+tRect.w, y1,
 									"L", tRect.x+tRect.w+stubLng, y1,
-									"L", tRect.x+tRect.w+stubLng, y1+dy/2, //y1+options.rowHeight/2,
-									"L", nxtRect.x-stubLng-arrowSize, y2-dy/2, //y2-options.rowHeight/2,
-									"L", nxtRect.x-stubLng-arrowSize, y2,
+									dx>=0?["L", nxtRect.x-stubLng-arrowSize-dx, y2,]
+									:[
+										"L", tRect.x+tRect.w+stubLng, y1+dy/2,
+										"L", nxtRect.x-stubLng-arrowSize, y2-dy/2,
+										"L", nxtRect.x-stubLng-arrowSize, y2
+									],
 									"L", nxtRect.x, y2
-								]).attr({stroke:options.link.color})
-							);
+								];
+							chartSet.push(R.path(path).attr({stroke:options.link.color}));
 							chartSet.push(
 								R.path([
 									"M", nxtRect.x, y2,
