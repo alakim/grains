@@ -5,16 +5,16 @@
 			fontSize: 12,
 			headHeight: 35,
 			taskLevelOffset: 15,
-			grid:{color:"#ccc"},
+			grid:{color:"#ccc", draw:false},
 			task:{color:"#88f", progressColor:"#aca"},
 			complexTask:{color:"#888"},
-			link:{color:"#008"}
+			link:{color:"#008"},
 		}, options);
 		
 		var taskIndex = {};
 		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
 		$.each(data.tasks, function(i,t){
-			taskIndex[t.id] = {id:t.id, parent:t.parent, task:t};
+			taskIndex[t.id] = t;
 			t.actualStart = parseDate(t.actualStart);
 			t.actualEnd = parseDate(t.actualEnd);
 			if(t.actualStart<dateRange.min) dateRange.min = t.actualStart;
@@ -168,7 +168,7 @@
 					var d = new Date(dateRange.min);
 					for(var i=0; i<width/dayStep; i++){
 						var x = left+i*dayStep;
-						chartSet.push(R.path(["M",x,middle,"L",x,height]).attr({stroke:options.grid.color}));
+						chartSet.push(R.path(["M",x,middle,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
 						chartSet.push(R.text(x+dayStep/2, options.headHeight*.75, d.getDate()).attr({"text-anchor":"middle"}));
 						d.setDate(d.getDate()+1);
 						if(d.getDate()==2)
@@ -237,7 +237,7 @@
 						function drawLink(task, nextID){
 							var tRect = getTaskRect(i, task);
 							var tNext = taskIndex[nextID];
-							var nxtRect = getTaskRect(tNext.row, tNext.task);
+							var nxtRect = getTaskRect(tNext.row, tNext);
 							var y1 = tRect.y+tRect.h/2, 
 								y2 = nxtRect.y+nxtRect.h/2;
 							var dy = y2-y1,
@@ -277,7 +277,9 @@
 			
 			drawTable();
 			drawChart();
-			drawGrid();
+			if(options.grid.draw)
+				drawGrid();
+			R.path(["M",0,options.headHeight, "L",width,options.headHeight]).attr({stroke:options.grid.color, "stroke-width":2});
 		}
 		
 		
