@@ -7,13 +7,14 @@
 			taskLevelOffset: 15,
 			grid:{color:"#ccc"},
 			task:{color:"#88f"},
-			complexTask:{color:"#888"}
+			complexTask:{color:"#888"},
+			link:{color:"red"}
 		}, options);
 		
 		var taskIndex = {};
 		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
 		$.each(data.tasks, function(i,t){
-			taskIndex[t.id] = {id:t.id, parent:t.parent};
+			taskIndex[t.id] = {id:t.id, parent:t.parent, task:t};
 			t.actualStart = parseDate(t.actualStart);
 			t.actualEnd = parseDate(t.actualEnd);
 			if(t.actualStart<dateRange.min) dateRange.min = t.actualStart;
@@ -177,14 +178,74 @@
 					}
 				})();
 				
+				function getTaskRange(task){
+					return {
+						begin: Math.floor(dateRange.getDays(dateRange.min, task.actualStart)),
+						length: Math.ceil(dateRange.getDays(task.actualStart, task.actualEnd))+1
+					};
+				}
+				
+				function getTaskRect(rowNr, task){
+					if(taskIndex[task.id].rect) return taskIndex[task.id].rect;
+					var tRange = getTaskRange(task);
+					var rect = {
+						x:left+tRange.begin*dayStep,
+						y:taskYPos(rowNr)-options.rowHeight*.25,
+						w:tRange.length*dayStep,
+						h:options.rowHeight/2
+					};
+					return taskIndex[task.id].rect = rect;
+				}
+				
 				(function drawTasks(){
 					$.each(data.tasks, function(i,task){
-						var begin = Math.floor(dateRange.getDays(dateRange.min, task.actualStart));
-						var length = Math.ceil(dateRange.getDays(task.actualStart, task.actualEnd))+1;
-						var isComplex = taskIndex[task.id].children!=null;
+						var tReg = taskIndex[task.id];
+						var isComplex = tReg.children!=null;
+						tReg.row = i;
+						var tRect = getTaskRect(i, task);
 						chartSet.push(
-							R.rect(left+begin*dayStep, taskYPos(i)-options.rowHeight*.25, length*dayStep, options.rowHeight/2).attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
+							R.rect(tRect.x, tRect.y, tRect.w, tRect.h).attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
 						);
+					});
+				})();
+				
+				(function drawLinks(){
+					var stubLng = 5,
+						arrowSize = 5;
+					$.each(data.tasks, function(i, task){
+						if(!task.next) return;
+						
+						function drawLink(task, nextID){
+							var tRect = getTaskRect(i, task);
+							var tNext = taskIndex[nextID];
+							var nxtRect = getTaskRect(tNext.row, tNext.task);
+							var y1 = tRect.y+tRect.h/2, 
+								y2 = nxtRect.y+nxtRect.h/2;
+							var dy = y2-y1;
+							chartSet.push(
+								R.path([
+									"M", tRect.x+tRect.w, y1,
+									"L", tRect.x+tRect.w+stubLng, y1,
+									"L", tRect.x+tRect.w+stubLng, y1+dy/2, //y1+options.rowHeight/2,
+									"L", nxtRect.x-stubLng-arrowSize, y2-dy/2, //y2-options.rowHeight/2,
+									"L", nxtRect.x-stubLng-arrowSize, y2,
+									"L", nxtRect.x, y2
+								]).attr({stroke:options.link.color})
+							);
+							chartSet.push(
+								R.path([
+									"M", nxtRect.x, y2,
+									"L", nxtRect.x-arrowSize, y2-arrowSize,
+									"L", nxtRect.x-arrowSize, y2+arrowSize,
+									"Z"
+								]).attr({stroke:null, fill:options.link.color})
+							);
+						}
+						
+						if(task.next instanceof Array)
+							$.each(task.next, function(i, tn){drawLink(task, tn);});
+						else
+							drawLink(task, task.next);
 					});
 				})();
 				
