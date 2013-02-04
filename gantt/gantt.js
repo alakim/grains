@@ -6,7 +6,7 @@
 			headHeight: 35,
 			taskLevelOffset: 15,
 			grid:{color:"#ccc"},
-			task:{color:"#88f"},
+			task:{color:"#88f", progressColor:"#aca"},
 			complexTask:{color:"#888"},
 			link:{color:"red"}
 		}, options);
@@ -218,6 +218,12 @@
 						if(isComplex){
 							drawArrow(tRect.x, tRect.y+tRect.h);
 							drawArrow(tRect.x+tRect.w-arrowSize*2, tRect.y+tRect.h);
+						}
+						if(task.progress){
+							var margin = tRect.h*.2;
+							chartSet.push(
+								R.rect(tRect.x+margin, tRect.y+margin, (tRect.w-margin*2)*task.progress, tRect.h-margin*2).attr({stroke:null, fill:options.task.progressColor})
+							);
 						}
 					});
 				})();
