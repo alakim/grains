@@ -177,7 +177,7 @@
 						
 					popup.fields.name.attr({text:task.name});
 					popup.fields.time.attr({text:formatDate(task.actualStart)+" - "+formatDate(task.actualEnd)});
-					popup.fields.progress.attr({text:"выполнено на "+task.progress*100+"%"});
+					popup.fields.progress.attr({text:"выполнено на "+Math.round(task.progress*100)+"%"});
 					var w = Math.max(
 						popup.fields.name.getBBox().width,
 						popup.fields.time.getBBox().width,
@@ -190,7 +190,7 @@
 					if(x>width-w)
 						x = evt.layerX - w - offset;
 					if(y>height-popup.height)
-						y = evt.layerY - options.popup.size.h - offset;
+						y = evt.layerY - popup.height - offset;
 					popup.window.attr({transform:["t", x, y]}).show();
 				},
 				hide: function(){
