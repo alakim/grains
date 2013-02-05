@@ -9,7 +9,7 @@
 			task:{color:"#88f", progressColor:"#aca"},
 			complexTask:{color:"#888"},
 			link:{color:"#008"},
-			popup:{size:{w:200, h:150}}
+			popup:{size:{w:200, h:50}}
 		}, options);
 		
 		var taskIndex = {};
@@ -154,16 +154,31 @@
 			}
 			
 			var popup = {
+				margin:10,
 				init: function(){
-					popup.window = R.rect(0, 0, options.popup.size.w, options.popup.size.h)
-						.attr({stroke:"#000", fill:"#ffe"})
-						.hide();
+					popup.window = R.set();
+					popup.frame = R.rect(0, 0, options.popup.size.w, options.popup.size.h)
+						.attr({stroke:"#000", fill:"#ffe"});
+					popup.window.push(popup.frame);
+					popup.window.hide();
+					
+					popup.fields = {};
+					popup.fields.name = R.text(popup.margin, popup.margin, "lslslsl").attr({"text-anchor":"start"});
+					popup.window.push(popup.fields.name);
 				},
 				show: function(task, evt){
 					var offset = 10;
-					popup.window
-						.attr({transform:["t", evt.layerX+offset, evt.layerY+offset]})
-						.show();
+					var x = evt.layerX+offset,
+						y = evt.layerY+offset;
+					if(x>width-options.popup.size.w)
+						x = evt.layerX - options.popup.size.w - offset;
+					if(y>height-options.popup.size.h)
+						y = evt.layerY - options.popup.size.h - offset;
+						
+					popup.fields.name.attr({text:task.name});
+					var w = popup.fields.name.getBBox().width;
+					popup.frame.attr({width:w+popup.margin*2});
+					popup.window.attr({transform:["t", x, y]}).show();
 				},
 				hide: function(){
 					popup.window.hide();
