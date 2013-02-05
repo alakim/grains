@@ -1,6 +1,6 @@
 ﻿(function($){
 	$.fn.gantt = function(options, data){
-		options = $.extend({
+		options = $.extend(true, {
 			rowHeight: 20,
 			fontSize: 12,
 			headHeight: 35,
@@ -8,8 +8,7 @@
 			grid:{color:"#ccc", draw:false},
 			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
-			link:{color:"#008"},
-			popup:{size:{w:200, h:50}}
+			link:{color:"#008"}
 		}, options);
 		
 		var taskIndex = {};
@@ -63,7 +62,7 @@
 			][date.getMonth()];
 		}
 		
-		function dateString(dt){
+		function formatDate(dt){
 			var d = dt.getDate(),
 				m = dt.getMonth()+1,
 				y = dt.getYear()+1900;
@@ -79,8 +78,8 @@
 			var columns = [
 				{w:25, fld:"id", title:"№"},
 				{w:125, fld:"name", title:"Наименование", mrgLeft:5},
-				{w:65, fld:"actualStart", title:"Вр.нач.", mrgLeft:5, f:dateString},
-				{w:65, fld:"actualEnd", title:"Вр.кон.", mrgLeft:5, f:dateString}
+				{w:65, fld:"actualStart", title:"Вр.нач.", mrgLeft:5, f:formatDate},
+				{w:65, fld:"actualEnd", title:"Вр.кон.", mrgLeft:5, f:formatDate}
 			];
 			
 			function taskYPos(taskNr){
@@ -155,29 +154,43 @@
 			
 			var popup = {
 				margin:10,
+				rowHeight:10,
 				init: function(){
+					popup.height = popup.rowHeight*2+popup.margin*2;
 					popup.window = R.set();
-					popup.frame = R.rect(0, 0, options.popup.size.w, options.popup.size.h)
-						.attr({stroke:"#000", fill:"#ffe"});
+					popup.frame = R.rect(0, 0, 100, popup.height)
+						.attr({stroke:"#88a", fill:"#ffe"});
 					popup.window.push(popup.frame);
 					popup.window.hide();
 					
 					popup.fields = {};
-					popup.fields.name = R.text(popup.margin, popup.margin, "lslslsl").attr({"text-anchor":"start"});
+					popup.fields.name = R.text(popup.margin, popup.margin, "").attr({"text-anchor":"start"}); 
 					popup.window.push(popup.fields.name);
+					popup.fields.time = R.text(popup.margin, popup.margin+popup.rowHeight, "").attr({"text-anchor":"start"}); 
+					popup.window.push(popup.fields.time);
+					popup.fields.progress = R.text(popup.margin, popup.margin+popup.rowHeight*2, "").attr({"text-anchor":"start"}); 
+					popup.window.push(popup.fields.progress);
+					
 				},
 				show: function(task, evt){
 					var offset = 10;
-					var x = evt.layerX+offset,
-						y = evt.layerY+offset;
-					if(x>width-options.popup.size.w)
-						x = evt.layerX - options.popup.size.w - offset;
-					if(y>height-options.popup.size.h)
-						y = evt.layerY - options.popup.size.h - offset;
 						
 					popup.fields.name.attr({text:task.name});
-					var w = popup.fields.name.getBBox().width;
-					popup.frame.attr({width:w+popup.margin*2});
+					popup.fields.time.attr({text:formatDate(task.actualStart)+" - "+formatDate(task.actualEnd)});
+					popup.fields.progress.attr({text:"выполнено на "+task.progress*100+"%"});
+					var w = Math.max(
+						popup.fields.name.getBBox().width,
+						popup.fields.time.getBBox().width,
+						popup.fields.progress.getBBox().width
+					)+popup.margin*2;
+					popup.frame.attr({width:w});
+					
+					var x = evt.layerX+offset,
+						y = evt.layerY+offset;
+					if(x>width-w)
+						x = evt.layerX - w - offset;
+					if(y>height-popup.height)
+						y = evt.layerY - options.popup.size.h - offset;
 					popup.window.attr({transform:["t", x, y]}).show();
 				},
 				hide: function(){
