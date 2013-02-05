@@ -6,8 +6,8 @@
 			headHeight: 35,
 			taskLevelOffset: 15,
 			grid:{color:"#ccc", draw:false},
-			task:{color:"#88f", progressColor:"#aca"},
-			complexTask:{color:"#888"},
+			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
+			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
 			link:{color:"#008"},
 			popup:{size:{w:200, h:50}}
 		}, options);
@@ -238,7 +238,7 @@
 							"L", x+arrowSize, y+arrowSize,
 							"L", x+arrowSize*2, y,
 							"Z"
-						]).attr({stroke:null, fill:options.complexTask.color}));
+						]).attr({stroke:null, fill:options.complexTask.arrowColor}));
 					}
 					$.each(data.tasks, function(i,task){
 						var tReg = taskIndex[task.id];
@@ -247,7 +247,7 @@
 						var tRect = getTaskRect(i, task);
 						chartSet.push(
 							R.rect(tRect.x, tRect.y, tRect.w, tRect.h)
-								.attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:null})
+								.attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:options.task.stroke, "stroke-width":1})
 								.mouseover(function(evt){popup.show(task, evt);})
 								.mouseout(popup.hide)
 						);
