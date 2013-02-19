@@ -8,7 +8,8 @@
 			grid:{color:"#ccc", draw:false},
 			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
-			link:{color:"#008"}
+			link:{color:"#008"},
+			slider:{width:3, color:"#ccc"}
 		}, options);
 		
 		var taskIndex = {};
@@ -103,9 +104,11 @@
 				this.evt = evt;
 				this.target = evt.currentTarget;
 			}
-			Capture.buildColumn = function(set){
-				set.attr({cursor:"pointer"})
-					.drag(
+			Capture.buildColumn = function(set, colX){
+				var slider = R.rect(colX, 0, options.slider.width, height)
+					.attr({stroke:null, fill:options.slider.color, cursor:"w-resize"});
+				set.push(slider);
+				slider.drag(
 						function(dx, dy, x, y, evt){//move
 							if(!Capture.current) return;
 							set.attr({transform:["t", dx, 0]});
@@ -144,7 +147,7 @@
 							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
 						col.set.push(txt);
 					});
-					if(colNr>1) Capture.buildColumn(col.set);
+					if(colNr>1) Capture.buildColumn(col.set, x);
 				}
 				
 				for(var i=0; i<columns.length; i++){
@@ -324,7 +327,7 @@
 					});
 				})();
 				
-				Capture.buildColumn(chartSet);
+				Capture.buildColumn(chartSet, left);
 			}
 			
 			drawTable();
