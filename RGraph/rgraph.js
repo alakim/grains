@@ -91,21 +91,25 @@
 		
 		r.drawGrid(options.leftgutter + X * .5 + .5, options.topgutter + .5, width - options.leftgutter - X, height - options.topgutter - options.bottomgutter, 10, 10, options.gridColor);
 		
-		var path = r.path().attr({stroke: options.color, "stroke-width": 4, "stroke-linejoin": "round"});
-		if(options.viewBackground)
-			var bgp = r.path().attr({stroke: "none", opacity: .3, fill: options.color});
-		var label = r.set(),
-			is_label_visible = false,
-			leave_timer,
-			blanket = r.set();
-		label.push(r.text(60, 12, "24").attr(txt));
-		label.push(r.text(60, 27, "22").attr(txt1).attr({fill: options.color}));
-		label.hide();
-		var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#777", "stroke-width": 2, "fill-opacity": .7}).hide();
 
-		function drawRow(aY){
+		function drawRow(aY, color){
 			var max = Math.max.apply(Math, aY),
 				Y = (height - options.bottomgutter - options.topgutter) / max;
+				
+			var path = r.path().attr({stroke: color, "stroke-width": 4, "stroke-linejoin": "round"});
+			if(options.viewBackground)
+				var bgp = r.path().attr({stroke: "none", opacity: .3, fill: color});
+				
+			var label = r.set(),
+				is_label_visible = false,
+				leave_timer,
+				blanket = r.set();
+			label.push(r.text(60, 12, "24").attr(txt));
+			label.push(r.text(60, 27, "22").attr(txt1).attr({fill: color}));
+			label.hide();
+			var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#777", "stroke-width": 2, "fill-opacity": .7}).hide();
+				
+				
 			var p, bgpp;
 			for (var i = 0, ii = data.aX.length; i < ii; i++) {
 				var y = Math.round(height - options.bottomgutter - Y * aY[i]),
@@ -126,7 +130,7 @@
 					if(options.viewBackground)
 						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
-				var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: options.color, "stroke-width": 2});
+				var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: color, "stroke-width": 2});
 				blanket.push(r.rect(options.leftgutter + X * i, 0, X, height - options.bottomgutter).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
 				(function addPopup (x, y, val, lbl, dot) {
@@ -168,7 +172,12 @@
 			blanket.toFront();
 		}
 		
-		$.each(data.rows, function(i, row){drawRow(row)});
+		$.each(data.rows, function(i, row){
+			var color;
+			if(!options.color)
+				color = "hsb(" + [Math.random(), .5, 1] + ")";
+			drawRow(row, color);
+		});
 	}
 	
 	$.fn.rgraph = function(data, options){
@@ -182,7 +191,7 @@
 			viewTable: false,
 			viewBackground: true
 		}, options);
-		if(!options.color) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
+		if(!options.color && options.colorhue) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
 
 		$(this).each(function(i, gr){
 			draw(gr, data, options);
