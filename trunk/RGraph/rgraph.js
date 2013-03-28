@@ -1,10 +1,13 @@
 ﻿(function($,R){
-	function table(data){with(Html){
+	function getRowCount(data){
 		var rowCount = 0;
 		$.each(data, function(i,d){
 			if(rowCount<d.length-1) rowCount = d.length-1;
 		});
-		
+		return rowCount;
+	}
+	
+	function table(data){with(Html){
 		return table({border:1, cellspacing:0, cellpadding:3},
 			tr(
 				th("X"),
@@ -12,7 +15,7 @@
 					return td(d[0]);
 				})
 			),
-			times(rowCount, function(rNr){
+			times(getRowCount(data), function(rNr){
 				return tr(
 					th("Y"+rNr),
 					apply(data, function(d){
@@ -41,11 +44,20 @@
 		return Math.round(v*precision)/precision;
 	}
 
-	function draw(panel, data, options) {
-		var aX = [], aY = [];
-		$.each(data, function(i,pair){
-			aX.push(pair[0]);
-			aY.push(pair[1]);
+	function draw(panel, dataPairs, options) {
+		var rowCount = getRowCount(dataPairs);
+		var data = {
+			aX:[],
+			rows:[]
+		};
+		for(var i=0; i<rowCount; i++){
+			data.rows[i] = [];
+		}
+		$.each(dataPairs, function(iP,pair){
+			data.aX.push(pair[0]);
+			for(var i=0; i<rowCount; i++){
+				data.rows[i].push(pair[i+1]);
+			}
 		});
 		
 		function getAnchors(p1x, p1y, p2x, p2y, p3x, p3y) {
@@ -75,15 +87,14 @@
 			txt = {font: '12px Helvetica, Arial', fill: "#888"},
 			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
 			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
-			X = (width - options.leftgutter) / aX.length,
-			max = Math.max.apply(Math, aY),
-			Y = (height - options.bottomgutter - options.topgutter) / max;
+			X = (width - options.leftgutter) / data.aX.length;
 		
 		r.drawGrid(options.leftgutter + X * .5 + .5, options.topgutter + .5, width - options.leftgutter - X, height - options.topgutter - options.bottomgutter, 10, 10, options.gridColor);
 		
-		var path = r.path().attr({stroke: options.color, "stroke-width": 4, "stroke-linejoin": "round"}),
-			bgp = r.path().attr({stroke: "none", opacity: .3, fill: options.color}),
-			label = r.set(),
+		var path = r.path().attr({stroke: options.color, "stroke-width": 4, "stroke-linejoin": "round"});
+		if(options.viewBackground)
+			var bgp = r.path().attr({stroke: "none", opacity: .3, fill: options.color});
+		var label = r.set(),
 			is_label_visible = false,
 			leave_timer,
 			blanket = r.set();
@@ -92,62 +103,72 @@
 		label.hide();
 		var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#777", "stroke-width": 2, "fill-opacity": .7}).hide();
 
-		var p, bgpp;
-		for (var i = 0, ii = aX.length; i < ii; i++) {
-			var y = Math.round(height - options.bottomgutter - Y * aY[i]),
-				x = Math.round(options.leftgutter + X * (i + .5)),
-				t = r.text(x, height - 6, formatData(aX[i], options.precision)).attr(txt).toBack();
-			if (!i) {
-				p = ["M", x, y, "C", x, y];
-				bgpp = ["M", options.leftgutter + X * .5, height - options.bottomgutter, "L", x, y, "C", x, y];
+		function drawRow(aY){
+			var max = Math.max.apply(Math, aY),
+				Y = (height - options.bottomgutter - options.topgutter) / max;
+			var p, bgpp;
+			for (var i = 0, ii = data.aX.length; i < ii; i++) {
+				var y = Math.round(height - options.bottomgutter - Y * aY[i]),
+					x = Math.round(options.leftgutter + X * (i + .5)),
+					t = r.text(x, height - 6, formatData(data.aX[i], options.precision)).attr(txt).toBack();
+				if (!i) {
+					p = ["M", x, y, "C", x, y];
+					if(options.viewBackground)
+						bgpp = ["M", options.leftgutter + X * .5, height - options.bottomgutter, "L", x, y, "C", x, y];
+				}
+				if (i && i < ii - 1) {
+					var Y0 = Math.round(height - options.bottomgutter - Y * aY[i - 1]),
+						X0 = Math.round(options.leftgutter + X * (i - .5)),
+						Y2 = Math.round(height - options.bottomgutter - Y * aY[i + 1]),
+						X2 = Math.round(options.leftgutter + X * (i + 1.5));
+					var a = getAnchors(X0, Y0, x, y, X2, Y2);
+					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+					if(options.viewBackground)
+						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+				}
+				var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: options.color, "stroke-width": 2});
+				blanket.push(r.rect(options.leftgutter + X * i, 0, X, height - options.bottomgutter).attr({stroke: "none", fill: "#fff", opacity: 0}));
+				var rect = blanket[blanket.length - 1];
+				(function addPopup (x, y, val, lbl, dot) {
+					var timer, i = 0;
+					rect.hover(function () {
+						clearTimeout(leave_timer);
+						var side = "right";
+						if (x + frame.getBBox().width > width) {
+							side = "left";
+						}
+						var ppp = r.popup(x, y, label, side, 1);
+						frame.show().stop().animate({path: ppp.path}, 200 * is_label_visible);
+						label[0].attr({text: formatData(val, options.precision)}).show()
+							.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
+						label[1].attr({text: formatData(lbl, options.precision)}).show()
+							.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
+						dot.attr("r", 6);
+						is_label_visible = true;
+					}, function () {
+						dot.attr("r", 4);
+						leave_timer = setTimeout(function () {
+							frame.hide();
+							label[0].hide();
+							label[1].hide();
+							is_label_visible = false;
+						}, 1);
+					});
+				})(x, y, aY[i], data.aX[i], dot);
 			}
-			if (i && i < ii - 1) {
-				var Y0 = Math.round(height - options.bottomgutter - Y * aY[i - 1]),
-					X0 = Math.round(options.leftgutter + X * (i - .5)),
-					Y2 = Math.round(height - options.bottomgutter - Y * aY[i + 1]),
-					X2 = Math.round(options.leftgutter + X * (i + 1.5));
-				var a = getAnchors(X0, Y0, x, y, X2, Y2);
-				p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
-				bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+			p = p.concat([x, y, x, y]);
+			path.attr({path: p});
+			if(options.viewBackground){
+				bgpp = bgpp.concat([x, y, x, y, "L", x, height - options.bottomgutter, "z"]);
+				bgp.attr({path: bgpp});
 			}
-			var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: options.color, "stroke-width": 2});
-			blanket.push(r.rect(options.leftgutter + X * i, 0, X, height - options.bottomgutter).attr({stroke: "none", fill: "#fff", opacity: 0}));
-			var rect = blanket[blanket.length - 1];
-			(function (x, y, val, lbl, dot) {
-				var timer, i = 0;
-				rect.hover(function () {
-					clearTimeout(leave_timer);
-					var side = "right";
-					if (x + frame.getBBox().width > width) {
-						side = "left";
-					}
-					var ppp = r.popup(x, y, label, side, 1);
-					frame.show().stop().animate({path: ppp.path}, 200 * is_label_visible);
-					label[0].attr({text: formatData(val, options.precision)}).show()
-						.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
-					label[1].attr({text: formatData(lbl, options.precision)}).show()
-						.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
-					dot.attr("r", 6);
-					is_label_visible = true;
-				}, function () {
-					dot.attr("r", 4);
-					leave_timer = setTimeout(function () {
-						frame.hide();
-						label[0].hide();
-						label[1].hide();
-						is_label_visible = false;
-					}, 1);
-				});
-			})(x, y, aY[i], aX[i], dot);
+			frame.toFront();
+			label[0].toFront();
+			label[1].toFront();
+			blanket.toFront();
 		}
-		p = p.concat([x, y, x, y]);
-		bgpp = bgpp.concat([x, y, x, y, "L", x, height - options.bottomgutter, "z"]);
-		path.attr({path: p});
-		bgp.attr({path: bgpp});
-		frame.toFront();
-		label[0].toFront();
-		label[1].toFront();
-		blanket.toFront();
+		
+		$.each(data.rows, function(i, row){drawRow(row)});
 	}
 	
 	$.fn.rgraph = function(data, options){
@@ -158,7 +179,8 @@
 			bottomgutter: 20,
 			topgutter: 20,
 			gridColor: "#ccc",
-			viewTable: false
+			viewTable: false,
+			viewBackground: true
 		}, options);
 		if(!options.color) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
 
