@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="lib/raphael-min.js"></script>
+	<script type="text/javascript" src="lib/popup.js"></script>
+	<script type="text/javascript" src="rgraph.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#grPnl").rgraph([
+				[1,2],
+				[2,3],
+				[4,4],
+				[4.5,5],
+				[5,5.5],
+				[8,5.7],
+				[11,8]
+			],{
+				colorhue:.7,
+				viewTable: true
+			});
+		});
+	</script>
+	<style type="text/css">
+		#grPnl{
+			width:750px;
+			height:200px;
+		}
+	</style>
+</head>
+<body>
+	<div id="grPnl"></div>
+</body>
+</html>
