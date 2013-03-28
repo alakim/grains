@@ -1,5 +1,10 @@
 ﻿(function($,R){
 	function table(data){with(Html){
+		var rowCount = 0;
+		$.each(data, function(i,d){
+			if(rowCount<d.length-1) rowCount = d.length-1;
+		});
+		
 		return table({border:1, cellspacing:0, cellpadding:3},
 			tr(
 				th("X"),
@@ -7,12 +12,14 @@
 					return td(d[0]);
 				})
 			),
-			tr(
-				th("Y"),
-				apply(data, function(d){
-					return td(d[1]);
-				})
-			)
+			times(rowCount, function(rNr){
+				return tr(
+					th("Y"+rNr),
+					apply(data, function(d){
+						return td(d[rNr]);
+					})
+				)
+			})
 		);
 	}}
 	
@@ -65,8 +72,8 @@
 		var width = $(panel).width(),
 			height = $(panel).height(),
 			r = R(panel, width, height),
-			txt = {font: '12px Helvetica, Arial', fill: "#fff"},
-			txt1 = {font: '10px Helvetica, Arial', fill: "#fff"},
+			txt = {font: '12px Helvetica, Arial', fill: "#888"},
+			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
 			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
 			X = (width - options.leftgutter) / aX.length,
 			max = Math.max.apply(Math, aY),
@@ -82,9 +89,8 @@
 			blanket = r.set();
 		label.push(r.text(60, 12, "24").attr(txt));
 		label.push(r.text(60, 27, "22").attr(txt1).attr({fill: options.color}));
-		//console.log(txt, txt1);
 		label.hide();
-		var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#666", "stroke-width": 2, "fill-opacity": .7}).hide();
+		var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#777", "stroke-width": 2, "fill-opacity": .7}).hide();
 
 		var p, bgpp;
 		for (var i = 0, ii = aX.length; i < ii; i++) {
