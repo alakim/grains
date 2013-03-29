@@ -97,22 +97,21 @@
 		});
 		var max = Math.max.apply(Math, aAll);
 		
+		var label = r.set(),
+			is_label_visible = false,
+			leave_timer,
+			blanket = r.set();
+		label.push(r.text(60, 12, "24").attr(txt));
+		label.push(r.text(60, 27, "22").attr(txt1).attr({fill: "#000"}));
+		label.hide();
+		var frame = r.popup(100, 100, label, "right").attr({fill: "#ffc", stroke: "#cc8", "stroke-width": 2, "fill-opacity": .8}).hide();
+			
 		function drawRow(aY, color){
 			var Y = (height - options.bottomgutter - options.topgutter) / max;
 				
-			var path = r.path().attr({stroke: color, "stroke-width": 4, "stroke-linejoin": "round"});
+			var path = r.path().attr({stroke: color, "stroke-width": 2, "stroke-linejoin": "round"});
 			if(options.viewBackground)
 				var bgp = r.path().attr({stroke: "none", opacity: .3, fill: color});
-				
-			var label = r.set(),
-				is_label_visible = false,
-				leave_timer,
-				blanket = r.set();
-			label.push(r.text(60, 12, "24").attr(txt));
-			label.push(r.text(60, 27, "22").attr(txt1).attr({fill: color}));
-			label.hide();
-			var frame = r.popup(100, 100, label, "right").attr({fill: "#ccc", stroke: "#777", "stroke-width": 2, "fill-opacity": .7}).hide();
-				
 				
 			var p, bgpp;
 			for (var i = 0, ii = data.aX.length; i < ii; i++) {
@@ -134,7 +133,7 @@
 					if(options.viewBackground)
 						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
-				var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: color, "stroke-width": 2});
+				var dot = r.circle(x, y, 4).attr({fill: "#ccc", stroke: color, "stroke-width": 2});
 				
 				blanket.push(r.circle(x, y, 20).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
@@ -149,11 +148,11 @@
 						var ppp = r.popup(x, y, label, side, 1);
 						frame.show().stop()
 							.animate({path: ppp.path}, 200 * is_label_visible);
-						label[0].attr({text: formatData(val, options.precision)}).show().stop()
+						label[0].attr({text: formatData(val, options.precision), fill:color}).show().stop()
 							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
 						label[1].attr({text: formatData(lbl, options.precision)}).show().stop()
 							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
-						dot.attr("r", 6);
+						dot.attr("r", 8);
 						is_label_visible = true;
 					}, function () {
 						dot.attr("r", 4);
@@ -162,7 +161,7 @@
 							label[0].hide();
 							label[1].hide();
 							is_label_visible = false;
-						}, 1);
+						}, 600);
 					});
 				})(x, y, aY[i], data.aX[i], dot);
 			}
