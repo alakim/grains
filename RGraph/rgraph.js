@@ -31,26 +31,23 @@
 	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, color) {
 		color = color || "#000";
 		var s = pixelShift;
-		var path = [
-			"M", Math.round(x) + s, Math.round(y) + s,
-			"L", Math.round(x + w) + s, Math.round(y) + s,
-			Math.round(x + w) + s, Math.round(y + h) + s,
-			Math.round(x) + s, Math.round(y + h) + s,
-			Math.round(x) + s, Math.round(y) + s
-		];
+		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
+		var path = [];
 		var wv = w/xStep, hv = h/yStep,
 			rowHeight = h / hv, columnWidth = w / wv;
-		for (var i = 1; i < hv; i++) {
+		for (var i = 0; i <= hv; i++) {
 			path = path.concat([
 				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
 				"H", Math.round(x + w) + s
 			]);
+			this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle).toBack();
 		}
-		for (i = 1; i < wv; i++) {
+		for (i = 0; i <= wv; i++) {
 			path = path.concat([
 				"M", Math.round(x + i * columnWidth) + s, Math.round(y) + s,
 				"V", Math.round(y + h) + s
 			]);
+			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, i).attr(txtStyle).toBack();
 		}
 		return this.path(path.join(",")).attr({stroke: color});
 	};
@@ -139,8 +136,7 @@
 			var p, bgpp;
 			for (var i = 0, ii = data.aX.length; i < ii; i++) {
 				var y = Math.round(height - options.bottomgutter - yStep * aY[i]) + pixelShift,
-					x = Math.round(options.leftgutter + xStep * (data.aX[i])) + pixelShift,
-					t = r.text(x, height - 6, formatData(data.aX[i], options.precision)).attr(txt).toBack();
+					x = Math.round(options.leftgutter + xStep * (data.aX[i])) + pixelShift;
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
