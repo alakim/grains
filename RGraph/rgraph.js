@@ -1,4 +1,6 @@
 ﻿(function($,R){
+	var pixelShift = .5;
+	
 	function getRowCount(data){
 		var rowCount = 0;
 		$.each(data, function(i,d){
@@ -26,16 +28,29 @@
 		);
 	}}
 	
-	R.fn.drawGrid = function (x, y, w, h, wv, hv, color) {
+	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, color) {
 		color = color || "#000";
-		var path = ["M", Math.round(x) + .5, Math.round(y) + .5, "L", Math.round(x + w) + .5, Math.round(y) + .5, Math.round(x + w) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y + h) + .5, Math.round(x) + .5, Math.round(y) + .5],
-			rowHeight = h / hv,
-			columnWidth = w / wv;
+		var s = pixelShift;
+		var path = [
+			"M", Math.round(x) + s, Math.round(y) + s,
+			"L", Math.round(x + w) + s, Math.round(y) + s,
+			Math.round(x + w) + s, Math.round(y + h) + s,
+			Math.round(x) + s, Math.round(y + h) + s,
+			Math.round(x) + s, Math.round(y) + s
+		];
+		var wv = w/xStep, hv = h/yStep,
+			rowHeight = h / hv, columnWidth = w / wv;
 		for (var i = 1; i < hv; i++) {
-			path = path.concat(["M", Math.round(x) + .5, Math.round(y + i * rowHeight) + .5, "H", Math.round(x + w) + .5]);
+			path = path.concat([
+				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
+				"H", Math.round(x + w) + s
+			]);
 		}
 		for (i = 1; i < wv; i++) {
-			path = path.concat(["M", Math.round(x + i * columnWidth) + .5, Math.round(y) + .5, "V", Math.round(y + h) + .5]);
+			path = path.concat([
+				"M", Math.round(x + i * columnWidth) + s, Math.round(y) + s,
+				"V", Math.round(y + h) + s
+			]);
 		}
 		return this.path(path.join(",")).attr({stroke: color});
 	};
@@ -98,11 +113,12 @@
 			yStep = (height - options.bottomgutter - options.topgutter) / maxY;
 		
 		r.drawGrid(
-			options.leftgutter, // + xStep * .5 + .5,
-			options.topgutter,// + .5,
-			width, //- options.leftgutter,// - xStep,
+			options.leftgutter,
+			options.topgutter,
+			width-options.leftgutter*2,
 			height - options.topgutter - options.bottomgutter,
-			10, 10, options.gridColor
+			xStep, yStep,
+			options.gridColor
 		);
 		
 		var label = r.set(),
@@ -122,13 +138,13 @@
 				
 			var p, bgpp;
 			for (var i = 0, ii = data.aX.length; i < ii; i++) {
-				var y = Math.round(height - options.bottomgutter - yStep * aY[i]),
-					x = Math.round(options.leftgutter + xStep * (data.aX[i])),
+				var y = Math.round(height - options.bottomgutter - yStep * aY[i]) + pixelShift,
+					x = Math.round(options.leftgutter + xStep * (data.aX[i])) + pixelShift,
 					t = r.text(x, height - 6, formatData(data.aX[i], options.precision)).attr(txt).toBack();
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
-						bgpp = ["M", options.leftgutter + xStep * .5, height - options.bottomgutter, "L", x, y, "C", x, y];
+						bgpp = ["M", options.leftgutter + xStep, height - options.bottomgutter, "L", x, y, "C", x, y];
 				}
 				if (i && i < ii - 1) {
 					var Y0 = Math.round(height - options.bottomgutter - yStep * aY[i - 1]),
