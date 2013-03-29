@@ -1,4 +1,9 @@
 ﻿body{
 	font-family: Verdana, Arial, Sans-Serif;
 	font-size: 14px;
+	background-color:#ddd;
+}
+
+div{
+	background-color:#fff;
 }
