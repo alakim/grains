@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="rgraph.js"></script>
 	<script type="text/javascript">
 		$(function(){
-			$("#grPnl").rgraph([
+			$("#grPnl1").rgraph([
 				[1,2, 3],
 				[2,3, 3.5],
 				[4,4,3.9],
@@ -22,19 +22,37 @@
 				//colorhue:.7,
 				colorhue:null,
 				color:null,
-				viewTable: true,
-				viewBackground: false
+				viewTable: false,
+				viewBackground: true
+			});
+			
+			$("#grPnl2").rgraph([
+				[1,2, 3],
+				[2,3, 3.5],
+				[4,4,3.9],
+				[4.5,5,5.2],
+				[5,5.5, 4],
+				[8,5.7],
+				[13,8]
+			],{
+				//colorhue:.7,
+				colorhue:null,
+				color:null,
+				viewTable: false,
+				viewBackground: true
 			});
 		});
 	</script>
 	<style type="text/css">
-		#grPnl{
+		.panel{
+			margin-top:10px;
 			width:750px;
 			height:200px;
 		}
 	</style>
 </head>
 <body>
-	<div id="grPnl"></div>
+	<div class="panel" id="grPnl1"></div>
+	<div class="panel" id="grPnl2"></div>
 </body>
 </html>
