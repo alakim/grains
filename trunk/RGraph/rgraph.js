@@ -87,9 +87,9 @@
 			txt = {font: '12px Helvetica, Arial', fill: "#888"},
 			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
 			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
-			X = (width - options.leftgutter) / data.aX.length;
+			xStep = (width - options.leftgutter) / data.aX.length;
 		
-		r.drawGrid(options.leftgutter + X * .5 + .5, options.topgutter + .5, width - options.leftgutter - X, height - options.topgutter - options.bottomgutter, 10, 10, options.gridColor);
+		r.drawGrid(options.leftgutter + xStep * .5 + .5, options.topgutter + .5, width - options.leftgutter - xStep, height - options.topgutter - options.bottomgutter, 10, 10, options.gridColor);
 		
 		var aAll = [];
 		$.each(data.rows, function(i, row){
@@ -116,18 +116,18 @@
 			var p, bgpp;
 			for (var i = 0, ii = data.aX.length; i < ii; i++) {
 				var y = Math.round(height - options.bottomgutter - Y * aY[i]),
-					x = Math.round(options.leftgutter + X * (i + .5)),
+					x = Math.round(options.leftgutter + xStep * (i + .5)),
 					t = r.text(x, height - 6, formatData(data.aX[i], options.precision)).attr(txt).toBack();
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
-						bgpp = ["M", options.leftgutter + X * .5, height - options.bottomgutter, "L", x, y, "C", x, y];
+						bgpp = ["M", options.leftgutter + xStep * .5, height - options.bottomgutter, "L", x, y, "C", x, y];
 				}
 				if (i && i < ii - 1) {
 					var Y0 = Math.round(height - options.bottomgutter - Y * aY[i - 1]),
-						X0 = Math.round(options.leftgutter + X * (i - .5)),
+						X0 = Math.round(options.leftgutter + xStep * (i - .5)),
 						Y2 = Math.round(height - options.bottomgutter - Y * aY[i + 1]),
-						X2 = Math.round(options.leftgutter + X * (i + 1.5));
+						X2 = Math.round(options.leftgutter + xStep * (i + 1.5));
 					var a = getAnchors(X0, Y0, x, y, X2, Y2);
 					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 					if(options.viewBackground)
