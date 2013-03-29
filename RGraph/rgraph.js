@@ -131,7 +131,8 @@
 						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
 				var dot = r.circle(x, y, 4).attr({fill: "#000", stroke: color, "stroke-width": 2});
-				blanket.push(r.rect(options.leftgutter + X * i, 0, X, height - options.bottomgutter).attr({stroke: "none", fill: "#fff", opacity: 0}));
+				
+				blanket.push(r.circle(x, y, 20).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
 				(function addPopup (x, y, val, lbl, dot) {
 					var timer, i = 0;
@@ -142,11 +143,12 @@
 							side = "left";
 						}
 						var ppp = r.popup(x, y, label, side, 1);
-						frame.show().stop().animate({path: ppp.path}, 200 * is_label_visible);
-						label[0].attr({text: formatData(val, options.precision)}).show()
-							.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
-						label[1].attr({text: formatData(lbl, options.precision)}).show()
-							.stop().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
+						frame.show().stop()
+							.animate({path: ppp.path}, 200 * is_label_visible);
+						label[0].attr({text: formatData(val, options.precision)}).show().stop()
+							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
+						label[1].attr({text: formatData(lbl, options.precision)}).show().stop()
+							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
 						dot.attr("r", 6);
 						is_label_visible = true;
 					}, function () {
