@@ -91,10 +91,14 @@
 		
 		r.drawGrid(options.leftgutter + X * .5 + .5, options.topgutter + .5, width - options.leftgutter - X, height - options.topgutter - options.bottomgutter, 10, 10, options.gridColor);
 		
-
+		var aAll = [];
+		$.each(data.rows, function(i, row){
+			aAll = aAll.concat(row);
+		});
+		var max = Math.max.apply(Math, aAll);
+		
 		function drawRow(aY, color){
-			var max = Math.max.apply(Math, aY),
-				Y = (height - options.bottomgutter - options.topgutter) / max;
+			var Y = (height - options.bottomgutter - options.topgutter) / max;
 				
 			var path = r.path().attr({stroke: color, "stroke-width": 4, "stroke-linejoin": "round"});
 			if(options.viewBackground)
