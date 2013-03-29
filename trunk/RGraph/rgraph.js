@@ -9,6 +9,14 @@
 		return rowCount;
 	}
 	
+	function getMax(arr){
+		var r = 0;
+		for(var i=0; i<arr.length; i++){var v = arr[i];
+			if(v && r<v) r = v;
+		}
+		return r;
+	}
+	
 	function table(data){with(Html){
 		return table({border:1, cellspacing:0, cellpadding:3},
 			tr(
@@ -97,8 +105,8 @@
 		$.each(data.rows, function(i, row){
 			aAll = aAll.concat(row);
 		});
-		var maxY = Math.max.apply(Math, aAll);
-		var maxX = Math.max.apply(Math, data.aX);
+		var maxY = getMax(aAll);
+		var maxX = getMax(data.aX);
 		
 		var width = $(panel).width(),
 			height = $(panel).height(),
@@ -127,16 +135,16 @@
 		label.hide();
 		var frame = r.popup(100, 100, label, "right").attr({fill: "#ffc", stroke: "#cc8", "stroke-width": 2, "fill-opacity": .8}).hide();
 			
-		function drawRow(aY, color){
-				
+		function drawRow(aX, aY, color){
 			var path = r.path().attr({stroke: color, "stroke-width": 2, "stroke-linejoin": "round"});
 			if(options.viewBackground)
 				var bgp = r.path().attr({stroke: "none", opacity: .3, fill: color});
 				
 			var p, bgpp;
-			for (var i = 0, ii = data.aX.length; i < ii; i++) {
+			for (var i = 0, ii = aX.length; i < ii; i++) {
+				if(typeof(aY[i])!="number") continue;
 				var y = Math.round(height - options.bottomgutter - yStep * aY[i]) + pixelShift,
-					x = Math.round(options.leftgutter + xStep * (data.aX[i])) + pixelShift;
+					x = Math.round(options.leftgutter + xStep * (aX[i])) + pixelShift;
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
@@ -144,9 +152,9 @@
 				}
 				if (i && i < ii - 1) {
 					var Y0 = Math.round(height - options.bottomgutter - yStep * aY[i - 1]),
-						X0 = Math.round(options.leftgutter + xStep * (data.aX[i-1])),
+						X0 = Math.round(options.leftgutter + xStep * (aX[i-1])),
 						Y2 = Math.round(height - options.bottomgutter - yStep * aY[i + 1]),
-						X2 = Math.round(options.leftgutter + xStep * (data.aX[i+1]));
+						X2 = Math.round(options.leftgutter + xStep * (aX[i+1]));
 					var a = getAnchors(X0, Y0, x, y, X2, Y2);
 					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 					if(options.viewBackground)
@@ -182,7 +190,7 @@
 							is_label_visible = false;
 						}, 600);
 					});
-				})(x, y, aY[i], data.aX[i], dot);
+				})(x, y, aY[i], aX[i], dot);
 			}
 			p = p.concat([x, y, x, y]);
 			path.attr({path: p});
@@ -200,7 +208,12 @@
 			var color;
 			if(!options.color)
 				color = "hsb(" + [Math.random(), .5, 1] + ")";
-			drawRow(row, color);
+			var aX = [];
+			for(var j=0; j<data.aX.length; j++){
+				if(typeof(row[j])=="number")
+					aX.push(data.aX[j]);
+			}
+			drawRow(aX, row, color);
 		});
 	}
 	
