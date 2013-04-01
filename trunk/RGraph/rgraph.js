@@ -32,7 +32,7 @@
 		);
 	}}
 	
-	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, color) {
+	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, color, labels) {
 		color = color || "#000";
 		var s = pixelShift;
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
@@ -51,12 +51,14 @@
 				"M", Math.round(x + i * columnWidth) + s, Math.round(y) + s,
 				"V", Math.round(y + h) + s
 			]);
-			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, i).attr(txtStyle).toBack();
+			var label = labels && labels[i]?labels[i]:i;
+			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle).toBack();
 		}
 		return this.path(path.join(",")).attr({stroke: color});
 	};
 	
 	function formatData(v, precision){
+		if(typeof(v)!="number") return v;
 		return Math.round(v*precision)/precision;
 	}
 
@@ -101,7 +103,8 @@
 			width-options.leftgutter*2,
 			height - options.topgutter - options.bottomgutter,
 			xStep, yStep,
-			options.gridColor
+			options.gridColor,
+			options.labels
 		);
 		
 		var label = r.set(),
@@ -143,6 +146,7 @@
 				blanket.push(r.circle(x, y, 20).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
 				(function addPopup (x, y, val, lbl, dot) {
+					if(options.labels && options.labels[lbl]) lbl = options.labels[lbl];
 					var timer, i = 0;
 					rect.hover(function () {
 						clearTimeout(leave_timer);
