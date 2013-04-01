@@ -1,20 +1,16 @@
 ﻿(function($,R){
 	var pixelShift = .5;
 	
-	function getRowCount(data){
-		var rowCount = 0;
-		$.each(data, function(i,d){
-			if(rowCount<d.length-1) rowCount = d.length-1;
+	function getMaxVal(rows){
+		var maxX = 0;
+		var maxY = 0;
+		$.each(rows, function(i, row){
+			$.each(row, function(j, pair){
+				if(typeof(pair[0])=="number" && maxX<pair[0]) maxX = pair[0];
+				if(typeof(pair[1])=="number" && maxY<pair[1]) maxY = pair[1];
+			});
 		});
-		return rowCount;
-	}
-	
-	function getMax(arr){
-		var r = 0;
-		for(var i=0; i<arr.length; i++){var v = arr[i];
-			if(v && r<v) r = v;
-		}
-		return r;
+		return {x:maxX, y:maxY};
 	}
 	
 	function table(data){with(Html){
@@ -64,21 +60,8 @@
 		return Math.round(v*precision)/precision;
 	}
 
-	function draw(panel, dataPairs, options) {
-		var rowCount = getRowCount(dataPairs);
-		var data = {
-			aX:[],
-			rows:[]
-		};
-		for(var i=0; i<rowCount; i++){
-			data.rows[i] = [];
-		}
-		$.each(dataPairs, function(iP,pair){
-			data.aX.push(pair[0]);
-			for(var i=0; i<rowCount; i++){
-				data.rows[i].push(pair[i+1]);
-			}
-		});
+	function draw(panel, rows, options) {
+		var rowCount = rows.length;
 		
 		function getAnchors(p1x, p1y, p2x, p2y, p3x, p3y) {
 			var l1 = (p2x - p1x) / 2,
@@ -101,12 +84,7 @@
 		}
 		
 		
-		var aAll = [];
-		$.each(data.rows, function(i, row){
-			aAll = aAll.concat(row);
-		});
-		var maxY = getMax(aAll);
-		var maxX = getMax(data.aX);
+		var maxVal = getMaxVal(rows);
 		
 		var width = $(panel).width(),
 			height = $(panel).height(),
@@ -114,8 +92,8 @@
 			txt = {font: '12px Helvetica, Arial', fill: "#888"},
 			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
 			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
-			xStep = (width - options.leftgutter*2) / maxX,
-			yStep = (height - options.bottomgutter - options.topgutter) / maxY;
+			xStep = (width - options.leftgutter*2) / maxVal.x,
+			yStep = (height - options.bottomgutter - options.topgutter) / maxVal.y;
 		
 		r.drawGrid(
 			options.leftgutter,
@@ -135,26 +113,26 @@
 		label.hide();
 		var frame = r.popup(100, 100, label, "right").attr({fill: "#ffc", stroke: "#cc8", "stroke-width": 2, "fill-opacity": .8}).hide();
 			
-		function drawRow(aX, aY, color){
+		function drawRow(row, color){
 			var path = r.path().attr({stroke: color, "stroke-width": 2, "stroke-linejoin": "round"});
 			if(options.viewBackground)
 				var bgp = r.path().attr({stroke: "none", opacity: .3, fill: color});
 				
 			var p, bgpp;
-			for (var i = 0, ii = aX.length; i < ii; i++) {
-				if(typeof(aY[i])!="number") continue;
-				var y = Math.round(height - options.bottomgutter - yStep * aY[i]) + pixelShift,
-					x = Math.round(options.leftgutter + xStep * (aX[i])) + pixelShift;
+			for (var i = 0, ii = row.length; i < ii; i++) {
+				if(typeof(row[i][1])!="number") continue;
+				var y = Math.round(height - options.bottomgutter - yStep * row[i][1]) + pixelShift,
+					x = Math.round(options.leftgutter + xStep * (row[i][0])) + pixelShift;
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
 						bgpp = ["M", options.leftgutter + xStep, height - options.bottomgutter, "L", x, y, "C", x, y];
 				}
 				if (i && i < ii - 1) {
-					var Y0 = Math.round(height - options.bottomgutter - yStep * aY[i - 1]),
-						X0 = Math.round(options.leftgutter + xStep * (aX[i-1])),
-						Y2 = Math.round(height - options.bottomgutter - yStep * aY[i + 1]),
-						X2 = Math.round(options.leftgutter + xStep * (aX[i+1]));
+					var Y0 = Math.round(height - options.bottomgutter - yStep * row[i - 1][1]),
+						X0 = Math.round(options.leftgutter + xStep * (row[i-1][0])),
+						Y2 = Math.round(height - options.bottomgutter - yStep * row[i + 1][1]),
+						X2 = Math.round(options.leftgutter + xStep * (row[i+1][0]));
 					var a = getAnchors(X0, Y0, x, y, X2, Y2);
 					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 					if(options.viewBackground)
@@ -190,7 +168,7 @@
 							is_label_visible = false;
 						}, 600);
 					});
-				})(x, y, aY[i], aX[i], dot);
+				})(x, y, row[i][1], row[i][0], dot);
 			}
 			p = p.concat([x, y, x, y]);
 			path.attr({path: p});
@@ -204,20 +182,15 @@
 			blanket.toFront();
 		}
 		
-		$.each(data.rows, function(i, row){
+		$.each(rows, function(i, row){
 			var color;
 			if(!options.color)
 				color = "hsb(" + [Math.random(), .5, 1] + ")";
-			var aX = [];
-			for(var j=0; j<data.aX.length; j++){
-				if(typeof(row[j])=="number")
-					aX.push(data.aX[j]);
-			}
-			drawRow(aX, row, color);
+			drawRow(row, color);
 		});
 	}
 	
-	$.fn.rgraph = function(data, options){
+	$.fn.rgraph = function(rows, options){
 		var options = $.extend({
 			precision: 10,
 			colorhue: Math.random(),
@@ -231,9 +204,9 @@
 		if(!options.color && options.colorhue) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
 
 		$(this).each(function(i, gr){
-			draw(gr, data, options);
+			draw(gr, rows, options);
 			if(options.viewTable)
-				$(gr).append(table(data));
+				$(gr).append(table(rows));
 		});
 	};
 })(jQuery, Raphael);
