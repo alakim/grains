@@ -186,12 +186,27 @@
 			blanket.toFront();
 		}
 		
+		function drawLegend(){
+			var y = height-options.legendSize.h*1.7;
+			var xMargin = 10;
+			var fontSize = 14;
+			var x = xMargin;
+			for(var i=0; i<rows.length; i++){
+				r.rect(x, y, options.legendSize.w, options.legendSize.h)
+					.attr({fill:"#f00", stroke:null});
+				var txt = r.text(x+options.legendSize.w+3, y+Math.round(fontSize*0.3), "Row "+(i+1)).attr({"text-anchor":"start", "font-size":fontSize});
+				var txtBBox = txt.getBBox();
+				x = txtBBox.x + txtBBox.width + xMargin;
+			}
+		}
+		
 		$.each(rows, function(i, row){
 			var color;
 			if(!options.color)
 				color = "hsb(" + [Math.random(), .5, 1] + ")";
 			drawRow(row, color);
 		});
+		if(options.viewLegend) drawLegend();
 	}
 	
 	$.fn.rgraph = function(rows, options){
@@ -203,9 +218,12 @@
 			topgutter: 20,
 			gridColor: "#ccc",
 			viewTable: false,
-			viewBackground: true
+			viewBackground: true,
+			viewLegend: true,
+			legendSize: {h:10, w:50}
 		}, options);
 		if(!options.color && options.colorhue) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
+		if(options.viewLegend) options.bottomgutter+=options.legendSize.h*2;
 
 		$(this).each(function(i, gr){
 			draw(gr, rows, options);
