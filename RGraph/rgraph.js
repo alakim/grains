@@ -44,7 +44,7 @@
 				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
 				"H", Math.round(x + w) + s
 			]);
-			this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle).toBack();
+			this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle);
 		}
 		for (i = 0; i <= wv; i++) {
 			path = path.concat([
@@ -52,7 +52,7 @@
 				"V", Math.round(y + h) + s
 			]);
 			var label = labels && labels[i]?labels[i]:i;
-			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle).toBack();
+			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle);
 		}
 		return this.path(path.join(",")).attr({stroke: color});
 	};
@@ -97,7 +97,8 @@
 			xStep = (width - options.leftgutter*2) / maxVal.x,
 			yStep = (height - options.bottomgutter - options.topgutter) / maxVal.y;
 		
-		r.rect(0, 0, width, height).attr({fill:options.backColor, stroke:null});
+		if(options.backColor)
+			r.rect(0, 0, width, height).attr({fill:options.backColor, stroke:null}).toBack();
 		
 		r.drawGrid(
 			options.leftgutter,
@@ -150,7 +151,7 @@
 					if(options.viewBackground)
 						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
-				var dot = r.circle(x, y, 4).attr({fill: "#dfc", stroke: rowSettings.color, "stroke-width": 2});
+				var dot = r.circle(x, y, 4).attr({fill: options.dotColor, stroke: rowSettings.color, "stroke-width": 2});
 				
 				blanket.push(r.circle(x, y, 20).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
@@ -227,6 +228,7 @@
 	$.fn.rgraph = function(rows, options){
 		var options = $.extend({
 			backColor: "#fff",
+			dotColor: "#dfc",
 			bgOpacity: .3,
 			precision: 10,
 			leftgutter: 30,
