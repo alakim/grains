@@ -115,11 +115,18 @@
 		label.push(r.text(60, 27, "22").attr(txt1).attr({fill: "#000"}));
 		label.hide();
 		var frame = r.popup(100, 100, label, "right").attr({fill: "#ffc", stroke: "#cc8", "stroke-width": 2, "fill-opacity": .8}).hide();
+		
+		var rowItems = [];
 			
-		function drawRow(row, color){
-			var path = r.path().attr({stroke: color, "stroke-width": 2, "stroke-linejoin": "round"});
-			if(options.viewBackground)
-				var bgp = r.path().attr({stroke: "none", opacity: .3, fill: color});
+		function drawRow(row, rowSettings){
+			var rowItm = {};
+			rowItems.push(rowItm);
+			var path = r.path().attr({stroke: rowSettings.color, "stroke-width": 2, "stroke-linejoin": "round"});
+			rowItm.path = path;
+			if(options.viewBackground){
+				var bgp = r.path().attr({stroke: "none", opacity: options.bgOpacity, fill: rowSettings.color});
+				rowItm.bgp = bgp;
+			}
 				
 			var p, bgpp;
 			for (var i = 0, ii = row.length; i < ii; i++) {
@@ -141,7 +148,7 @@
 					if(options.viewBackground)
 						bgpp = bgpp.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 				}
-				var dot = r.circle(x, y, 4).attr({fill: "#ccc", stroke: color, "stroke-width": 2});
+				var dot = r.circle(x, y, 4).attr({fill: "#dfc", stroke: rowSettings.color, "stroke-width": 2});
 				
 				blanket.push(r.circle(x, y, 20).attr({stroke: "none", fill: "#fff", opacity: 0}));
 				var rect = blanket[blanket.length - 1];
@@ -157,7 +164,7 @@
 						var ppp = r.popup(x, y, label, side, 1);
 						frame.show().stop()
 							.animate({path: ppp.path}, 200 * is_label_visible);
-						label[0].attr({text: formatData(val, options.precision), fill:color}).show().stop()
+						label[0].attr({text: formatData(val, options.precision), fill:rowSettings.color}).show().stop()
 							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
 						label[1].attr({text: formatData(lbl, options.precision)}).show().stop()
 							.animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 200 * is_label_visible);
@@ -192,27 +199,33 @@
 			var fontSize = 14;
 			var x = xMargin;
 			for(var i=0; i<rows.length; i++){
-				r.rect(x, y, options.legendSize.w, options.legendSize.h)
-					.attr({fill:"#f00", stroke:null});
-				var txt = r.text(x+options.legendSize.w+3, y+Math.round(fontSize*0.3), "Row "+(i+1)).attr({"text-anchor":"start", "font-size":fontSize});
-				var txtBBox = txt.getBBox();
+				var settings = options.rowSettings[i];
+				var lbl = r.set();
+				lbl.push(r.rect(x, y, options.legendSize.w, options.legendSize.h)
+					.attr({fill:settings.color, stroke:null}));
+				lbl.push(r.text(x+options.legendSize.w+3, y+Math.round(fontSize*0.3), settings.name).attr({"text-anchor":"start", "font-size":fontSize}));
+				var txtBBox = lbl[1].getBBox();
 				x = txtBBox.x + txtBBox.width + xMargin;
+				function on(idx){return function(){
+					rowItems[idx].bgp.attr({opacity:.6});
+				};}
+				function off(idx){return function(){
+					rowItems[idx].bgp.attr({opacity:options.bgOpacity});
+				};}
+				lbl.hover(on(i), off(i));
 			}
 		}
 		
 		$.each(rows, function(i, row){
-			var color;
-			if(!options.color)
-				color = "hsb(" + [Math.random(), .5, 1] + ")";
-			drawRow(row, color);
+			drawRow(row, options.rowSettings[i]);
 		});
 		if(options.viewLegend) drawLegend();
 	}
 	
 	$.fn.rgraph = function(rows, options){
 		var options = $.extend({
+			bgOpacity: .3,
 			precision: 10,
-			colorhue: Math.random(),
 			leftgutter: 30,
 			bottomgutter: 20,
 			topgutter: 20,
@@ -222,8 +235,14 @@
 			viewLegend: true,
 			legendSize: {h:10, w:50}
 		}, options);
-		if(!options.color && options.colorhue) options.color = "hsb(" + [options.colorhue, .5, 1] + ")";
 		if(options.viewLegend) options.bottomgutter+=options.legendSize.h*2;
+		if(!options.rowSettings) options.rowSettings = [];
+		for(var i=0; i<rows.length; i++){
+			options.rowSettings[i] = $.extend({
+				name:"Row "+(i+1),
+				color: "hsb(" + [Math.random(), .5, 1] + ")"
+			}, options.rowSettings[i]);
+		}
 
 		$(this).each(function(i, gr){
 			draw(gr, rows, options);
