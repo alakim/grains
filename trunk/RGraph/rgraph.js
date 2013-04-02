@@ -97,6 +97,8 @@
 			xStep = (width - options.leftgutter*2) / maxVal.x,
 			yStep = (height - options.bottomgutter - options.topgutter) / maxVal.y;
 		
+		r.rect(0, 0, width, height).attr({fill:options.backColor, stroke:null});
+		
 		r.drawGrid(
 			options.leftgutter,
 			options.topgutter,
@@ -224,6 +226,7 @@
 	
 	$.fn.rgraph = function(rows, options){
 		var options = $.extend({
+			backColor: "#fff",
 			bgOpacity: .3,
 			precision: 10,
 			leftgutter: 30,
