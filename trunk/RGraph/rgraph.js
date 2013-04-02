@@ -1,16 +1,24 @@
 ﻿(function($,R){
 	var pixelShift = .5;
 	
-	function getMaxVal(rows){
+	function getRanges(rows){
 		var maxX = 0;
 		var maxY = 0;
+		var minX = null;
+		var minY = null;
 		$.each(rows, function(i, row){
 			$.each(row, function(j, pair){
-				if(typeof(pair[0])=="number" && maxX<pair[0]) maxX = pair[0];
-				if(typeof(pair[1])=="number" && maxY<pair[1]) maxY = pair[1];
+				if(typeof(pair[0])=="number"){
+					if(maxX<pair[0]) maxX = pair[0];
+					if(minX==null || minX>pair[0]) minX = pair[0];
+				}
+				if(typeof(pair[1])=="number"){
+					if(maxY<pair[1]) maxY = pair[1];
+					if(minY==null || minY>pair[1]) minY = pair[1];
+				}
 			});
 		});
-		return {x:maxX, y:maxY};
+		return {x:{max:maxX, min:minX}, y:{max:maxY, min:minY}};
 	}
 	
 	function table(data){with(Html){
@@ -32,13 +40,14 @@
 		);
 	}}
 	
-	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, color, labels) {
+	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, ranges, color, labels) {
 		color = color || "#000";
 		var s = pixelShift;
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
 		var path = [];
 		var wv = w/xStep, hv = h/yStep,
 			rowHeight = h / hv, columnWidth = w / wv;
+		// console.log(wv);
 		for (var i = 0; i <= hv; i++) {
 			path = path.concat([
 				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
@@ -86,7 +95,7 @@
 		}
 		
 		
-		var maxVal = getMaxVal(rows);
+		var ranges = getRanges(rows);
 		
 		var width = $(panel).width(),
 			height = $(panel).height(),
@@ -94,8 +103,8 @@
 			txt = {font: '12px Helvetica, Arial', fill: "#888"},
 			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
 			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
-			xStep = (width - options.leftgutter*2) / maxVal.x,
-			yStep = (height - options.bottomgutter - options.topgutter) / maxVal.y;
+			xStep = (width - options.leftgutter*2) / (options.adjustRanges?ranges.x.max - ranges.x.min :ranges.x.max),
+			yStep = (height - options.bottomgutter - options.topgutter) / ranges.y.max;
 		
 		if(options.backColor)
 			r.rect(0, 0, width, height).attr({fill:options.backColor, stroke:null}).toBack();
@@ -105,7 +114,7 @@
 			options.topgutter,
 			width-options.leftgutter*2,
 			height - options.topgutter - options.bottomgutter,
-			xStep, yStep,
+			xStep, yStep, ranges,
 			options.gridColor,
 			options.labels
 		);
@@ -238,7 +247,8 @@
 			viewTable: false,
 			viewBackground: true,
 			viewLegend: true,
-			legendSize: {h:10, w:50}
+			legendSize: {h:10, w:50},
+			adjustRanges: false
 		}, options);
 		if(options.viewLegend) options.bottomgutter+=options.legendSize.h*2;
 		if(!options.rowSettings) options.rowSettings = [];
