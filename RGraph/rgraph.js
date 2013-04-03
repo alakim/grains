@@ -65,8 +65,8 @@
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
 		
 		var path = [];
-		var wv = w/xStep, hv = h/yStep,
-			rowHeight = h / hv, columnWidth = w / wv;
+		var hv = h/yStep,
+			rowHeight = h / hv;
 		for (var i = 0; i <= hv; i++) {
 			path = path.concat([
 				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
@@ -75,7 +75,7 @@
 			this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle);
 		}
 		var aLbl = getLabels([ranges.x.min, ranges.x.max]);
-		columnWidth = w/aLbl.length;
+		var columnWidth = w/(aLbl.length-1);
 		for(var i=0; i<aLbl.length; i++){
 			var lbl = aLbl[i];
 			path = path.concat([
@@ -122,10 +122,7 @@
 		var width = $(panel).width(),
 			height = $(panel).height(),
 			r = R(panel, width, height),
-			txt = {font: '12px Helvetica, Arial', fill: "#888"},
-			txt1 = {font: '10px Helvetica, Arial', fill: "#ccc"},
-			txt2 = {font: '12px Helvetica, Arial', fill: "#000"},
-			xStep = (width - options.leftgutter*2) / (options.adjustRanges?ranges.x.max - ranges.x.min :ranges.x.max),
+			xStep = (width - options.leftgutter*2) / (ranges.x.max - ranges.x.min),
 			yStep = (height - options.bottomgutter - options.topgutter) / ranges.y.max;
 		
 		if(options.backColor)
@@ -145,8 +142,8 @@
 			is_label_visible = false,
 			leave_timer,
 			blanket = r.set();
-		label.push(r.text(60, 12, "24").attr(txt));
-		label.push(r.text(60, 27, "22").attr(txt1).attr({fill: "#000"}));
+		label.push(r.text(60, 12, "24").attr({font: '12px Helvetica, Arial', fill: "#888"}));
+		label.push(r.text(60, 27, "22").attr({font: '10px Helvetica, Arial', fill: "#ccc"}).attr({fill: "#000"}));
 		label.hide();
 		var frame = r.popup(100, 100, label, "right").attr({fill: "#ffc", stroke: "#cc8", "stroke-width": 2, "fill-opacity": .8}).hide();
 		
@@ -269,8 +266,7 @@
 			viewTable: false,
 			viewBackground: true,
 			viewLegend: true,
-			legendSize: {h:10, w:50},
-			adjustRanges: false
+			legendSize: {h:10, w:50}
 		}, options);
 		if(options.viewLegend) options.bottomgutter+=options.legendSize.h*2;
 		if(!options.rowSettings) options.rowSettings = [];
