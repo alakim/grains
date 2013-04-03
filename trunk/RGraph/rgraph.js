@@ -1,4 +1,4 @@
-﻿(function($,R){
+﻿var RGraph = (function($,R){
 	var pixelShift = .5;
 	
 	function getRanges(rows){
@@ -19,6 +19,28 @@
 			});
 		});
 		return {x:{max:maxX, min:minX}, y:{max:maxY, min:minY}};
+	}
+	
+	function log10(x){
+		return Math.log(x)/Math.LN10;
+	}
+	
+	function getLabels(range){
+		var min = range[0];
+		var max = range[1];
+		var length = max - min;
+		var nLabels = 10;
+		var dX = Math.pow(10, Math.round(log10(length)) - 1);
+		//var dX = Math.floor(length/nLabels);
+		var x0 = Math.floor(min);
+		var res = [];
+		console.log(length, dX);
+		//return [];
+		for(var i=0; i<=Math.ceil(length/dX); i++){
+			var lbl = Math.round((x0+dX*i)*100)/100;
+			res.push(lbl);
+		}
+		return res;
 	}
 	
 	function table(data){with(Html){
@@ -265,4 +287,14 @@
 				$(gr).append(table(rows));
 		});
 	};
+	
+	var __ = {
+		version:"1.0"
+	};
+	
+	if(JSUnit)$.extend(__, {
+		getLabels: getLabels
+	});
+	
+	return __;
 })(jQuery, Raphael);
