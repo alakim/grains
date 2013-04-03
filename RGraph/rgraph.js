@@ -31,7 +31,7 @@
 		var length = max - min;
 		var nLabels = 10;
 		var dX = Math.pow(10, Math.round(log10(length)) - 1);
-		var x0 = Math.floor(min);
+		var x0 = Math.floor(min/dX)*dX;
 		var res = [];
 		for(var i=0; i<=Math.ceil(length/dX); i++){
 			var lbl = Math.round((x0+dX*i)*100)/100;
