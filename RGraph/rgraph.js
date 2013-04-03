@@ -31,11 +31,8 @@
 		var length = max - min;
 		var nLabels = 10;
 		var dX = Math.pow(10, Math.round(log10(length)) - 1);
-		//var dX = Math.floor(length/nLabels);
 		var x0 = Math.floor(min);
 		var res = [];
-		console.log(length, dX);
-		//return [];
 		for(var i=0; i<=Math.ceil(length/dX); i++){
 			var lbl = Math.round((x0+dX*i)*100)/100;
 			res.push(lbl);
@@ -66,10 +63,10 @@
 		color = color || "#000";
 		var s = pixelShift;
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
+		
 		var path = [];
 		var wv = w/xStep, hv = h/yStep,
 			rowHeight = h / hv, columnWidth = w / wv;
-		// console.log(wv);
 		for (var i = 0; i <= hv; i++) {
 			path = path.concat([
 				"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
@@ -77,12 +74,15 @@
 			]);
 			this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle);
 		}
-		for (i = 0; i <= wv; i++) {
+		var aLbl = getLabels([ranges.x.min, ranges.x.max]);
+		columnWidth = w/aLbl.length;
+		for(var i=0; i<aLbl.length; i++){
+			var lbl = aLbl[i];
 			path = path.concat([
 				"M", Math.round(x + i * columnWidth) + s, Math.round(y) + s,
 				"V", Math.round(y + h) + s
 			]);
-			var label = labels && labels[i]?labels[i]:i;
+			var label = labels && labels[lbl]?labels[lbl]:lbl;
 			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle);
 		}
 		return this.path(path.join(",")).attr({stroke: color});
@@ -166,17 +166,17 @@
 			for (var i = 0, ii = row.length; i < ii; i++) {
 				if(typeof(row[i][1])!="number") continue;
 				var y = Math.round(height - options.bottomgutter - yStep * row[i][1]) + pixelShift,
-					x = Math.round(options.leftgutter + xStep * (row[i][0])) + pixelShift;
+					x = Math.round(options.leftgutter + xStep * (row[i][0] - ranges.x.min)) + pixelShift;
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
 					if(options.viewBackground)
-						bgpp = ["M", options.leftgutter + xStep, height - options.bottomgutter, "L", x, y, "C", x, y];
+						bgpp = ["M", options.leftgutter, height - options.bottomgutter, "L", x, y, "C", x, y];
 				}
 				if (i && i < ii - 1) {
 					var Y0 = Math.round(height - options.bottomgutter - yStep * row[i - 1][1]),
-						X0 = Math.round(options.leftgutter + xStep * (row[i-1][0])),
+						X0 = Math.round(options.leftgutter + xStep * (row[i-1][0] - ranges.x.min)),
 						Y2 = Math.round(height - options.bottomgutter - yStep * row[i + 1][1]),
-						X2 = Math.round(options.leftgutter + xStep * (row[i+1][0]));
+						X2 = Math.round(options.leftgutter + xStep * (row[i+1][0] - ranges.x.min));
 					var a = getAnchors(X0, Y0, x, y, X2, Y2);
 					p = p.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
 					if(options.viewBackground)
@@ -292,7 +292,7 @@
 		version:"1.0"
 	};
 	
-	if(JSUnit)$.extend(__, {
+	if(typeof(JSUnit)!="undefined")$.extend(__, {
 		getLabels: getLabels
 	});
 	
