@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
 	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="../jspath/jspath.js"></script>
 	<script type="text/javascript" src="lib/raphael-min.js"></script>
 	<script type="text/javascript" src="lib/popup.js"></script>
 	<script type="text/javascript" src="rgraph.js"></script>
@@ -35,19 +36,27 @@
 			]
 		};
 		
+		function displayGraph(data){
+			$("#graphPanel")
+				.html("")
+				.rgraph(data.rows,{
+					backColor:"90-#fff-#999",
+					dotColor:"#ffc",
+					bgOpacity: .1,
+					viewTable: false,
+					viewBackground: true,
+					viewLegend: true,
+					labels: data.labels,
+					rowSettings: data.rowSettings
+				});
+		}
+		
 		$(function(){
-			$("#graphPanel").rgraph(graphData.rows,{
-				backColor:"90-#fff-#999",
-				dotColor:"#ffc",
-				bgOpacity: .1,
-				viewTable: false,
-				viewBackground: true,
-				viewLegend: true,
-				labels: graphData.labels,
-				rowSettings: graphData.rowSettings
-			});
-			
 			$("#editorPanel").graphEditor(graphData);
+			displayGraph(graphData);
+			GraphEditor.onchange = function(data){
+				displayGraph(data);
+			}
 		});
 	</script>
 </head>
