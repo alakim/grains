@@ -26,8 +26,13 @@
 		panel.html(templates.main(__.data));
 		panel.find("input").change(function(){var _=$(this);
 			var val = _.val();
+			try{val = parseInt(val);}
+			catch(e){val = null;}
 			var path = _.attr("path");
-			JsPath.set(__.data, path, parseInt(val));
+			if(val)
+				JsPath.set(__.data, path, val);
+			else
+				JsPath.delItem(__.data, path);
 			__.onchange(__.data);
 		});
 	}
