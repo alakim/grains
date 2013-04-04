@@ -65,29 +65,15 @@
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
 		
 		var path = [];
-		if(false){
-			var aLblY = getLabels([ranges.y.min, ranges.y.max]);
-			console.log(aLblY);
-			var rowHeight = h/(aLblY.length-1);
-			for(var i=0; i<aLblY.length; i++){
-				var lbl = aLblY[aLblY.length - i-1];
-				path = path.concat([
-					"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
-					"H", Math.round(x + w) + s
-				]);
-				this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, lbl).attr(txtStyle);
-			}
-		}
-		else{
-			var hv = h/yStep,
-				rowHeight = h / hv;
-			for (var i = 0; i <= hv; i++) {
-				path = path.concat([
-					"M", Math.round(x) + s, Math.round(y + i * rowHeight) + s,
-					"H", Math.round(x + w) + s
-				]);
-				this.text(Math.round(x/2) + s, Math.round(6 + i * rowHeight) + s + 12, hv-i).attr(txtStyle);
-			}
+		var nMag;
+		for(nMag=1; yStep<12; nMag*=2,yStep*=2);
+		var hv = h/yStep;
+		for (var i = 0; i <= hv; i++) {
+			path = path.concat([
+				"M", Math.round(x) + s, Math.round(y + i * yStep) + s,
+				"H", Math.round(x + w) + s
+			]);
+			this.text(Math.round(x/2) + s, Math.round(6 + i * yStep) + s + 12, (hv-i)*nMag).attr(txtStyle);
 		}
 		var aLblX = getLabels([ranges.x.min, ranges.x.max]);
 		var columnWidth = w/(aLblX.length-1);
