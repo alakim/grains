@@ -71,6 +71,31 @@
 					}
 				]
 			});
+			
+			// Пример сокращенного ввода данных - вводим только значения Y,
+			// а X назначается автоматически по порядку 0,1,2,3...
+			$("#grPnl3").rgraph([
+				[10, 12, 14, 15, 18, 22, 24],
+				[5, 7, 10, 14, 19, 19, 23]
+			],{
+				backColor:"90-#fff-#999",
+				dotColor:"#ffc",
+				viewTable: false,
+				viewBackground: true,
+				viewLegend: true,
+				labels:["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль"],
+				rowSettings:[
+					{
+						name:"План",
+						color:"#f00"
+					},
+					{
+						name:"Факт",
+						color:"#080"
+					}
+				]
+			});
+
 		});
 	</script>
 	<style type="text/css">
@@ -84,5 +109,6 @@
 <body>
 	<div class="panel" id="grPnl1"></div>
 	<div class="panel" id="grPnl2"></div>
+	<div class="panel" id="grPnl3"></div>
 </body>
 </html>
