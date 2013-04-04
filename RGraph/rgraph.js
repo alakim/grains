@@ -2,6 +2,7 @@
 	var pixelShift = .5;
 	
 	function getRanges(rows){
+		var maxBasis = 2;
 		var maxX = 0;
 		var maxY = 0;
 		var minX = null;
@@ -19,7 +20,9 @@
 				}
 			}
 		});
-		return {x:{max:maxX, min:minX}, y:{max:maxY, min:minY}};
+		var dY = maxY - minY;
+		var basis = dY<minY*maxBasis? minY - dY/2 :0;
+		return {x:{max:maxX, min:minX}, y:{max:maxY, min:minY}, basis:basis};
 	}
 	
 	function log10(x){
@@ -73,7 +76,7 @@
 				"M", Math.round(x) + s, Math.round(y + i * yStep) + s,
 				"H", Math.round(x + w) + s
 			]);
-			this.text(Math.round(x/2) + s, Math.round(6 + i * yStep) + s + 12, (hv-i)*nMag).attr(txtStyle);
+			this.text(Math.round(x/2) + s, Math.round(6 + i * yStep) + s + 12, (hv-i)*nMag+ranges.basis).attr(txtStyle);
 		}
 		var aLblX = getLabels([ranges.x.min, ranges.x.max]);
 		var columnWidth = w/(aLblX.length-1);
@@ -126,7 +129,7 @@
 			height = $(panel).height(),
 			r = R(panel, width, height),
 			xStep = (width - options.leftgutter*2) / (ranges.x.max - ranges.x.min),
-			yStep = (height - options.bottomgutter - options.topgutter) / ranges.y.max;
+			yStep = (height - options.bottomgutter - options.topgutter) / (ranges.y.max-ranges.basis);
 		
 		if(options.backColor)
 			r.rect(0, 0, width, height).attr({fill:options.backColor, stroke:null}).toBack();
@@ -166,7 +169,7 @@
 			for (var i = 0, ii = row.length; i < ii; i++) {
 				var pair = getPair(row, i);
 				if(typeof(pair.y)!="number") continue;
-				var y = Math.round(height - options.bottomgutter - yStep * pair.y) + pixelShift,
+				var y = Math.round(height - options.bottomgutter - yStep * (pair.y - ranges.basis)) + pixelShift,
 					x = Math.round(options.leftgutter + xStep * (pair.x - ranges.x.min)) + pixelShift;
 				if (!i) {
 					p = ["M", x, y, "C", x, y];
