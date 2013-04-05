@@ -7,14 +7,11 @@
 					tr(
 						td({colspan:2}),
 						apply(data.rowSettings, function(rs,i){
-							var colors = {
-								"f00":"красный", "fc0":"оранжевый", "ff0":"желтый", "0f0":"зеленый",
-								"0ff":"голубой", "00f":"синий", "f0f":"фиолетовый"
-							};
+							var colors = ["f00","800","f80","ff0","880","0f0","080","0ff","00f","f0f","808"];
 							return td(
 								input({"class":"btnDelRow", type:"button", value:"x", title:"Удалить кривую", rowIdx:i}),
 								select({"class":"selColor", style:style({width:cellWidth}), rowIdx:i},
-									apply(colors, function(nm, v){
+									apply(colors, function(v, i){
 										return option({value:v, style:style({"background-color":"#"+v})});
 									})
 								)
@@ -34,7 +31,10 @@
 					apply(data.labels, function(lbl, i){
 						return templates.row(lbl, i, data);
 					}),
-					tr(td({colspan:data.rows.length+2}, input({type:"button", "class":"btnAddPoint", title:"Добавить строку", value:"Добавить"})))
+					tr(td({colspan:data.rows.length+2},
+						input({type:"button", "class":"btnAddPoint", title:"Добавить точку", value:"Добавить"}),
+						input({"class":"btnSave", type:"button", value:"Сохранить", title:"Сохранить данные"})
+					))
 				)
 			);
 		}},
@@ -105,6 +105,10 @@
 			JsPath.set(__.data, "rowSettings/"+rowIdx+"/color", color);
 			build(panel);
 			__.onchange(__.data);
+		});
+		panel.find(".btnSave").click(function(){
+			console.log(__.data);
+			alert("Saved!");
 		});
 	}
 	function build(panel){
