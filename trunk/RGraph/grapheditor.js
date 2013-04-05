@@ -55,10 +55,8 @@
 			var val = _.val();
 			try{val = parseFloat(val);}
 			catch(e){val = null;}
-			if(val)
-				JsPath.set(__.data, path, val);
-			else
-				JsPath.delItem(__.data, path);
+			if(isNaN(val))val = null;
+			JsPath.set(__.data, path, val);
 			__.onchange(__.data);
 		});
 		panel.find("input.txtFld").change(function(){var _=$(this);
