@@ -156,6 +156,7 @@
 		var rowItems = [];
 			
 		function drawRow(row, rowSettings){
+			if(!row.length) return;
 			var rowItm = {};
 			rowItems.push(rowItm);
 			var path = r.path().attr({stroke: rowSettings.color, "stroke-width": 2, "stroke-linejoin": "round"});
