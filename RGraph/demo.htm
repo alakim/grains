@@ -108,14 +108,23 @@
 				viewLegend: true,
 				labels:["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль"],
 				rowSettings:[
-					{
-						name:"План",
-						color:"#f00"
-					},
-					{
-						name:"Факт",
-						color:"#080"
-					}
+					{name:"План", color:"#f00"},
+					{name:"Факт", color:"#080"}
+				]
+			});
+			
+			// пример графика с пропущенными значениями
+			$("#grPnl5").rgraph([
+				[100, 110, 114, 115, 118, 122, 124],
+				[105, 107, null, 114, 119]
+			],{
+				backColor:"90-#fff-#999",
+				dotColor:"#ffc",
+				viewTable: false, viewBackground: true, viewLegend: true,
+				labels:["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль"],
+				rowSettings:[
+					{name:"План", color:"#f00"},
+					{name:"Факт", color:"#080"}
 				]
 			});
 
@@ -134,5 +143,6 @@
 	<div class="panel" id="grPnl2"></div>
 	<div class="panel" id="grPnl3"></div>
 	<div class="panel" id="grPnl4"></div>
+	<div class="panel" id="grPnl5"></div>
 </body>
 </html>
