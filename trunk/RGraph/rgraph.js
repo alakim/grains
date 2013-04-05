@@ -122,6 +122,14 @@
 		if(v instanceof Array) return {x:v[0], y:v[1]};
 		return {x:idx, y:v};
 	}
+	function getPrevPair(row, idx){
+		if(row[idx-1] || idx==1) return getPair(row, idx-1);
+		return getPrevPair(row, idx-1);
+	}
+	function getNextPair(row, idx){
+		if(row[idx+1] || idx==row.length-1) return getPair(row, idx+1);
+		return getPrevPair(row, idx+1);
+	}
 
 	function draw(panel, rows, options) {
 		var ranges = getRanges(rows);
@@ -178,8 +186,8 @@
 						bgpp = ["M", options.leftgutter, height - options.bottomgutter, "L", x, y, "C", x, y];
 				}
 				if (i && i < ii - 1) {
-					var pair0 = getPair(row, i-1),
-						pair1 = getPair(row, i+1);
+					var pair0 = getPrevPair(row, i),
+						pair1 = getNextPair(row, i);
 					var Y0 = Math.round(height - options.bottomgutter - yStep * pair0.y),
 						X0 = Math.round(options.leftgutter + xStep * (pair0.x - ranges.x.min)),
 						Y2 = Math.round(height - options.bottomgutter - yStep * pair1.y),
