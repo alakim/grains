@@ -4,7 +4,7 @@
 			return markup(
 				table({border:1, cellpadding:3, cellspacing:0},
 					tr(
-						td(),
+						td({colspan:2}),
 						apply(data.rowSettings, function(rs, i){
 							return th({style:style({"background-color":rs.color})},
 								input({"class":"txtFld", type:"text", value:rs.name, path:"rowSettings/"+i+"/name"})
@@ -14,12 +14,13 @@
 					apply(data.labels, function(lbl, i){
 						return templates.row(lbl, i, data);
 					}),
-					tr(td({colspan:data.rows.length+1}, input({type:"button", "class":"btnAddRow", value:"Добавить"})))
+					tr(td({colspan:data.rows.length+2}, input({type:"button", "class":"btnAddRow", title:"Добавить строку", value:"Добавить"})))
 				)
 			);
 		}},
 		row: function(lbl, i, data){with(Html){
 			return tr(
+				td(input({"class":"btnDelPoint", type:"button", value:"x", title:"Удалить точку", pointIdx:i})),
 				td(input({"class":"txtFld", type:"text", value:lbl, path:"labels/"+i})), 
 				apply(data.rows, function(row, jRow){
 					return td(input({"class":"dotFld", type:"text", value:row[i]||"", path:"rows/"+jRow+"/"+i}));
@@ -51,6 +52,16 @@
 			var newRow = $(templates.row("", __.data.labels.length, __.data));
 			row.before(newRow);
 			bindEvents(newRow);
+		});
+		panel.find(".btnDelPoint").click(function(){var _=$(this);
+			var pointIdx = parseInt(_.attr("pointIdx"));
+			JsPath.delItem(__.data, "labels/"+pointIdx);
+			for(var i=0; i<__.data.rows.length; i++){
+				JsPath.delItem(__.data, "rows/"+i+"/"+pointIdx);
+			}
+			__.onchange(__.data);
+			var tRow = panel.find("tr:eq("+(pointIdx+1)+")");
+			tRow.remove();
 		});
 	}
 	function build(panel){
