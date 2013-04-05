@@ -5,6 +5,14 @@
 			return markup(
 				table({border:1, cellpadding:3, cellspacing:0},
 					tr(
+						td({colspan:2}),
+						apply(data.rowSettings, function(rs,i){
+							return td(
+								input({"class":"btnDelRow", type:"button", value:"x", title:"Удалить кривую", rowIdx:i})
+							);
+						})
+					),
+					tr(
 						td({colspan:2, align:"right"}, 
 							input({"class":"btnAddRow", type:"button", value:"+", title:"Добавить кривую"})
 						),
@@ -73,6 +81,14 @@
 			JsPath.set(__.data, "rowSettings/"+rowNr+"/color", "#00f");
 			JsPath.set(__.data, "rows/"+rowNr, []);
 			build(panel);
+		});
+		panel.find(".btnDelRow").click(function(){var _=$(this);
+			var rowIdx = parseInt(_.attr("rowIdx"));
+			if(!confirm("Удалить кривую '"+__.data.rowSettings[rowIdx].name+"'?")) return;
+			JsPath.delItem(__.data, "rowSettings/"+rowIdx);
+			JsPath.delItem(__.data, "rows/"+rowIdx);
+			build(panel);
+			__.onchange(__.data);
 		});
 	}
 	function build(panel){
