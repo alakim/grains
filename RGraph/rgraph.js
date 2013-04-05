@@ -123,11 +123,11 @@
 		return {x:idx, y:v};
 	}
 	function getPrevPair(row, idx){
-		if(row[idx-1] || idx==1) return getPair(row, idx-1);
+		if(row[idx-1]!=null || idx==1) return getPair(row, idx-1);
 		return getPrevPair(row, idx-1);
 	}
 	function getNextPair(row, idx){
-		if(row[idx+1] || idx==row.length-1) return getPair(row, idx+1);
+		if(row[idx+1]!=null || idx==row.length-1) return getPair(row, idx+1);
 		return getPrevPair(row, idx+1);
 	}
 
@@ -180,11 +180,9 @@
 				if(typeof(pair.y)!="number") continue;
 				var y = Math.round(height - options.bottomgutter - yStep * (pair.y - ranges.basis)) + pixelShift,
 					x = Math.round(options.leftgutter + xStep * (pair.x - ranges.x.min)) + pixelShift;
-				if (!i) {
-					p = ["M", x, y, "C", x, y];
-					if(options.viewBackground)
-						bgpp = ["M", options.leftgutter, height - options.bottomgutter, "L", x, y, "C", x, y];
-				}
+					
+				if(!p) p = ["M", x, y, "C", x, y];
+				if(!bgpp && options.viewBackground) bgpp = ["M", options.leftgutter, height - options.bottomgutter, "L", x, y, "C", x, y];
 				if (i && i < ii - 1) {
 					var pair0 = getPrevPair(row, i),
 						pair1 = getNextPair(row, i);
