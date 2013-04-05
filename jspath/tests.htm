@@ -103,6 +103,24 @@ new JSUnit.Test("Delete Object attribute", "Element operations").run = function(
 	this.assert(obj, {a:{b:{c:1, e:3}}});
 }}
 
+new JSUnit.Test("Add Array Element", "Element operations").run = function(){with(JsPath){
+	var arr = [];
+	set(arr, "1", 5); this.assert(arr, [null, 5]);
+	set(arr, "2", 6); this.assert(arr, [null, 5, 6]);
+	set(arr, "0", 2); this.assert(arr, [2, 5, 6]);
+	
+	arr = [];
+	set(arr, "3", 5); this.assert(arr, [null, null, null, 5]);
+	
+	var obj = {arr:[]};
+	set(obj, "arr/1", 5); this.assert(obj, {arr:[null, 5]});
+	set(obj, "arr/2", 6); this.assert(obj, {arr:[null, 5, 6]});
+	set(obj, "arr/5", 7); this.assert(obj, {arr:[null, 5, 6, null, null, 7]});
+	set(obj, "arr/0", 2); this.assert(obj, {arr:[2, 5, 6, null, null, 7]});
+	
+	
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JsPath.version;
 	JSUnit.init();
