@@ -7,8 +7,17 @@
 					tr(
 						td({colspan:2}),
 						apply(data.rowSettings, function(rs,i){
+							var colors = {
+								"f00":"красный", "fc0":"оранжевый", "ff0":"желтый", "0f0":"зеленый",
+								"0ff":"голубой", "00f":"синий", "f0f":"фиолетовый"
+							};
 							return td(
-								input({"class":"btnDelRow", type:"button", value:"x", title:"Удалить кривую", rowIdx:i})
+								input({"class":"btnDelRow", type:"button", value:"x", title:"Удалить кривую", rowIdx:i}),
+								select({"class":"selColor", style:style({width:cellWidth}), rowIdx:i},
+									apply(colors, function(nm, v){
+										return option({value:v, style:style({"background-color":"#"+v})});
+									})
+								)
 							);
 						})
 					),
@@ -87,6 +96,13 @@
 			if(!confirm("Удалить кривую '"+__.data.rowSettings[rowIdx].name+"'?")) return;
 			JsPath.delItem(__.data, "rowSettings/"+rowIdx);
 			JsPath.delItem(__.data, "rows/"+rowIdx);
+			build(panel);
+			__.onchange(__.data);
+		});
+		panel.find(".selColor").change(function(){var _=$(this);
+			var color = "#"+_.val();
+			var rowIdx = parseInt(_.attr("rowIdx"));
+			JsPath.set(__.data, "rowSettings/"+rowIdx+"/color", color);
 			build(panel);
 			__.onchange(__.data);
 		});
