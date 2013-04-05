@@ -57,8 +57,8 @@
 			bindEvents(newRow);
 		});
 		panel.find(".btnDelPoint").click(function(){var _=$(this);
-			if(!window.confirm("Удалить точку?")) return;
 			var pointIdx = parseInt(_.attr("pointIdx"));
+			if(!window.confirm("Удалить точку '"+__.data.labels[pointIdx]+"'?")) return;
 			JsPath.delItem(__.data, "labels/"+pointIdx);
 			for(var i=0; i<__.data.rows.length; i++){
 				JsPath.delItem(__.data, "rows/"+i+"/"+pointIdx);
