@@ -123,33 +123,48 @@ new JSUnit.Test("Add Array Element", "Element operations").run = function(){with
 
 new JSUnit.Test("OnChange Event", "Events").run = function(){with(JsPath){
 	var obj = {x:{y:10, z:1}};
-	JsPath.onchange.bind(/x\/y/, function(){
+	var hndIdx = JsPath.onchange.bind(/x\/y/, function(){
 		JsPath.set(obj, "x/z", 2);
 	});
 	JsPath.set(obj, "x/y", 11);
 	this.assert(obj, {x:{y:11,z:2}});
+	
+	JsPath.set(obj, "x/z", 1);
+	JsPath.onchange.unbind(hndIdx);
+	JsPath.set(obj, "x/y", 12);
+	this.assert(obj, {x:{y:12,z:1}});
 }}
 
 new JSUnit.Test("OnMove Event", "Events").run = function(){with(JsPath){
 	var obj = {
 		x:[1,2,3,4]
 	};
-	JsPath.onmove.bind(/x\/*/, function(){
+	var hndIdx = JsPath.onmove.bind(/x\/*/, function(){
 		JsPath.set(obj, "y", 2);
 	});
 	JsPath.moveUp(obj, "x/1");
 	this.assert(obj, {x:[2,1,3,4], y:2});
+	
+	JsPath.set(obj, "y", 1);
+	JsPath.onmove.unbind(hndIdx);
+	JsPath.moveUp(obj, "x/1");
+	this.assert(obj, {x:[1,2,3,4], y:1});
 }}
 
 new JSUnit.Test("OnRemove Event", "Events").run = function(){with(JsPath){
 	var obj = {
 		x:[1,2,3,4]
 	};
-	JsPath.onremove.bind(/x\/*/, function(){
+	var hndIdx = JsPath.onremove.bind(/x\/*/, function(){
 		JsPath.set(obj, "y", 2);
 	});
 	JsPath.remove(obj, "x/1");
 	this.assert(obj, {x:[1,3,4], y:2});
+	
+	JsPath.set(obj, "y", 1);
+	JsPath.onremove.unbind(hndIdx);
+	JsPath.remove(obj, "x/1");
+	this.assert(obj, {x:[1,4], y:1});
 }}
 
 function init(){
