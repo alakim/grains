@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"3.1.524"
+	version:"3.2.525"
 };
 
 (function(){
@@ -139,17 +139,26 @@ var JsPath = {
 		onchange:{
 			bind: function(re, handler){
 				handlers.onchange.push({re:re, handler:handler});
-			}
+				return handlers.onchange.length - 1;
+			},
+			reset: function(){handlers.onchange = [];},
+			unbind: function(idx){handlers.onchange.splice(idx, 1);}
 		},
 		onmove:{
 			bind: function(re, handler){
 				handlers.onmove.push({re:re, handler:handler});
-			}
+				return handlers.onmove.length - 1;
+			},
+			reset: function(){handlers.onmove = [];},
+			unbind: function(idx){handlers.onmove.splice(idx, 1);}
 		},
 		onremove:{
 			bind: function(re, handler){
 				handlers.onremove.push({re:re, handler:handler});
-			}
+				return handlers.onremove.length - 1;
+			},
+			reset: function(){handlers.onremove = [];},
+			unbind: function(idx){handlers.onremove.splice(idx, 1);}
 		}
 	});
 })();
