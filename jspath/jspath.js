@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"3.1.523"
+	version:"3.1.524"
 };
 
 (function(){
@@ -27,6 +27,12 @@ var JsPath = {
 		throw "Unknown path type";
 	}
 	function arrayMode(step){return typeof(step)=="number" || step.match(/^#(\d+)/);}
+	
+	function pathToString(path){
+		var sPath = getSteps(path);
+		return sPath instanceof Array? sPath.join("/")
+			:sPath.toString();
+	}
 	
 	var handlers = {
 		onchange:[],
@@ -59,10 +65,7 @@ var JsPath = {
 					}
 				}
 			});
-			var sPath = getSteps(path);
-			if(sPath instanceof Array) sPath = sPath.join("/");
-			else sPath = sPath.toString();
-			
+			var sPath = pathToString(path);
 			each(handlers.onchange, function(hnd){
 				if(sPath.match(hnd.re))
 					hnd.handler(obj, path, val);
@@ -99,6 +102,11 @@ var JsPath = {
 				}
 				set(obj, collPath, newC);
 			}
+			var sPath = pathToString(path);
+			each(handlers.onremove, function(hnd){
+				if(sPath.match(hnd.re))
+					hnd.handler(obj, path);
+			});
 		}},
 		
 		remove: function(obj, path){JsPath.delItem(obj, path);},
@@ -115,6 +123,12 @@ var JsPath = {
 				var el = coll[idx];
 				coll.splice(idx,1);
 				coll.splice(up?idx-1:idx+1, 0, el);
+				
+				var sPath = pathToString(path);
+				each(handlers.onmove, function(hnd){
+					if(sPath.match(hnd.re))
+						hnd.handler(obj, path, up);
+				});
 			}
 			else
 				throw "Moving object attribute is meaningless";
@@ -125,6 +139,16 @@ var JsPath = {
 		onchange:{
 			bind: function(re, handler){
 				handlers.onchange.push({re:re, handler:handler});
+			}
+		},
+		onmove:{
+			bind: function(re, handler){
+				handlers.onmove.push({re:re, handler:handler});
+			}
+		},
+		onremove:{
+			bind: function(re, handler){
+				handlers.onremove.push({re:re, handler:handler});
 			}
 		}
 	});
