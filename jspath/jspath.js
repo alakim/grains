@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"2.1.334"
+	version:"3.1.523"
 };
 
 (function(){
@@ -28,6 +28,12 @@ var JsPath = {
 	}
 	function arrayMode(step){return typeof(step)=="number" || step.match(/^#(\d+)/);}
 	
+	var handlers = {
+		onchange:[],
+		onmove:[],
+		onremove:[]
+	};
+	
 	extend(JsPath, {
 		set: function(obj, path, val){
 			if(path==null) throw "Path is null";
@@ -52,6 +58,14 @@ var JsPath = {
 						o = o[s];
 					}
 				}
+			});
+			var sPath = getSteps(path);
+			if(sPath instanceof Array) sPath = sPath.join("/");
+			else sPath = sPath.toString();
+			
+			each(handlers.onchange, function(hnd){
+				if(sPath.match(hnd.re))
+					hnd.handler(obj, path, val);
 			});
 			return obj;
 		},
@@ -87,6 +101,8 @@ var JsPath = {
 			}
 		}},
 		
+		remove: function(obj, path){JsPath.delItem(obj, path);},
+		
 		move: function(obj, path, up){with(JsPath){
 			var elPath = getSteps(path);
 			var collPath = elPath.splice(0, elPath.length-1);
@@ -105,6 +121,11 @@ var JsPath = {
 		}},
 		
 		moveUp: function(obj, path){JsPath.move(obj, path, true);},
-		moveDown: function(obj, path){JsPath.move(obj, path, false);}
+		moveDown: function(obj, path){JsPath.move(obj, path, false);},
+		onchange:{
+			bind: function(re, handler){
+				handlers.onchange.push({re:re, handler:handler});
+			}
+		}
 	});
 })();

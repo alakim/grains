@@ -121,6 +121,16 @@ new JSUnit.Test("Add Array Element", "Element operations").run = function(){with
 	
 }}
 
+
+new JSUnit.Test("OnChange Event", "Events").run = function(){with(JsPath){
+	var obj = {x:{y:10, z:1}};
+	JsPath.onchange.bind(/x\/y/, function(){
+		JsPath.set(obj, "x/z", 2);
+	});
+	JsPath.set(obj, "x/y", 11);
+	this.assert(obj, {x:{y:11,z:2}});
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JsPath.version;
 	JSUnit.init();
