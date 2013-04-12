@@ -34,6 +34,17 @@ var JsPath = {
 			:sPath.toString();
 	}
 	
+	function pathMatch(p1, p2){
+		p1 = getSteps(p1);
+		p2 = getSteps(p2);
+		for(var i=0; i<p1.length && i<p2.length; i++){
+			if(p1[i]=="*") continue;
+			if(p2[i]=="*") continue;
+			if(p1[i]!=p2[i]) return false;
+		}
+		return true;
+	}
+	
 	var handlers = {
 		onchange:[],
 		onmove:[],
@@ -65,9 +76,8 @@ var JsPath = {
 					}
 				}
 			});
-			var sPath = pathToString(path);
 			each(handlers.onchange, function(hnd){
-				if(sPath.match(hnd.re))
+				if(pathMatch(path, hnd.path))
 					hnd.handler(obj, path, val);
 			});
 			return obj;
@@ -102,9 +112,8 @@ var JsPath = {
 				}
 				set(obj, collPath, newC);
 			}
-			var sPath = pathToString(path);
 			each(handlers.onremove, function(hnd){
-				if(sPath.match(hnd.re))
+				if(pathMatch(path, hnd.path))
 					hnd.handler(obj, path);
 			});
 		}},
@@ -124,9 +133,8 @@ var JsPath = {
 				coll.splice(idx,1);
 				coll.splice(up?idx-1:idx+1, 0, el);
 				
-				var sPath = pathToString(path);
 				each(handlers.onmove, function(hnd){
-					if(sPath.match(hnd.re))
+					if(pathMatch(path, hnd.path))
 						hnd.handler(obj, path, up);
 				});
 			}
@@ -137,24 +145,24 @@ var JsPath = {
 		moveUp: function(obj, path){JsPath.move(obj, path, true);},
 		moveDown: function(obj, path){JsPath.move(obj, path, false);},
 		onchange:{
-			bind: function(re, handler){
-				handlers.onchange.push({re:re, handler:handler});
+			bind: function(path, handler){
+				handlers.onchange.push({path:pathToString(path), handler:handler});
 				return handlers.onchange.length - 1;
 			},
 			reset: function(){handlers.onchange = [];},
 			unbind: function(idx){handlers.onchange.splice(idx, 1);}
 		},
 		onmove:{
-			bind: function(re, handler){
-				handlers.onmove.push({re:re, handler:handler});
+			bind: function(path, handler){
+				handlers.onmove.push({path:pathToString(path), handler:handler});
 				return handlers.onmove.length - 1;
 			},
 			reset: function(){handlers.onmove = [];},
 			unbind: function(idx){handlers.onmove.splice(idx, 1);}
 		},
 		onremove:{
-			bind: function(re, handler){
-				handlers.onremove.push({re:re, handler:handler});
+			bind: function(path, handler){
+				handlers.onremove.push({path:pathToString(path), handler:handler});
 				return handlers.onremove.length - 1;
 			},
 			reset: function(){handlers.onremove = [];},
