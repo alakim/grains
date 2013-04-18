@@ -5,11 +5,11 @@
 <script type="text/javascript" src="../tools/jsUnit.js"></script>
 <script type="text/javascript" src="jspath.js"></script>
 <script type="text/javascript">
-new JSUnit.Test("РџРѕРґРєР»СЋС‡РµРЅРёРµ РјРѕРґСѓР»СЏ JsPath", "Configuration").run = function(){
+new JSUnit.Test("Подключение модуля JsPath", "Configuration").run = function(){
 	this.assert(typeof(JsPath), "object");
 }
 
-new JSUnit.Test("РџСѓС‚СЊ РІ РІРёРґРµ СЃС‚СЂРѕРєРё", "Attribute access").run = function(){with(JsPath){
+new JSUnit.Test("Путь в виде строки", "Attribute access").run = function(){with(JsPath){
 	var obj = {};
 	set(obj, "abc", 1);
 	this.assert(obj.abc, 1, "Error 1");
@@ -30,19 +30,19 @@ new JSUnit.Test("РџСѓС‚СЊ РІ РІРёРґРµ СЃС‚СЂРѕРєРё", "Attribute access").run = f
 	this.assert(get(obj, "x/#1"), "abc", "Error 5.4");
 }}
 
-new JSUnit.Test("РџСѓС‚СЊ РІ РІРёРґРµ РјР°СЃСЃРёРІР°", "Attribute access").run = function(){with(JsPath){
+new JSUnit.Test("Путь в виде массива", "Attribute access").run = function(){with(JsPath){
 	var obj = {};
 	set(obj, ["abc"], 1);
 	this.assert(obj.abc, 1, "Error 1");
 	set(obj, ["def", "ghi"], 11);
 	this.assert(obj.def.ghi, 11, "Error 2");
 	
-	set(obj, ["x", 0], "xx"); // РµСЃР»Рё С€Р°Рі Р·Р°РґР°РЅ РІ РІРёРґРµ С‡РёСЃР»Р°, С‚Рѕ РѕРЅ РѕР±РѕР·РЅР°С‡Р°РµС‚ РёРЅРґРµРєСЃ СЌР»РµРјРµРЅС‚Р° РјР°СЃСЃРёРІР°
+	set(obj, ["x", 0], "xx"); // если шаг задан в виде числа, то он обозначает индекс элемента массива
 	set(obj, ["x", 1], "abc");
 	this.assert(obj.x, ["xx","abc"], "Error 3");
 }}
 
-new JSUnit.Test("РљРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РїСѓС‚Рё", "Attribute access").run = function(){with(JsPath){
+new JSUnit.Test("Комбинированное представление пути", "Attribute access").run = function(){with(JsPath){
 	var obj = {};
 	set(obj, ["abc/def", "x", 0], 1);
 	set(obj, ["abc/def", "x", 1], 2);
@@ -51,7 +51,7 @@ new JSUnit.Test("РљРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РїСѓС
 	this.assert(get(obj, ["abc", ["def", "x"], 1]), 2, "Error 2");	
 }}
 
-new JSUnit.Test("РџРѕРїС‹С‚РєР° РѕР±СЂР°С‰РµРЅРёСЏ Рє РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРј РґР°РЅРЅС‹Рј", "Attribute access").run = function(){with(JsPath){
+new JSUnit.Test("Попытка обращения к несуществующим данным", "Attribute access").run = function(){with(JsPath){
 	var obj = {};
 	set(obj, ["abc/def", "x", 0], 1);
 	this.assert(get(obj, ["abc/def", "x", 5]), null, "Error 1");
@@ -175,7 +175,7 @@ function init(){
 </head>
 <body onload="init()">
 	<h1>JsPath Unit Tests</h1>
-	<p style="border: 1px solid black; padding:5px; margin:10px;">РњРѕРґСѓР»СЊ JsPath РѕР±РµСЃРїРµС‡РёРІР°РµС‚ XPath-РѕР±СЂР°Р·РЅСѓСЋ РЅР°РІРёРіР°С†РёСЋ РїРѕ JSON-СЃС‚СЂСѓРєС‚СѓСЂР°Рј, Р° С‚Р°РєР¶Рµ РїСЂРѕСЃС‚РµР№С€РёРµ РѕРїРµСЂР°С†РёРё РЅР°Рґ РµРµ СЌР»РµРјРµРЅС‚Р°РјРё. РџСѓС‚СЊ РјРѕР¶РЅРѕ Р·Р°РґР°РІР°С‚СЊ РєР°Рє РІ РІРёРґРµ СЃС‚СЂРѕРєРё, С‚Р°Рє Рё РІ РІРёРґРµ РјР°СЃСЃРёРІР° С€Р°РіРѕРІ (РІРѕР·РјРѕР¶РµРЅ С‚Р°РєР¶Рµ Рё РєРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅС‹Р№ РІР°СЂРёР°РЅС‚).</p>
+	<p style="border: 1px solid black; padding:5px; margin:10px;">Модуль JsPath обеспечивает XPath-образную навигацию по JSON-структурам, а также простейшие операции над ее элементами. Путь можно задавать как в виде строки, так и в виде массива шагов (возможен также и комбинированный вариант).</p>
 	<p>JsPath v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>
 	<div id="out"></div>
