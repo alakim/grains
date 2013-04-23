@@ -3,10 +3,13 @@
 	
 	var templates = {
 		table: function(srcTbl, columns){with(Html){
-			return div({"class":"vAccordionTable"},
-				apply(srcTbl.find("tr"), function(row, i){row=$(row);
-					return templates.row(row, i, columns);
-				})
+			return markup(
+				div({"class":"vAccordionTable"},
+					apply(srcTbl.find("tr"), function(row, i){row=$(row);
+						return templates.row(row, i, columns);
+					})
+				),
+				div({style:"clear:both;"})
 			);
 		}},
 		row: function(row, rowIdx, columns){with(Html){
@@ -32,6 +35,7 @@
 	function buildItem(el, columns){
 		var container =$(H.div()); el.after(container);
 		container.html(templates.table(el, columns));
+		el.hide();
 		
 		var expandedColumn = -1;
 		var colToExpand = -1;
