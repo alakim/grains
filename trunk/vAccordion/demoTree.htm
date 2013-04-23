@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>TreeTable Demo Page</title>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<style type="text/css">
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+			font-size: 12px;
+		}
+		.vAccordionTable{
+			margin:10px;
+		}
+	</style>
+	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="treeTable.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#treePanel").treeTable({
+				levels:["Наименование", "Назначение", "Высота", "Ширина", "Цена"],
+				root:{branches:[
+					{title:"Блок бетонный", branches:[
+						{title:"О назначении блока бетонного", branches:[
+							{title:"600", branches:[
+								{title:"200", branches:[{title:"500"}]},
+								{title:"400", branches:[{title:"800"}]}
+							]},
+							{title:"800", branches:[
+								{title:"200", branches:[{title:"600"}]},
+								{title:"400", branches:[{title:"1000"}]}
+							]}
+						]}
+					]},
+					{title:"Мост чугунный"}
+				]}
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>TreeTable Demo Page</h1>
+	
+	<div id="treePanel"></div>
+		
+		
+	</table>
+</body>
+</html>
