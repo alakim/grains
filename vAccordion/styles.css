@@ -1,0 +1,29 @@
+.vAccordionTable{
+	margin:10px;
+	width:500px;
+}
+.vAccordionTable .row{
+	/*border: 1px solid red;*/
+	clear: both;
+	height: 50px;
+}
+.vAccordionTable .cell{
+	width:70px;
+	height: 50px;
+	float:left;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	overflow: hidden;
+}
+.vAccordionTable .cell.top{
+	border-top:1px solid #ccc;
+}
+.vAccordionTable .cell.left{
+	border-left:1px solid #ccc;
+}
+
+.vAccordionTable .cell.header{
+	font-weight: bold;
+	text-align:center;
+}
+
