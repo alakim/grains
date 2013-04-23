@@ -9,13 +9,16 @@
 			font-family: Verdana, Arial, Sans-Serif;
 			font-size: 12px;
 		}
+		.vAccordionTable{
+			margin:10px;
+		}
 	</style>
 	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="../html/html.js"></script>
 	<script type="text/javascript" src="vaccordion.js"></script>
 	<script type="text/javascript">
 		$(function(){
-			$("#demo1").vAccordion([1,2]);
+			$("#demo1").vAccordion([60, [40,150], [30, 90], [40, 200]]);
 		});
 	</script>
 </head>
