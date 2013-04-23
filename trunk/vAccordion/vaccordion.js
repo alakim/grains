@@ -2,18 +2,29 @@
 	var defaultColumnWidth = 80;
 	var rowHeight = 50;
 	
+	function getSpan(spans, rowIdx, colIdx){
+		var res = 0;
+		$.each(spans.row, function(i, spn){ //spans.row.push({rowIdx:rowIdx, colIdx:colIdx, span:rowSpan});
+			if(colIdx!=spn.colIdx) return;
+			if(rowIdx<=spn.rowIdx || rowIdx>spn.rowIdx+spn.span+1) return;
+			res++;
+		});
+		return res;
+	}
+	
 	var templates = {
 		table: function(srcTbl, columns){with(Html){
+			var spans = {row:[]};
 			return markup(
 				div({"class":"vAccordionTable"},
 					apply(srcTbl.find("tr"), function(row, i){row=$(row);
-						return templates.row(row, i, columns);
+						return templates.row(row, i, columns, spans);
 					})
 				),
 				div({style:"clear:both;"})
 			);
 		}},
-		row: function(row, rowIdx, columns){with(Html){
+		row: function(row, rowIdx, columns, spans){with(Html){
 			return markup(
 				div({"class":"row", rowIdx:rowIdx},
 					apply(row.find("*"), function(cell, colIdx){cell=$(cell);
@@ -32,11 +43,20 @@
 						}
 						if(columns[colIdx] instanceof Array)
 							classes.push("dynamic");
-						var rowSpan = cell.attr("rowSpan");
-						rowSpan = rowSpan?parseInt(rowSpan):1;
-						cellStyle.height = cellStyle.height*rowSpan;
+						var rowSpan = cell.attr("rowSpan"); rowSpan = rowSpan?parseInt(rowSpan):1;
+						//cellStyle.height = cellStyle.height*rowSpan;
+						if(rowSpan>1)
+							spans.row.push({rowIdx:rowIdx, colIdx:colIdx, span:rowSpan});
 						
-						return div({"class":classes.join(" "), cellIdx:colIdx, rowIdx:rowIdx, style:style(cellStyle)}, cell.text());
+						var span = getSpan(spans, rowIdx, colIdx);
+						console.log(rowIdx, span);
+						
+						return markup(
+							times(span, function(n){
+								return div({"class":classes.join(" "), cellIdx:colIdx-(span-n), rowIdx:rowIdx, style:style(cellStyle)}, span, ":", n)
+							}),
+							div({"class":classes.join(" "), cellIdx:colIdx, rowIdx:rowIdx, style:style(cellStyle)}, cell.text())
+						);
 					})
 				),
 				div({style:"clear:left;"})
