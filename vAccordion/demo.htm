@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>Vertical Accordion Demo Page</title>
+	<script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="vaccordion.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#demo1").vAccordion([1,2]);
+		});
+	</script>
+</head>
+<body>
+	<h1>Vertical Accordion Demo Page</h1>
+	
+	
+	<table id="demo1" border="1" cellpadding="3" cellspacing="0">
+		<tr>
+			<th>Ф.И.О.</th>
+			<th>Должность</th>
+			<th>Телефон</th>
+			<th>Адрес</th>
+		</tr>
+		<tr>
+			<td>Иванов И.И.</td>
+			<td>Генеральный директор</td>
+			<td>444-4444</td>
+			<td>Москва, 1й-Силикатный проезд, 11</td>
+		</tr>
+		<tr>
+			<td>Петров П.П.</td>
+			<td>Начальник отдела</td>
+			<td>333-3333</td>
+			<td>Москва, 2й-Силикатный проезд, 22</td>
+		</tr>
+		<tr>
+			<td>Сидоров С.С.</td>
+			<td>Ведущий специалист</td>
+			<td>444-4445</td>
+			<td>Москва, 1й-Силикатный проезд, 11</td>
+		</tr>
+		<tr>
+			<td>Иваненко И.И.</td>
+			<td>водитель</td>
+			<td>8(915)312-4433</td>
+			<td>Москва, 1й-Силикатный проезд, 11</td>
+		</tr>
+	</table>
+</body>
+</html>
