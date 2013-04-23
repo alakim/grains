@@ -1,8 +1,7 @@
 .vAccordionTable .row{
-	clear: both;
+	clear: left;
 }
 .vAccordionTable .cell{
-	height: 50px;
 	float:left;
 	border-right: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;

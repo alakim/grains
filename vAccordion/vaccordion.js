@@ -1,5 +1,6 @@
 (function($,H){
 	var defaultColumnWidth = 80;
+	var rowHeight = 50;
 	
 	var templates = {
 		table: function(srcTbl, columns){with(Html){
@@ -13,23 +14,32 @@
 			);
 		}},
 		row: function(row, rowIdx, columns){with(Html){
-			return div({"class":"row", rowIdx:rowIdx},
-				apply(row.find("*"), function(cell, colIdx){cell=$(cell);
-					var classes = ["cell"];
-					if(rowIdx==0) classes.push("top");
-					if(colIdx==0) classes.push("left");
-					if(cell[0].tagName.toUpperCase()=="TH")
-						classes.push("header");
-					if(columns[colIdx] instanceof Array)
-						classes.push("dynamic");
-					var colWidth = columns[colIdx];
-					var cellStyle = style({
-						width: !columns[colIdx]? defaultColumnWidth
-							:columns[colIdx] instanceof Array? columns[colIdx][0] 
-							: columns[colIdx]
-					});
-					return div({"class":classes.join(" "), cellIdx:colIdx, rowIdx:rowIdx, style:cellStyle}, cell.text());
-				})
+			return markup(
+				div({"class":"row", rowIdx:rowIdx},
+					apply(row.find("*"), function(cell, colIdx){cell=$(cell);
+						var cellStyle = {
+							width: !columns[colIdx]? defaultColumnWidth
+								:columns[colIdx] instanceof Array? columns[colIdx][0] 
+								: columns[colIdx],
+							height: rowHeight
+						};
+						var classes = ["cell"];
+						if(rowIdx==0) classes.push("top");
+						if(colIdx==0) classes.push("left");
+						if(cell[0].tagName.toUpperCase()=="TH"){
+							classes.push("header");
+							cellStyle.height = rowHeight/2;
+						}
+						if(columns[colIdx] instanceof Array)
+							classes.push("dynamic");
+						var rowSpan = cell.attr("rowSpan");
+						rowSpan = rowSpan?parseInt(rowSpan):1;
+						cellStyle.height = cellStyle.height*rowSpan;
+						
+						return div({"class":classes.join(" "), cellIdx:colIdx, rowIdx:rowIdx, style:style(cellStyle)}, cell.text());
+					})
+				),
+				div({style:"clear:left;"})
 			);
 		}}
 	};
@@ -41,6 +51,11 @@
 		
 		var expandedColumn = -1;
 		var colToExpand = -1;
+		if(window.navigator.userAgent.match(/compatible;\s+MSIE/)){
+			$(".vAccordionTable .cell").each(function(i,c){c=$(c); //IE workaraund
+				c.animate({width:c.width()});
+			});
+		}
 		
 		$(".vAccordionTable .cell")
 			.mouseover(function(){var _=$(this);
