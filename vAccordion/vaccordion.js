@@ -20,6 +20,8 @@
 					if(colIdx==0) classes.push("left");
 					if(cell[0].tagName.toUpperCase()=="TH")
 						classes.push("header");
+					if(columns[colIdx] instanceof Array)
+						classes.push("dynamic");
 					var colWidth = columns[colIdx];
 					var cellStyle = style({
 						width: !columns[colIdx]? defaultColumnWidth
