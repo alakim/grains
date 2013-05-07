@@ -120,6 +120,18 @@ new JSUnit.Test("Add Array Element", "Element operations").run = function(){with
 	
 	
 }}
+new JSUnit.Test("Push Array Element", "Element operations").run = function(){with(JsPath){
+	var obj = {items:[]};
+	push(obj, "items", {id:1});
+	push(obj, "items", {id:2});
+	this.assert(obj, {items:[{id:1}, {id:2}]});
+	
+	obj = {};
+	push(obj, "items", {id:1});
+	push(obj, "items", {id:2});
+	this.assert(obj, {items:[{id:1}, {id:2}]});
+	
+}}
 
 new JSUnit.Test("OnChange Event", "Events").run = function(){with(JsPath){
 	var obj = {x:{y:10, z:1}};

@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"3.2.525"
+	version:"4.1.539"
 };
 
 (function(){
@@ -117,6 +117,15 @@ var JsPath = {
 					hnd.handler(obj, path);
 			});
 		}},
+		
+		push: function(obj, path, val){
+			var arr = JsPath.get(obj, path);
+			if(!(arr instanceof Array)){
+				arr = [];
+				JsPath.set(obj, path, arr);
+			}
+			arr.push(val);
+		},
 		
 		remove: function(obj, path){JsPath.delItem(obj, path);},
 		
