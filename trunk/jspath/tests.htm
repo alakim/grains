@@ -132,6 +132,12 @@ new JSUnit.Test("Push Array Element", "Element operations").run = function(){wit
 	this.assert(obj, {items:[{id:1}, {id:2}]});
 	
 }}
+new JSUnit.Test("Push Array Element Syntax", "Element operations").run = function(){with(JsPath){
+	var obj = {items:[]};
+	set(obj, "items/#*", {id:1}); // Звездочка означает, что элемент добавляется в конец массива
+	set(obj, "items/#*", {id:2});
+	this.assert(obj, {items:[{id:1}, {id:2}]});	
+}}
 
 new JSUnit.Test("OnChange Event", "Events").run = function(){with(JsPath){
 	var obj = {x:{y:10, z:1}};
