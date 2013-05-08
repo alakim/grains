@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"4.1.539"
+	version:"4.2.540"
 };
 
 (function(){
@@ -58,21 +58,25 @@ var JsPath = {
 			var ss = getSteps(path);
 			each(ss, function(s, i, next){
 				if(s==null) throw "Step is null";
-				var arrMode = arrayMode(s);
-				var idx = arrMode?typeof(s)=="number"?s:parseInt(RegExp.$1):null;
-				if(next==null){
-					if(arrMode) o[idx] = val;
-					else o[s] = val;
-				}
+				if(s=="#*")
+					o.push(val);
 				else{
-					if(arrMode){
-						if(typeof(o[idx])=="undefined")
-							o[idx] = arrayMode(next)?[]:{};
-						o = o[idx];
+					var arrMode = arrayMode(s);
+					var idx = arrMode?typeof(s)=="number"?s:parseInt(RegExp.$1):null;
+					if(next==null){
+						if(arrMode) o[idx] = val;
+						else o[s] = val;
 					}
 					else{
-						if(!o[s]) o[s] = arrayMode(next)?[]:{};
-						o = o[s];
+						if(arrMode){
+							if(typeof(o[idx])=="undefined")
+								o[idx] = arrayMode(next)?[]:{};
+							o = o[idx];
+						}
+						else{
+							if(!o[s]) o[s] = arrayMode(next)?[]:{};
+							o = o[s];
+						}
 					}
 				}
 			});
