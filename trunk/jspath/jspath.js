@@ -1,5 +1,5 @@
 var JsPath = {
-	version:"4.2.540"
+	version:"4.2.541"
 };
 
 (function(){
@@ -26,7 +26,7 @@ var JsPath = {
 		if(typeof(path)=="string") return path.split("/");
 		throw "Unknown path type";
 	}
-	function arrayMode(step){return typeof(step)=="number" || step.match(/^#(\d+)/);}
+	function arrayMode(step){return typeof(step)=="number" || step.match(/^#(\d+)|(\*)/);}
 	
 	function pathToString(path){
 		var sPath = getSteps(path);
@@ -58,8 +58,6 @@ var JsPath = {
 			var ss = getSteps(path);
 			each(ss, function(s, i, next){
 				if(s==null) throw "Step is null";
-				if(s=="#*")
-					o.push(val);
 				else{
 					var arrMode = arrayMode(s);
 					var idx = arrMode?typeof(s)=="number"?s:parseInt(RegExp.$1):null;
@@ -76,6 +74,9 @@ var JsPath = {
 						else{
 							if(!o[s]) o[s] = arrayMode(next)?[]:{};
 							o = o[s];
+						}
+						if(next=="#*"){
+							o.push(val);
 						}
 					}
 				}
@@ -124,7 +125,7 @@ var JsPath = {
 		
 		push: function(obj, path, val){
 			var arr = JsPath.get(obj, path);
-			if(!(arr instanceof Array)){
+			if(!arr || !(arr instanceof Array)){
 				arr = [];
 				JsPath.set(obj, path, arr);
 			}

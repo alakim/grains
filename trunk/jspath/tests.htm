@@ -139,6 +139,19 @@ new JSUnit.Test("Push Array Element Syntax", "Element operations").run = functio
 	this.assert(obj, {items:[{id:1}, {id:2}]});	
 }}
 
+new JSUnit.Test("Push into not existing array", "Element operations").run = function(){with(JsPath){
+	var obj = {};
+	push(obj, "items", {id:1});
+	this.assert(obj, {items:[{id:1}]}, "Push failed");
+}}
+	
+new JSUnit.Test("Push syntax for not existing array", "Element operations").run = function(){with(JsPath){
+	obj = {};
+	set(obj, "items/#*", {id:1}); // Звездочка означает, что элемент добавляется в конец массива
+	set(obj, "items/#*", {id:2});
+	this.assert(obj, {items:[{id:1}, {id:2}]}, "Push syntax failed");
+}}
+
 new JSUnit.Test("OnChange Event", "Events").run = function(){with(JsPath){
 	var obj = {x:{y:10, z:1}};
 	var hndIdx = JsPath.onchange.bind("x/y", function(){
