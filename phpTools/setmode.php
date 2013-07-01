@@ -34,7 +34,7 @@
 		echo("FAILURE! dir: '{$dir}'");
 	}
 
-	if($dir=="") $dir = "/home/gsblock/www";
+	if($dir=="") $dir = "."; //$dir = "/home/gsblock/www";
 	$items = scandir($dir);
 	if($items==false){
 		// echo(E_WARNING);
