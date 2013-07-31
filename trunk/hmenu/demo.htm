@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+	<title>HMenu Demo Page</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<script type="text/javascript" src="lib/jquery-1.6.4.min.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<style type="text/css">
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+			font-size: 12px;
+		}
+	</style>
+	
+	<script type="text/javascript" src="hmenu.js"></script>
+	<link rel="stylesheet" type="text/css" href="hmenu.css"/>
+	<script type="text/javascript">
+		$(function(){
+			$(".hmenu").HMenu();
+		});
+	</script>
+</head>
+<body>
+	<h1>HMenu Demo Page</h1>
+	
+	<div style="display:none;" class="hmenu">
+		<div class="moduletable">
+		<ul class="nav menu">
+			<li class="item-111 deeper parent"><a href="/index.php/exped">Экспедирование</a>
+				<ul class="nav-child unstyled small">
+					<li class="item-116"><a href="/index.php/exped/exp1">Перевалка</a></li>
+					<li class="item-117"><a href="/index.php/exped/exp2">открытое / крытое хранение</a></li>
+				</ul>
+			</li>
+			<li class="item-112 deeper parent"><a href="/index.php/agent">Агентирование</a>
+				<ul class="nav-child unstyled small">
+					<li class="item-118"><a href="/index.php/agent/ag1">Морское агентирование</a></li>
+				</ul>
+			</li>
+			<li class="item-113"><a href="/index.php/fracht">Фрахт</a></li>
+			<li class="item-114"><a href="/index.php/transfer">Перевозки</a></li>
+			<li class="item-115"><a href="/index.php/door">Door-to-door сервис</a></li>
+		</ul>
+		</div>
+	</div>
+
+</body>
+</html>
