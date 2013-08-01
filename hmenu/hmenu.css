@@ -1,3 +1,7 @@
 ﻿.hmenu a {
 	text-decoration: none;
 }
+
+span.topLevel{
+	padding-right: 15px;
+}
