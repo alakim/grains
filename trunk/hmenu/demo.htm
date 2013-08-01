@@ -9,19 +9,55 @@
 			font-family: Verdana, Arial, Sans-Serif;
 			font-size: 12px;
 		}
+		.xPnl{
+			margin: 70px 0 0 0;
+		}
+		.xItm{
+			/*border: 1px solid red;*/
+			padding-top: 50px;
+			padding-left: 120px;
+			margin-left:-13px;
+		}
+		.xItm1{background: url('img/menu1.png') left top no-repeat;}
+		.xItm2{background: url('img/menu2.png') left top no-repeat;}
+		.xItm3{background: url('img/menu3.png') left top no-repeat;}
+		.xItm4{background: url('img/menu4.png') left top no-repeat;}
+		.xItm5{background: url('img/menu5.png') left top no-repeat;}
 	</style>
 	
 	<script type="text/javascript" src="hmenu.js"></script>
 	<link rel="stylesheet" type="text/css" href="hmenu.css"/>
 	<script type="text/javascript">
+		function initXPnl(){
+			$(".xPnl span")
+				.css({opacity:.7, cursor:"pointer"})
+				.mouseover(function(){
+					$(this).css({opacity:1});
+				})
+				.mouseout(function(){
+					$(this).css({opacity:.7});
+				})
+		}
+		
 		$(function(){
 			$(".hmenu").HMenu();
+			initXPnl();
 		});
 	</script>
 </head>
 <body>
 	<h1>HMenu Demo Page</h1>
 	
+	<h2>Sample markup</h2>
+	<div class="xPnl">
+		<span class="xItm xItm1">&nbsp;</span>
+		<span class="xItm xItm2">&nbsp;</span>
+		<span class="xItm xItm3">&nbsp;</span>
+		<span class="xItm xItm4">&nbsp;</span>
+		<span class="xItm xItm5">&nbsp;</span>
+	</div>
+	
+	<h2>Sample menu</h2>
 	<div style="display:none;" class="hmenu">
 		<div class="moduletable">
 		<ul class="nav menu">
