@@ -83,7 +83,7 @@
 		if(options.axes){
 			var n = (function(axis){return (axis.max - axis.min)/axis.step;})(options.axes.y);
 			var step = h/n;
-			for(var i=0; i<n; i++){
+			for(var i=0; i<=n; i++){
 				path = path.concat([
 					"M", Math.round(x) + s, Math.round(y + i * step) + s,
 					"H", Math.round(x + w) + s
