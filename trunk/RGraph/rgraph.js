@@ -1,7 +1,13 @@
 ﻿var RGraph = (function($,R){
 	var pixelShift = .5;
 	
-	function getRanges(rows){
+	function getRanges(rows, options){
+		if(options.axes) return {
+			x:{min:options.axes.x.min, max: options.axes.x.max},
+			y:{min:options.axes.y.min, max: options.axes.y.max},
+			basis:0
+		};
+			
 		var maxBasis = 2;
 		var maxX = 0;
 		var maxY = 0;
@@ -62,7 +68,10 @@
 		);
 	}}
 	
-	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, ranges, color, labels) {
+	R.fn.drawGrid = function (x, y, w, h, xStep, yStep, ranges, options) {
+		var color = options.gridColor,
+			labels = options.labels;
+
 		color = color || "#000";
 		var s = pixelShift;
 		var txtStyle = {font: '12px Helvetica, Arial', fill: "#888"};
@@ -70,15 +79,38 @@
 		var path = [];
 		var nMag;
 		for(nMag=1; yStep<12; nMag*=2,yStep*=2);
-		var hv = h/yStep;
-		for (var i = 0; i <= hv; i++) {
-			path = path.concat([
-				"M", Math.round(x) + s, Math.round(y + i * yStep) + s,
-				"H", Math.round(x + w) + s
-			]);
-			this.text(Math.round(x/2) + s, Math.round(6 + i * yStep) + s + 12, (hv-i)*nMag+ranges.basis).attr(txtStyle);
+		
+		if(options.axes){
+			var n = (function(axis){return (axis.max - axis.min)/axis.step;})(options.axes.y);
+			var step = h/n;
+			for(var i=0; i<n; i++){
+				path = path.concat([
+					"M", Math.round(x) + s, Math.round(y + i * step) + s,
+					"H", Math.round(x + w) + s
+				]);
+				this.text(Math.round(x/2) + s, Math.round(6 + i * step) + s + 12, options.axes.y.max - i*options.axes.y.step).attr(txtStyle);
+			}
 		}
-		var aLblX = getLabels([ranges.x.min, ranges.x.max]);
+		else{
+			var hv = h/yStep;
+
+			for (var i = 0; i <= hv; i++) {
+				path = path.concat([
+					"M", Math.round(x) + s, Math.round(y + i * yStep) + s,
+					"H", Math.round(x + w) + s
+				]);
+				this.text(Math.round(x/2) + s, Math.round(6 + i * yStep) + s + 12, (hv-i)*nMag+ranges.basis).attr(txtStyle);
+			}
+		}
+		var aLblX = options.axes?(function(axis){
+				var res = [];
+				var n = (axis.max - axis.min)/axis.step;
+				for(var i=0; i<=n; i++){
+					res.push(axis.min + i*axis.step);
+				}
+				return res;
+			})(options.axes.x)
+			:getLabels([ranges.x.min, ranges.x.max]);
 		var columnWidth = w/(aLblX.length-1);
 		for(var i=0; i<aLblX.length; i++){
 			var lbl = aLblX[i];
@@ -132,10 +164,11 @@
 	}
 
 	function draw(panel, rows, options) {
-		var ranges = getRanges(rows);
+		var ranges = getRanges(rows, options);
 		var width = $(panel).width(),
 			height = $(panel).height(),
 			r = R(panel, width, height),
+			xStep, yStep,
 			xStep = (width - options.leftgutter*2) / (ranges.x.max - ranges.x.min),
 			yStep = (height - options.bottomgutter - options.topgutter) / (ranges.y.max-ranges.basis);
 		
@@ -148,8 +181,7 @@
 			width-options.leftgutter*2,
 			height - options.topgutter - options.bottomgutter,
 			xStep, yStep, ranges,
-			options.gridColor,
-			options.labels
+			options
 		);
 		
 		var label = r.set(),

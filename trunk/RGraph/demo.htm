@@ -128,6 +128,36 @@
 				]
 			});
 
+			$("#grPnl6").rgraph([
+				[
+					[1.3,2.1],
+					[2.1,3.1],
+					[4.3,4.4],
+					[4.5,5],
+					[5.1,5.5],
+					[8,5.7],
+					[13,8]
+				],
+				[
+					[1.6,3],
+					[2.4,3.5],
+					[4.2,3.9],
+					[4.5,5.2],
+					[5.3, 4],
+					[8.1,3.3],
+					[13.0, 3]
+				]
+			],{
+				backColor:null,
+				viewTable: false,
+				viewBackground: true,
+				viewLegend: false,
+				axes:{
+					x:{min:0, max: 15, step:5, unit: "mm"},
+					y:{min:0, max: 10, step:2, unit: "Pa"}
+				}
+			});
+
 		});
 	</script>
 	<style type="text/css">
@@ -144,5 +174,6 @@
 	<div class="panel" id="grPnl3"></div>
 	<div class="panel" id="grPnl4"></div>
 	<div class="panel" id="grPnl5"></div>
+	<div class="panel" id="grPnl6"></div>
 </body>
 </html>
