@@ -124,6 +124,14 @@
 			if(options.axes&&options.axes.x.format) label = options.axes.x.format(label);
 			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle);
 		}
+		
+		if(options.axes){
+			if(options.axes.y.title)
+				this.text(options.leftgutter/2 +s, options.topgutter/2-3+s, options.axes.y.title).attr(txtStyle);
+			if(options.axes.x.title)
+				this.text(w+options.leftgutter*1.5+s, h+options.topgutter+s, options.axes.x.title).attr(txtStyle);
+		}
+
 		return this.path(path.join(",")).attr({stroke: color});
 	};
 	
