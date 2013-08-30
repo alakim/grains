@@ -88,7 +88,9 @@
 					"M", Math.round(x) + s, Math.round(y + i * step) + s,
 					"H", Math.round(x + w) + s
 				]);
-				this.text(Math.round(x/2) + s, Math.round(6 + i * step) + s + 12, options.axes.y.max - i*options.axes.y.step).attr(txtStyle);
+				var val = options.axes.y.max - i*options.axes.y.step;
+				if(options.axes.y.format) val = options.axes.y.format(val);
+				this.text(Math.round(x/2) + s, Math.round(6 + i * step) + s + 12, val).attr(txtStyle);
 			}
 		}
 		else{
@@ -119,6 +121,7 @@
 				"V", Math.round(y + h) + s
 			]);
 			var label = labels && labels[lbl]?labels[lbl]:lbl;
+			if(options.axes&&options.axes.x.format) label = options.axes.x.format(label);
 			this.text(Math.round(x + i * columnWidth) + s, y+h + 12, label).attr(txtStyle);
 		}
 		return this.path(path.join(",")).attr({stroke: color});
