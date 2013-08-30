@@ -153,8 +153,8 @@
 				viewBackground: true,
 				viewLegend: false,
 				axes:{
-					x:{min:0, max: 15, step:5, unit: "mm"},
-					y:{min:0, max: 10, step:2, unit: "Pa"}
+					x:{min:0, max: 15, step:5, unit: "mm", format:function(v){return v+".";}},
+					y:{min:0, max: 10, step:2, unit: "Pa", format:function(v){return v+".00";}}
 				}
 			});
 
