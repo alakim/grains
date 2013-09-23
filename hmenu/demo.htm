@@ -30,12 +30,12 @@
 	<script type="text/javascript">
 		function initXPnl(){
 			$(".xPnl span")
-				.css({opacity:.7, cursor:"pointer"})
+				.css({opacity:.6, cursor:"pointer"})
 				.mouseover(function(){
-					$(this).css({opacity:1});
+					$(this).animate({opacity:1}, 400);
 				})
 				.mouseout(function(){
-					$(this).css({opacity:.7});
+					$(this).animate({opacity:.6}, 500);
 				})
 		}
 		
