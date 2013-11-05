@@ -6,7 +6,7 @@
 			row.find("td").each(function(j, cell){cell = $(cell);
 				var prevCell = $(row.prev().find("td").get(j));
 				if(prevCell.html()==cell.html()){
-					var rspan = cell.attr("rowspan") || "1"; rspan = parseInt(rspan);
+					var rspan = parseInt(cell.attr("rowspan") || 1);
 					prevCell.attr({rowspan: rspan+1})
 					cell.remove();
 				}
