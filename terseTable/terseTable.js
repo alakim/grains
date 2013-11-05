@@ -8,11 +8,11 @@
 				if(prevCell.html()==cell.html()){
 					var rspan = parseInt(cell.attr("rowspan") || 1);
 					prevCell.attr({rowspan: rspan+1})
-					cell.remove();
+					cell.addClass("toRemove");
 				}
 			});
-			
 		}
+		tbl.find(".toRemove").remove();
 	}
 	
 	$.fn.terseTable = function(){
