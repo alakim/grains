@@ -11,7 +11,11 @@
 			link:{color:"#008"},
 			slider:{width:3, color:"#ccc"}
 		}, options);
-		
+
+		if(data.type=="MSProjectXML"){
+			data = convertFromMSProjectXML(data);
+		}
+
 		var taskIndex = {};
 		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
 		$.each(data.tasks, function(i,t){
@@ -39,8 +43,23 @@
 				tDef.level = 0;
 			return tDef.level;
 		}
+		function parseXmlDate(sDate){
+			var re = /(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)/;
+			var mt = sDate.match(re);
+			if(!mt){alert("Error parsing date '"+sDate+"'"); return;}
+			var y = parseInt(mt[1], 10),
+				m = parseInt(mt[2], 10),
+				d = parseInt(mt[3], 10);
+			var res = new Date(y, m-1, d);
+			res.setHours(parseInt(mt[4], 10));
+			res.setMinutes(parseInt(mt[5], 10));
+			res.setSeconds(parseInt(mt[6], 10));
+			return res;
+		}
 		
 		function parseDate(sDate){
+			if(sDate.match(/T/)) return parseXmlDate(sDate);
+			
 			var a = sDate.split(" ");
 			var sDt = a[0];
 			var b = sDt.split(".");
@@ -72,8 +91,37 @@
 			return [d,m,y].join(".");
 		}
 		
+		function convertFromMSProjectXML(data){
+			function getParentOutline(outNr){
+				var re = /\.\d+$/i;
+				var mt = outNr.match(re);
+				if(!mt) return null;
+				return outNr.replace(re, "");
+			}
+			
+			var tasks = [];
+			var dict = {};
+			for(var i=0; i<data.tasks.length; i++){var srcTask = data.tasks[i];
+				var task = {
+					id: srcTask.id,
+					name:srcTask.name,
+					parent:getParentOutline(srcTask.outlineNumber),
+					progress:0,
+					actualStart:srcTask.start,
+					actualEnd:srcTask.finish
+				};
+				dict[srcTask.outlineNumber] = task;
+				tasks.push(task);
+			}
+			for(var i=0; i<tasks.length; i++){var tsk = tasks[i];
+				if(tsk.parent)
+					tsk.parent = dict[tsk.parent].id;
+			}
+			
+			return {tasks:tasks};
+		}
+		
 		function draw(container, data){
-
 			var width = container.width(),
 				height = container.height();
 			var columns = [
