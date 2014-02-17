@@ -10,6 +10,6 @@
  </xsl:template>
  
  <xsl:template match="prj:Task">
-	{"id":"<xsl:value-of select="prj:UID"/>", "name":"<xsl:value-of select="prj:Name"/>", "outlineNumber":"<xsl:value-of select="prj:OutlineNumber"/>", "start":"<xsl:value-of select="prj:Start"/>", "finish":"<xsl:value-of select="prj:Finish"/>"}, </xsl:template>
+	{"id":"<xsl:value-of select="prj:UID"/>", "name":"<xsl:value-of select="prj:Name"/>", "outlineNumber":"<xsl:value-of select="prj:OutlineNumber"/>", "start":"<xsl:value-of select="prj:Start"/>", "finish":"<xsl:value-of select="prj:Finish"/>"<xsl:if test="prj:PercentComplete">, "progress":<xsl:value-of select="prj:PercentComplete"/></xsl:if><xsl:if test="prj:PredecessorLink">, "predecessor":"<xsl:value-of select="prj:PredecessorLink/prj:PredecessorUID"/>"</xsl:if>}, </xsl:template>
 
 </xsl:stylesheet>

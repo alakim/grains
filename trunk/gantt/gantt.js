@@ -100,18 +100,31 @@
 			}
 			
 			var tasks = [];
-			var dict = {};
+			var dict = {}, dictID = {};
 			for(var i=0; i<data.tasks.length; i++){var srcTask = data.tasks[i];
 				var task = {
 					id: srcTask.id,
 					name:srcTask.name,
 					parent:getParentOutline(srcTask.outlineNumber),
-					progress:0,
+					progress:srcTask.progress || 0,
 					actualStart:srcTask.start,
 					actualEnd:srcTask.finish
 				};
 				dict[srcTask.outlineNumber] = task;
+				dictID[task.id] = task;
 				tasks.push(task);
+			}
+			for(var i=0; i<data.tasks.length; i++){var srcTask = data.tasks[i];
+				if(!srcTask.predecessor) continue;
+				var pred = dictID[srcTask.predecessor];
+				if(!pred.next) pred.next = srcTask.id;
+				else{
+					if(pred.next instanceof Array) pred.next.push(srcTask.id);
+					else{
+						var nxt = pred.next;
+						pred.next = [nxt, srcTask.id];
+					}
+				}
 			}
 			for(var i=0; i<tasks.length; i++){var tsk = tasks[i];
 				if(tsk.parent)
