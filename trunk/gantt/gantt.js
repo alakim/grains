@@ -19,6 +19,7 @@
 		var taskIndex = {};
 		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
 		$.each(data.tasks, function(i,t){
+			if(!t) return;
 			taskIndex[t.id] = t;
 			t.actualStart = parseDate(t.actualStart);
 			t.actualEnd = parseDate(t.actualEnd);
@@ -203,6 +204,7 @@
 					col.set.push(R.text(x+col.w/2, options.headHeight/2, col.title).attr({"text-anchor":"middle", "font-weight":"bold"}));
 					
 					$.each(data.tasks, function(i,task){
+						if(!task) return;
 						var levelOffset = col.fld=="name"?options.taskLevelOffset*taskLevel(task.id):0;
 						var txt = R.text(x+txtX+levelOffset, taskYPos(i), col.f?col.f(task[col.fld]):task[col.fld])
 							.attr({"text-anchor":col.mrgLeft?"start":"middle"});
@@ -318,6 +320,7 @@
 						]).attr({stroke:null, fill:options.complexTask.arrowColor}));
 					}
 					$.each(data.tasks, function(i,task){
+						if(!task) return;
 						var tReg = taskIndex[task.id];
 						var isComplex = tReg.children!=null;
 						tReg.row = i;
@@ -348,7 +351,7 @@
 					var stubLng = 5,
 						arrowSize = 5;
 					$.each(data.tasks, function(i, task){
-						if(!task.next) return;
+						if(!task || !task.next) return;
 						
 						function drawLink(task, nextID){
 							var tRect = getTaskRect(i, task);
