@@ -5,7 +5,7 @@
 			fontSize: 12,
 			headHeight: 35,
 			taskLevelOffset: 15,
-			grid:{color:"#ccc", draw:false},
+			grid:{color:"#ccc", draw:false, minDayStep: 14},
 			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
 			link:{color:"#008"},
@@ -272,21 +272,25 @@
 				chartSet.push(R.rect(left, 0, width, height).attr({fill:"#fff", stroke:options.grid.color}));
 				
 				var chartWidth = width - left;
-				var dayStep = chartWidth/dateRange.days;
+				var dayStep = chartWidth/dateRange.days, dayGroup = 1;
+				for(dayGroup=1; dayStep*dayGroup<options.grid.minDayStep; dayGroup++);
 				
 				(function buildHeader(){
 					var middle = options.headHeight/2;
 					chartSet.push(R.path(["M",left,middle,"L",width+left,middle]).attr({stroke:options.grid.color}));
 					var d = new Date(dateRange.min);
-					for(var i=0; i<width/dayStep; i++){
-						var x = left+i*dayStep;
+					for(var i=0; i<width/(dayStep*dayGroup); i++){
+						var x = left+i*dayStep*dayGroup;
+						var dat = d.getDate();
+						
 						chartSet.push(R.path(["M",x,middle,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
-						chartSet.push(R.text(x+dayStep/2, options.headHeight*.75, d.getDate()).attr({"text-anchor":"middle"}));
-						d.setDate(d.getDate()+1);
-						if(d.getDate()==2)
+						chartSet.push(R.text(x+dayStep*dayGroup/2, options.headHeight*.75, dat).attr({"text-anchor":"middle"}));
+						if(dat>0 && dat<=dayGroup)
 							chartSet.push(R.path(["M",x,0,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
-						if(d.getDate()==15)
+						if(dat>15 && dat<=15+dayGroup)
 							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)+" "+(1900+d.getYear())).attr({"text-anchor":"middle"}));
+						
+						d.setDate(dat+dayGroup);
 					}
 				})();
 				
