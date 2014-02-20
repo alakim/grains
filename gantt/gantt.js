@@ -369,26 +369,34 @@
 							var y1 = tRect.y+tRect.h/2, 
 								y2 = nxtRect.y+nxtRect.h/2;
 							var dy = y2-y1,
-								dx = (nxtRect.x-stubLng-arrowSize) - (tRect.x+tRect.w+stubLng);
+								dx = (nxtRect.x-stubLng-arrowSize) - (tRect.x+tRect.w+stubLng),
+								rowCorrection = Math.ceil(dy/options.rowHeight)%2?0:options.rowHeight/2;
 								
 							var path = [
 									"M", tRect.x+tRect.w, y1,
 									"L", tRect.x+tRect.w+stubLng+(dx>=0?dx/2:0), y1,
 									dx>=0?["L", nxtRect.x-stubLng-arrowSize-dx/2, y2,]
 									:[
-										"L", tRect.x+tRect.w+stubLng, y1+dy/2,
-										"L", nxtRect.x-stubLng-arrowSize, y2-dy/2,
+										"L", tRect.x+tRect.w+stubLng, y1+dy/2+rowCorrection,
+										"L", nxtRect.x-stubLng-arrowSize, y2-dy/2+rowCorrection,
 										"L", nxtRect.x-stubLng-arrowSize, y2
 									],
 									"L", nxtRect.x, y2
 								];
 							var lnkSet = R.set();
-							var arrow;
-							function highlightOn(){var clr = options.link.highlightColor; lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});}
-							function highlightOff(){var clr = options.link.color; lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});}
+							var arrow, captureZone;
+							function highlightOn(){
+								var clr = options.link.highlightColor;
+								lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});
+								captureZone.attr({opacity:.2});
+							}
+							function highlightOff(){
+								var clr = options.link.color;
+								lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});
+								captureZone.attr({opacity:0});
+							}
 							
-							// drawing capture zone
-							R.path(path).attr({stroke:"#ff0", "stroke-width":options.link.captureZone, opacity:0})
+							captureZone = R.path(path).attr({stroke:"#ff0", "stroke-width":options.link.captureZone, opacity:0})
 								.mouseover(highlightOn).mouseout(highlightOff)
 							
 							lnkSet.push( // drawing line
