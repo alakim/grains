@@ -8,16 +8,17 @@
 			grid:{color:"#ccc", draw:false, minDayStep: 14},
 			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
-			link:{color:"#008"},
+			link:{color:"#008", highlightColor:"#f00", width:1, captureZone:8},
 			slider:{width:3, color:"#ccc"}
 		}, options);
-
+		
 		if(data.type=="MSProjectXML"){
 			data = convertFromMSProjectXML(data);
 		}
 
 		var taskIndex = {};
 		var dateRange = {min:new Date(2200,0,1), max:new Date(1900, 0,1)};
+		
 		$.each(data.tasks, function(i,t){
 			if(!t) return;
 			taskIndex[t.id] = t;
@@ -26,6 +27,9 @@
 			if(t.actualStart<dateRange.min) dateRange.min = t.actualStart;
 			if(t.actualEnd>dateRange.max) dateRange.max = t.actualEnd;
 		});
+		function addDays(date, nDays){date.setDate(date.getDate()+nDays);}
+		addDays(dateRange.min, -2); addDays(dateRange.max, 3); // expand boundaries for fine view
+		
 		dateRange.getDays = function(d1, d2){
 			return (d2-d1)/(1000*60*60*24);
 		};
@@ -154,7 +158,7 @@
 			function drawGrid(){
 				var step = options.rowHeight;
 				R.rect(0, 0, width, height).attr({stroke:options.grid.color});
-				for(var i=0; i<data.tasks.length; i++){
+				for(var i=0; i<=data.tasks.length; i++){
 					var y = i*step+options.headHeight;
 					var p = R.path(["M0,", y, "L", width, y]).attr({stroke:options.grid.color});
 					if(i==0) p.attr({"stroke-width":2});
@@ -354,6 +358,7 @@
 				(function drawLinks(){
 					var stubLng = 5,
 						arrowSize = 5;
+						
 					$.each(data.tasks, function(i, task){
 						if(!task || !task.next) return;
 						
@@ -368,8 +373,8 @@
 								
 							var path = [
 									"M", tRect.x+tRect.w, y1,
-									"L", tRect.x+tRect.w+stubLng, y1,
-									dx>=0?["L", nxtRect.x-stubLng-arrowSize-dx, y2,]
+									"L", tRect.x+tRect.w+stubLng+(dx>=0?dx/2:0), y1,
+									dx>=0?["L", nxtRect.x-stubLng-arrowSize-dx/2, y2,]
 									:[
 										"L", tRect.x+tRect.w+stubLng, y1+dy/2,
 										"L", nxtRect.x-stubLng-arrowSize, y2-dy/2,
@@ -377,15 +382,29 @@
 									],
 									"L", nxtRect.x, y2
 								];
-							chartSet.push(R.path(path).attr({stroke:options.link.color}));
-							chartSet.push(
-								R.path([
+							var lnkSet = R.set();
+							var arrow;
+							function highlightOn(){var clr = options.link.highlightColor; lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});}
+							function highlightOff(){var clr = options.link.color; lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});}
+							
+							// drawing capture zone
+							R.path(path).attr({stroke:"#ff0", "stroke-width":options.link.captureZone, opacity:0})
+								.mouseover(highlightOn).mouseout(highlightOff)
+							
+							lnkSet.push( // drawing line
+								R.path(path).attr({stroke:options.link.color, "stroke-width":options.link.width})
+									.mouseover(highlightOn).mouseout(highlightOff)
+							);
+							lnkSet.push( // drawing arrow
+								arrow = R.path([
 									"M", nxtRect.x, y2,
 									"L", nxtRect.x-arrowSize, y2-arrowSize,
 									"L", nxtRect.x-arrowSize, y2+arrowSize,
 									"Z"
 								]).attr({stroke:null, fill:options.link.color})
+								.mouseover(highlightOn).mouseout(highlightOff)
 							);
+							chartSet.push(lnkSet);
 						}
 						
 						if(task.next instanceof Array)
