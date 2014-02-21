@@ -319,7 +319,7 @@
 				
 				(function drawTasks(){
 					var arrowSize = 5;
-					function drawArrow(x, y){
+					function drawEdgeMarker(x, y){
 						chartSet.push(R.path([
 							"M", x, y,
 							"L", x+arrowSize, y+arrowSize,
@@ -333,23 +333,45 @@
 						var isComplex = tReg.children!=null;
 						tReg.row = i;
 						var tRect = getTaskRect(i, task);
+						var taskLine;
+						function highlightOn(evt){
+							popup.show(task, evt);
+							if(isComplex)return;
+							taskLine.attr({stroke:options.link.highlightColor});
+							if(task.links) $.each(task.links, function(i, lnk){
+								lnk.line.attr({stroke:options.link.highlightColor});
+								lnk.arrow.attr({stroke:options.link.highlightColor, fill:options.link.highlightColor});
+								lnk.captureZone.attr({opacity:.2});
+							});
+						}
+						function highlightOff(){
+							popup.hide();
+							if(isComplex)return; 
+							taskLine.attr({stroke:options.task.stroke});
+							if(task.links) $.each(task.links, function(i, lnk){
+								lnk.line.attr({stroke:options.link.color});
+								lnk.arrow.attr({stroke:options.link.color, fill:options.link.color});
+								lnk.captureZone.attr({opacity:0});
+							});
+						}
+						
 						chartSet.push(
-							R.rect(tRect.x, tRect.y, tRect.w, tRect.h)
+							taskLine = R.rect(tRect.x, tRect.y, tRect.w, tRect.h)
 								.attr({fill:isComplex?options.complexTask.color:options.task.color, stroke:options.task.stroke, "stroke-width":1})
-								.mouseover(function(evt){popup.show(task, evt);})
-								.mouseout(popup.hide)
+								.mouseover(highlightOn)
+								.mouseout(highlightOff)
 						);
 						if(isComplex){
-							drawArrow(tRect.x, tRect.y+tRect.h);
-							drawArrow(tRect.x+tRect.w-arrowSize*2, tRect.y+tRect.h);
+							drawEdgeMarker(tRect.x, tRect.y+tRect.h);
+							drawEdgeMarker(tRect.x+tRect.w-arrowSize*2, tRect.y+tRect.h);
 						}
 						if(task.progress){
 							var margin = tRect.h*.2;
 							chartSet.push(
 								R.rect(tRect.x+margin, tRect.y+margin, (tRect.w-margin*2)*task.progress, tRect.h-margin*2)
 									.attr({stroke:null, fill:options.task.progressColor})
-									.mouseover(function(evt){popup.show(task, evt);})
-									.mouseout(popup.hide)
+									.mouseover(highlightOn)
+									.mouseout(highlightOff)
 							);
 						}
 					});
@@ -365,6 +387,8 @@
 						function drawLink(task, nextID){
 							var tRect = getTaskRect(i, task);
 							var tNext = taskIndex[nextID];
+							if(!task.links) task.links = [];
+							if(!tNext.links) tNext.links = [];
 							var nxtRect = getTaskRect(tNext.row, tNext);
 							var y1 = tRect.y+tRect.h/2, 
 								y2 = nxtRect.y+nxtRect.h/2;
@@ -384,7 +408,7 @@
 									"L", nxtRect.x, y2
 								];
 							var lnkSet = R.set();
-							var arrow, captureZone;
+							var arrow, captureZone, line;
 							function highlightOn(){
 								var clr = options.link.highlightColor;
 								lnkSet.attr({stroke:clr}); arrow.attr({fill:clr});
@@ -400,7 +424,7 @@
 								.mouseover(highlightOn).mouseout(highlightOff)
 							
 							lnkSet.push( // drawing line
-								R.path(path).attr({stroke:options.link.color, "stroke-width":options.link.width})
+								line = R.path(path).attr({stroke:options.link.color, "stroke-width":options.link.width})
 									.mouseover(highlightOn).mouseout(highlightOff)
 							);
 							lnkSet.push( // drawing arrow
@@ -413,6 +437,9 @@
 								.mouseover(highlightOn).mouseout(highlightOff)
 							);
 							chartSet.push(lnkSet);
+							var lineObjects = {line:line, captureZone:captureZone, arrow:arrow};
+							task.links.push(lineObjects);
+							tNext.links.push(lineObjects);
 						}
 						
 						if(task.next instanceof Array)
