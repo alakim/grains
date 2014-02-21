@@ -12,6 +12,8 @@
 			slider:{width:3, color:"#ccc"}
 		}, options);
 		
+		var ctrlPos = $(this).position();
+		
 		if(data.type=="MSProjectXML"){
 			data = convertFromMSProjectXML(data);
 		}
@@ -255,12 +257,12 @@
 					)+popup.margin*2;
 					popup.frame.attr({width:w});
 					
-					var x = evt.layerX+offset,
-						y = evt.layerY+offset;
+					var x = evt.clientX+offset - ctrlPos.left,
+						y = evt.clientY+offset - ctrlPos.top;
 					if(x>width-w)
-						x = evt.layerX - w - offset;
+						x = evt.clientX - w - offset - ctrlPos.left;
 					if(y>height-popup.height)
-						y = evt.layerY - popup.height - offset;
+						y = evt.clientY - popup.height - offset - ctrlPos.top;
 					popup.window.attr({transform:["t", x, y]}).show();
 				},
 				hide: function(){
