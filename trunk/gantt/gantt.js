@@ -337,7 +337,7 @@
 						function highlightOn(evt){
 							popup.show(task, evt);
 							if(isComplex)return;
-							taskLine.attr({stroke:options.link.highlightColor});
+							taskLine.attr({stroke:options.link.highlightColor, "stroke-width":1});
 							if(task.links) $.each(task.links, function(i, lnk){
 								lnk.line.attr({stroke:options.link.highlightColor});
 								lnk.arrow.attr({stroke:options.link.highlightColor, fill:options.link.highlightColor});
@@ -347,7 +347,7 @@
 						function highlightOff(){
 							popup.hide();
 							if(isComplex)return; 
-							taskLine.attr({stroke:options.task.stroke});
+							taskLine.attr(options.task.stroke?{stroke:options.task.stroke}:{"stroke-width":0, stroke:options.task.stroke});
 							if(task.links) $.each(task.links, function(i, lnk){
 								lnk.line.attr({stroke:options.link.color});
 								lnk.arrow.attr({stroke:options.link.color, fill:options.link.color});
