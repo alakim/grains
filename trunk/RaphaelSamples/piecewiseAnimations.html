@@ -1,0 +1,70 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Анимация по частям</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var duration = 2000;
+
+		function brickwall(x, y, width, height, bricks) {
+			var h = height / bricks,
+			w = width / 3,
+			props = { fill: "firebrick", stroke: "#CCC" };
+			for (var b = 0; b < bricks; b += 1) {
+				// we'll stick these at 0,0 for now and arrange them in a sec
+				var shortbrick = paper.rect(0, 0, w, h).attr(props);
+				var longbrick = paper.rect(0, 0, 2 * w, h).attr(props);
+				// alternate brick patterns
+				if (b % 2) {
+					shortbrick.transform("T" + x + "," + (y + b * h));
+					longbrick.transform("T" + (x + w) + "," + (y + b * h));
+				} else {
+					longbrick.transform("T" + x + "," + (y + b * h));
+					shortbrick.transform("T" + (x + 2 * w) + "," + (y + b * h));
+				}
+			}
+		}
+		brickwall(300, 20, 40, 300, 30);
+		
+		var ball = paper.circle(50, 50, 10).attr("fill", "orange");
+
+		var anim = Raphael.animation({
+			"50%": { cx: 292, cy: 150 },
+			"100%": { cx: 50, cy: 250 }
+		}, duration);
+		ball.animate(anim);
+
+		// Эту анимацию можно было бы описать подробно следующим образом:
+		//
+		// var animAwayFromWall = Raphael.animation({ cx: 50, cy: 250 }, 1000);
+		// var animToWall = Raphael.animation({ cx: 292, cy: 150 }, 1000, function() {
+		// 	this.animate(animAwayFromWall);
+		// });
+		// ball.animate(animToWall);
+
+	});
+</script>
+</head>
+<body>
+	<h1>Анимация по частям</h1>
+	<p>Источник: [1], стр. 68 "Piecewise Animations"</p>
+	<p>Указания: шарик отскакивает от стены</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>описание анимации составляется из описаний отдельных ее частей с указанием их относительной длительности</li>
+	</ul>
+
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
