@@ -1,0 +1,85 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Преобразования кривых</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var duration = 2000;
+
+		function NGon(x, y, N, side, angle) {
+			paper.circle(x, y, 3).attr("fill", "red");
+			var path = "",
+				c, temp_x, temp_y, theta;
+			for (c = 0; c <= N; c += 1) {
+				theta = c / N * 2 * Math.PI;
+				temp_x = x + Math.cos(theta) * side;
+				temp_y = y + Math.sin(theta) * side;
+				path += (c === 0 ? "M" : "L") + temp_x + "," + temp_y;
+			}
+			return path;
+		}
+		
+		function N2Gon(x, y, N, side, angle) {
+			var path = "",
+				c, temp_x, temp_y, theta;
+			// double up on points by iterating twice, using Math.floor(c/2)
+			// e.g. 0,0,1,1,2,2
+			for (c = 0; c <= 2*N; c += 1) {
+				theta = Math.floor(c / 2) / N * 2 * Math.PI;
+				temp_x = x + Math.cos(theta) * side;
+				temp_y = y + Math.sin(theta) * side;
+				path += (c === 0 ? "M" : "L") + temp_x + "," + temp_y;
+			}
+			return path;
+		}
+		
+		(function(){
+			var pentagon_path = NGon(50, 150, 5, 20); // используется первый алгоритм формирования исходной фигуры
+			var decagon_path = NGon(50, 150, 10, 20);
+			var shape = paper.path(pentagon_path);
+			var anim = Raphael.animation({ path: decagon_path }, duration);
+			shape.animate(anim);
+		})();
+
+		(function(){
+			var pentagon = N2Gon(150, 150, 5, 40); // используется второй алгоритм формирования исходной фигуры
+			var decagon = NGon(150, 150, 10, 40);
+			var agon = paper.path(pentagon);
+			var anim = Raphael.animation({ path: decagon }, duration);
+			agon.animate(anim);
+		})();
+
+		(function(){
+			var pentagon = N2Gon(250, 150, 3, 40); // второй алгоритм для другого количества вершин
+			var decagon = NGon(250, 150, 6, 40);
+			var agon = paper.path(pentagon);
+			var anim = Raphael.animation({ path: decagon }, duration);
+			agon.animate(anim);
+		})();
+
+	});
+</script>
+</head>
+<body>
+	<h1>Преобразования кривых</h1>
+	<p>Источник: [1], стр. 66 "Animating Paths"</p>
+	<p>Указания: пример двух алгоритмов анимации преобразования кривых.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>в описании анимации указывается целевая кривая</li>
+	</ul>
+
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>

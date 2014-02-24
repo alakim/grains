@@ -1,0 +1,41 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Easing и событие конца анимации</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+
+		var dot = paper.circle(50, 50, 20).attr({ "fill": "red" });
+		// let's make a little more room so as to have time to see the full effect
+		var anim = Raphael.animation({cx: 200, cy: 300, fill: "blue" }, 2000, "backOut", function(){
+			alert("Done");
+		});
+		dot.animate(anim);
+
+	});
+</script>
+</head>
+<body>
+	<h1>Easing и событие конца анимации</h1>
+	<p>Источник: [1], стр. 65</p>
+	<p>Указания: кружок двигается с изменяющейся скоростью, а в конце анимации появляется сообщение.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>режим easing передается в качестве параметра при создании описания анимации</li>
+		<li>обработчик события конца анимации также передается в качестве параметра при создании ее описания</li>
+	</ul>
+
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
