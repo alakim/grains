@@ -11,7 +11,7 @@
 		var duration = 2000;
 
 		function NGon(x, y, N, side, angle) {
-			paper.circle(x, y, 3).attr("fill", "red");
+			//paper.circle(x, y, 3).attr("fill", "red");
 			var path = "",
 				c, temp_x, temp_y, theta;
 			for (c = 0; c <= N; c += 1) {
@@ -50,7 +50,7 @@
 			var decagon = NGon(150, 150, 10, 40);
 			var agon = paper.path(pentagon);
 			var anim = Raphael.animation({ path: decagon }, duration);
-			agon.animate(anim);
+			//agon.animate(anim);
 		})();
 
 		(function(){

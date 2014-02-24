@@ -1,0 +1,123 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Метроном</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+
+		var metronome = function(opts) {
+			// if no options specified, make an empty object
+			opts = opts || {};
+			//default values for variables if unspecified
+			var len = opts.len || 200, // length of metronome arm
+				angle = opts.angle || 20, //max angle from upright
+				width = len * Math.cos(angle),
+				x = opts.x || 0,
+				y = opts.y || 0,
+				tempo = 100;
+			// pieces of the metronome
+			var arm = paper.path("M" + (x + width) + "," + y + "v" + len).attr({
+				'stroke-width': 5,
+				stroke: "#999"
+			});
+			var weight = paper.path("M" + (x+width) + "," + (y+len) +
+				"h9l3,-18h-24l3,18h12")
+				.attr({
+					'stroke-width': 0,
+					fill: '#666'
+				});
+			/* Next, let's set the weight at the center of the arm, make a label for
+			the tempo, and use a drag event to allow the user to adjust the tempo by moving
+			it. */
+			//start the weight at the halfway point (18px less than length bc of weight)
+			weight.position = (len - 18) / 2;
+			weight.transform("T0,-" + weight.position);
+			var label = paper.text(x + width, y + len + 15, tempo);
+			// track drag position
+			var drag_position;
+			weight.drag(
+				function(x, y, dx, dy, e) {
+					// restrict weight to top of bar and very bottom, allowing for 18px
+					// height of weight
+					drag_position = Math.min(len - 18, Math.max(0, this.position - y));
+					// calculate tempo based on position, with range of 20 to 180 bpm
+					tempo = Math.round(20 + 160 * drag_position / (len - 18));
+					label.attr("text", tempo);
+					this.transform('T0,-' + drag_position);
+				},
+				function(x, y, e) {
+					this.attr("fill", "#99F");
+				},
+				function(e) {
+					this.position = drag_position;
+					this.attr("fill", "#666");
+				}
+			);
+			
+			function message(msg){
+				$("#out").html(msg);
+			}
+			
+			return {
+				play: function(repeats) {
+					var armAnim = {
+						"25%": { transform:"R" + angle + " " + (x+width) + "," + (y+len), easing: "sinoid", callback:function(){message("tick");} },
+						"75%": { transform:"R-" + angle + " " + (x+width) + "," + (y+len), easing: "sinoid", callback:function(){message("tock");} },
+						"100%": { transform:"R0 " + (x + width) + "," + (y + len), easing: "sinoid" }
+					};
+					
+					var weightAnim = {
+						"25%": { transform:"T0,-" + weight.position + "R" + angle + " "
+							+ (x + width) + "," + (y + len), easing: "sinoid" },
+						"75%": { transform:"T0,-" + weight.position + "R-" + angle + " "
+							+ (x + width) + "," + (y + len), easing: "sinoid" },
+						"100%": { transform:"T0,-" + weight.position + "R0 "
+							+ (x + width) + "," + (y + len), easing: "sinoid" }
+					};
+					//2 iterations per animation * 60000 ms per minute / tempo
+					var interval = 120000 / tempo;
+					arm.animate(Raphael.animation(armAnim, interval).repeat(repeats / 2));
+					weight.animate(Raphael.animation(weightAnim, interval).repeat(repeats / 2));
+				}
+			};
+		}
+
+		var m = metronome({
+			x: 125,
+			y: 20,
+			len: 240
+		});
+
+		$("#play").click(function(){
+			m.play(10);
+		});
+
+	});
+</script>
+</head>
+<body>
+	<h1>Метроном</h1>
+	<p>Источник: [1], стр. 70 "Case Study: Metronome"</p>
+	<p>Указания: передвинуть движок метронома, и нажать "Play". Метроном автоматически остановится после десяти колебаний.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li></li>
+	</ul>
+
+	<div>
+		<input type="button" value="Play" id="play" />
+		<span id="out"></span>
+	</div>
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
