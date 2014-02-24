@@ -1,0 +1,52 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Перемещение объектов</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var circle = paper.circle(120, 110, 25).attr("fill", "yellow");
+		circle.drag(dragmove, dragstart, dragend);
+		
+		function dragstart(x, y, e) {
+			// save the value of the transformation at the start of the drag
+			// if this is the initial drag, it will be a blank string
+			this.current_transform = this.transform();
+			// just for kicks
+			this.attr("fill", "orange");
+		}
+		function dragmove(dx, dy, x, y, e) {
+			// adjust the pre-existing transformation (if any) by the drag difference
+			this.transform(this.current_transform+'T'+dx+','+dy);
+		}
+		function dragend(e) {
+			// update the current transformation with the final value
+			this.current_transform = this.transform();
+			// that's enough kicks
+			this.attr("fill", "yellow");
+		}
+
+	});
+</script>
+</head>
+<body>
+	<h1>Перемещение объектов</h1>
+	<p>Источник: [1], стр. 36 "Better dragging"</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>используются обработчики события <span class="code">drag</span></li>
+		<li>для перемещения объекта используется преобразование <span class="code">transform</span>, а не прямые присваивания координат - это позволяет однообразно перемещать любые типы фигур</li>
+	</ul>
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>

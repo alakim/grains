@@ -1,0 +1,12 @@
+﻿body{
+	font-family: Verdana, Arial, Sans-Serif;
+}
+
+div.paper{
+	margin:5px;
+	border:1px solid #888;
+}
+
+.code{
+	font-family: Courier New, Courier, Fixed;
+}
