@@ -1,0 +1,143 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Домино</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		var SPACING = 18, RADIUS = 4;
+
+		// шаблон расположения точек - содержит номера позиций, 
+		// в которых могут быть расположены точки 
+		var patterns = [
+			"",      // 0 dots
+			"5",      // 1 dot
+			"3-7",      // 2 dots
+			"3-5-7",      // 3 dots
+			"1-3-7-9",      // 4 dots
+			"1-3-5-7-9",      // 5 dots
+			"1-2-3-7-8-9"      // 6 dots
+		];
+
+		function make_dot(number) {
+			number -= 1;
+			if (number < 0 || number > 9) {
+				console.log("Invalid number.");
+				return null;
+			}
+			// first, second, or third column
+			var x = Math.floor(number / 3);
+			// first, second, or third row of that column
+			var y = number % 3;
+			var dot = paper.circle(x * SPACING + SPACING / 2, y * SPACING + SPACING / 2, RADIUS).attr("fill", "black");    
+			return dot;
+		}
+
+		function make_face(dots) {
+			if (typeof dots === "string") {
+				dots = dots.split("-");
+			}
+			var tile = paper.set();
+			
+			//square
+			tile.push(paper.rect(0, 0, SPACING * 3, SPACING * 3).attr({ fill: "#FFF"}));
+			
+			//dots
+			for (var c = 0; c < dots.length; c += 1) {
+				tile.push(make_dot(dots[c]));
+			}
+			
+			return tile;    
+		}
+
+		function tile(num_dots_top, num_dots_bottom, x, y, a) {
+			if (typeof(num_dots_top) === "undefined" || typeof(num_dots_top) === "undefined") {
+				console.log("You must supply values for both sides of the tile.");        
+				return null;
+			}
+			
+			// positional info. Defaults 
+			var pos = { x: x || 0, y: y || 0, a: a || 0 },
+				centroid = { x: pos.x + SPACING * 1.5, y: pos.y + SPACING * 3 };
+				
+			var angle = 0; // Это забыли написать в книге
+			
+			// Raphael objects
+			var top = make_face(patterns[num_dots_top]),
+				bottom = make_face(patterns[num_dots_bottom]),
+				piece = paper.set([top, bottom]);
+
+			// function to place piece at x,y location, rotated to angle a (in degrees)
+			var move = function(x, y, a) {
+				pos = {x: x, y: y, a: a};
+				centroid = { x: pos.x + SPACING * 1.5, y: pos.y + SPACING * 3 };        
+				top.transform("T" + x + "," + y + "R" + a + "," + centroid.x + "," + centroid.y);
+				y += SPACING * 3;
+				bottom.transform("T" + x + "," + y + "R" + a + "," + centroid.x + "," + centroid.y);
+			};
+			
+			// initial position
+			move(pos.x, pos.y, pos.a);
+			
+			// drag variables
+			var dragx, dragy;
+
+			// drag handlers
+			var dragstart = function(x, y, e) {
+				dragx = pos.x;
+				dragy = pos.y;
+			};
+
+			var dragmove = function(dx, dy, x, y, e) {
+				move(dragx + dx, dragy + dy, angle);
+			};
+
+			piece.drag(dragmove, dragstart);
+			
+			// rotation
+			piece.dblclick(function(e) {
+				angle += 90;
+				move(pos.x, pos.y, angle);
+			});
+
+			return {
+				move: move        
+			};
+		} // close the function 
+
+		var tiles = {};
+		var count = 0;
+
+		for (var c = 0; c <= 6; c += 1) {
+			for (var i = c; i <= 6; i += 1) {
+				var t = tile(c, i, 10 + (SPACING * 3 + 10) * (count % 7), 10 + (SPACING * 6 + 10) * Math.floor(count / 7));
+				tiles[c + "-" + i] = t;
+				count += 1;
+			}
+		}
+
+	});
+</script>
+</head>
+<body>
+	<h1>Домино</h1>
+	<p>Источник: [1], стр. 40 "Let’s Play Dominoes"</p>
+	<p>Указания: фишки можно перетаскивать мышью, и вращать их двойным кликом.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>создание большого количества объектов по шаблону</li>
+	</ul>
+
+	<div id="paper1" class="paper" style="width:900px; height:800px; background-color:#ccc;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
