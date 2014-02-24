@@ -1,0 +1,39 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Простая анимация</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+
+		var dot = paper.circle(50, 50, 20).attr({ "fill": "red" });
+
+		var anim = Raphael.animation({ cx: 400, cy: 200, fill: "blue" }, 5000);
+
+		dot.animate(anim);
+
+	});
+</script>
+</head>
+<body>
+	<h1>Простая анимация</h1>
+	<p>Источник: [1], стр. 63 "The Basics"</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>параметры анимации описываются в виде отдельного объекта, передаваемого методу <span class="code">animate()</span></li>
+		<li></li>
+	</ul>
+
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>

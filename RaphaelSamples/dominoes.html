@@ -103,6 +103,10 @@
 				angle += 90;
 				move(pos.x, pos.y, angle);
 			});
+			
+			piece.mouseover(function(e) {
+				piece.toFront();
+			});
 
 			return {
 				move: move        
