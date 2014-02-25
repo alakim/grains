@@ -109,6 +109,7 @@
 			var tasks = [];
 			var dict = {}, dictID = {};
 			for(var i=0; i<data.tasks.length; i++){var srcTask = data.tasks[i];
+				if(!srcTask) continue;
 				var task = {
 					id: srcTask.id,
 					name:srcTask.name,
@@ -122,7 +123,7 @@
 				tasks.push(task);
 			}
 			for(var i=0; i<data.tasks.length; i++){var srcTask = data.tasks[i];
-				if(!srcTask.predecessor) continue;
+				if(!srcTask || !srcTask.predecessor) continue;
 				var pred = dictID[srcTask.predecessor];
 				if(!pred.next) pred.next = srcTask.id;
 				else{
