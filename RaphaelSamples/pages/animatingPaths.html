@@ -2,9 +2,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <title>Преобразования кривых</title>
-<link rel="stylesheet" type="text/css" href="styles.css"/>
-<script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="lib/raphael-min.js"></script>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		var paper = new Raphael($("#paper1")[0]);
@@ -50,7 +50,7 @@
 			var decagon = NGon(150, 150, 10, 40);
 			var agon = paper.path(pentagon);
 			var anim = Raphael.animation({ path: decagon }, duration);
-			//agon.animate(anim);
+			agon.animate(anim);
 		})();
 
 		(function(){

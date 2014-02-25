@@ -1,0 +1,50 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Extending Raphael</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		Raphael.fn.NGon = function(x, y, N, side) {
+			var path = "", n, temp_x, temp_y, angle;
+			for (n = 0; n <= N; n += 1) {
+				// console.log(n);
+				angle = n / N * 2 * Math.PI;
+				temp_x = x + Math.cos(angle) * side;
+				temp_y = y + Math.sin(angle) * side;
+				path += (n === 0 ? "M" : "L") + temp_x + "," + temp_y;
+			}
+			// "this" refers to the paper object that called the function
+			var shape = this.path(path);
+			// don't forget to return the shape so that you can access it later
+			return shape;
+		}
+		
+		paper.NGon(40, 40, 3, 30);
+		paper.NGon(100, 80, 7, 20);
+
+	});
+</script>
+</head>
+<body>
+	<h1>Extending Raphael</h1>
+	<p>Источник: [1], стр. 86 "Adding Functions"</p>
+	<p>Указания: отображаются правильные треугольник и семиугольник</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>функция для отображения правильных многоугольников добавлена в стандартный набор функций, доступный через объект <span class="code">paper</span>.</li>
+	</ul>
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
