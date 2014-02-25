@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Custom Easing Formulas</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		Raphael.easing_formulas.swing = function(n) {
+			return n + Math.sin(n * Math.PI * 2) / 2;
+		};
+		
+		Raphael.easing_formulas.may_cause_seizures = function(n) {
+			return n + 0.2 * Math.random() - 0.1;
+		};
+		
+		var square = paper.rect(20, 20, 30, 30).attr({ 'stroke-width': 0, fill:"red" });
+		
+		var anim2 = Raphael.animation({ transform: "t300,100" }, 2000, "may_cause_seizures").delay(1000);
+		square.animate({ transform: "t200,200" }, 2000, "swing", function(){
+			square.animate(anim2);
+		});
+
+	});
+</script>
+</head>
+<body>
+	<h1>Custom Easing Formulas</h1>
+	<p>Источник: [1], стр. 92 "Custom Easing Formulas"</p>
+	<p>Указания: движение красного квадрата осуществляется с применением двух алгоритмов easing, заданных пользователем.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>алгоритмы easing задаются в коллекции <span class="code">Raphael.easing_formulas</span>.</li>
+	</ul>
+	
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
