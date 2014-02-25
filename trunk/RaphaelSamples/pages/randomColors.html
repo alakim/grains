@@ -1,0 +1,38 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Случайный набор цветов</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var size = 20;
+		for (var c = 0; c < 20; c += 1) {
+			paper.rect((c+1) * size*1.2, size, size, size)
+				.attr("fill", "hsl(" + Math.random() + ",0.5,0.5)");
+		}
+
+
+	});
+</script>
+</head>
+<body>
+	<h1>Случайный набор цветов</h1>
+	<p>Источник: [1], стр. 101 </p>
+	<p>Указания: отображается линейка из клеток со случайным набором цветов.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>для генерации случайного цвета используется функция <span class="code">hsl()</span>, которой в качестве первого аргумента (<span class="code">hue</span>) передается случайное значение.</li>
+	</ul>
+	
+	<div id="paper1" class="paper" style="width:700px; height:600px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
