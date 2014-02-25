@@ -1,0 +1,67 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Анимация вдоль пути</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		Raphael.fn.rosetta = function(x,y,rx,ry,N) {
+			if (N == 0) {
+				console.log("no dividing by zero, please");
+				return;
+			}
+			var angle = 360 / N; // negative values of N are fine
+			var path = "M" + x + "," + y;
+			for (var c = 0; c < N; c += 1) {
+				// need angle for each leaf of rosetta in radians
+				var theta = angle * c * Math.PI / 180;
+				// coords of farthest point from center for this leaf
+				var dx = x + 2 * rx * Math.cos(theta),
+				dy = y + 2 * rx * Math.sin(theta);
+				path += "A" + rx + "," + ry + " " + angle * c + " 1,1 " + dx + "," + dy;
+				path += "A" + rx + "," + ry + " " + angle * c + " 1,1 " + x + "," + y;
+			}
+			return paper.path(path);
+		}
+
+		var rose = paper.rosetta(120, 120, 55, 35, 6);
+		
+		var circle = paper.circle(0, 0, 10).attr("fill", "red").data("mypath", rose);
+		
+		paper.customAttributes.progress = function (v) {
+			var path = this.data("mypath");
+			if (!path) return {transform: "t0,0"};
+			var point = path.getPointAtLength(v * path.getTotalLength());
+			return {transform: "t" + point.x + "," + point.y};
+		};
+		
+		circle.attr("progress", 0);
+		circle.animate({ progress: 1 }, 5000);
+		
+		
+	});
+</script>
+</head>
+<body>
+	<h1>Анимация вдоль пути</h1>
+	<p>Источник: [1], стр. 87 "Animating Along a Path"</p>
+	<p>Указания: красный кружок движется вдоль сложного пути</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>к атрибутам объектов добавлен новый атрибут <span class="code">progress</span>, устанавливающий параметры преобразования фигуры в зависимости от степени завершенности анимации</li>
+		<li>анимация описана как процесс изменения нового атрибута <span class="code">progress</span></li>
+	</ul>
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
