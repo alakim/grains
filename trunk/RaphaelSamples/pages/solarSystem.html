@@ -1,0 +1,132 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Модель Солнечной Системы</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		paper.customAttributes.progress = function (v) {
+			var path = this.data("mypath");
+			if (!path) {
+				return {
+					transform: "t0,0"
+				};
+			}
+			var len = path.getTotalLength();
+			var point = path.getPointAtLength(v * len);
+			
+			return {
+				transform: "T" + point.x + "," + point.y
+			};
+		};
+
+		//http://nineplanets.org/data.html
+		var orbits = {
+			Mercury: { distance: 57910, period: 87.97, eccen: 0.21 },
+			Venus: { distance: 108200, period: 224.70, eccen: 0.01},
+			Earth: { distance: 149600, period: 365.26, eccen: 0.02},
+			Mars: { distance: 227940, period: 686.98, eccen: 0.09 }
+		};
+
+		//http://nineplanets.org/data1.html
+		var radii = {
+			Sun: 695000,
+			Mercury: 2440,
+			Venus: 6052,
+			Earth: 6378,
+			Mars: 3397,
+		};
+
+		//chosen haphazardly
+		var colors = {
+			Sun: "yellow",
+			Mercury: "gray",
+			Venus: "brown",
+			Earth: "blue",
+			Mars: "red"
+		}
+
+		// chosen some scales by trial and error to get the solar sysem on the screen
+		var ORBIT_SCALE = 1.0 / 1000,
+			PLANET_SCALE = 1.0 / 800,
+			MS_PER_DAY = 10;
+
+		//center at the middle of the canvas
+		var CENTER = {x: paper.width / 2, y: paper.height / 2};
+
+		// the sun needs extra scaling
+		var Sun = paper.circle(CENTER.x, CENTER.y, radii.Sun * PLANET_SCALE / 50).attr("fill", colors.Sun);
+
+		var label_pos = 13;
+
+		function planet(name, data) {    
+			// calculate the long and short arms of the elliptical orbit
+			// Also get focus from eccentricity of orbit
+			// http://nineplanets.org/help.html#semim
+			var perigee = data.distance * (1 - data.eccen) * ORBIT_SCALE,
+				apogee = data.distance * (1 + data.eccen) * ORBIT_SCALE,
+				focus = data.eccen * apogee,
+				x = CENTER.x + focus - apogee,
+				y = CENTER.y;
+
+			// labels
+			var label = paper.text(10, label_pos, name + ": 0").attr("text-anchor", "start");
+			label_pos += 20;    
+			
+			var path = "M" + x + "," + y;     
+			path += "a" + apogee + "," + perigee + " 0 1,1 " + apogee*2 + ",0";
+			path += "A" + apogee + "," + perigee + " 0 1,1 " + x + "," + y;
+
+			var orbit = paper.path(path).attr({
+				stroke: "gray",
+				"stroke-dasharray": "--"
+			});
+			
+			var body = paper.circle(0, 0, radii[name] * PLANET_SCALE).attr({
+				fill: colors[name]
+			});
+			
+			body.data("mypath", orbit);
+			body.attr("progress", 0);
+			
+			var years_elapsed = 0;
+			
+			var anim = Raphael.animation({ progress: 1 }, MS_PER_DAY * orbits[name].period, function() {
+				years_elapsed += 1;
+				label.attr("text", name + ": " + years_elapsed);        
+			}).repeat(Infinity);
+			body.animate(anim);
+		}
+			
+		//loop through the planets and draw the orbit and the planet
+
+		for (var name in orbits) {
+			planet(name, orbits[name]);
+		}
+
+
+	});
+</script>
+</head>
+<body>
+	<h1>Модель Солнечной Системы</h1>
+	<p>Источник: [1], стр. 94 "Code Example: The Animated Solar System"</p>
+	<p>Указания: </p>
+	<p>Особенности:</p>
+	<ul>
+		<li></li>
+	</ul>
+	
+	<div id="paper1" class="paper" style="width:700px; height:600px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
