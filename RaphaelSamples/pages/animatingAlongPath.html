@@ -8,6 +8,7 @@
 <script type="text/javascript">
 	$(function(){
 		var paper = new Raphael($("#paper1")[0]);
+		var duration = 15000;
 		
 		Raphael.fn.rosetta = function(x,y,rx,ry,N) {
 			if (N == 0) {
@@ -28,19 +29,42 @@
 			return paper.path(path);
 		}
 
-		var rose = paper.rosetta(120, 120, 55, 35, 6);
+		var rose = paper.rosetta(120, 120, 55, 35, 6);//.attr({"stroke":"#fff"});
 		
 		var circle = paper.circle(0, 0, 10).attr("fill", "red").data("mypath", rose);
 		
 		paper.customAttributes.progress = function (v) {
-			var path = this.data("mypath");
+			var path = this.data("mypath"),
+				attrs = this.attr(),
+				offset = { x: 0, y: 0 };
 			if (!path) return {transform: "t0,0"};
-			var point = path.getPointAtLength(v * path.getTotalLength());
-			return {transform: "t" + point.x + "," + point.y};
+			
+			if (attrs.hasOwnProperty("width")) {
+				offset.x = -this.attr("width") / 2;
+				offset.y = -this.attr("height") / 2;
+			}
+			var len = path.getTotalLength();
+			var point = path.getPointAtLength(v * len);
+			
+			var trail = this.data("mytrail");
+			if (trail) {
+				// set the trail's path to just the amount current trespassed:
+				trail.attr("path", path.getSubpath(0, v * len));
+			}
+			
+			return {
+				transform: "t" + (point.x + offset.x) + "," + (point.y + offset.y) +
+				"r" + point.alpha
+			};
 		};
 		
 		circle.attr("progress", 0);
-		circle.animate({ progress: 1 }, 5000);
+		circle.animate({ progress: 1 }, duration);
+		
+		var shape = paper.rect(0, 0, 20, 10).attr("fill", "green");
+		shape.data("mypath", rose);
+		shape.attr("progress", 0);
+		shape.animate({ progress: 1 }, duration);
 		
 		
 	});
