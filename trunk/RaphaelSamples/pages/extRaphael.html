@@ -24,8 +24,30 @@
 			return shape;
 		}
 		
-		paper.NGon(40, 40, 3, 30);
+		paper.customAttributes.redness = function (num) {
+			var val = 255 * (1 - num / 100);
+			// note that we do not directly operate on an object
+			// instead, we return the object of final attributes
+			return {fill: "rgb(255," + val + ", " + val + ")"};
+		};
+		
+		Raphael.el.redder = function() {
+			var rgb = Raphael.getRGB(this.attr("fill"));
+			var newRed = rgb.r + 51;
+			return this.attr("fill", "rgb(" + newRed + "," + rgb.g + "," + rgb.b + ")");
+		}
+
+		
+		paper.NGon(40, 40, 3, 30).attr("redness", 50);
 		paper.NGon(100, 80, 7, 20);
+		
+		
+		// a sort of putrid olive color
+		var r1 = paper.rect(10, 150, 50, 50).attr("fill", "#999900");
+		// a putrid brown
+		var r2 = paper.rect(80, 150, 50, 50).attr("fill", "#999900").redder();
+		// a lovely orange
+		var r3 = paper.rect(150, 150, 50, 50).attr("fill", "#999900").redder().redder();
 
 	});
 </script>
@@ -33,10 +55,12 @@
 <body>
 	<h1>Extending Raphael</h1>
 	<p>Источник: [1], стр. 86 "Adding Functions"</p>
-	<p>Указания: отображаются правильные треугольник и семиугольник</p>
+	<p>Указания: отображаются правильные треугольник и семиугольник, а также три квадрата, представляющие последовательность цветов.</p>
 	<p>Особенности:</p>
 	<ul>
 		<li>функция для отображения правильных многоугольников добавлена в стандартный набор функций, доступный через объект <span class="code">paper</span>.</li>
+		<li>в стандартный набор атрибутов добавлен атрибут <span class="code">redness</span>, с его помощью задан цвет треугольника</li>
+		<li>в стандартный набор методов элемента добавлен метод, смещающий цвет объекта в красную сторону (использован при создании последовательности цветов для раскраски квадратов)</li>
 	</ul>
 
 	<div id="paper1" class="paper" style="width:600px; height:400px;">
