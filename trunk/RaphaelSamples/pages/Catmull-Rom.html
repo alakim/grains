@@ -1,0 +1,57 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Сплайн Катмулла-Рома</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		
+		var data = [
+			{x: 50, y: 250}, {x: 100, y: 100}, {x: 150, y: 150},
+			{x: 200, y: 140}, {x: 250, y: 250}, {x: 300, y: 200},
+			{x: 350, y: 180}, {x: 400, y: 230}
+		];
+
+		var plottedPoints = paper.set();
+		for(var i = 0, num = data.length; i < num; i+=1) {
+			var point = data[i];
+			plottedPoints.push(paper.circle(point.x, point.y, 5));
+		};
+		plottedPoints.attr({fill: '#09c', 'stroke-width':0});
+
+		var path = ['M', data[0].x, data[0].y];
+		path.push('R');
+		for(var i = 1, num = data.length; i < num; i+=1) {
+			path.push(data[i].x);
+			path.push(data[i].y);
+		}
+		$("#out").html("Path: "+ path);
+		var curve = paper.path( path );
+
+	});
+</script>
+</head>
+<body>
+	<h1>Сплайн Катмулла-Рома</h1>
+	<p>Источник: [2], стр. 49 "Catmull-Rom curves"</p>
+	<p>Указания: отображается сплайн, заданный множеством точек</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>сплайны Catmul-Rom удобны для построения графиков по заданному набору точек</li>
+		<li>при формировании пути используется команда <span class="code">R</span> (Catmull-Rom curveto), отсутствующая в стандарте SVG</li>
+	</ul>
+	
+	<div id="out" class="out code"></div>
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+		<li>Dawber, D. Learning RaphaelJS Vector Graphics. Packt pub., 2013 г.</li>
+	</ol>
+</body>
+</hmtl>

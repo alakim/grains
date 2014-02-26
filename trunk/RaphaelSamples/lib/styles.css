@@ -16,3 +16,9 @@ div.paper{
 	padding: 8px;
 	margin-left: 45px;
 }
+
+.out{
+	margin:10px;
+	padding:5px;
+	border:1px solid #888;
+}
