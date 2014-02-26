@@ -13,9 +13,8 @@
 		
 		function buildPath(){
 			var path = "M"+points[0].join()+
-				"A"+points[1].join()+
-				",0,"+
-				[flags.largeArc, flags.sweep].join()+","+
+				"A"+points[1].join()+","+
+				[rotation, flags.largeArc, flags.sweep].join()+","+
 				points[2].join();
 			displayPath(path);
 			return path;
@@ -51,6 +50,8 @@
 			sweep: 0
 		};
 		
+		var rotation = 0;
+		
 		function changeFlag(nm){
 			var v = flags[nm];
 			flags[nm] = v?0:1;
@@ -63,14 +64,19 @@
 			if(flags.largeArc) a1.checked = true;
 			if(flags.sweep) a2.checked = true;
 			return div(
-				input(a1), "Large Arc",
-				input(a2), "Sweep"
+				input({type:"text", id:"tbRotation"}), "x-rotation ",
+				input(a1), "large-arc-flag",
+				input(a2), "sweep-flag"
 			);
 		}}
 		
 		$("#controls").html(controlsTemplate());
 		$("#cbLargeArc").val(flags.largeArc).click(function(){changeFlag("largeArc");});
 		$("#cbSweep").val(flags.largeArc).click(function(){changeFlag("sweep");});
+		$("#tbRotation").val(rotation).css({"margin-left":10, width:40}).change(function(){
+			rotation = $(this).val();
+			curve.attr({path:buildPath()});
+		});
 		
 		var path = buildPath();
 		
@@ -129,7 +135,7 @@
 		<li>первые два аргумента команды <span class="code">A</span> задают соотношение радиусов целевого эллипса, из которого вырезается целевая дуга</li>
 		<li>третий аргумент команды <span class="code">A</span> - <span class="code">x-rotation</span> устанавливает угол поворота (в градусах против часовой стрелки) целевого эллипса</li>
 		<li>четвертый аргумент команды <span class="code">A</span> - <span class="code">large-arc-flag</span> является флагом, предписывающим использовать длинную (или короткую) дугу целевого эллипса</li>
-		<li>пятый аргумент команды <span class="code">A</span> - <span class="code">swap-flag</span> является флагом, устанавливающим, с какой стороны от начальной и целевой точек будет сформирована дуга</li>
+		<li>пятый аргумент команды <span class="code">A</span> - <span class="code">sweep-flag</span> является флагом, устанавливающим, с какой стороны от начальной и целевой точек будет сформирована дуга</li>
 		<li>последние два аргумента команды <span class="code">A</span> означают координаты целевой точки</li>
 	</ul>
 	
