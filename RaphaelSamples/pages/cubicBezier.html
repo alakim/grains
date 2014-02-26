@@ -1,0 +1,113 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Кубические кривые Безье</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/html.js"></script>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var color = {curve:"#f00", point:"#008", pointHi:"#00f", grid:"#ccc"};
+		
+		function buildPath(){
+			var path = "M"+points[0].join(",")+
+				"C"+points[1].concat(points[2], points[3]).join(",")+
+				"S"+points[4].concat(points[5]).join(",");
+			displayPath(path);
+			return path;
+		}
+		
+		function buildGridPath(){
+			return "M"+points[0].join(",")+
+				"L"+points[1].join(",")+
+				"L"+points[2].join(",")+
+				"L"+points[3].join(",")+
+				"L"+getVirtualPoint(points[2], points[3]).join(",")+
+				"L"+points[4].join(",")+
+				"L"+points[5].join(",");
+		}
+		
+		function getVirtualPoint(pt1, pt2){
+			return [
+				pt2[0]+pt2[0]-pt1[0],
+				pt2[1]+pt2[1]-pt1[1]
+			];
+		}
+		
+		
+		var points = [
+			[100, 100],
+			[150, 50],
+			[250, 50],
+			[300, 100],
+			[450, 50],
+			[500, 100]
+		];
+		
+		var path = buildPath();
+		
+		var curve = paper.path(path).attr({stroke:color.curve});
+		
+		var grid = paper.path(buildGridPath()).attr({stroke:color.grid});
+		
+		var markers = [];
+		$.each(points, function(i, pt){
+			markers.push(
+				paper.circle(pt[0], pt[1], 5).attr({fill:color.point}).data("pointID", i)
+					.drag(dragmove, dragstart, dragend)
+			);
+		});
+		
+		function addVect(v1, v2){
+			return [v1[0]+v2[0], v1[1]+v2[1]];
+		}
+		
+		function displayPath(path){with(Html){
+			$("#out").html("Path: "+path.replace(/[MQTCS]/ig, function(s){return span({"class":"selCommand"}, s)}));
+		}}
+		
+		
+		function dragstart(x, y, e) {
+			this.data("curPos", [this.attr("cx"), this.attr("cy")]);
+			this.attr("fill", color.pointHi);
+		}
+		function dragmove(dx, dy, x, y, e) {
+			var pos = addVect(this.data("curPos"), [dx, dy]);
+			this.attr({cx:pos[0], cy:pos[1]});
+			var ptID = this.data("pointID");
+			points[ptID] = [pos[0], pos[1]];
+			
+			curve.attr({path:buildPath()});
+			grid.attr({path:buildGridPath()});
+		}
+		function dragend(e) {
+			this.data("curPos", [this.attr("cx"), this.attr("cy")]);
+			this.attr("fill", color.point);
+		}
+
+	});
+</script>
+</head>
+<body>
+	<h1>Кубические кривые Безье</h1>
+	<p>Источник: [2], стр. 41 "Cubic Bezier curves"</p>
+	<p>Указания: можно изменять кривую путем перетаскивания маркеров</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>для задания кривой используется команда <span class="code">C</span>, которой передаются координаты двух вспомогательных и целевой точки</li>
+		<li>команда <span class="code">S</span> является сокращением команды <span class="code">C</span> - ей передаются только координаты второй вспомогательной и целевой точки, а в качестве первой вспомогательной выбирается точка, симметричная предыдущей вспомогательной относительно предыдущей целевой точки.</li>
+	</ul>
+	
+	<div id="out" class="out code"></div>
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+		<li>Dawber, D. Learning RaphaelJS Vector Graphics. Packt pub., 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
