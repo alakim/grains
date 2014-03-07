@@ -1,0 +1,66 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Измерение углов</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var points = [
+			[100, 100],
+			[280, 280]
+		];
+		var markers = [];
+		for(var pt,i=0; pt=points[i],i<points.length; i++){
+			var circle = paper.circle(pt[0], pt[1], 8).attr({fill:i?"yellow":"red", stroke:"red"});
+			circle.drag(dragmove, dragstart, dragend).data("markerIdx", i);
+			markers[i] = circle;
+		}
+		
+		var angle = Raphael.angle(points[0][0], points[0][1], points[1][0], points[1][1]);
+		$("#angle").html(Math.round(angle));
+		
+		function dragstart(x, y, e) {
+			this.data("current_transform", this.transform());
+		}
+		function dragmove(dx, dy, x, y, e) {
+			
+			this.transform(this.data("current_transform")+'T'+dx+','+dy);
+			var idx = +this.data("markerIdx");
+
+			var bbox = this.getBBox();
+			points[idx][0] = (bbox.x+bbox.x2)/2;
+			points[idx][1] = (bbox.y+bbox.y2)/2;
+			
+			var angle = Raphael.angle(points[0][0], points[0][1], points[1][0], points[1][1]);
+			$("#angle").html(Math.round(angle));
+		}
+		function dragend(e) {
+			this.data("current_transform", this.transform());
+		}
+
+	});
+</script>
+</head>
+<body>
+	<h1>Измерение углов</h1>
+	<p>Указания: точки можно перемещать, при этом отображается текущий угол от красной точки к желтой.</p>
+	<!--p>Источник: [1], стр. 36 "Better dragging"</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>используются обработчики события <span class="code">drag</span></li>
+		<li>для перемещения объекта используется преобразование <span class="code">transform</span>, а не прямые присваивания координат - это позволяет однообразно перемещать любые типы фигур</li>
+		<li>для сохранения текущего состояния преобразования объекта используется стандартный метод <span class="code">data()</span></li>
+	</ul-->
+	<div>Текущий угол = <span id="angle"></span>&deg;.</div>
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li><a href="http://raphaeljs.com/reference.html#Raphael.angle">Raphael Reference - Raphael.angle</a></li>
+	</ol>
+</body>
+</hmtl>
