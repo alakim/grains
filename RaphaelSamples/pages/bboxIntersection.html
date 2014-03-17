@@ -53,36 +53,37 @@
 		var rectIntersection = (function(){
 			
 			function segmIntersection(segm1, segm2){
-				if(segm1[0][0]==segm1[1][0]) return verticalIntersection(segm2, segm1[0][0]);
-				if(segm2[0][0]==segm2[1][0]) return verticalIntersection(segm1, segm2[0][0]);
+				if(segm1[0][0]==segm1[1][0]) return verticalIntersection(segm2, segm1[0][0], segm1[0][1], segm1[1][1]);
+				if(segm2[0][0]==segm2[1][0]) return verticalIntersection(segm1, segm2[0][0], segm2[0][1], segm2[1][1]);
 				
 				var f1 = getSegmFunc(segm1), f2 = getSegmFunc(segm2);
-				//console.log(f1, f2);
 				var dA = f1.a - f2.a;
 				if(!dA) dA = 1e-9; //exclude division by Zero
 				var x = (f2.b - f1.b)/dA,
 					y = f1.a*x + f1.b;
 				
 				if(
-					between(x, segm1[0][0], segm1[1][0], segm2[0][0], segm2[1][0]) &&
-					between(y, segm1[0][1], segm1[1][1], segm2[0][1], segm2[1][1])
+					between(x, segm1[0][0], segm1[1][0]) &&
+					between(x, segm2[0][0], segm2[1][0]) &&
+					between(y, segm1[0][1], segm1[1][1]) &&
+					between(y, segm2[0][1], segm2[1][1])
 				)
 					return {x: x, y: y};
 				else
 					return null;
 			}
 			
-			function verticalIntersection(segm, x){
-				if(segm[0][0]>x || segm[1][0]<x) return null;
+			function verticalIntersection(segm, x, y1, y2){
+				if(!between(x, segm[0][0], segm[1][0])) return;
 				var f = getSegmFunc(segm);
 				var y = f.a*x + f.b;
-				if(between(y, segm[0][1], segm[1][1])) return {x:x, y:y};
+				if(between(y, y1, y2)) return {x:x, y:y};
 			}
 			
-			function between(x, a, b, c, d){
-				var arr = [a, x, b, c, d];
+			function between(x, a, b){
+				var arr = [a, x, b];
 				arr = arr.sort(function(x1,x2){return x1==x2?0:x1<x2?-1:1;});
-				return arguments.length==5?arr[2]===x:arr[1]===x;
+				return arr[1]===x;
 			}
 			
 			function getSegmFunc(sgmt){
@@ -105,7 +106,6 @@
 				var interPoints = [];
 				for(var side,i=0; side=sides[i],i<sides.length; i++){
 					var iPt = segmIntersection(segm, side);
-					//console.log(side, iPt);
 					if(iPt) interPoints.push(iPt);
 				}
 				if(!interPoints.length) return null;
@@ -114,7 +114,7 @@
 				interPoints = interPoints.sort(function(a, b){
 					var la2 = (a.x-x0)*(a.x-x0)+(a.y-y0)*(a.y-y0);
 					var lb2 = (b.x-x0)*(b.x-x0)+(b.y-y0)*(b.y-y0);
-					return la2<lb2?-1:lb2>lb2?1:0;
+					return la2<lb2?-1:la2>lb2?1:0;
 				});
 				return interPoints[0];
 			}
