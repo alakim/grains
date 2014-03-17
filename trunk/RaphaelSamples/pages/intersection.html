@@ -56,6 +56,9 @@
 		
 		function getIntersection(){
 			var segm1 = segments[0], segm2 = segments[1];
+			if(segm1[0][0]==segm1[1][0]) return verticalIntersection(1, segm1[0][0]);
+			if(segm2[0][0]==segm2[1][0]) return verticalIntersection(0, segm2[0][0]);
+				
 			var f1 = getSegmFunc(0), f2 = getSegmFunc(1);
 			/***********************************
 				y = f1(x) = f2(x)
@@ -76,11 +79,19 @@
 			else
 				return null;
 		}
+			
+		function verticalIntersection(segmIdx, x){
+			var segm = segments[segmIdx];
+			if(segm[0][0]>x || segm[1][0]<x) return null;
+			var f = getSegmFunc(segmIdx);
+			var y = f.a*x + f.b;
+			if(between(y, segm[0][1], segm[1][1])) return {x:x, y:y};
+		}
 		
 		function between(x, a, b, c, d){
-			var arr = [a, x, b, c , d];
+			var arr = [a, x, b, c, d];
 			arr = arr.sort(function(x1,x2){return x1==x2?0:x1<x2?-1:1;});
-			return arr[2]==x;
+			return arguments.length==5?arr[2]===x:arr[1]===x;
 		}
 		
 		function getSegmFunc(segIdx){
