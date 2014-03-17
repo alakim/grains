@@ -56,8 +56,8 @@
 		
 		function getIntersection(){
 			var segm1 = segments[0], segm2 = segments[1];
-			if(segm1[0][0]==segm1[1][0]) return verticalIntersection(1, segm1[0][0]);
-			if(segm2[0][0]==segm2[1][0]) return verticalIntersection(0, segm2[0][0]);
+			if(segm1[0][0]==segm1[1][0]) return verticalIntersection(1, segm1[0][0], segm1[0][1], segm1[1][1]);
+			if(segm2[0][0]==segm2[1][0]) return verticalIntersection(0, segm2[0][0], segm2[0][1], segm2[1][1]);
 				
 			var f1 = getSegmFunc(0), f2 = getSegmFunc(1);
 			/***********************************
@@ -72,26 +72,28 @@
 				y = f1.a*x + f1.b;
 			
 			if(
-				between(x, segm1[0][0], segm1[1][0], segm2[0][0], segm2[1][0]) &&
-				between(y, segm1[0][1], segm1[1][1], segm2[0][1], segm2[1][1])
+				between(x, segm1[0][0], segm1[1][0]) &&
+				between(x, segm2[0][0], segm2[1][0]) &&
+				between(y, segm1[0][1], segm1[1][1]) &&
+				between(y, segm2[0][1], segm2[1][1])
 			)
 				return {x: x, y: y};
 			else
 				return null;
 		}
 			
-		function verticalIntersection(segmIdx, x){
+		function verticalIntersection(segmIdx, x, y1, y2){
 			var segm = segments[segmIdx];
-			if(segm[0][0]>x || segm[1][0]<x) return null;
+			if(!between(x, segm[0][0], segm[1][0])) return;
 			var f = getSegmFunc(segmIdx);
 			var y = f.a*x + f.b;
-			if(between(y, segm[0][1], segm[1][1])) return {x:x, y:y};
+			if(between(y, y1, y2)) return {x:x, y:y};
 		}
 		
-		function between(x, a, b, c, d){
-			var arr = [a, x, b, c, d];
+		function between(x, a, b){
+			var arr = [a, x, b];
 			arr = arr.sort(function(x1,x2){return x1==x2?0:x1<x2?-1:1;});
-			return arguments.length==5?arr[2]===x:arr[1]===x;
+			return arr[1]===x;
 		}
 		
 		function getSegmFunc(segIdx){
@@ -122,13 +124,7 @@
 <body>
 	<h1>Пересечение отрезков</h1>
 	<p>Указания: отрезки можно перемещать за концы, при этом отображается точка их пересечения.</p>
-	<!--p>Источник: [1], стр. 36 "Better dragging"</p>
-	<p>Особенности:</p>
-	<ul>
-		<li>используются обработчики события <span class="code">drag</span></li>
-		<li>для перемещения объекта используется преобразование <span class="code">transform</span>, а не прямые присваивания координат - это позволяет однообразно перемещать любые типы фигур</li>
-		<li>для сохранения текущего состояния преобразования объекта используется стандартный метод <span class="code">data()</span></li>
-	</ul-->
+
 	<div id="paper1" class="paper" style="width:600px; height:400px;">
 	</div>
 	
