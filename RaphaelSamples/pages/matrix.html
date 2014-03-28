@@ -10,12 +10,21 @@
 	
 	$(function(){
 		var paper = new Raphael($("#paper1")[0]);
-		var rect = paper.rect(100, 100, 40, 30).attr({fill:"#eee", stroke:"#ccc"});
-		var rect2 = paper.rect(100, 100, 40, 30).attr({fill:"#ffc", stroke:"#f00"});
+		
+		var attrSrc = {fill:"#eee", stroke:"#ccc"},
+			attrDest = {fill:"#ffc", stroke:"#f00"};
+		
+		var rect = paper.rect(100, 100, 40, 30).attr(attrSrc),
+			rect2 = paper.rect(100, 100, 40, 30).attr(attrDest);
+		
+		var circle = paper.circle(200, 200, 20).attr(attrSrc),
+			circle2 = paper.circle(200, 200, 20).attr(attrDest);
 		
 		//rect2.attr({transform:"m 1 0 .5 1 0 0"});
 		//rect2.attr({transform:"m 2 0 0 2 0 0"});
-		rect2.attr({transform:['m', 1, Math.tan(Raphael.rad(25)), Math.tan(Raphael.rad(-25)), 1, 0, 0]});
+		var tr1 = ['m', 1, Math.tan(Raphael.rad(25)), -Math.tan(Raphael.rad(25)), 1, 0, 0];
+		rect2.attr({transform:tr1});
+		circle2.attr({transform:tr1});
 
 		
 		apply = function(){
@@ -28,6 +37,7 @@
 				+$("#tbF").val()
 			];
 			rect2.attr({transform:tr});
+			circle2.attr({transform:tr});
 		}
 	});
 	
