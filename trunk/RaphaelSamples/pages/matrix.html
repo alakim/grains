@@ -1,0 +1,119 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Использование матриц для трансформации объектов</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	var apply;
+	
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var rect = paper.rect(100, 100, 40, 30).attr({fill:"#eee", stroke:"#ccc"});
+		var rect2 = paper.rect(100, 100, 40, 30).attr({fill:"#ffc", stroke:"#f00"});
+		
+		//rect2.attr({transform:"m 1 0 .5 1 0 0"});
+		//rect2.attr({transform:"m 2 0 0 2 0 0"});
+		rect2.attr({transform:['m', 1, Math.tan(Raphael.rad(25)), Math.tan(Raphael.rad(-25)), 1, 0, 0]});
+
+		
+		apply = function(){
+			var tr = ["M",
+				+$("#tbA").val(),
+				+$("#tbB").val(),
+				+$("#tbC").val(),
+				+$("#tbD").val(),
+				+$("#tbE").val(),
+				+$("#tbF").val()
+			];
+			rect2.attr({transform:tr});
+		}
+	});
+	
+	
+</script>
+<style type="text/css">
+	td.vect{
+		border-left:1px solid black;
+		border-right:1px solid black;
+	}
+	td.matrixL{
+		border-left:1px solid black;
+	}
+	td.matrixR{
+		border-right:1px solid black;
+	}
+</style>
+</head>
+<body>
+	<h1>Использование матриц для трансформации объектов</h1>
+	<p>Источник: [2], стр. 58 "Working with matrices"</p>
+	<p>Матричная трансформация (исходный объект показан серым цветом).</p>
+	
+	<p>Синтаксис: <span class="code">M a b c d e f</span></p>
+
+	<table border="0" cellpadding="3" cellspacing="0">
+		<tr>
+			<td class="vect">x'</td>
+			<td rowspan="3"> = </td>
+			<td class="matrixL">a</td>
+			<td>c</td>
+			<td class="matrixR">e</td>
+			<td rowspan="3"> * </td>
+			<td class="vect">x</td>
+		</tr>
+		<tr>
+			<td class="vect">y'</td>
+			<td class="matrixL">b</td>
+			<td>d</td>
+			<td class="matrixR">f</td>
+			<td class="vect">y</td>
+		</tr>
+		<tr>
+			<td class="vect">1</td>
+			<td class="matrixL">0</td>
+			<td>0</td>
+			<td class="matrixR">1</td>
+			<td class="vect">1</td>
+		</tr>
+	</table>
+	
+	<p class="code">
+		x' = ax + cy + e <br/>
+		y' = bx + dy + f
+	</p>
+	<p>Простое перемещение задается элементами e (по x) и f (по y).</p>
+	<p>Масштабирование - элементами a (по x) и d (по y).</p>
+	<p>Сдвиг - элементами b (по x) и c (по y).</p>
+	<p>Поворот задается как сдвиг с коэффициентами b = tan(&beta;) и c = -tan(&beta;)</p>
+
+	<table border="1" cellspacing="3" cellpadding="0">
+		<tr>
+			<td><input type="text" id="tbA" value="1"/></td>
+			<td><input type="text" id="tbC" value="0"/></td>
+			<td><input type="text" id="tbE" value="0"/></td>
+		</tr>
+		<tr>
+			<td><input type="text" id="tbB" value="0"/></td>
+			<td><input type="text" id="tbD" value="1"/></td>
+			<td><input type="text" id="tbF" value="0"/></td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>1</td>
+		</tr>
+	</table>
+	<div><input type="button" value="Apply" onclick="apply()"/></div>
+	
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+		<li>Dawber, D. Learning RaphaelJS Vector Graphics. Packt pub., 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
