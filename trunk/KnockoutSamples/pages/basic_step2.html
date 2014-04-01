@@ -1,7 +1,7 @@
 ﻿<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-	<title>Knockout Tutorial. Step 1.</title>
+	<title>Basic Knockout Tutorial. Step 2.</title>
 	<script type="text/javascript" src="../lib/html.js"></script>
 	<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="../lib/knockout-3.1.0.js"></script>
@@ -10,8 +10,8 @@
 	<script type="text/javascript">
 		// This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
 		function AppViewModel() {
-			this.firstName = "Bert";
-			this.lastName = "Bertington";
+			this.firstName = ko.observable("Bert");
+			this.lastName = ko.observable("Bertington");
 		}
 
 		$(function(){
@@ -22,13 +22,13 @@
 	
 </head>
 <body>
-	<h1>Knockout Tutorial. Step 1.</h1>
-	<p>Для связи представления с данными используются атрибуты <span class="code">data-bind</span>.</p>
+	<h1>Basic Knockout Tutorial. Step 2.</h1>
+	<p>Для отслеживания изменений полей данных используется шаблон <span class="code">observable</span>.</p>
 	
 	<div class="samplePanel">
 		<!-- This is a *view* - HTML markup that defines the appearance of your UI -->
-		<p>First name: <strong data-bind="text: firstName"></strong></p>
-		<p>Last name: <strong data-bind="text: lastName"></strong></p>
+		<p>First name: <input data-bind="value: firstName" /></p>
+		<p>Last name: <input data-bind="value: lastName" /></p>
 	</div>
 	<p class="mainLink"><a href="../index.html">На главную</a></p>
 </body>
