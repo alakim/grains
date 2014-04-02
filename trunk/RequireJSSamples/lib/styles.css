@@ -1,0 +1,35 @@
+﻿body{
+	font-family: Verdana, Arial, Sans-Serif;
+}
+
+div.paper{
+	margin:5px;
+	border:1px solid #888;
+}
+
+div.samplePanel{
+	margin:10px;
+	padding:10px;
+	border: 1px solid #888;
+}
+
+.code{
+	font-family: Courier New, Courier, Fixed;
+}
+
+.attention{
+	border-left: 10px solid #f55;
+	padding: 8px;
+	margin-left: 45px;
+}
+
+.out{
+	margin:10px;
+	padding:5px;
+	border:1px solid #888;
+}
+
+.selCommand{
+	color:#f00;
+	font-weight: bold;
+}
