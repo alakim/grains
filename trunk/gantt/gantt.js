@@ -1,5 +1,8 @@
 ﻿(function($){
+	var yearOffset = new Date(0, 0, 0).getYear()<0?1900:0;
+
 	$.fn.gantt = function(options, data){
+		
 		options = $.extend(true, {
 			rowHeight: 20,
 			fontSize: 12,
@@ -92,7 +95,7 @@
 		function formatDate(dt){
 			var d = dt.getDate(),
 				m = dt.getMonth()+1,
-				y = dt.getYear()+1900;
+				y = dt.getYear()+yearOffset;
 			if(d<10) d = "0"+d;
 			if(m<10) m = "0"+m;
 			return [d,m,y].join(".");
@@ -295,7 +298,7 @@
 						if(dat>0 && dat<=dayGroup)
 							chartSet.push(R.path(["M",x,0,"L",x,options.headHeight]).attr({stroke:options.grid.color}));
 						if(dat>15 && dat<=15+dayGroup)
-							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)+" "+(1900+d.getYear())).attr({"text-anchor":"middle"}));
+							chartSet.push(R.text(x,options.headHeight*.25, formatMonth(d)+" "+(yearOffset+d.getYear())).attr({"text-anchor":"middle"}));
 						
 						d.setDate(dat+dayGroup);
 					}
