@@ -12,7 +12,8 @@
 			task:{color:"90-#22a:5-#77f:95", stroke:null, progressColor:"90-#484:5-#aca:95"},
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
 			link:{color:"#008", highlightColor:"#f00", width:1, captureZone:8},
-			slider:{width:3, color:"#ccc"}
+			slider:{width:3, color:"#ccc"},
+			autoSize: true
 		}, options);
 		
 		
@@ -169,6 +170,10 @@
 		function draw(container, data){
 			var width = container.width(),
 				height = container.height();
+			if(options.autoSize){
+				height = (data.tasks.length+2) * options.rowHeight;
+				container.css({height:height});
+			}
 			var columns = [
 				{w:25, fld:"id", title:"№"},
 				{w:125, fld:"name", title:"Наименование", mrgLeft:5},
