@@ -282,8 +282,8 @@
 					)+popup.margin*2;
 					popup.frame.attr({width:w});
 					
-					var x = evt.clientX+offset - ctrlPos.left,
-						y = evt.clientY+offset - ctrlPos.top;
+					var x = evt.clientX+offset - ctrlPos.left + window.scrollX,
+						y = evt.clientY+offset - ctrlPos.top + window.scrollY;
 					if(x>width-w)
 						x = evt.clientX - w - offset - ctrlPos.left;
 					if(y>height-popup.height)
