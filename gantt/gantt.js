@@ -13,6 +13,7 @@
 			complexTask:{color:"90-#444:5-#888:95", arrowColor:"#444"},
 			link:{color:"#008", highlightColor:"#f00", width:1, captureZone:8},
 			slider:{width:3, color:"#ccc"},
+			minMonthWidth:100,
 			autoSize: true
 		}, options);
 		
@@ -173,6 +174,12 @@
 			if(options.autoSize){
 				height = (data.tasks.length+2) * options.rowHeight;
 				container.css({height:height});
+				
+				var wMin = options.minMonthWidth*(dateRange.days/30);
+				if(width<wMin){
+					width=wMin;
+					container.css({width:width});
+				}
 			}
 			var columns = [
 				{w:25, fld:"id", title:"№"},
