@@ -15,7 +15,28 @@
 			slider:{width:3, color:"#ccc"}
 		}, options);
 		
+		
+		function getDataFromTable(el){el = $(el);
+			var data = {type:"MSProjectXML", "tasks":[]};
+			var rows = el.find("p");
+			$.each(rows, function(i, row){row=$(row);
+				var tsk = {id:row.attr("id")};
+				var cells = row.find("span");
+				$.each(cells, function(j, cell){cell=$(cell);
+					var prm = cell.attr("class"),
+						val = cell.html();
+					if(prm=="progress") val = parseInt(val);
+					tsk[prm] = val;
+				});
+				data.tasks.push(tsk);
+			});
+			return data;
+		}
+		
 		var ctrlPos = $(this).position();
+		if(options.dataType=="MSPrjTable"){
+			data = getDataFromTable(data);
+		}
 		
 		if(data.type=="MSProjectXML"){
 			data = convertFromMSProjectXML(data);
