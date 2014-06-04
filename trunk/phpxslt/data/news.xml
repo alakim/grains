@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<article title="Раздел &quot;Новости&quot;">
+	<section title="Авторизация оператора">
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+	</section>
+	<section title="Редактирование раздела">
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<section title="Общие рекомендации">
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<section title="Целостность информации">
+				<p>Sample text</p>
+				<p>Sample text</p>
+				<p>Sample text</p>
+			</section>
+			<section title="Техника безопасности при работе с персональными ЭВМ">
+				<p>Sample text</p>
+				<p>Sample text</p>
+				<p>Sample text</p>
+			</section>
+			<section title="Особенности использования ПЭВМ планшетного типа">
+				<p>Sample text</p>
+				<p>Sample text</p>
+				<p>Sample text</p>
+			</section>
+		</section>
+		<section title="Добавление новостей">
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+			<p>Sample text</p>
+		</section>
+	</section>
+	<section title="Заключение">
+		<p>В заключение следует отметить особую роль протокола HTTP в работе сайта GMS.</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+		<p>Sample text</p>
+	</section>
+</article>
