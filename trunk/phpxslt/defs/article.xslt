@@ -15,7 +15,7 @@
 				<script type="text/javascript" src="menu.php"></script>
 			</head>
 			<body>
-				<h1>Руководство оператора сайта GMS</h1>
+				<h1><xsl:value-of select="document('../data/toc.xml')/toc/@title"/></h1>
 				<table border="0" cellpadding="3" cellspacing="0">
 					<tr>
 						<td width="300" id="menuPnl" valign="top"></td>
