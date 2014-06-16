@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<toc title="Руководство оператора">
+<toc title="Ведение сайта компании ABM. Руководство оператора.">
 	<section file="intro.xml"/>
-	<section file="news.xml"/>
+	<section file="cms.xml"/>
+	<section title="Разделы сайта">
+		<section file="sections.xml"/>
+		<section file="news.xml"/>
+	</section>
+	<section file="dataformats.xml"/>
+	<section file="security.xml"/>
 </toc>

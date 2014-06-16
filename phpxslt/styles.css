@@ -5,3 +5,7 @@
 #menuPnl{
 	/*border-right: 1px solid #eee;*/
 }
+
+#menuPnl li a.current{
+	background-color:#ffc;
+}
