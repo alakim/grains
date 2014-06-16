@@ -12,13 +12,23 @@
 		});
 	</xsl:template>
 	
+	<xsl:template match="section[@title]">
+		{title:'<xsl:value-of select="@title"/>', sub:[<xsl:apply-templates /> null]},
+	</xsl:template>
 	<xsl:template match="section">
 		<xsl:variable name="file" select="@file"/>
 		<xsl:variable name="doc" select="document($file)"/>
 				{id:"<xsl:value-of select="substring-before(@file, '.')"/>", title:'<xsl:value-of select="$doc/article/@title"/>', sub:[<xsl:apply-templates select="$doc/article/section" mode="sub"/> null]},</xsl:template>
 				
 	<xsl:template match="section" mode="sub">
-		{id:'s<xsl:value-of select="count(preceding::section)+count(ancestor::section)"/>', title:'<xsl:value-of select="@title"/>', sub:[<xsl:apply-templates select="section" mode="sub"/> null]},
+		<xsl:variable name="sID">
+			<xsl:choose>
+				<xsl:when test="@id"><xsl:value-of select="@id"/></xsl:when>
+				<xsl:otherwise>s<xsl:value-of select="count(preceding::section)+count(ancestor::section)"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		{id:'<xsl:value-of select="$sID"/>', title:'<xsl:value-of select="@title"/>', sub:[<xsl:apply-templates select="section" mode="sub"/> null]},
 	</xsl:template>
+	
 	
 </xsl:stylesheet>

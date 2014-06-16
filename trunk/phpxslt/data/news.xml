@@ -1,69 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <article title="Раздел &quot;Новости&quot;">
-	<section title="Авторизация оператора">
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-	</section>
-	<section title="Редактирование раздела">
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<section title="Общие рекомендации">
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<section title="Целостность информации">
-				<p>Sample text</p>
-				<p>Sample text</p>
-				<p>Sample text</p>
-			</section>
-			<section title="Техника безопасности при работе с персональными ЭВМ">
-				<p>Sample text</p>
-				<p>Sample text</p>
-				<p>Sample text</p>
-			</section>
-			<section title="Особенности использования ПЭВМ планшетного типа">
-				<p>Sample text</p>
-				<p>Sample text</p>
-				<p>Sample text</p>
-			</section>
-		</section>
-		<section title="Добавление новостей">
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-			<p>Sample text</p>
-		</section>
-	</section>
-	<section title="Заключение">
-		<p>В заключение следует отметить особую роль протокола HTTP в работе сайта GMS.</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
-		<p>Sample text</p>
+	<p>Раздел &quot;Новости&quot; предназначен для публикации новостных статей.</p>
+	<section title="Особенности размещения данных">
+		<p>Новостные статьи размещаются в инфоблоке Новости. Новостная статья имеет заголовок, анонс, основной текст, а также может включать в себя одно или несколько изображений.</p>
 	</section>
 </article>
