@@ -119,6 +119,10 @@
 	
 	<xsl:template match="sel"><span class="selected"><xsl:apply-templates/></span></xsl:template>
 	<xsl:template match="strong"><strong><xsl:apply-templates/></strong></xsl:template>
-	
+
+	<xsl:template match="patch">
+		<xsl:variable name="patch" select="document(@file)"/>
+		<xsl:apply-templates select="$patch/patch/*"/>
+	</xsl:template>
 	
 </xsl:stylesheet>
