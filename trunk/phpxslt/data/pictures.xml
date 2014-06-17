@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pictures baseUrl="data/img">
+	<img id="earthView" file="earth.jpg">Вид Земли из космоса</img>
+	<img id="iss" file="iss.jpg">Международная космическая станция</img>
+</pictures>
