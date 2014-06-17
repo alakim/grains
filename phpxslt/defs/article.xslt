@@ -38,19 +38,8 @@
 		</xsl:variable>
 		<xsl:variable name="level" select="count(ancestor::section)+3"/>
 		<a name="{$sID}"></a>
-		<xsl:choose>
-			<xsl:when test="@import">
-				<!--div style="color:red">IMPORT <xsl:value-of select="@import"/></div-->
-				<xsl:call-template name="import">
-					<xsl:with-param name="level" select="$level"/>
-					<xsl:with-param name="article" select="@import"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="h{$level}"><xsl:value-of select="@title"/></xsl:element>
-				<xsl:apply-templates/>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:element name="h{$level}"><xsl:value-of select="@title"/></xsl:element>
+		<xsl:apply-templates/>
 	</xsl:template>
 	
 	<xsl:template match="p">
@@ -78,14 +67,15 @@
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template name="import">
-		<xsl:param name="level"/>
-		<xsl:param name="article"/>
-		<xsl:variable name="doc" select="document($article)"/>
-		<xsl:element name="h{$level}"><xsl:value-of select="$doc/article/@title"/></xsl:element>
-		<xsl:apply-templates select="$doc/article/*"/>
-	</xsl:template>
 
+	<xsl:template match="pict">
+		<div style="text-align:center;">
+			<xsl:variable name="pictID" select="@id"/>
+			<xsl:variable name="registry" select="document('../data/pictures.xml')"/>
+			<xsl:variable name="pict" select="$registry/pictures/img[@id=$pictID]"/>
+			<img src="{$registry/pictures/@baseUrl}/{$pict/@file}"/>
+			<p>Рис. <xsl:value-of select="count($pict/preceding::img)+1"/> - <xsl:value-of select="$pict/text()"/></p>
+		</div>
+	</xsl:template>
 	
 </xsl:stylesheet>
