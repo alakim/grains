@@ -64,6 +64,10 @@
 					</xsl:choose>
 				</a>
 			</xsl:when>
+			<xsl:when test="@pict">
+				<xsl:variable name="pictID" select="@pict"/>
+				рис.<xsl:value-of select="count(document('../data/pictures.xml')/pictures/img[@id=$pictID]/preceding::img)+1"/>
+			</xsl:when>
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
