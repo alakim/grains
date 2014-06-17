@@ -22,6 +22,6 @@
 	}
 
 	if($page)
-		echo(xml2html("data/".$page.".xml", "defs/article.xslt"));
+		echo(xml2html("data/pages/".$page.".xml", "defs/article.xslt"));
 
 ?>

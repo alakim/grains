@@ -15,10 +15,12 @@
 	<xsl:template match="section[@title]">
 		{title:'<xsl:value-of select="@title"/>', sub:[<xsl:apply-templates /> null]},
 	</xsl:template>
+	
 	<xsl:template match="section">
-		<xsl:variable name="file" select="@file"/>
+		<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
 		<xsl:variable name="doc" select="document($file)"/>
 				{id:"<xsl:value-of select="substring-before(@file, '.')"/>", title:'<xsl:value-of select="$doc/article/@title"/>', sub:[<xsl:apply-templates select="$doc/article/section" mode="sub"/> null]},</xsl:template>
+		
 				
 	<xsl:template match="section" mode="sub">
 		<xsl:variable name="sID">
