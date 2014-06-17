@@ -77,11 +77,8 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="attention">
-		<div class="attention">
-			<xsl:apply-templates/>
-		</div>
-	</xsl:template>
+	<xsl:template match="attention"><div class="attention"><xsl:apply-templates/></div></xsl:template>
+	<xsl:template match="comment"><div class="comment"><xsl:apply-templates/></div></xsl:template>
 
 	<xsl:template match="pict">
 		<div style="text-align:center;">
