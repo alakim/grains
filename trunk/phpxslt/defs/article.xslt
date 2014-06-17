@@ -68,6 +68,11 @@
 				<xsl:variable name="pictID" select="@pict"/>
 				рис.<xsl:value-of select="count(document('../data/pictures.xml')/pictures/pict[@id=$pictID]/preceding::pict)+1"/>
 			</xsl:when>
+			<xsl:when test="@sect">
+				<xsl:variable name="pageID" select="substring-before(@sect, '#')"/>
+				<xsl:variable name="sectID" select="substring-after(@sect, '#')"/>
+				<a href="/?p={$pageID}#{$sectID}"><xsl:apply-templates/></a>
+			</xsl:when>
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
