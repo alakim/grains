@@ -15,3 +15,10 @@ div.attention{
 	padding-left:5px;
 	border-left:8px solid red;
 }
+
+div.comment{
+	font-style:italic;
+	background-color:#eee;
+	padding:5px;
+	margin:15px;
+}
