@@ -100,4 +100,25 @@
 		<img src="{$registry/pictures/@baseUrl}/{$img/@file}"/>
 	</xsl:template>
 	
+	<xsl:template match="list">
+		<xsl:variable name="tag">
+			<xsl:choose>
+				<xsl:when test="@marker='num'">ol</xsl:when>
+				<xsl:otherwise>ul</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:if test="caption">
+			<xsl:apply-templates select="caption" mode="outside"/>
+		</xsl:if>
+		<xsl:element name="{$tag}">
+			<xsl:apply-templates/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="li"><li><xsl:apply-templates/></li></xsl:template>
+	<xsl:template match="caption"/>
+	<xsl:template match="caption" mode="outside">
+		<p class="listCaption"><xsl:apply-templates/></p>
+	</xsl:template>
+	
+	
 </xsl:stylesheet>
