@@ -66,7 +66,7 @@
 			</xsl:when>
 			<xsl:when test="@pict">
 				<xsl:variable name="pictID" select="@pict"/>
-				рис.<xsl:value-of select="count(document('../data/pictures.xml')/pictures/img[@id=$pictID]/preceding::img)+1"/>
+				рис.<xsl:value-of select="count(document('../data/pictures.xml')/pictures/pict[@id=$pictID]/preceding::pict)+1"/>
 			</xsl:when>
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
@@ -76,10 +76,17 @@
 		<div style="text-align:center;">
 			<xsl:variable name="pictID" select="@id"/>
 			<xsl:variable name="registry" select="document('../data/pictures.xml')"/>
-			<xsl:variable name="pict" select="$registry/pictures/img[@id=$pictID]"/>
+			<xsl:variable name="pict" select="$registry/pictures/pict[@id=$pictID]"/>
 			<img src="{$registry/pictures/@baseUrl}/{$pict/@file}"/>
-			<p>Рис. <xsl:value-of select="count($pict/preceding::img)+1"/> - <xsl:value-of select="$pict/text()"/></p>
+			<p>Рис. <xsl:value-of select="count($pict/preceding::pict)+1"/> - <xsl:value-of select="$pict/text()"/></p>
 		</div>
+	</xsl:template>
+
+	<xsl:template match="img">
+		<xsl:variable name="imgID" select="@id"/>
+		<xsl:variable name="registry" select="document('../data/pictures.xml')"/>
+		<xsl:variable name="img" select="$registry/pictures/img[@id=$imgID]"/>
+		<img src="{$registry/pictures/@baseUrl}/{$img/@file}"/>
 	</xsl:template>
 	
 </xsl:stylesheet>
