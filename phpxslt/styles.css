@@ -23,3 +23,8 @@ div.comment{
 	padding:5px;
 	margin:15px;
 }
+
+span.selected{
+	font-weight: bold;
+	font-style:italic;
+}
