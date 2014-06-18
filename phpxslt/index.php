@@ -1,5 +1,7 @@
 ﻿<?php
-	$page = $_REQUEST["p"];
+	if(isset($_REQUEST['p'])){
+		$page = $_REQUEST["p"];
+	}
 	if(empty($page)){
 		$toc = new DOMDocument();
 		$toc->load("data/toc.xml");
