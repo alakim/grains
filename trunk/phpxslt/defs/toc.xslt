@@ -9,6 +9,12 @@
 			Menu([<xsl:apply-templates select="section"/>
 				null
 			]);
+			<xsl:if test="@debug='true'">
+				Debug([
+					<xsl:apply-templates select="section" mode="debug"/>
+					null
+				]);
+			</xsl:if>
 		});
 	</xsl:template>
 	
@@ -32,5 +38,18 @@
 		{id:'<xsl:value-of select="$sID"/>', title:'<xsl:value-of select="@title"/>', sub:[<xsl:apply-templates select="section" mode="sub"/> null]},
 	</xsl:template>
 	
+	<xsl:template match="section[@title]" mode="debug">
+		<xsl:apply-templates select="section" mode="debug"/>
+	</xsl:template>
+				
+	<xsl:template match="section" mode="debug">
+		<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
+		<xsl:variable name="doc" select="document($file)"/>
+		
+		<xsl:if test="$doc//todo">
+			{id:'<xsl:value-of select="substring-before(@file, '.')"/>', message:'something to do'}, 
+		</xsl:if>
+		<xsl:apply-templates select="section" mode="debug"/>
+	</xsl:template>
 	
 </xsl:stylesheet>

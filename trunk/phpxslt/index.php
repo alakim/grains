@@ -2,6 +2,9 @@
 	if(isset($_REQUEST['p'])){
 		$page = $_REQUEST["p"];
 	}
+	if(isset($_REQUEST['debug'])){
+		$debugMode = true;
+	}
 	if(empty($page)){
 		$toc = new DOMDocument();
 		$toc->load("data/toc.xml");
@@ -10,10 +13,14 @@
 		$page = $file[0];
 	}
 
-	function xml2html($xmldata, $xsl)
-	{
+	function xml2html($xmldata, $xsl){
+		global $debugMode;
 		$xmlDoc = new DOMDocument();
 		$xmlDoc->load($xmldata);
+		if($debugMode){
+			$root = $xmlDoc->documentElement;
+			$root->setAttribute("debug", "true");
+		}
 
 		$xslDoc = new DOMDocument();
 		$xslDoc->load($xsl);
