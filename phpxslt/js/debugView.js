@@ -19,7 +19,8 @@
 	
 	function rebuild(){
 		setTimeout(function(){
-			$("#menuPnl").append(templates.main(debugData));
+			$("#menuPnl").append(templates.main(debugData))
+				find("a").click(rebuild);
 		}, 100);
 	}
 	
