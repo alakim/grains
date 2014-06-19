@@ -28,3 +28,14 @@ span.selected{
 	font-weight: bold;
 	font-style:italic;
 }
+
+.todo{
+	background-color:#ff0;
+	color:#f00;
+	font-weight:bold;
+	padding:3px;
+}
+.debugInfo{
+	color:#f00;
+	background-color:#ff0;
+}

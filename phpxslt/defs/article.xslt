@@ -2,7 +2,9 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:bs="http://www.bicyclesoft.com/xPublish">
 	<xsl:output method="html" version="1.0" encoding="utf-8" indent="yes"/>
 	
-
+	<xsl:variable name="debugMode">
+		<xsl:if test="/article/@debug='true'">true</xsl:if>
+	</xsl:variable>
 
 	<xsl:template match="/article">
 		<html>
@@ -12,7 +14,15 @@
 				<script type="text/javascript" src="js/lib/html.js"></script>
 				<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
 				<script type="text/javascript" src="js/menuView.js"></script>
-				<script type="text/javascript" src="menu.php"></script>
+				<xsl:choose>
+					<xsl:when test="$debugMode='true'">
+						<script type="text/javascript" src="js/debugView.js"></script>
+						<script type="text/javascript" src="menu.php?debug"></script>
+					</xsl:when>
+					<xsl:otherwise>
+						<script type="text/javascript" src="menu.php"></script>
+					</xsl:otherwise>
+				</xsl:choose>
 			</head>
 			<body>
 				<h1><xsl:value-of select="document('../data/toc.xml')/toc/@title"/></h1>
@@ -123,6 +133,12 @@
 	<xsl:template match="patch">
 		<xsl:variable name="patch" select="document(@file)"/>
 		<xsl:apply-templates select="$patch/patch/*"/>
+	</xsl:template>
+	
+	<xsl:template match="todo">
+		<xsl:if test="$debugMode='true'">
+			<div class="todo"><xsl:apply-templates/></div>
+		</xsl:if>
 	</xsl:template>
 	
 </xsl:stylesheet>
