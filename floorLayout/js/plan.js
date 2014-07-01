@@ -18,7 +18,7 @@
 			
 		}).mouseout(function(){
 			var shape = this.data("set")[0].data("shape");
-			shape.attr(templates.styles[type].default);
+			shape.attr(templates.styles[type].defaultStyle);
 		}).click(function(){
 			var data = db.getData(buildingNr, type, item.nr, item.fnr);
 			$("#propPanel").html(templates.properties({type:type, nr:item.nr, fnr:item.fnr, data:data}));
@@ -34,12 +34,12 @@
 	var templates = {
 		styles:{
 			room: {
-				default:{fill:"#ccc", stroke:"#888"},
+				defaultStyle:{fill:"#ccc", stroke:"#888"},
 				highlight:{fill:"#f00"},
 				sold:{fill:"#eee", stroke:"#ccc", cursor:"auto"}
 			},
 			floor: {
-				default:{fill:"#fafafa", stroke:"#888"},
+				defaultStyle:{fill:"#fafafa", stroke:"#888"},
 				highlight:{fill:"#ff0"}
 			}
 		},
@@ -102,12 +102,12 @@
 			var x = item.x,
 				y = item.y;
 			
-			var rshape = r.rect(x, y, item.w, item.h).attr(templates.styles[type].default);
+			var rshape = r.rect(x, y, item.w, item.h).attr(templates.styles[type].defaultStyle);
 			templates.transform(rshape, item);
 			return rshape;
 		},
 		pathItm: function(idx, item, type){
-			var rshape = r.path(item.d).attr(templates.styles[type].default);
+			var rshape = r.path(item.d).attr(templates.styles[type].defaultStyle);
 			templates.transform(rshape, item);
 			return rshape;
 		},
