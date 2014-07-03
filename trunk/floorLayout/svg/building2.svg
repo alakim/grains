@@ -61,8 +61,8 @@
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#cccccc;stroke-width:1"
        id="rect2993"
-       width="358"
-       height="228"
+       width="609"
+       height="317"
        x="-23.000004"
        y="-23" />
     <path
@@ -113,5 +113,28 @@
        roomNr="4"
        sodipodi:nodetypes="ccccc"
        floorNr="1" />
+    <rect
+       style="fill:#ececec;fill-opacity:1;stroke:#cccccc;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2992"
+       width="500"
+       height="37"
+       x="28.845194"
+       y="245.59583"
+       transform="matrix(0.98855193,-0.15088101,0.15088101,0.98855193,0,0)"
+       class="street" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="205.8452"
+       y="268.59583"
+       id="text2988"
+       sodipodi:linespacing="125%"
+       class="label"
+       transform="matrix(0.98855193,-0.15088101,0.15088101,0.98855193,0,0)"
+       labelTarget="rect2992"><tspan
+         sodipodi:role="line"
+         id="tspan2990"
+         x="205.8452"
+         y="268.59583">Gamaley st. (ул. Гамалеи)</tspan></text>
   </g>
 </svg>

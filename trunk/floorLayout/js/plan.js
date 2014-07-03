@@ -41,6 +41,9 @@
 			floor: {
 				defaultStyle:{fill:"#fafafa", stroke:"#888"},
 				highlight:{fill:"#ff0"}
+			},
+			street:{
+				defaultStyle:{fill:"#edd", stroke:"#444"}
 			}
 		},
 		main: function(data){
@@ -61,28 +64,28 @@
 					addEvents(set, item, type);
 			}
 			
-			$.each(data.floors, function(i, floor){
-				if(!floor) return;
-				var itm;
-				switch(floor.type){
-					case "rect": itm = templates.rectItm(i, floor, "floor"); break;
-					case "path": itm = templates.pathItm(i, floor, "floor"); break;
-					default: break;
-				}
-				buildSet(itm, floor, "floor");
-			});
-			$.each(data.rooms, function(i, room){
-				if(!room) return;
-				var itm;
-				switch(room.type){
-					case "rect": itm = templates.rectItm(i, room, "room"); break;
-					case "path": itm = templates.pathItm(i, room, "room"); break;
-					default: break;
-				}
-				buildSet(itm, room, "room");
-			});
+			function drawCollection(coll, iClass){
+				$.each(coll, function(i, cItm){
+					if(!cItm) return;
+					var itm;
+					switch(cItm.type){
+						case "rect": itm = templates.rectItm(i, cItm, iClass); break;
+						case "path": itm = templates.pathItm(i, cItm, iClass); break;
+						case "text": itm = templates.textItm(i, cItm, iClass); break;
+						default: break;
+					}
+					if(iClass=="room" || iClass=="floor")
+						buildSet(itm, cItm, iClass);
+				});
+			}
+			
+			drawCollection(data.floors, "floor");
+			drawCollection(data.rooms, "room");
+			drawCollection(data.streets, "street");
+			drawCollection(data.labels, "label");
 		},
 		labels: function(set, item, type){
+			if(item.nr==null) return;
 			var bbox = set.getBBox();
 			var x = type=="room"?bbox.x+bbox.width/2:bbox.x+5,
 				y = type=="room"?bbox.y+bbox.height/2:bbox.y-7;
@@ -99,15 +102,17 @@
 			}
 		},
 		rectItm: function(idx, item, type){
-			var x = item.x,
-				y = item.y;
-			
-			var rshape = r.rect(x, y, item.w, item.h).attr(templates.styles[type].defaultStyle);
+			var rshape = r.rect(item.x, item.y, item.w, item.h).attr(templates.styles[type].defaultStyle);
 			templates.transform(rshape, item);
 			return rshape;
 		},
 		pathItm: function(idx, item, type){
 			var rshape = r.path(item.d).attr(templates.styles[type].defaultStyle);
+			templates.transform(rshape, item);
+			return rshape;
+		},
+		textItm: function(idx, item, type){
+			var rshape = r.text(item.x, item.y, item.txt);
 			templates.transform(rshape, item);
 			return rshape;
 		},
