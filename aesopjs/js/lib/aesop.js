@@ -29,54 +29,54 @@
 		}
 	});
 	
-	function addInstance(cls, itm){
+	function addInstance(cls, itm, facetData){
 		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
 			if(fc.item===itm) return;
 		}
 		var fc = new cls.facetConstructor(itm);
 		fc.item = itm;
-		addFacet(itm, fc);
+		if(facetData) extend(fc, facetData);
 		cls.facets.push(fc);
-	}
-	
-	function addFacet(itm, fc){
-		if(!itm._aesopFacets) itm._aesopFacets = [];
-		itm._aesopFacets.push(fc);
 	}
 	
 	function removeInstance(cls, itm){
 		var res = [];
 		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
 			if(fc.item!==itm) res.push(fc);
-			else removeFacet(itm, fc);
 		}
 		cls.facets = res;
 	}
 	
-	function removeFacet(itm, fac){
-		var res = [];
-		for(var fc,c=itm._aesopFacets,i=0; fc=c[i],i<c.length; i++){
-			if(fc!=fac) res.push(fc);
+	function getFacet(itm, classOrName){
+		var cls = typeof(classOrName)=="string"?classIndex[classOrName]:classOrName;
+		if(!cls) alert("Class "+classNm+" does not exist!");
+		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
+			if(fc.item===itm) return fc;
 		}
-		itm._aesopFacets = res;
+		return false;
 	}
 	
 	return {
-		version: "1.1",
+		version: "2.0",
 		Class: Class,
-		classify: function(itm){
-			for(var nm in classIndex){var cls = classIndex[nm];
-				if(cls.func(itm)) addInstance(cls, itm);
-				else removeInstance(cls, itm);
+		classify: function(itm, className, facetData){
+			if(!className){
+				for(var nm in classIndex){var cls = classIndex[nm];
+					if(getFacet(itm, cls)) continue;
+					if(cls.func(itm)) addInstance(cls, itm);
+					else removeInstance(cls, itm);
+				}
+			}
+			else{
+				var cls = classIndex[className];
+				addInstance(cls, itm, facetData);
 			}
 		},
-		is: function(itm, classNm){
-			var cls = classIndex[classNm];
-			for(var el,i=0,c=cls.facets; el=c[i],i<c.length; i++){
-				if(el===itm) return true;
-			}
-			return false;
+		declassify: function(itm, className){
+			var cls = classIndex[className];
+			removeInstance(cls, itm);
 		},
+		getFacet: getFacet,
 		getClass: function(name){return classIndex[name];},
 		getClassNames: function(){
 			var res = [];
