@@ -14,7 +14,7 @@
 						th("Message"),
 						th("Fixed")
 					),
-					apply($A.getFacet("Bug").getAll(), function(bug){
+					apply($A.getClass("Bug").getAll(), function(bug){
 						return tr(
 							td(bug.id),
 							td(bug.time),
@@ -24,15 +24,15 @@
 						);
 					})
 				),
-				templates.facets()
+				templates.classes()
 			);
 		}},
-		facets: function(){with($H){
-			var names = $A.getFacetNames();
+		classes: function(){with($H){
+			var names = $A.getClassNames();
 			return div({style:"margin-top:25px;"},
 				table({border:1, cellpadding:3, cellspacing:0},
 					tr(
-						th("Facet Name"),
+						th("Class Name"),
 						th("Instances Count")
 					),
 					apply(names, function(nm){
@@ -69,16 +69,16 @@
 	})();
 	
 		
-	// Aesop Facets 
-	new $A.Facet("Bug", function(inst){
+	// Aesop Classes 
+	new $A.Class("Bug", function(inst){
 		return inst.constructor == Bug;
 	});
 	
-	new $A.Facet("Fixed Bugs", function(inst){
+	new $A.Class("Fixed Bugs", function(inst){
 		return inst.fixed;
 	});
 	
-	new $A.Facet("Bugs to fix", function(inst){
+	new $A.Class("Bugs to fix", function(inst){
 		return !inst.fixed;
 	});
 

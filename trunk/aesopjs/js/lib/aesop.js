@@ -1,18 +1,18 @@
 ﻿define([], function(){
-	var facets = {};
+	var classIndex = {};
 	
 	function extend(obj, ext){
 		for(var k in ext) obj[k] = ext[k];
 	}
 	
-	function Facet(name, func){var _=this;
+	function Class(name, func){var _=this;
 		_.name = name;
 		_.func = func;
 		_.instances = [];
-		facets[name] = _;
+		classIndex[name] = _;
 	}
 	
-	extend(Facet.prototype, {
+	extend(Class.prototype, {
 		each: function(act){var _=this;
 			for(var itm,i=0; itm=_.instances[i],i<_.instances.length; i++){
 				act(itm);
@@ -28,36 +28,36 @@
 		}
 	});
 	
-	function addInstance(fc, inst){
-		for(var itm,i=0; itm=fc.instances[i],i<fc.instances.length; i++){
+	function addInstance(cls, inst){
+		for(var itm,i=0; itm=cls.instances[i],i<cls.instances.length; i++){
 			if(itm===inst) return;
 		}
-		fc.instances.push(inst);
+		cls.instances.push(inst);
 	}
 	
-	function removeInstance(fc, inst){
+	function removeInstance(cls, inst){
 		var res = [];
-		for(var itm,i=0; itm=fc.instances[i],i<fc.instances.length; i++){
+		for(var itm,i=0; itm=cls.instances[i],i<cls.instances.length; i++){
 			if(itm!==inst) res.push(itm);
 		}
-		fc.instances = res;
+		cls.instances = res;
 	}
 	
 	return {
-		version: "1.0",
-		Facet: Facet,
+		version: "1.1",
+		Class: Class,
 		classify: function(itm){
-			for(var nm in facets){var fc = facets[nm];
-				if(fc.func(itm)) addInstance(fc, itm);
-				else removeInstance(fc, itm);
+			for(var nm in classIndex){var cls = classIndex[nm];
+				if(cls.func(itm)) addInstance(cls, itm);
+				else removeInstance(cls, itm);
 			}
 		},
-		getFacet: function(name){return facets[name];},
-		getFacetNames: function(){
+		getClass: function(name){return classIndex[name];},
+		getClassNames: function(){
 			var res = [];
-			for(var nm in facets) res.push(nm);
+			for(var nm in classIndex) res.push(nm);
 			return res;
 		},
-		getInstancesCount: function(facetNm){return facets[facetNm].instances.length;}
+		getInstancesCount: function(classNm){return classIndex[classNm].instances.length;}
 	};
 });
