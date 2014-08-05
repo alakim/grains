@@ -94,16 +94,19 @@
 	}
 	$.extend(Bug.prototype, {
 		accept: function(priority){
+			// Пример ручной классификации объекта
 			$A.declassify(this, "IncomingBugs");
 			$A.classify(this, "AcceptedBugs", {
 				accepted: new Date(),
 				priority: priority
 			});
+			// Классификация с использованием функций классификации
 			$A.classify(this);
 		},
 		fix :function(){
 			$A.declassify(this, "AcceptedBugs");
 			$A.classify(this, "FixedBugs", {fixed: new Date()});
+			$A.classify(this);
 		}
 	});
 	Bug.index = {};
@@ -116,16 +119,22 @@
 	
 		
 	// Aesop Classes 
-	new $A.Class("Bug", 
-		function(inst){return inst.constructor == Bug;}
+	new $A.Class("Bug", // имя класса
+		// функция принадлежности к классу
+		// принадлежность определяется использованным конструктором
+		function(inst){return inst.constructor == Bug;} 
 	);
 	
 	new $A.Class("IncomingBugs",
+		// Принадлежность к классу определяется отсутствием принадлежности к другим классам
 		function(inst){return !$A.getFacet(inst, "FixedBugs") && !$A.getFacet(inst, "AcceptedBugs");}
 	);
 	
 	new $A.Class("AcceptedBugs",
-		function(inst){return inst.accepted;},
+		// Принадлежность к классу устанавливается вручную
+		// объект принадлежит классу только если он ему уже принадлежит
+		function(inst){return $A.getFacet(inst, "AcceptedBugs");}, 
+		// Конструктор фасета класса
 		function(inst){
 			this.stateView = function(){
 				return "Accepted "+templates.date(this.accepted);
@@ -134,7 +143,10 @@
 	);
 
 	new $A.Class("FixedBugs",
-		function(inst){return inst.fixed;},
+		// Принадлежность к классу устанавливается вручную
+		// объект принадлежит классу только если он ему уже принадлежит
+		function(inst){return $A.getFacet(inst, "FixedBugs");},
+		// Конструктор фасета класса
 		function(inst){
 			this.stateView = function(){
 				return "Fixed "+templates.date(this.fixed);
@@ -143,6 +155,7 @@
 	);
 	
 	new $A.Class("CriticalBugs",
+		// Ошибка является критической, если она принята с приоритетом большим десяти
 		function(inst){
 			var fc = $A.getFacet(inst, "AcceptedBugs");
 			if(!fc) return false;
