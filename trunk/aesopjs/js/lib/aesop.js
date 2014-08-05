@@ -48,8 +48,8 @@
 	}
 	
 	function getFacet(itm, classOrName){
+		if(!classOrName) alert("Class "+classOrName+" does not exist!");
 		var cls = typeof(classOrName)=="string"?classIndex[classOrName]:classOrName;
-		if(!cls) alert("Class "+classNm+" does not exist!");
 		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
 			if(fc.item===itm) return fc;
 		}
@@ -62,7 +62,6 @@
 		classify: function(itm, className, facetData){
 			if(!className){
 				for(var nm in classIndex){var cls = classIndex[nm];
-					if(getFacet(itm, cls)) continue;
 					if(cls.func(itm)) addInstance(cls, itm);
 					else removeInstance(cls, itm);
 				}
