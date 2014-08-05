@@ -52,6 +52,13 @@
 				else removeInstance(cls, itm);
 			}
 		},
+		is: function(itm, classNm){
+			var cls = classIndex[classNm];
+			for(var el,i=0,c=cls.instances; el=c[i],i<c.length; i++){
+				if(el===itm) return true;
+			}
+			return false;
+		},
 		getClass: function(name){return classIndex[name];},
 		getClassNames: function(){
 			var res = [];
