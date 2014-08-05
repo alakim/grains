@@ -14,7 +14,8 @@
 						th("Message"),
 						th("Fixed")
 					),
-					apply($A.getClass("Bug").getAll(), function(bug){
+					apply($A.getClass("Bug").getAll(), function(fc){
+						var bug = fc.item;
 						return tr(
 							td(bug.id),
 							td(bug.time),
