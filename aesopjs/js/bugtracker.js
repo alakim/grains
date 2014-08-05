@@ -6,6 +6,7 @@
 	var templates = {
 		main: function(){with($H){
 			return div(
+				h2("Current Bug States"),
 				table({border:1, cellpadding:3, cellspacing:0},
 					tr(
 						th("ID"),
@@ -13,7 +14,7 @@
 						th("Title"),
 						th("Message"),
 						th("State"),
-						th()
+						th("Action")
 					),
 					apply($A.getClass("Bug").getAll(), function(fc){
 						var bug = fc.item,
@@ -33,7 +34,7 @@
 							td(
 								fcAcc?fcAcc.stateView()
 									:fcFix?fcFix.stateView()
-									:null
+									:"Incoming"
 							),
 							td(
 								fcInc?div(
@@ -47,6 +48,7 @@
 						);
 					})
 				),
+				h2("Current Classification"),
 				templates.classes()
 			);
 		}},
@@ -131,10 +133,11 @@
 	);
 	
 	new $A.Class("AcceptedBugs",
+		// Классификация по признакам не используется
 		// Принадлежность к классу устанавливается вручную
 		// объект принадлежит классу только если он ему уже принадлежит
-		function(inst){return $A.getFacet(inst, "AcceptedBugs");}, 
-		// Конструктор фасета класса
+		null,
+		// Пример конструктора фасета класса
 		function(inst){
 			this.stateView = function(){
 				return "Accepted "+templates.date(this.accepted);
@@ -143,10 +146,11 @@
 	);
 
 	new $A.Class("FixedBugs",
+		// Классификация по признакам не используется
 		// Принадлежность к классу устанавливается вручную
 		// объект принадлежит классу только если он ему уже принадлежит
-		function(inst){return $A.getFacet(inst, "FixedBugs");},
-		// Конструктор фасета класса
+		null,
+		// Пример конструктора фасета класса
 		function(inst){
 			this.stateView = function(){
 				return "Fixed "+templates.date(this.fixed);
@@ -175,8 +179,16 @@
 			"Не отображается время элементов списка ошибок",
 			"Вместо времени - зюки."
 		);
+		new Bug(
+			"2014.08.05T11:30",
+			"Вообще глюки сплошные",
+			"Ничего не работает."
+		);
 	}
 	sampleFill();
+	
+	
+	// Обработчики событий
 	
 	function viewBugs(){
 		$("#out").html(templates.main());
