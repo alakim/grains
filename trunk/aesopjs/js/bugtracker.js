@@ -12,18 +12,38 @@
 						th("Time"), 
 						th("Title"),
 						th("Message"),
-						th("Fixed"),
+						th("State"),
 						th()
 					),
 					apply($A.getClass("Bug").getAll(), function(fc){
-						var bug = fc.item;
+						var bug = fc.item,
+							fcInc = $A.getFacet(bug, "IncomingBugs"),
+							fcAcc = $A.getFacet(bug, "AcceptedBugs"),
+							fcFix = $A.getFacet(bug, "FixedBugs"),
+							fcCrit = $A.getFacet(bug, "CriticalBugs");
+						
 						return tr(
 							td(bug.id),
 							td(bug.time),
-							td(bug.title),
+							td(
+								fcCrit?{style:"color:red;"}:null,
+								bug.title
+							),
 							td(bug.message),
-							td(bug.fixed),
-							td(input({type:"button", "class":"btFix", value:"Fix", itmID:bug.id}))
+							td(
+								fcAcc?("Accepted "+templates.date(fcAcc.accepted))
+									:fcFix?("Fixed "+templates.date(fcFix.fixed))
+									:null
+							),
+							td(
+								fcInc?div(
+										input({type:"button", "class":"btAcc", value:"Accept", itmID:bug.id}),
+										" with priority ",
+										input({type:"text", id:"tbPriority_"+bug.id})
+									)
+									:fcAcc?input({type:"button", "class":"btFix", value:"Fix", itmID:bug.id})
+									:null
+							)
 						);
 					})
 				),
@@ -46,7 +66,20 @@
 					})
 				)
 			);
-		}}
+		}},
+		date: function(d){
+			function addZero(v){return v<10?"0"+v:v;}
+			var m = addZero(d.getMinutes()),
+				h = addZero(d.getHours()),
+				D = addZero(d.getDate()),
+				M = addZero(d.getMonth()+1),
+				Y = d.getFullYear();
+			
+			return [
+				[Y, M, D].join("-"), 
+				[h, m].join(":")
+			].join(" ");
+		}
 	};
 	
 	// Класс сообщений об ошибках
@@ -59,10 +92,20 @@
 		Bug.index[_.id] = _;
 		$A.classify(_);
 	}
-	Bug.prototype.fix = function(){
-		this.fixed = true;
-		$A.classify(this);
-	};
+	$.extend(Bug.prototype, {
+		accept: function(priority){
+			$A.declassify(this, "IncomingBugs");
+			$A.classify(this, "AcceptedBugs", {
+				accepted: new Date(),
+				priority: priority
+			});
+			$A.classify(this);
+		},
+		fix :function(){
+			$A.declassify(this, "AcceptedBugs");
+			$A.classify(this, "FixedBugs", {fixed: new Date()});
+		}
+	});
 	Bug.index = {};
 	Bug.newID = (function(){
 		var idx = 0;
@@ -73,18 +116,29 @@
 	
 		
 	// Aesop Classes 
-	new $A.Class("Bug", function(inst){
-		return inst.constructor == Bug;
-	});
+	new $A.Class("Bug", 
+		function(inst){return inst.constructor == Bug;}
+	);
 	
-	new $A.Class("Fixed Bugs", function(inst){
-		return inst.fixed;
-	});
+	new $A.Class("IncomingBugs",
+		function(inst){return !$A.getFacet(inst, "FixedBugs") && !$A.getFacet(inst, "AcceptedBugs");}
+	);
 	
-	new $A.Class("Bugs to fix", function(inst){
-		return !inst.fixed;
-	});
+	new $A.Class("AcceptedBugs",
+		function(inst){return inst.accepted;}
+	);
 
+	new $A.Class("FixedBugs",
+		function(inst){return inst.fixed;}
+	);
+	
+	new $A.Class("CriticalBugs",
+		function(inst){
+			var fc = $A.getFacet(inst, "AcceptedBugs");
+			if(!fc) return false;
+			return fc.priority>10;
+		}
+	);
 	
 	// Тестовое заполнение списка
 	function sampleFill(){
@@ -103,14 +157,18 @@
 	
 	function viewBugs(){
 		$("#out").html(templates.main());
+		$("#out .btAcc").click(function(){
+			acceptBug($(this).attr("itmID"));
+		});
 		$("#out .btFix").click(function(){
-			var id = $(this).attr("itmID");
-			fixBug(id);
+			fixBug($(this).attr("itmID"));
 		});
 	}
 	
 	function acceptBug(id){
-		alert("Not implemented!");
+		var priority = $("#tbPriority_"+id).val();
+		Bug.index[id].accept(+priority);
+		viewBugs();
 	}
 	
 	function fixBug(id){
