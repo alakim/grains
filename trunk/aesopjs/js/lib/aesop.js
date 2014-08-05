@@ -5,16 +5,17 @@
 		for(var k in ext) obj[k] = ext[k];
 	}
 	
-	function Class(name, func){var _=this;
+	function Class(name, func, facetConstructor){var _=this;
 		_.name = name;
 		_.func = func;
-		_.instances = [];
+		_.facets = [];
+		_.facetConstructor = facetConstructor || function(){};
 		classIndex[name] = _;
 	}
 	
 	extend(Class.prototype, {
 		each: function(act){var _=this;
-			for(var itm,i=0; itm=_.instances[i],i<_.instances.length; i++){
+			for(var itm,i=0,c=_.facets; itm=c[i],i<c.length; i++){
 				act(itm);
 			}
 		},
@@ -28,19 +29,36 @@
 		}
 	});
 	
-	function addInstance(cls, inst){
-		for(var itm,i=0; itm=cls.instances[i],i<cls.instances.length; i++){
-			if(itm===inst) return;
+	function addInstance(cls, itm){
+		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
+			if(fc.item===itm) return;
 		}
-		cls.instances.push(inst);
+		var fc = new cls.facetConstructor(itm);
+		fc.item = itm;
+		addFacet(itm, fc);
+		cls.facets.push(fc);
 	}
 	
-	function removeInstance(cls, inst){
+	function addFacet(itm, fc){
+		if(!itm._aesopFacets) itm._aesopFacets = [];
+		itm._aesopFacets.push(fc);
+	}
+	
+	function removeInstance(cls, itm){
 		var res = [];
-		for(var itm,i=0; itm=cls.instances[i],i<cls.instances.length; i++){
-			if(itm!==inst) res.push(itm);
+		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
+			if(fc.item!==itm) res.push(fc);
+			else removeFacet(itm, fc);
 		}
-		cls.instances = res;
+		cls.facets = res;
+	}
+	
+	function removeFacet(itm, fac){
+		var res = [];
+		for(var fc,c=itm._aesopFacets,i=0; fc=c[i],i<c.length; i++){
+			if(fc!=fac) res.push(fc);
+		}
+		itm._aesopFacets = res;
 	}
 	
 	return {
@@ -54,7 +72,7 @@
 		},
 		is: function(itm, classNm){
 			var cls = classIndex[classNm];
-			for(var el,i=0,c=cls.instances; el=c[i],i<c.length; i++){
+			for(var el,i=0,c=cls.facets; el=c[i],i<c.length; i++){
 				if(el===itm) return true;
 			}
 			return false;
@@ -65,6 +83,6 @@
 			for(var nm in classIndex) res.push(nm);
 			return res;
 		},
-		getInstancesCount: function(classNm){return classIndex[classNm].instances.length;}
+		getInstancesCount: function(classNm){return classIndex[classNm].facets.length;}
 	};
 });
