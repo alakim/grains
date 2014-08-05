@@ -31,8 +31,8 @@
 							),
 							td(bug.message),
 							td(
-								fcAcc?("Accepted "+templates.date(fcAcc.accepted))
-									:fcFix?("Fixed "+templates.date(fcFix.fixed))
+								fcAcc?fcAcc.stateView()
+									:fcFix?fcFix.stateView()
 									:null
 							),
 							td(
@@ -125,11 +125,21 @@
 	);
 	
 	new $A.Class("AcceptedBugs",
-		function(inst){return inst.accepted;}
+		function(inst){return inst.accepted;},
+		function(inst){
+			this.stateView = function(){
+				return "Accepted "+templates.date(this.accepted);
+			}
+		}
 	);
 
 	new $A.Class("FixedBugs",
-		function(inst){return inst.fixed;}
+		function(inst){return inst.fixed;},
+		function(inst){
+			this.stateView = function(){
+				return "Fixed "+templates.date(this.fixed);
+			}
+		}
 	);
 	
 	new $A.Class("CriticalBugs",
