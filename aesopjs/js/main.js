@@ -15,6 +15,4 @@ requirejs(["jquery", "html", "aesop", "bugtracker"], function($, $H, $A, BT) {
 	$("#version").html($H.div("Powered by AesopJS v."+$A.version));
 	BT.viewBugs();
 	
-	$(".btFix1").click(function(){BT.fixBug(1);});
-	$(".btFix2").click(function(){BT.fixBug(2);});
 });

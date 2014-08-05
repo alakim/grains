@@ -12,7 +12,8 @@
 						th("Time"), 
 						th("Title"),
 						th("Message"),
-						th("Fixed")
+						th("Fixed"),
+						th()
 					),
 					apply($A.getClass("Bug").getAll(), function(fc){
 						var bug = fc.item;
@@ -21,7 +22,8 @@
 							td(bug.time),
 							td(bug.title),
 							td(bug.message),
-							td(bug.fixed)
+							td(bug.fixed),
+							td(input({type:"button", "class":"btFix", value:"Fix", itmID:bug.id}))
 						);
 					})
 				),
@@ -99,14 +101,24 @@
 	}
 	sampleFill();
 	
+	function viewBugs(){
+		$("#out").html(templates.main());
+		$("#out .btFix").click(function(){
+			var id = $(this).attr("itmID");
+			fixBug(id);
+		});
+	}
+	
+	function acceptBug(id){
+		alert("Not implemented!");
+	}
+	
+	function fixBug(id){
+		Bug.index[id].fix();
+		viewBugs();
+	}
 	
 	return {
-		viewBugs: function(){
-			$("#out").html(templates.main());
-		},
-		fixBug: function(id){
-			Bug.index[id].fix();
-			this.viewBugs();
-		}
+		viewBugs: viewBugs
 	};
 });
