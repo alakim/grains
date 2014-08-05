@@ -57,11 +57,12 @@
 	}
 	
 	return {
-		version: "2.0",
+		version: "2.1",
 		Class: Class,
 		classify: function(itm, className, facetData){
 			if(!className){
 				for(var nm in classIndex){var cls = classIndex[nm];
+					if(!cls.func) continue;
 					if(cls.func(itm)) addInstance(cls, itm);
 					else removeInstance(cls, itm);
 				}
