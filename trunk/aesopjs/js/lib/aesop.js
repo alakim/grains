@@ -8,15 +8,16 @@
 	function Class(name, func, facetConstructor){var _=this;
 		_.name = name;
 		_.func = func;
-		_.facets = [];
+		_.facets = {};
 		_.facetConstructor = facetConstructor || function(){};
 		classIndex[name] = _;
 	}
 	
 	extend(Class.prototype, {
 		each: function(act){var _=this;
-			for(var itm,i=0,c=_.facets; itm=c[i],i<c.length; i++){
-				act(itm);
+			var c = _.facets;
+			for(var id in c){
+				act(c[id]);
 			}
 		},
 		map: function(F){
@@ -30,36 +31,35 @@
 	});
 	
 	function addInstance(cls, itm, facetData){
-		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
-			if(fc.item===itm) return;
-		}
+		if(cls.facets[itm.__aesopID]) return;
 		var fc = new cls.facetConstructor(itm);
 		fc.item = itm;
 		if(facetData) extend(fc, facetData);
-		cls.facets.push(fc);
+		cls.facets[itm.__aesopID] = fc;
 	}
 	
 	function removeInstance(cls, itm){
-		var res = [];
-		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
-			if(fc.item!==itm) res.push(fc);
-		}
-		cls.facets = res;
+		cls.facets[itm.__aesopID] = null;
 	}
 	
 	function getFacet(itm, classOrName){
 		if(!classOrName) alert("Class "+classOrName+" does not exist!");
 		var cls = typeof(classOrName)=="string"?classIndex[classOrName]:classOrName;
-		for(var fc,i=0,c=cls.facets; fc=c[i],i<c.length; i++){
-			if(fc.item===itm) return fc;
-		}
-		return false;
+		return cls.facets[itm.__aesopID];
 	}
 	
+	var newID = (function(){
+		var idx = 0;
+		return function(){
+			return ++idx;
+		};
+	})();
+	
 	return {
-		version: "2.1",
+		version: "2.2",
 		Class: Class,
 		classify: function(itm, className, facetData){
+			if(!itm.__aesopID) itm.__aesopID = newID();
 			if(!className){
 				for(var nm in classIndex){var cls = classIndex[nm];
 					if(!cls.func) continue;
@@ -83,6 +83,10 @@
 			for(var nm in classIndex) res.push(nm);
 			return res;
 		},
-		getInstancesCount: function(classNm){return classIndex[classNm].facets.length;}
+		getInstancesCount: function(classNm){
+			var res = 0, c = classIndex[classNm].facets;
+			for(var k in c) if(c[k]) res++;
+			return res;
+		}
 	};
 });
