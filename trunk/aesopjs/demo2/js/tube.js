@@ -18,8 +18,8 @@
 	
 	$.extend(Tube.prototype, {
 		view: function(cnv){var _=this;
-			var port1 = $R.getPointAtLength(_.src.pathString(), _.trace[0]);
-			var port2 = $R.getPointAtLength(_.dest.pathString(), _.trace[_.trace.length-1]);
+			var port1 = $R.getPointAtLength(_.src.perimeter(), _.trace[0]);
+			var port2 = $R.getPointAtLength(_.dest.perimeter(), _.trace[_.trace.length-1]);
 			var path = ["M", port1.x, port1.y];
 			if(_.trace.length==2) path = path.concat([
 				"L", port1.x+(port2.x-port1.x)/2, port1.y,
