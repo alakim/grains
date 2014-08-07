@@ -9,6 +9,17 @@
 		_.height = 80;
 		$A.classify(_);
 	}
+	$.extend(Tank.prototype, {
+		pathString: function(){var _=this;
+			return [
+				"M", _.x, _.y,
+				"L", _.x+_.width, _.y,
+				"L", _.x+_.width, _.y+_.height,
+				"L", _.x, _.y+_.height,
+				"Z"
+			].join(" ");
+		}
+	});
 	
 	new $A.Class("Tank", function(inst){
 		return inst.constructor == Tank;

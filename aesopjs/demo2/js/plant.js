@@ -9,13 +9,13 @@
 
 	var t1 = new Tank("T1", 25, 40, .7),
 		t2 = new Tank("T1", 125, 120, .3);
-	var tb1 = new Tube(t1, t2, [80, 20, 70, 180]);
+	var tb1 = new Tube(t1, t2, [110, 175]);
 	
 	
 	function build(cnv){
 		cnv.rect(0, 0, width, height).attr({fill:"#fffff0", stroke:"#ccc"});
-		$A.getClass("ViewedItem").each(function(t){
-			t.item.view(cnv);
+		$A.getClass("ViewedItem").each(function(itm){
+			itm.item.view(cnv);
 		});
 		cnv.text(115, 15, "There a "+$A.getInstancesCount("Tank")+" tanks and "+$A.getInstancesCount("Tube")+" tube");
 	}
