@@ -24,11 +24,17 @@
 	new $A.Class("Tank", function(inst){
 		return inst.constructor == Tank;
 	});
+	
+	new $A.Class("FullTank", function(inst){
+		return inst.level>.75;
+	});
 
 	$.extend(Tank.prototype, {
 		view: function(cnv){var _=this;
 			cnv.rect(_.x, _.y, _.width, _.height).attr({fill:"#8ef", stroke:"#008"});
 			cnv.rect(_.x, _.y+(_.height*(1-_.level)), _.width, _.height*_.level).attr({fill:"#00a", stroke:"#008"});
+			if($A.getFacet(_, "FullTank"))
+				cnv.circle(_.x+15, _.y+_.height-15, 8).attr({fill:"#f00"});
 		}
 	});
 	

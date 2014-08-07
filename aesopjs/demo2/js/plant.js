@@ -7,7 +7,7 @@
 		return typeof(inst.view)=="function";
 	});
 
-	var t1 = new Tank("T1", 25, 40, .7),
+	var t1 = new Tank("T1", 25, 40, .8),
 		t2 = new Tank("T1", 125, 120, .3);
 	var tb1 = new Tube(t1, t2, [110, 175]);
 	
