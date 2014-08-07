@@ -10,7 +10,7 @@
 		$A.classify(_);
 	}
 	$.extend(Tank.prototype, {
-		pathString: function(){var _=this;
+		perimeter: function(){var _=this;
 			return [
 				"M", _.x, _.y,
 				"L", _.x+_.width, _.y,
