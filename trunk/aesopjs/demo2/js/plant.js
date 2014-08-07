@@ -1,18 +1,20 @@
-﻿define(["jquery", "html", "raphael", "aesop", "tank"], function($, $H, $R, $A, Tank){
+﻿define(["jquery", "html", "raphael", "aesop", "tank", "tube"], function($, $H, $R, $A, Tank, Tube){
 	
 	var width = 800, 
 		height = 400;
 		
 
-	new Tank("T1", 25, 40, .7),
-	new Tank("T1", 125, 120, .3)
+	var t1 = new Tank("T1", 25, 40, .7),
+		t2 = new Tank("T1", 125, 120, .3);
+	var tb1 = new Tube(t1, t2, [80, 20, 70, 180]);
+	
 	
 	function build(cnv){
 		cnv.rect(0, 0, width, height).attr({fill:"#fffff0", stroke:"#ccc"});
 		$A.getClass("Tank").each(function(t){
 			t.item.view(cnv);
 		});
-		cnv.text(55, 15, "There a "+$A.getInstancesCount("Tank")+" tanks");
+		cnv.text(115, 15, "There a "+$A.getInstancesCount("Tank")+" tanks and "+$A.getInstancesCount("Tube")+" tube");
 	}
 	
 	return {

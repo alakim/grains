@@ -17,7 +17,8 @@
 		each: function(act){var _=this;
 			var c = _.facets;
 			for(var id in c){
-				act(c[id]);
+				var el = c[id];
+				if(el) act(el);
 			}
 		},
 		map: function(F){
@@ -60,8 +61,7 @@
 		Class: Class,
 		classify: function(itm, className, facetData){
 			if(!itm.__aesopID) itm.__aesopID = newID();
-			if(!className){
-				for(var nm in classIndex){var cls = classIndex[nm];
+			if(!className){				for(var nm in classIndex){var cls = classIndex[nm];
 					if(!cls.func) continue;
 					if(cls.func(itm)) addInstance(cls, itm);
 					else removeInstance(cls, itm);
