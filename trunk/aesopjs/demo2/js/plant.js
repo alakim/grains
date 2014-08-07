@@ -7,7 +7,7 @@
 		return typeof(inst.view)=="function";
 	});
 
-	var t1 = new Tank("T1", 25, 40, .8),
+	var t1 = new Tank("T1", 25, 50, .8),
 		t2 = new Tank("T1", 425, 120, .3),
 		v1 = new Valve(120, 120);
 	var tb1 = new Tube(t1, v1, [110, 100]),
@@ -19,11 +19,14 @@
 		$A.getClass("ViewedItem").each(function(itm){
 			itm.item.view(cnv);
 		});
-		cnv.text(115, 15, "There a "+
+		cnv.text(15, 15, "There a "+
 			$A.getInstancesCount("Tank")+" tanks and "
 			+$A.getInstancesCount("Tube")+" tubes and "
 			+$A.getInstancesCount("Valve")+" valves "
-		);
+		).attr({"text-anchor":"start"});
+		cnv.text(15, 25,
+			$A.getInstancesCount("ConnectedItem")+" items connected"
+		).attr({"text-anchor":"start"});
 	}
 	
 	return {

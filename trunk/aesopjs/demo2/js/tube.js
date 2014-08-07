@@ -9,10 +9,16 @@
 		$JP.set(src, "tubes/#*", this);
 		$JP.set(dest, "tubes/#*", this);
 		$A.classify(this);
+		$A.classify(src);
+		$A.classify(dest);
 	}
 	
 	new $A.Class("Tube", function(inst){
 		return inst.constructor == Tube;
+	});
+	
+	new $A.Class("ConnectedItem", function(inst){
+		return inst.tubes && inst.tubes.length;
 	});
 	
 	
