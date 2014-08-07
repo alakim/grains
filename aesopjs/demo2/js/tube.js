@@ -14,8 +14,8 @@
 	});
 	
 	$.extend(Tube.prototype, {
-		view: function(cnv){
-			
+		view: function(cnv){var _=this;
+			cnv.path(["M", _.src.x, _.src.y, "L", _.dest.x, _.dest.y]);
 		}
 	});
 	
