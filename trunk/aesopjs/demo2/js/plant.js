@@ -3,6 +3,9 @@
 	var width = 800, 
 		height = 400;
 		
+	new $A.Class("ViewedItem", function(inst){
+		return typeof(inst.view)=="function";
+	});
 
 	var t1 = new Tank("T1", 25, 40, .7),
 		t2 = new Tank("T1", 125, 120, .3);
@@ -11,7 +14,7 @@
 	
 	function build(cnv){
 		cnv.rect(0, 0, width, height).attr({fill:"#fffff0", stroke:"#ccc"});
-		$A.getClass("Tank").each(function(t){
+		$A.getClass("ViewedItem").each(function(t){
 			t.item.view(cnv);
 		});
 		cnv.text(115, 15, "There a "+$A.getInstancesCount("Tank")+" tanks and "+$A.getInstancesCount("Tube")+" tube");
