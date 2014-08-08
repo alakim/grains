@@ -2,4 +2,14 @@
 	font-family: Arial, Verdana, Tahoma, Sans-serif;
 	margin:3px;
 }
-
+#version{
+	color:#ccc;
+	margin:10px;
+	text-align: center;
+}
+.description{
+	font-style: italic;
+	border: 1px solid #ccc;
+	padding:5px;
+	margin:10px;
+}
