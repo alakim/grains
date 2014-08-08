@@ -2,6 +2,11 @@
 	font-family: Arial, Verdana, Tahoma, Sans-serif;
 	margin:3px;
 }
+#version{
+	color:#ccc;
+	margin:10px;
+	text-align: center;
+}
 
 #out{
 	margin: 10px;

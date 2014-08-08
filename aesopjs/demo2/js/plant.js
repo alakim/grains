@@ -17,7 +17,7 @@
 	function build(cnv){
 		cnv.rect(0, 0, width, height).attr({fill:"#fffff0", stroke:"#ccc"});
 		$A.getClass("ViewedItem").each(function(itm){
-			itm.item.view(cnv);
+			itm.item().view(cnv);
 		});
 		cnv.text(15, 15, "There a "+
 			$A.getInstancesCount("Tank")+" tanks and "
