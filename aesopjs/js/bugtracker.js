@@ -17,7 +17,7 @@
 						th("Action")
 					),
 					apply($A.getClass("Bug").getAll(), function(fc){
-						var bug = fc.item,
+						var bug = fc.item(),
 							fcInc = $A.getFacet(bug, "IncomingBugs"),
 							fcAcc = $A.getFacet(bug, "AcceptedBugs"),
 							fcFix = $A.getFacet(bug, "FixedBugs"),
