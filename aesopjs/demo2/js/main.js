@@ -18,6 +18,9 @@
 requirejs(["jquery", "html", "aesop", "plant"], function($, $H, $A, plant) {
 	$("#version").html($H.div("Powered by AesopJS v."+$A.version));
 	
-	
+	$(".btT1Level").click(function(){
+		var level = $(".tbT1Level").val();
+		plant.setLevel("T1", +level);
+	});
 	plant.view("out");
 });

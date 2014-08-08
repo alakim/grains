@@ -36,6 +36,13 @@
 			
 			
 			build($R(pnl[0], width, height));
+		},
+		setLevel: function(tankName, level){
+			var tankFc = $A.getClass("Tank").find(function(t){
+				return t.item().name=="T1";
+			});
+			
+			tankFc.item().level(level);
 		}
 	};
 });

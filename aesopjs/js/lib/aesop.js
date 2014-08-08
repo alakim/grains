@@ -27,6 +27,20 @@
 				this.each(function(itm){res.push(F?F(itm):itm);});
 				return res;
 			},
+			find: function(F){var _=this;
+				var c = _.facets;
+				for(var id in c){
+					var el = c[id];
+					if(el && F(el)) return el;
+				}
+			},
+			select: function(F){
+				var res = [];
+				this.each(function(itm){
+					if(itm && F(itm)) res.push(itm);
+				});
+				return res;
+			},
 			getAll: function(){
 				return this.map();
 			}
@@ -94,7 +108,7 @@
 
 		
 		return {
-			version: "2.4",
+			version: "2.5",
 			Class: Class,
 			classify: function(itm, className, facetData){
 				if(!itm.__aesopID) itm.__aesopID = property(itm, newID()).readonly();
