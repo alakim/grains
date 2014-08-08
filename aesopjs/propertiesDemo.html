@@ -1,0 +1,69 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>Aesop Properties Demo</title>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="js/lib/html.js"></script>
+	<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="js/lib/aesop.js"></script>
+	<script type="text/javascript">
+	function log(msg){
+		$("#out").append(Html.div(msg));
+	}
+	
+	// Класс объектов для примера
+	function Car(num){
+		// свойство, доступное только для чтения
+		this.number = Aesop.property(this, num).readonly();
+		
+		// передаем в свойство значение по умолчанию, и обработчик события
+		this.type = Aesop.property(this, "Undefined car type", function(thisCar, val){
+			log("Type of car "+thisCar.number()+" changed to "+val);
+		});
+	}
+	
+	$(function(){
+		$("#version").html("Powered by Aesop v."+Aesop.version);
+		var c1 = new Car("c1"),
+			c2 = new Car("c2");
+		
+		// отображаем значения свойств
+		log(c1.number()+", "+c2.number());
+		// попытка изменить свойство, доступное только для чтения
+		c1.number("cc1");
+		log(c1.number()+", "+c2.number()); // ничего не изменилось
+		
+		log("Марки машин по умолчанию: "+c1.type()+", "+c2.type()); // выводятся значения по умолчанию
+		
+		// устанавливаем новые значения свойств
+		c1.type("Zaporozhets");
+		c2.type("BMW");
+		log("Новые марки машин: "+c1.type()+", "+c2.type()); // выводятся новые значения
+		
+		// привязываем еще один обработчик события
+		var bindIdx = c1.type.bind(function(thisCar, val){
+			log("Another event handler: car "+thisCar.number()+" changes their type to "+val);
+		});
+
+		c1.type("Zaporozhets II");
+		c2.type("BMW II");
+		log(c1.type()+", "+c2.type());
+		
+		// удаляем добавленный обработчик
+		c1.type.unbind(bindIdx);
+		c1.type("Zaporozhets III");
+		
+	});
+	</script>
+</head>
+<body>
+	<h1>Aesop Properties Demo</h1>
+	<div class="description">
+		<p>Свойства позволяют привязывать обработчики к событию изменения значения данного свойства.</p>
+		<p>Доступ к значению свойства осуществляется через вызов соответствующей функции.</p>
+		<p>Свойство может быть объявлено доступным только для чтения.</p>
+	</div>
+	<div id="out"></div>
+	<div id="version"></div>
+</body>
+</html>
