@@ -33,21 +33,21 @@
 		});
 		
 		function addInstance(cls, itm, facetData){
-			if(cls.facets[itm.__aesopID]) return;
+			if(cls.facets[itm.__aesopID()]) return;
 			var fc = new cls.facetConstructor(itm);
-			fc.item = itm;
+			fc.item = property(fc, itm).readonly();
 			if(facetData) extend(fc, facetData);
-			cls.facets[itm.__aesopID] = fc;
+			cls.facets[itm.__aesopID()] = fc;
 		}
 		
 		function removeInstance(cls, itm){
-			cls.facets[itm.__aesopID] = null;
+			cls.facets[itm.__aesopID()] = null;
 		}
 		
 		function getFacet(itm, classOrName){
 			if(!classOrName) alert("Class "+classOrName+" does not exist!");
 			var cls = typeof(classOrName)=="string"?classIndex[classOrName]:classOrName;
-			return cls.facets[itm.__aesopID];
+			return cls.facets[itm.__aesopID()];
 		}
 		
 		var newID = (function(){
@@ -94,10 +94,10 @@
 
 		
 		return {
-			version: "2.3",
+			version: "2.4",
 			Class: Class,
 			classify: function(itm, className, facetData){
-				if(!itm.__aesopID) itm.__aesopID = newID();
+				if(!itm.__aesopID) itm.__aesopID = property(itm, newID()).readonly();
 				if(!className){					for(var nm in classIndex){var cls = classIndex[nm];
 						if(!cls.func) continue;
 						if(cls.func(itm)) addInstance(cls, itm);
