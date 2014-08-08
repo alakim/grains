@@ -6,7 +6,8 @@
 		_.y = y;
 		_.level = $A.property(_, level, function(t, v){
 			$A.classify(_);
-			console.log("Is"+($A.getFacet(_, "FullTank")?"":" not")+" full tank with level "+_.level());
+			// console.log("Is"+($A.getFacet(_, "FullTank")?"":" not")+" full tank with level "+_.level());
+			_.view();
 		});
 		_.width = 40;
 		_.height = 80;
@@ -35,10 +36,23 @@
 
 	$.extend(Tank.prototype, {
 		view: function(cnv){var _=this;
-			cnv.rect(_.x, _.y, _.width, _.height).attr({fill:"#8ef", stroke:"#008"});
-			cnv.rect(_.x, _.y+(_.height*(1-_.level())), _.width, _.height*_.level()).attr({fill:"#00a", stroke:"#008"});
-			if($A.getFacet(_, "FullTank"))
-				cnv.circle(_.x+15, _.y+_.height-15, 8).attr({fill:"#f00"});
+			if(!_.icon){ // первичное создание пиктограммы
+				_.icon = {};
+				_.icon.body = cnv.rect(_.x, _.y, _.width, _.height).attr({fill:"#8ef", stroke:"#008"});
+				_.icon.filling = cnv.rect(_.x, _.y+(_.height*(1-_.level())), _.width, _.height*_.level()).attr({fill:"#00a", stroke:"#008"});
+				_.icon.lamp = cnv.text(_.x+20, _.y+_.height-15, "FULL").attr({fill:"#f00", stroke:"#f00"});
+				_.icon.label = cnv.text(_.x+_.width/2, _.y+_.height+15, _.name);
+				
+				if(!$A.getFacet(_, "FullTank")) _.icon.lamp.hide();
+			}
+			else{ // обновление пиктограммы
+				if($A.getFacet(_, "FullTank")) _.icon.lamp.show();
+				else _.icon.lamp.hide();
+				_.icon.filling.attr({
+					y: _.y+(_.height*(1-_.level())),
+					height: _.height*_.level()
+				});
+			}
 		}
 	});
 	
