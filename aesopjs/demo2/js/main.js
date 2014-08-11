@@ -22,5 +22,5 @@ requirejs(["jquery", "html", "aesop", "plant"], function($, $H, $A, plant) {
 		var level = $(".tbT1Level").val();
 		plant.setLevel("T1", +level);
 	});
-	plant.view("out");
+	plant.viewStructure("out");
 });
