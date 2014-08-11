@@ -58,11 +58,16 @@
 				table({border:1, cellpadding:3, cellspacing:0},
 					tr(
 						th("Class Name"),
+						th("Superclass Name"),
+						th("Subclasses Count"),
 						th("Instances Count")
 					),
 					apply(names, function(nm){
+						var cls = $A.getClass(nm);
 						return tr(
 							td(nm),
+							td(cls.parentName),
+							td(cls.subclasses.length),
 							td($A.getInstancesCount(nm))
 						);
 					})
@@ -127,12 +132,12 @@
 		function(inst){return inst.constructor == Bug;} 
 	);
 	
-	new $A.Class("IncomingBugs",
+	new $A.Class("IncomingBugs", "Bug",
 		// Принадлежность к классу определяется отсутствием принадлежности к другим классам
 		function(inst){return !$A.getFacet(inst, "FixedBugs") && !$A.getFacet(inst, "AcceptedBugs");}
 	);
 	
-	new $A.Class("AcceptedBugs",
+	new $A.Class("AcceptedBugs", "Bug",
 		// Классификация по признакам не используется
 		// Принадлежность к классу устанавливается вручную
 		// объект принадлежит классу только если он ему уже принадлежит
@@ -145,7 +150,7 @@
 		}
 	);
 
-	new $A.Class("FixedBugs",
+	new $A.Class("FixedBugs", "Bug",
 		// Классификация по признакам не используется
 		// Принадлежность к классу устанавливается вручную
 		// объект принадлежит классу только если он ему уже принадлежит
@@ -158,7 +163,7 @@
 		}
 	);
 	
-	new $A.Class("CriticalBugs",
+	new $A.Class("CriticalBugs", "Bug",
 		// Ошибка является критической, если она принята с приоритетом большим десяти
 		function(inst){
 			var fc = $A.getFacet(inst, "AcceptedBugs");
