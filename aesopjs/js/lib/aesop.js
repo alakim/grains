@@ -6,12 +6,40 @@
 			for(var k in ext) obj[k] = ext[k];
 		}
 		
-		function Class(name, func, facetConstructor){var _=this;
-			_.name = name;
-			_.func = func;
+		// варианты аргументов:
+		//		name, func, facetConstructor
+		//		name, parentName, func, facetConstructor
+		function Class(a1, a2, a3, a4){var _=this;
+			_.name = a1;
+			if(typeof(a2)=="string"){
+				_.parentName = a2;
+				_.func = a3;
+				_.facetConstructor = a4;
+			}
+			else{
+				_.parentName = _.name!="Item"?"Item":null;
+				_.func = a2;
+				_.facetConstructor = a3;
+			}
+			if(!_.facetConstructor) _.facetConstructor = function(){};
 			_.facets = {};
-			_.facetConstructor = facetConstructor || function(){};
-			classIndex[name] = _;
+			_.subclasses = [];
+			classIndex[_.name] = _;
+			if(_.name!="Item"){
+				classIndex[_.parentName].subclasses.push(_);
+			}
+		}
+		
+		function classifyAs(itm, cls){
+			if(!cls.func) return;
+			if(!cls.func(itm))
+				removeInstance(cls, itm);
+			else{
+				addInstance(cls, itm);
+				for(var subcls,c=cls.subclasses,i=0; subcls=c[i],i<c.length; i++){
+					classifyAs(itm, subcls);
+				}
+			}
 		}
 		
 		extend(Class.prototype, {
@@ -106,26 +134,19 @@
 			return F;
 		}
 
+		new Class("Item", function(){return true;});
 		
 		return {
-			version: "2.5",
+			version: "3.1",
 			Class: Class,
 			classify: function(itm, className, facetData){
 				if(!itm.__aesopID) itm.__aesopID = property(itm, newID()).readonly();
-				if(!className){					for(var nm in classIndex){var cls = classIndex[nm];
-						if(!cls.func) continue;
-						if(cls.func(itm)) addInstance(cls, itm);
-						else removeInstance(cls, itm);
-					}
-				}
-				else{
-					var cls = classIndex[className];
-					addInstance(cls, itm, facetData);
-				}
+				if(!className)
+					classifyAs(itm, classIndex["Item"]);				else
+					addInstance(classIndex[className], itm, facetData);
 			},
 			declassify: function(itm, className){
-				var cls = classIndex[className];
-				removeInstance(cls, itm);
+				removeInstance(classIndex[className], itm);
 			},
 			getFacet: getFacet,
 			getClass: function(name){return classIndex[name];},
