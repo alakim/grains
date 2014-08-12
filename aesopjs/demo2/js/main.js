@@ -15,7 +15,7 @@
 	}
 });
 
-requirejs(["jquery", "html", "aesop", "plant"], function($, $H, $A, plant) {
+requirejs(["jquery", "html", "aesop", "plant", "classesView"], function($, $H, $A, plant, classesView) {
 	$("#version").html($H.div("Powered by AesopJS v."+$A.version));
 	
 	$(".btT1Level").click(function(){
@@ -23,4 +23,6 @@ requirejs(["jquery", "html", "aesop", "plant"], function($, $H, $A, plant) {
 		plant.setLevel("T1", +level);
 	});
 	plant.viewStructure("out");
+	classesView.view("classesView");
+	
 });

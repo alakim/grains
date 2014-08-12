@@ -29,7 +29,7 @@
 		return inst.constructor == Tank;
 	});
 	
-	new $A.Class("FullTank", function(inst){
+	new $A.Class("FullTank", "Tank", function(inst){
 		var fc = $A.getFacet(inst, "Tank");
 		return fc!=null && inst.level()>.75;
 	});

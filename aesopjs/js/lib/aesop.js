@@ -3,6 +3,7 @@
 		var classIndex = {};
 		
 		function extend(obj, ext){
+			if(!ext)return;
 			for(var k in ext) obj[k] = ext[k];
 		}
 		
@@ -21,7 +22,7 @@
 				_.func = a2;
 				_.facetConstructor = a3;
 			}
-			if(!_.facetConstructor) _.facetConstructor = function(){};
+			if(!_.facetConstructor) _.facetConstructor = function(itm, facetData){extend(this, facetData);};
 			_.facets = {};
 			_.subclasses = [];
 			classIndex[_.name] = _;
@@ -76,9 +77,8 @@
 		
 		function addInstance(cls, itm, facetData){
 			if(cls.facets[itm.__aesopID()]) return;
-			var fc = new cls.facetConstructor(itm);
+			var fc = new cls.facetConstructor(itm, facetData);
 			fc.item = property(fc, itm).readonly();
-			if(facetData) extend(fc, facetData);
 			cls.facets[itm.__aesopID()] = fc;
 		}
 		
@@ -137,7 +137,7 @@
 		new Class("Item", function(){return true;});
 		
 		return {
-			version: "3.1",
+			version: "3.2",
 			Class: Class,
 			classify: function(itm, className, facetData){
 				if(!itm.__aesopID) itm.__aesopID = property(itm, newID()).readonly();
@@ -160,7 +160,8 @@
 				for(var k in c) if(c[k]) res++;
 				return res;
 			},
-			property: property
+			property: property,
+			extend: extend
 		};
 	}
 	
