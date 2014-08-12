@@ -15,9 +15,13 @@
 	var t1 = new Tank("T1", 25, 50, .8),
 		t2 = new Tank("T1", 425, 120, .3),
 		v1 = new Valve(120, 120);
-	var tb1 = new Tube(t1, v1, [110, 100]),
-		tb2 = new Tube(v1, t2, [50, 175]);
+		
+	$A.classify(t1, "ConnectableItem", {output: 110});
+	$A.classify(t2, "ConnectableItem", {input: 175});
+	$A.classify(v1, "ConnectableItem", {input: 100, output:50});
 	
+	var tb1 = new Tube(t1, v1, "output;input"),
+		tb2 = new Tube(v1, t2, "output;input");
 	
 	function build(cnv){
 		cnv.rect(0, 0, width, height).attr({fill:"#fffff0", stroke:"#ccc"});
@@ -28,9 +32,6 @@
 			$A.getInstancesCount("Tank")+" tanks and "
 			+$A.getInstancesCount("Tube")+" tubes and "
 			+$A.getInstancesCount("Valve")+" valves "
-		).attr({"text-anchor":"start"});
-		cnv.text(15, 25,
-			$A.getInstancesCount("ConnectedItem")+" items connected"
 		).attr({"text-anchor":"start"});
 	}
 	

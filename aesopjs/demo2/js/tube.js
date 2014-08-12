@@ -1,13 +1,11 @@
 ﻿define(["jquery", "html", "raphael", "jspath", "aesop"], function($, $H, $R, $JP, $A){
 	
-	function Tube(src, dest, trace){
+	function Tube(src, dest, ports){
 		this.src = src;
 		this.dest = dest;
-		this.trace = trace; // первый и последний элементы - положение портов 
-							// вдоль периметра соединяемых элементов (по часовой стрелке)
-							// между ними - длины отрезков
-		$JP.set(src, "tubes/#*", this);
-		$JP.set(dest, "tubes/#*", this);
+		this.ports = typeof(ports)=="string"?ports.split(";"):ports;
+		$A.getFacet(src, "ConnectableItem").connect(this.ports[0], this);
+		$A.getFacet(dest, "ConnectableItem").connect(this.ports[1], this);
 		$A.classify(this);
 		$A.classify(src);
 		$A.classify(dest);
@@ -17,19 +15,32 @@
 		return inst.constructor == Tube;
 	});
 	
-	new $A.Class("ConnectedItem", function(inst){
-		return inst.tubes && inst.tubes.length;
+	new $A.Class("ConnectableItem", null, function(inst, ports){var _=this;
+		_.ports = {};
+		for(var id in ports){
+			_.ports[id] = {
+				pos:ports[id],
+				tubes:[]
+			}
+		}
+		_.connect = function(port, tube){
+			_.ports[port].tubes.push(tube);
+		};
 	});
-	
-	new $A.Class("ConnectableItem");
 	
 	
 	$.extend(Tube.prototype, {
 		view: function(cnv){var _=this;
-			var port1 = $R.getPointAtLength(_.src.perimeter(), _.trace[0]);
-			var port2 = $R.getPointAtLength(_.dest.perimeter(), _.trace[_.trace.length-1]);
+			var srcCon = $A.getFacet(_.src, "ConnectableItem"),
+				destCon = $A.getFacet(_.dest, "ConnectableItem");
+			if(!srcCon) alert(_.src.name+" is not connectable item");
+			if(!destCon) alert(_.dest.name+" is not connectable item");
+			var srcPort = srcCon.ports[_.ports[0]].pos,
+				destPort = destCon.ports[_.ports[1]].pos;
+			var port1 = $R.getPointAtLength(_.src.perimeter(), srcPort);
+			var port2 = $R.getPointAtLength(_.dest.perimeter(), destPort);
 			var path = ["M", port1.x, port1.y];
-			if(_.trace.length==2) path = path.concat([
+			path = path.concat([
 				"L", port1.x+(port2.x-port1.x)/2, port1.y,
 				"L", port1.x+(port2.x-port1.x)/2, port2.y
 			]);
