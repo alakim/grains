@@ -112,7 +112,7 @@
 		},
 		fix :function(){
 			$A.declassify(this, "AcceptedBugs");
-			$A.classify(this, "FixedBugs", {fixed: new Date()});
+			$A.classify(this, "FixedBugs", new Date());
 			$A.classify(this);
 		}
 	});
@@ -143,7 +143,8 @@
 		// объект принадлежит классу только если он ему уже принадлежит
 		null,
 		// Пример конструктора фасета класса
-		function(inst){
+		function(inst, facetData){
+			$A.extend(this, facetData);
 			this.stateView = function(){
 				return "Accepted "+templates.date(this.accepted);
 			}
@@ -156,7 +157,8 @@
 		// объект принадлежит классу только если он ему уже принадлежит
 		null,
 		// Пример конструктора фасета класса
-		function(inst){
+		function(inst, fixed){
+			this.fixed = fixed;
 			this.stateView = function(){
 				return "Fixed "+templates.date(this.fixed);
 			}

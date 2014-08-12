@@ -21,6 +21,8 @@
 		return inst.tubes && inst.tubes.length;
 	});
 	
+	new $A.Class("ConnectableItem");
+	
 	
 	$.extend(Tube.prototype, {
 		view: function(cnv){var _=this;
