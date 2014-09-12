@@ -38,7 +38,7 @@
 		for(var i=0; tensSum>settings.maxTension&&i<settings.maxIterations; i++){
 			tensSum = relax(inst);
 		}
-		return i+" iterations, actual tension "+Math.round(tensSum*100)/100;
+		return i+" iterations, final tension "+Math.round(tensSum*100)/100;
 	}
 	
 	function distributeByCircle(inst, count){
