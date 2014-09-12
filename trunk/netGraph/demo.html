@@ -11,12 +11,12 @@
 	<script type="text/javascript">
 		var graph = new NetGraph({
 			1: {name:"first node", links:[[2,5], [3, 11]]},
-			2: {name:"second node", links:[[3, 11]]},
+			2: {name:"second node", links:[[3, 8]]},
 			3: {name:"third node", links:[[4, 13]]},
-			4: {name:"forth node", links:[[2, 7]]},
-			5: {name:"fifth node", links:[[2, 7]]},
+			4: {name:"forth node", links:[[2, 5]]},
+			5: {name:"fifth node", links:[[2, 4]]},
 			6: {name:"sixth node", links:[[3, 7]]},
-			7: {name:"seventh node", links:[[2, 7]]}
+			7: {name:"seventh node", links:[[2, 5]]}
 		});
 		$(function(){
 			graph.display("out");
