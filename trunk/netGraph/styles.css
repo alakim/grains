@@ -1,0 +1,8 @@
+﻿body{
+	font-family: Verdana, Arial, Sans-Serif;
+}
+
+#out{
+	margin: 5px;
+	border: 1px solid #ccc;
+}
