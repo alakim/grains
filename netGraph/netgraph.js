@@ -1,4 +1,21 @@
 ﻿var NetGraph = (function($, R){
+	var defaultSettings = {
+		margin:80,
+		infinity:1e12,
+		maxIterations:1000,
+		maxTension:.1,
+		nodeSize:8,
+		nodeColor:"#fc0",
+		labelOffset:{x:0, y:15},
+		linkLabelOffset:{x:5, y:5},
+		initialDistance:100,
+		gravityRate:.005,
+		tensionRate:1
+	};
+	
+	function extend(obj, s){
+		for(var k in s) obj[k] = s[k];
+	}
 	
 	var Vector = {
 		length: function(x, y){
@@ -10,22 +27,24 @@
 		}
 	}
 	
-	function calcNodes(nodes){
-		initNodes(nodes);
-		var tensSum = 1e12;
-		for(var i=0; tensSum>.1&&i<1000; i++){
-			tensSum = relax(nodes);
-			//if(i%100==0)
-			//	console.log(i, tensSum);
+	function calcNodes(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
+		initNodes(inst);
+		var tensSum = settings.infinity;
+		for(var i=0; tensSum>settings.maxTension&&i<settings.maxIterations; i++){
+			tensSum = relax(inst);
 		}
-		console.log(i+" iterations, actual tension "+Math.round(tensSum*100)/100)
+		return i+" iterations, actual tension "+Math.round(tensSum*100)/100;
 	}
 	
-	function initNodes(nodes){
+	function initNodes(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
 		var count = 0;
 		for(var k in nodes){count++;}
 		var center = {x:0, y:0},
-			rad = 100,
+			rad = settings.initialDistance,
 			sect = 2*Math.PI/count;
 		var i = 0;
 		for(var k in nodes){
@@ -35,13 +54,15 @@
 		}
 	}
 	
-	function moveNode(nd, nodes){
+	function moveNode(nd, inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
 		var tensSum = {x:0, y:0};
 		for(var i=0,lnk,c=nd.links; lnk=c[i],i<c.length; i++){
 			var trg = nodes[lnk[0]],
 				v = {x:trg.pos.x - nd.pos.x, y:trg.pos.y - nd.pos.y},
 				e = Vector.E(v.x, v.y),
-				tension = getTension(nd, lnk, nodes);
+				tension = getTension(nd, lnk, nodes)*settings.tensionRate;
 			tensSum.x+=e.x*tension;
 			tensSum.y+=e.y*tension;
 		}
@@ -51,27 +72,28 @@
 			var dist = {x:nd.pos.x - n1.pos.x, y:nd.pos.y - n1.pos.y},
 				e1 = Vector.E(dist.x, dist.y),
 				t1 = Vector.length(dist.x, dist.y);
-			t1 = .01/(t1*t1);
-			//console.log(t1);
+			t1 = settings.gravityRate/(t1*t1);
 			tensSum.x+=e1.x*t1;
 			tensSum.y+=e1.y*t1;
 		}
 		nd.pos.x+=tensSum.x;
 		nd.pos.y+=tensSum.y;
-		//console.log(nd.pos.x, nd.pos.y);
 		return Vector.length(tensSum.x, tensSum.y);
 	}
 	
-	function relax(nodes){
+	function relax(inst){
+		var nodes = inst.nodes;
 		var tensSum = 0;
 		for(var k in nodes){
-			tensSum+=moveNode(nodes[k], nodes);
+			tensSum+=moveNode(nodes[k], inst);
 		}
 		return tensSum;
 	}
 	
-	function getGraphSize(nodes){
-		var size = {x:[1e12, -1e12], y:[1e12, -1e12]};
+	function getGraphSize(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
+		var size = {x:[settings.infinity, -settings.infinity], y:[settings.infinity, -settings.infinity]};
 		for(var k in nodes){
 			var nd = nodes[k];
 			if(size.x[0]>nd.pos.x) size.x[0] = nd.pos.x;
@@ -85,20 +107,17 @@
 		return size;
 	}
 	
-	function NetGraph(nodes){
-		this.nodes = nodes;
-		calcNodes(this.nodes);
-	}
-	
-	function drawLinks(node, nodes, paper, ctr, rate, grCenter){
+	function drawLinks(node, inst, paper, ctr, rate, grCenter){
+		var nodes = inst.nodes,
+			settings = inst.settings();
 		for(var i=0,lnk,c=node.links; lnk=c[i],i<c.length; i++){
 			var trg = nodes[lnk[0]];
 			var x1 = (node.pos.x - grCenter.x)*rate+ctr.x,
 				y1 = (node.pos.y - grCenter.y)*rate+ctr.y,
 				x2 = (trg.pos.x - grCenter.x)*rate+ctr.x,
 				y2 = (trg.pos.y - grCenter.y)*rate+ctr.y;
-			paper.path(["M", x1, y1, "L", x2, y2]);
-			paper.text(x1+(x2-x1)/2+5, y1+(y2-y1)/2+5, lnk[1]);
+			paper.path(["M", x1, y1, "L", x2, y2]).toBack();
+			paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
 		}
 	}
 	
@@ -109,13 +128,25 @@
 		return (actLng - nLng)/nLng;
 	}
 	
-	NetGraph.prototype.display = function(pnlID){
+	function NetGraph(nodes){
+		this.nodes = nodes;
+		var settings = {};
+		extend(settings, defaultSettings);
+		this.settings = function(s){
+			if(!s) return settings;
+			extend(settings, s);
+		}
+		this.report = calcNodes(this);
+	}
+	
+	NetGraph.prototype.display = function(pnlID, reportPnlID){
+		var settings = this.settings();
 		var pnl = $("#"+pnlID);
-		var width = pnl.width(), height = pnl.height(), margin = 80;
+		var width = pnl.width(), height = pnl.height(), margin = settings.margin;
 		var paper = R(pnl[0], width, height);
 		
 		var center = {x:width/2, y:height/2};
-		var grSize = getGraphSize(this.nodes);
+		var grSize = getGraphSize(this);
 		var rateX = (width-margin)/grSize.w,
 			rateY = (height-margin)/grSize.h,
 			rate = Math.min(rateX, rateY);
@@ -124,10 +155,13 @@
 			var nd = this.nodes[k],
 				pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
 			
-			paper.circle(pos.x, pos.y, 3).attr({fill:"#f00"});
-			paper.text(pos.x, pos.y+15, nd.name);
-			drawLinks(nd, this.nodes, paper, center, rate, grSize.center);
+			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:settings.nodeColor});
+			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
+			drawLinks(nd, this, paper, center, rate, grSize.center);
 		}
+		
+		var reportPnl = $("#"+reportPnlID);
+		if(reportPnl.length) reportPnl.html(this.report);
 	};
 	
 	return NetGraph;
