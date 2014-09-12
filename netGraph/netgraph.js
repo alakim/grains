@@ -9,6 +9,7 @@
 		labelOffset:{x:0, y:15},
 		linkLabelOffset:{x:5, y:5},
 		initialDistance:100,
+		initialPlacement:"circle", // circle, grid
 		gravityRate:.005,
 		tensionRate:1
 	};
@@ -38,19 +39,51 @@
 		return i+" iterations, actual tension "+Math.round(tensSum*100)/100;
 	}
 	
-	function initNodes(inst){
+	function distributeByCircle(inst, count){
 		var nodes = inst.nodes,
 			settings = inst.settings();
-		var count = 0;
-		for(var k in nodes){count++;}
 		var center = {x:0, y:0},
 			rad = settings.initialDistance,
 			sect = 2*Math.PI/count;
 		var i = 0;
 		for(var k in nodes){
 			var nd = nodes[k];
-			nd.pos = {x:center.x+Math.cos(sect*i)*rad, y:center.y+Math.sin(sect*i)*rad};
+			nd.pos = {
+				x:center.x+Math.cos(sect*i)*rad, 
+				y:center.y+Math.sin(sect*i)*rad
+			};
 			i++;
+		}
+	}
+	
+	function distributeByGrid(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
+		var arr = [];
+		for(var k in nodes){arr.push(nodes[k]);}
+		var n = Math.ceil(Math.sqrt(arr.length)),
+			dist = settings.initialDistance;
+		for(var i=0,nd; nd=arr[i],i<arr.length; i++){
+			nd.pos = {
+				x:(i%n)*dist,
+				y:(i/n)*dist
+			};
+		}
+	}
+	
+	function initNodes(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
+		var count = 0;
+		for(var k in nodes){
+			count++;
+			var nd = nodes[k];
+			if(!nd.links)nd.links = [];
+		}
+		switch(settings.initialPlacement){
+			case "circle": distributeByCircle(inst, count); break;
+			case "grid": distributeByGrid(inst); break;
+			default: break;
 		}
 	}
 	
@@ -136,10 +169,11 @@
 			if(!s) return settings;
 			extend(settings, s);
 		}
-		this.report = calcNodes(this);
 	}
 	
 	NetGraph.prototype.display = function(pnlID, reportPnlID){
+		this.report = calcNodes(this);
+		
 		var settings = this.settings();
 		var pnl = $("#"+pnlID);
 		var width = pnl.width(), height = pnl.height(), margin = settings.margin;
