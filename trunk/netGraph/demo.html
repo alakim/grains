@@ -22,6 +22,10 @@
 			10: {name:"node #10", links:[[8, 2]]},
 			11: {name:"node #11", links:[[8, 2]]}
 		});
+		graph.settings({
+			nodeSize:8,
+			nodeColor:"#acf"
+		});
 		$(function(){
 			graph.display("out", "report");
 		});
