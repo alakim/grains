@@ -11,7 +11,9 @@
 		initialDistance:100,
 		initialPlacement:"circle", // circle, grid
 		gravityRate:.005,
-		tensionRate:1
+		tensionRate:1,
+		displayLinks: true,
+		displayLinkLabels: true
 	};
 	
 	function extend(obj, s){
@@ -150,7 +152,8 @@
 				x2 = (trg.pos.x - grCenter.x)*rate+ctr.x,
 				y2 = (trg.pos.y - grCenter.y)*rate+ctr.y;
 			paper.path(["M", x1, y1, "L", x2, y2]).toBack();
-			paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
+			if(settings.displayLinkLabels)
+				paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
 		}
 	}
 	
@@ -191,7 +194,8 @@
 			
 			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:settings.nodeColor});
 			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
-			drawLinks(nd, this, paper, center, rate, grSize.center);
+			if(settings.displayLinks)
+				drawLinks(nd, this, paper, center, rate, grSize.center);
 		}
 		
 		var reportPnl = $("#"+reportPnlID);
