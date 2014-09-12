@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>NetGraph Demo Page</title>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="lib/raphael-min.js"></script>
+	<script type="text/javascript" src="netgraph.js"></script>
+	<script type="text/javascript">
+		var graph = new NetGraph({
+			zvg:{name:"Звенигород", links:[["itr",20]]},
+			prv:{name:"Перово", links:[["zvg",80],["hdk", 30]]},
+			tsh:{name:"Тушино", links:[["prv",38],["hdk", 7]]},
+			tvr:{name:"Тверь", links:[["prv",200]]},
+			bol:{name:"Бологое", links:[["tvr",100]]},
+			hdk:{name:"Ходынка", links:[["itr",55],["zvg",52],["skh",12]]},
+			skh:{name:"Сухаревка", links:[["prv",12]]},
+			itr:{name:"Истра", links:[]}
+		});
+		graph.settings({
+			nodeSize:8,
+			nodeColor:"#fc0"
+		});
+		$(function(){
+			graph.display("out", "report");
+		});
+	</script>
+</head>
+<body>
+	<h1>NetGraph Demo Page</h1>
+	<div id="out" style="width:800px; height:500px;"></div>
+	<div id="report" style="width:800px; height:50px;"></div>
+</body>
+</html>
