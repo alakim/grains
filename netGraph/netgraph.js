@@ -164,14 +164,17 @@
 		return (actLng - nLng)/nLng;
 	}
 	
-	function NetGraph(nodes){
+	function NetGraph(nodes, linkBuilder){
 		this.nodes = nodes;
+		this.linkBuilder = linkBuilder;
 		var settings = {};
 		extend(settings, defaultSettings);
 		this.settings = function(s){
 			if(!s) return settings;
 			extend(settings, s);
 		}
+		
+		if(this.linkBuilder) this.linkBuilder(this.nodes);
 	}
 	
 	NetGraph.prototype.display = function(pnlID, reportPnlID){
