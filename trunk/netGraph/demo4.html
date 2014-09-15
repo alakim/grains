@@ -15,50 +15,43 @@
 		var grNodes = {};
 		(function(){
 			for(var i=0,w; w=words[i],i<words.length; i++){
-				var links = getLinks(w, i+1);
-				var nd = {name:w, links:links};
-				grNodes[w] = nd;
+				grNodes[w] = {name:w};
 			}
 		})();
-		function getLinks(word, idx){
-			var res = [];
-			for(var i=idx,w; w=words[i],i<words.length; i++){
-				if(w===word) continue;
-				var dist = distance3(word, w);
-				res.push([w, dist]);
-			}
-			return res;
-		}
+
 		
-		function distance0(w1, w2){
-			return 80;
-		}
-		function distance1(w1, w2){
-			return Math.abs(w1.length-w2.length) + 10;
-		}
-		function distance2(w1, w2){
-			var dist = 1;
-			for(var i=0,lt1; lt1=w1[i],i<w1.length; i++){
-				for(var j=0,lt2; lt2=w2[j],j<w2.length; j++){
-					if(lt1==lt2) dist+=5;
+		var graph = new NetGraph(
+			grNodes, // node set
+			function (nodes){ // link builder function
+				function distance(w1, w2){
+					var res = 1;
+					for(var st=0; st<(w1.length+w2.length-1); st++){
+						var cnt = 0;
+						for(m=0; m<w1.length; m++){
+							if(w1[m]==w2[m+st]) cnt++;
+						}
+						if(cnt>res) res = cnt;
+					}
+					return Math.ceil(85/res);
+				}
+				function getLinks(word, idx){
+					var res = [];
+					for(var i=idx,w; w=words[i],i<words.length; i++){
+						if(w===word) continue;
+						var dist = distance(word, w);
+						res.push([w, dist]);
+					}
+					return res;
+				}
+				var i=1;
+				for(var w in nodes){
+					var nd = nodes[w];
+					nd.links = getLinks(w, i);
+					i++;
 				}
 			}
-			dist = Math.ceil(80/(dist))+2;
-			return dist;
-		}
-		function distance3(w1, w2){
-			var res = 1;
-			for(var st=0; st<(w1.length+w2.length-1); st++){
-				var cnt = 0;
-				for(i=0; i<w1.length; i++){
-					if(w1[i]==w2[i+st]) cnt++;
-				}
-				if(cnt>res) res = cnt;
-			}
-			return Math.ceil(85/res);
-		}
-		
-		var graph = new NetGraph(grNodes);
+		);
+			
 		graph.settings({
 			nodeSize:7,
 			initialDistance:80,
