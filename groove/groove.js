@@ -33,14 +33,17 @@
 	var templates = {
 		main: function(gr){with($H){
 			return div(
-				templates.menu(),
-				apply(grooves, function(gr){
-					return templates.groove(gr);
-				})
+				table({border:0}, tr( td(
+					templates.menu(),
+					apply(grooves, function(gr){
+						return templates.groove(gr);
+					})
+				)))
 			);
 		}},
 		menu: function(){with($H){
 			return div(
+				a({name:"toc"}),
 				ul(
 					apply(grooves, function(gr){
 						return li(
@@ -54,6 +57,7 @@
 			return div({"class":"groove"},
 				a({name:gr.idx}),
 				h2(gr.title),
+				div(a({href:"#toc"}, "to TOC")),
 				p(gr.key, " (Bes: ", getBes(gr.key),")"),
 				table({border:0, cellpadding:3, cellspacing:6},
 					tr(
@@ -80,7 +84,6 @@
 					groups.push([bars[i-1], bars[i]]);
 				}
 			}
-			console.log(groups);
 			
 			return table({border:0, cellpadding:3, cellspacing:0},
 				apply(groups, function(grp, i){
