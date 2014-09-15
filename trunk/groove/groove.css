@@ -1,2 +1,11 @@
 ﻿.groove td.bar{border:1px solid #888; background-color:#fff;}
 .groove td.section{border:1px solid #aaa; background-color:#ccc;}
+
+/* @media screen and (min-width:600px){
+	body{
+		width:600px;
+		font-size:16px;
+		margin:10px;
+		border: 1px solid #f00;
+	}
+} */
