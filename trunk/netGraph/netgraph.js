@@ -15,6 +15,10 @@
 		displayLinks: true,
 		displayLinkLabels: true
 	};
+	var defaultClass = {
+		visible: true,
+		stroke: "#000"
+	};
 	
 	function extend(obj, s){
 		for(var k in s) obj[k] = s[k];
@@ -142,16 +146,26 @@
 		return size;
 	}
 	
+	function getClass(nm, inst){
+		var classes = inst.classes();
+		return classes[nm];
+	}
+	
 	function drawLinks(node, inst, paper, ctr, rate, grCenter){
 		var nodes = inst.nodes,
 			settings = inst.settings();
 		for(var i=0,lnk,c=node.links; lnk=c[i],i<c.length; i++){
+			var cls = getClass(lnk[2], inst);
+			if(cls && !cls.visible) continue;
+			
 			var trg = nodes[lnk[0]];
 			var x1 = (node.pos.x - grCenter.x)*rate+ctr.x,
 				y1 = (node.pos.y - grCenter.y)*rate+ctr.y,
 				x2 = (trg.pos.x - grCenter.x)*rate+ctr.x,
 				y2 = (trg.pos.y - grCenter.y)*rate+ctr.y;
-			paper.path(["M", x1, y1, "L", x2, y2]).toBack();
+			var pth = paper.path(["M", x1, y1, "L", x2, y2]);
+			if(cls)pth.attr("stroke", cls.stroke);
+			pth.toBack();
 			if(settings.displayLinkLabels)
 				paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
 		}
@@ -167,12 +181,27 @@
 	function NetGraph(nodes, linkBuilder){
 		this.nodes = nodes;
 		this.linkBuilder = linkBuilder;
+		
 		var settings = {};
 		extend(settings, defaultSettings);
 		this.settings = function(s){
 			if(!s) return settings;
 			extend(settings, s);
-		}
+		};
+		
+		var classes = {};
+		this.classes = function(ccc){
+			if(!ccc) return classes;
+			extend(classes, ccc);
+			
+			for(var k in classes){
+				var cc = classes[k];
+				var c = {}; 
+				extend(c, defaultClass); 
+				extend(c, cc);
+				classes[k] = c;
+			}
+		};
 		
 		if(this.linkBuilder) this.linkBuilder(this.nodes);
 	}
@@ -193,7 +222,11 @@
 		
 		for(var k in this.nodes){
 			var nd = this.nodes[k],
-				pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
+				cls = getClass(nd["class"], this);
+			// console.log(k, cls);
+			if(cls && !cls.visible) continue;
+			
+			var pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
 			
 			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:settings.nodeColor});
 			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
