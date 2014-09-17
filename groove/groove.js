@@ -23,11 +23,12 @@
 		return scaleBes[kk[0]]+" "+kk[1];
 	}
 	
-	function Groove(title, key, sections){
+	function Groove(title, key, sections, href){
 		this.idx = grooves.length;
 		this.title = title;
 		this.key = key;
 		this.sections = sections;
+		this.href = href;
 		grooves.push(this);
 		sorted.push({idx:this.idx, title:title});
 	}
@@ -62,6 +63,7 @@
 				h2(gr.title),
 				div(a({href:"#toc"}, "to TOC")),
 				p(gr.key, " (Bes: ", getBes(gr.key),")"),
+				gr.href?p(a({href:gr.href, target:"_blank"}, "sheet music")):null,
 				table({border:0, cellpadding:3, cellspacing:6},
 					tr(
 						apply(gr.sections, function(sect, nm){
