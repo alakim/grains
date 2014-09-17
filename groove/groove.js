@@ -1,5 +1,6 @@
 ﻿var Groove = (function($,$H){
-	var grooves = [];
+	var grooves = [],
+		sorted = [];
 	
 	var scaleBes = {
 		C:"D",
@@ -28,6 +29,7 @@
 		this.key = key;
 		this.sections = sections;
 		grooves.push(this);
+		sorted.push({idx:this.idx, title:title});
 	}
 	
 	var templates = {
@@ -35,8 +37,8 @@
 			return div(
 				table({border:0}, tr( td(
 					templates.menu(),
-					apply(grooves, function(gr){
-						return templates.groove(gr);
+					apply(sorted, function(g){
+						return templates.groove(grooves[g.idx]);
 					})
 				)))
 			);
@@ -45,7 +47,8 @@
 			return div(
 				a({name:"toc"}),
 				ul(
-					apply(grooves, function(gr){
+					apply(sorted, function(g){
+						var gr = grooves[g.idx];
 						return li(
 							a({href:"#"+gr.idx}, gr.title)
 						);
@@ -101,6 +104,10 @@
 	
 	
 	$(function(){
+		sorted.sort(function(a, b){
+			return a.title==b.title?0:a.title<b.title?-1:1;
+		});
+
 		$("body").append(
 			templates.main()
 		);
