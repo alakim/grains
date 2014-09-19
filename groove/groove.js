@@ -72,7 +72,7 @@
 					),
 					tr(
 						apply(gr.sections, function(sect){
-							return td({"class":"section"},
+							return td({"class":"section", align:"center"},
 								templates.section(sect)
 							);
 						})
