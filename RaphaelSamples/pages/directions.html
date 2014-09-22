@@ -1,0 +1,90 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Направления и пути</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/html.js"></script>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var panel = $("#paper1");
+			paper = new Raphael(panel[0]),
+			dirMarkerLength = 120;
+		var color = {path:"#888", point:"#008", dirMarker:"#f00", point:"#f00"},
+			origin = {x:panel.width()/2, y:panel.height()/2},
+			markerStyle = {fill:color.point, "stroke-width":0};
+			
+		Vector = {
+			length: function(x1, y1, x2, y2){
+				return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+			},
+			point: function(origin, alpha, length){
+				return {
+					x:length*Math.cos(alpha*Math.PI/180)+origin.x,
+					y:length*Math.sin(alpha*Math.PI/180)+origin.y
+				};
+			}
+		};
+		
+		function Direction(alpha){var _=this;
+			_.alpha = alpha;
+		}
+		$.extend(Direction.prototype, {
+			draw: function(paper){
+				var lblOffset = 15;
+				var trg = Vector.point(origin, this.alpha, dirMarkerLength)
+					lblPos = Vector.point(origin, this.alpha, dirMarkerLength+lblOffset);
+				
+				paper.path(["M", origin.x, origin.y, "L", trg.x, trg.y]).attr({stroke:color.dirMarker});
+				paper.text(lblPos.x, lblPos.y, this.alpha);
+			},
+			drawPath: function(target, paper){
+				var vertLength = Vector.length(origin.x, origin.y, target.x, target.y)/2;
+					vertex = Vector.point(origin, this.alpha, vertLength);
+				//paper.circle(vertex.x, vertex.y, 4).attr(markerStyle).attr({fill:"#888"});
+				paper.path(["M", origin.x, origin.y, "Q", vertex.x, vertex.y, target.x, target.y]).attr({stroke:target.pathColor});
+			}
+		});
+		
+		var directions = [];
+		var nDir = 8;
+		var targets = [
+			{x: origin.x+280, y:origin.y+190, pathColor:"#cc0"},
+			{x: origin.x-280, y:origin.y+190, pathColor:"#0cc"},
+			{x: origin.x+280, y:origin.y-190, pathColor:"#0c0"},
+			{x: origin.x-280, y:origin.y-190, pathColor:"#c0c"},
+		];
+		$.each(targets, function(i, target){
+			paper.circle(target.x, target.y, 5).attr(markerStyle);
+		});
+		for(var i=0; i<nDir; i++){
+			var alpha = i*360/nDir;
+			directions.push(new Direction(alpha));
+		}
+		$.each(directions, function(i, dir){
+			dir.draw(paper);
+			$.each(targets, function(i, target){
+				dir.drawPath(target, paper);
+			});
+		});
+
+	});
+</script>
+</head>
+<body>
+	<h1>Направления и пути</h1>
+	<p>Пример формирования плавных путей в заданном направлении</p>
+	<p>Указания: из центральной точки сформированы пути к четырем целевым точкам, выходящие в заданном направлении.</p>
+	<p>Особенности:</p>
+	<ul>
+		<li>При вычислении тригонометрических функций с помощью утилиты <span class="code">Math</span> величины углов следует задавать в радианах.</li>
+	</ul>
+	
+	<div id="out" class="out code"></div>
+	<div id="paper1" class="paper" style="width:800px; height:600px;">
+	</div>
+	
+
+</body>
+</hmtl>
