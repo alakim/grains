@@ -4,7 +4,7 @@
 	
 	function init(){
 		slideCount = $(".slide").length;
-		$(".slide:eq(0)").show();
+		toBegin();
 		$(".btForward").click(forward);
 		$(".btBackward").click(backward);
 		updateDisplay();
@@ -35,6 +35,17 @@
 	}
 	
 	function toPosition(p){
+		if(p>=slideCount-1){
+			$(".btForward").attr({disabled:true});
+		}
+		else $(".btForward").attr({disabled:false});
+		if(p<1){
+			$(".btBackward").attr({disabled:true});
+		}
+		else $(".btBackward").attr({disabled:false});
+		
+		if(p>=slideCount || p<0) return;
+		
 		pos = p;
 		$(".slide").hide();
 		$(".slide:eq("+pos+")").fadeIn(1000);
@@ -42,13 +53,11 @@
 	}
 	
 	function forward(){
-		if(pos>=slideCount-1) return;
-		toPosition(++pos);
+		toPosition(pos+1);
 	}
 
 	function backward(){
-		if(pos<1) return;
-		toPosition(--pos);
+		toPosition(pos-1);
 	}
 
 	$(init);
