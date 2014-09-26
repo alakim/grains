@@ -37,7 +37,7 @@
 	function toPosition(p){
 		pos = p;
 		$(".slide").hide();
-		$(".slide:eq("+pos+")").show();
+		$(".slide:eq("+pos+")").fadeIn(1000);
 		updateDisplay();
 	}
 	
