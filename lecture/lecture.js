@@ -1,13 +1,26 @@
 ﻿(function($, $H){
 	var pos = 0,
 		slideCount;
+		
+	$.fn.youtube = function(){
+		$.each(this, function(i, el){el=$(el);
+			var url = el.html(),
+				sizes = el.attr("ytsize").split(";"),
+				width = +sizes[0],
+				height = +sizes[1];
+				
+			el.after($H.iframe({width:width, height:height, src:url, frameborder:0, allowfullscreen:true}));
+		});
+	};
 	
 	function init(){
 		if(document.location.hash=="#speaker"){
 			$(".lecture").addClass("speaker");
 			$(".pict img").attr({height:200, width:null});
 		}
-			
+		else{
+			$("div.youtube").youtube();
+		}
 		slideCount = $(".slide").length;
 		toBegin();
 		$(".btForward").click(forward);
