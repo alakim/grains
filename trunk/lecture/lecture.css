@@ -13,3 +13,9 @@
 	background-color:#ddd;
 	display: block;
 }
+
+.youtube{
+	display:none;
+	color:#fff;
+}
+.speaker .youtube{display:block;}
