@@ -3,6 +3,11 @@
 		slideCount;
 	
 	function init(){
+		if(document.location.hash=="#speaker"){
+			$(".lecture").addClass("speaker");
+			$(".pict img").attr({height:200, width:null});
+		}
+			
 		slideCount = $(".slide").length;
 		toBegin();
 		$(".btForward").click(forward);
