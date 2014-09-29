@@ -5,3 +5,11 @@
 .slide{
 	display:none;
 }
+.ext{display:none;}
+.speaker{
+	font-size:22px;
+}
+.speaker .ext{
+	background-color:#ddd;
+	display: block;
+}
