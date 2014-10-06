@@ -7,28 +7,39 @@
 	</xsl:variable>
 
 	<xsl:template match="/article">
+		<xsl:variable name="tocdoc" select="document('../data/toc.xml')"/>
 		<html>
 			<head>
 				<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 				<link rel="stylesheet" type="text/css" href="styles.css"/>
 				<script type="text/javascript" src="js/lib/html.js"></script>
 				<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
-				<script type="text/javascript" src="js/menuView.js"></script>
+				<xsl:if test="$tocdoc/toc/@staticMenu!='true'">
+					<script type="text/javascript" src="js/menuView.js"></script>
+				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="$debugMode='true'">
 						<script type="text/javascript" src="js/debugView.js"></script>
-						<script type="text/javascript" src="menu.php?debug"></script>
+						<xsl:if test="$tocdoc/toc/@staticMenu!='true'">
+							<script type="text/javascript" src="menu.php?debug"></script>
+						</xsl:if>
 					</xsl:when>
 					<xsl:otherwise>
-						<script type="text/javascript" src="menu.php"></script>
+						<xsl:if test="$tocdoc/toc/@staticMenu!='true'">
+							<script type="text/javascript" src="menu.php"></script>
+						</xsl:if>
 					</xsl:otherwise>
 				</xsl:choose>
 			</head>
 			<body>
-				<h1><xsl:value-of select="document('../data/toc.xml')/toc/@title"/></h1>
+				<h1><xsl:value-of select="$tocdoc/toc/@title"/></h1>
 				<table border="0" cellpadding="3" cellspacing="0">
 					<tr>
-						<td width="300" id="menuPnl" valign="top"></td>
+						<td width="300" id="menuPnl" valign="top">
+							<xsl:if test="$tocdoc/toc/@staticMenu='true'">
+								<xsl:apply-templates select="$tocdoc/toc"/>
+							</xsl:if>
+						</td>
 						<td valign="top">
 							<h2><xsl:value-of select="@title"/></h2>
 							<xsl:apply-templates />
@@ -37,6 +48,37 @@
 				</table>
 			</body>
 		</html>
+	</xsl:template>
+	
+	<xsl:template match="toc">
+		<ul>
+			<xsl:apply-templates select="section" mode="toc"/>
+		</ul>
+	</xsl:template>
+	
+	<xsl:template match="section" mode="toc">
+		<li>
+			<xsl:choose>
+				<xsl:when test="@title"><xsl:value-of select="@title"/></xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
+					<xsl:variable name="doc" select="document($file)"/>
+					<xsl:variable name="ref" select="substring-before(@file, '.')"/>
+					<a href="$ref"><xsl:value-of select="$doc/article/@title"/></a>
+					<xsl:if test="$doc/article/section">
+						<ul>
+							<xsl:apply-templates select="$doc/article/section" mode="sub"/>
+						</ul>
+					</xsl:if>
+					
+				</xsl:otherwise>
+			</xsl:choose>
+		</li>
+	</xsl:template>
+	
+	<xsl:template match="section" mode="sub">
+		
+		<li><a href=""><xsl:value-of select="@title"/></a></li>
 	</xsl:template>
 	
 	<xsl:template match="section">
