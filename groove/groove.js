@@ -37,7 +37,7 @@
 		main: function(gr){with($H){
 			return div(
 				table({border:0}, tr( td(
-					templates.menu(),
+					// templates.menu(),
 					apply(sorted, function(g){
 						return templates.groove(grooves[g.idx]);
 					})
@@ -58,24 +58,26 @@
 			);
 		}},
 		groove: function(gr){with($H){
-			return div({"class":"groove"},
-				a({name:gr.idx}),
+			return div({"class":"grooveTitle"},
 				h2(gr.title),
-				div(a({href:"#toc"}, "to TOC")),
-				p(gr.key, " (Bes: ", getBes(gr.key),")"),
-				gr.href?p(a({href:gr.href, target:"_blank"}, "sheet music")):null,
-				table({border:0, cellpadding:3, cellspacing:6},
-					tr(
-						apply(gr.sections, function(sect, nm){
-							return th(nm);
-						})
-					),
-					tr(
-						apply(gr.sections, function(sect){
-							return td({"class":"section", align:"center"},
-								templates.section(sect)
-							);
-						})
+				div({"class":"groove"},
+					a({name:gr.idx}),
+					//div(a({href:"#toc"}, "to TOC")),
+					p(gr.key, " (Bes: ", getBes(gr.key),")"),
+					gr.href?p(a({href:gr.href, target:"_blank"}, "sheet music")):null,
+					table({border:0, cellpadding:3, cellspacing:6},
+						tr(
+							apply(gr.sections, function(sect, nm){
+								return th(nm);
+							})
+						),
+						tr(
+							apply(gr.sections, function(sect){
+								return td({"class":"section", align:"center"},
+									templates.section(sect)
+								);
+							})
+						)
 					)
 				)
 			);
@@ -113,7 +115,16 @@
 		$("body").append(
 			templates.main()
 		);
+		if(document.location.hash=="#dark")
+			$("body").addClass("darkTheme");
+		else
+			$("body").addClass("lightTheme");
+		
 		$("body td.space").html("");
+		$(".grooveTitle h2").click(function(){
+			$(".groove").hide();
+			$(this).parent().find(".groove").slideDown();
+		});
 	});
 	
 	return Groove;

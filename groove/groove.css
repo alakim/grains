@@ -1,4 +1,9 @@
-﻿.groove td.bar{border:1px solid #888; background-color:#fff;}
+﻿
+.groove{display:none;}
+
+.grooveTitle h2{cursor:pointer;}
+
+.groove td.bar{border:1px solid #888; background-color:#fff;}
 .groove td.section{border:1px solid #aaa; background-color:#ccc;}
 
 /* @media screen and (min-width:600px){
@@ -9,3 +14,15 @@
 		border: 1px solid #f00;
 	}
 } */
+
+
+.darkTheme{background-color:#000; color:#fff;}
+.darkTheme .groove td.bar{background-color:#000; color:#fff;}
+.darkTheme .groove td.section{background-color:#444;}
+.darkTheme a:link{color:#ffa}
+.darkTheme a:visited{color:#ffa}
+
+.lightTheme{background-color:#fff; color:#000;}
+.lightTheme .groove td.bar{background-color:#fff; color:#000;}
+.lightTheme a:link{color:#008}
+.lightTheme a:visited{color:#008}
