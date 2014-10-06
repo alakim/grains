@@ -2,14 +2,15 @@
 	var target, menuData, debugMode;
 	
 	var templates = {
-		main: function(data){with(H){
+		main: function(data, parent){with(H){
 			return ul(
-				apply(data, function(itm){
+				apply(data, function(itm, i){
 					return itm?li(
-						itm.id?a((itm.id==target.id && target.sect=="")?{"class":"current"}:null,
+						itm.id?a(((!target && !parent && i==0)||(target && itm.id==target.id && target.sect==""))?{"class":"current"}:null,
 							{href:"?"+(debugMode?"debug&":"")+"p="+itm.id}, itm.title
 						):span(itm.title),
-						itm.sub?(itm.id?templates.submenu(itm.id, itm.sub):templates.main(itm.sub))
+						
+						itm.sub?(itm.id?templates.submenu(itm.id, itm.sub):templates.main(itm.sub, itm))
 							:null
 					):null;
 				})
@@ -19,7 +20,7 @@
 			return data?ul(
 				apply(data, function(itm){
 					return itm?li(
-						a((fileID==target.id && itm.id==target.sect)?{"class":"current"}:null,
+						a((target && fileID==target.id && itm.id==target.sect)?{"class":"current"}:null,
 							{href:"?"+(debugMode?"debug&":"")+"p="+fileID+"#"+itm.id}, itm.title
 						),
 						itm.sub?templates.submenu(fileID, itm.sub):null
@@ -32,7 +33,11 @@
 	function rebuild(){
 		debugMode = document.location.search.match(/[\&\?]debug/i);
 		setTimeout(function(){
-			target = {id:document.location.search.match(/p=([^&]+)/)[1], sect:document.location.hash.slice(1)};
+			var mt = document.location.search.match(/p=([^&]+)/);
+			if(mt){
+				target = {id:mt[1], sect:document.location.hash.slice(1)};
+				//console.log(target);
+			}
 			$("#menuPnl").html(templates.main(menuData))
 				.find("a").click(rebuild);
 		}, 100);
