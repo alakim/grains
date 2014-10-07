@@ -17,6 +17,12 @@
 					</xsl:choose>
 				</a>
 			</xsl:when>
+			<xsl:when test="@book">
+				[<a href="#{@book}"><xsl:value-of select="@book"/></a>]
+			</xsl:when>
+			<xsl:when test="@website">
+				[<a href="#{@website}"><xsl:value-of select="@website"/></a>]
+			</xsl:when>
 			<xsl:when test="@url">
 				<a href="{@url}">
 					<xsl:choose>
@@ -72,7 +78,13 @@
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="li"><li><xsl:apply-templates/></li></xsl:template>
+	<xsl:template match="li">
+		<li>
+			<xsl:if test="@name"><span class="liName"><xsl:value-of select="@name"/></span> - </xsl:if>
+			<xsl:apply-templates/>
+		</li>
+	</xsl:template>
+	
 	<xsl:template match="caption"/>
 	<xsl:template match="caption" mode="outside">
 		<p class="listCaption"><xsl:apply-templates/></p>
@@ -80,6 +92,8 @@
 	
 	<xsl:template match="sel"><span class="selected"><xsl:apply-templates/></span></xsl:template>
 	<xsl:template match="strong"><strong><xsl:apply-templates/></strong></xsl:template>
+	<xsl:template match="file"><span class="file"><xsl:apply-templates/></span></xsl:template>
+	<xsl:template match="code"><span class="code"><xsl:apply-templates/></span></xsl:template>
 
 	<xsl:template match="patch">
 		<xsl:variable name="patch" select="document(@file)"/>
@@ -91,5 +105,22 @@
 			<div class="todo"><xsl:apply-templates/></div>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="book">
+		<div>
+			<a name="{@id}">
+				[<xsl:value-of select="@id"/>] <xsl:value-of select="@author"/>. <xsl:value-of select="@title"/>. <xsl:value-of select="@pub"/>
+			</a>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="webArticle">
+		<div>
+			<a name="{@id}">
+				[<xsl:value-of select="@id"/>] <a href="{@url}"><xsl:value-of select="@title"/></a>
+			</a>
+		</div>
+	</xsl:template>
+	
 	
 </xsl:stylesheet>
