@@ -12,6 +12,11 @@
 		$file = explode(".", $sect->getAttribute("file"));
 		$page = $file[0];
 	}
+	
+	function buildMenu(){
+		$menu = xml2html("data/toc.xml", "defs/menu.xslt");
+		file_put_contents("cache/menu.xml", $menu);
+	}
 
 	function xml2html($xmldata, $xsl){
 		global $debugMode;
@@ -29,6 +34,9 @@
 		$proc->importStylesheet($xslDoc);
 		return $proc->transformToXML($xmlDoc);
 	}
+	
+	if(!file_exists("cache/menu.xml"))
+		buildMenu();
 
 	if($page)
 		echo(xml2html("data/pages/".$page.".xml", "defs/article.xslt"));

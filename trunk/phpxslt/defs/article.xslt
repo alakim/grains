@@ -37,7 +37,8 @@
 					<tr>
 						<td width="300" id="menuPnl" valign="top">
 							<xsl:if test="$tocdoc/toc/@staticMenu='true'">
-								<xsl:apply-templates select="$tocdoc/toc"/>
+								<!--xsl:apply-templates select="$tocdoc/toc"/-->
+								<xsl:call-template name="menu"/>
 							</xsl:if>
 						</td>
 						<td valign="top">
@@ -50,54 +51,22 @@
 		</html>
 	</xsl:template>
 	
-	<xsl:template match="toc">
+	<xsl:template name="menu">
+		<xsl:variable name="doc" select="document('../cache/menu.xml')"/>
 		<ul>
-			<xsl:apply-templates select="section" mode="toc"/>
+			<xsl:apply-templates select="$doc/menu/section" mode="menu"/>
 		</ul>
 	</xsl:template>
 	
-	<xsl:template match="section" mode="toc">
+	<xsl:template match="section" mode="menu">
 		<li>
-			<xsl:choose>
-				<xsl:when test="@title">
-					<xsl:value-of select="@title"/>
-					<xsl:if test="section">
-						<ul>
-							<xsl:apply-templates select="section" mode="fileSection"/>
-						</ul>
-					</xsl:if>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
-					<xsl:variable name="doc" select="document($file)"/>
-					<xsl:variable name="ref" select="substring-before(@file, '.')"/>
-					<a href="$ref"><xsl:value-of select="$doc/article/@title"/></a>
-					<xsl:if test="$doc/article/section">
-						<ul>
-							<xsl:apply-templates select="$doc/article/section" mode="sub"/>
-						</ul>
-					</xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
-		</li>
-	</xsl:template>
-	
-	<xsl:template match="section" mode="fileSection">
-		<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
-		<xsl:variable name="doc" select="document($file)"/>
-		<xsl:variable name="title" select="$doc/article/@title"/>
-		<li>
-			<a href=""><xsl:value-of select="$title"/></a>
-			<xsl:if test="$doc/article/section">
+			<a href="#{@id}"><xsl:value-of select="@title"/></a>
+			<xsl:if test="section">
 				<ul>
-					<xsl:apply-templates select="$doc/article/section" mode="sub"/>
+					<xsl:apply-templates select="section" mode="menu"/>
 				</ul>
 			</xsl:if>
 		</li>
-	</xsl:template>
-	
-	<xsl:template match="section" mode="sub">
-		<li><a href=""><xsl:value-of select="@title"/></a></li>
 	</xsl:template>
 	
 	<xsl:template match="section">
