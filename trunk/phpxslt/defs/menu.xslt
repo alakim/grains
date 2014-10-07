@@ -26,7 +26,7 @@
 		<xsl:variable name="doc" select="document($file)"/>
 		<xsl:variable name="id" select="substring-before(@file, '.')"/>
 		<xsl:variable name="title" select="$doc/article/@title"/>
-		<section id="{$id}" title="{$title}">
+		<section file="{$id}" title="{$title}">
 			<xsl:apply-templates select="$doc/article/section" mode="sub"/>
 		</section>
 	</xsl:template>
@@ -39,7 +39,7 @@
 				<xsl:otherwise>s<xsl:value-of select="count(preceding::section)+count(ancestor::section)"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<section id="{$sID}" title="{@title}">
+		<section anchor="{$sID}" title="{@title}">
 			<xsl:apply-templates select="section" mode="sub"/>
 		</section>
 	</xsl:template>

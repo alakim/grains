@@ -59,8 +59,20 @@
 	</xsl:template>
 	
 	<xsl:template match="section" mode="menu">
+		<xsl:variable name="file">
+			<xsl:choose>
+				<xsl:when test="@file"><xsl:value-of select="@file"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="ancestor::section[@file]/@file"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<li>
-			<a href="#{@id}"><xsl:value-of select="@title"/></a>
+			<xsl:choose>
+				<xsl:when test="@file or @anchor">
+					<a href="?p={$file}#{@anchor}"><xsl:value-of select="@title"/></a>
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
+			</xsl:choose>
+			
 			<xsl:if test="section">
 				<ul>
 					<xsl:apply-templates select="section" mode="menu"/>
