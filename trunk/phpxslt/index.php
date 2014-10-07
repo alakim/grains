@@ -1,4 +1,9 @@
 ﻿<?php
+	$clearCache = false;
+	
+	if(isset($_REQUEST['clearcache'])){
+		$clearCache = true;
+	}
 	if(isset($_REQUEST['p'])){
 		$page = $_REQUEST["p"];
 	}
@@ -35,7 +40,7 @@
 		return $proc->transformToXML($xmlDoc);
 	}
 	
-	if(!file_exists("cache/menu.xml"))
+	if($clearCache || !file_exists("cache/menu.xml"))
 		buildMenu();
 
 	if($page)
