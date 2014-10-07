@@ -59,7 +59,14 @@
 	<xsl:template match="section" mode="toc">
 		<li>
 			<xsl:choose>
-				<xsl:when test="@title"><xsl:value-of select="@title"/></xsl:when>
+				<xsl:when test="@title">
+					<xsl:value-of select="@title"/>
+					<xsl:if test="section">
+						<ul>
+							<xsl:apply-templates select="section" mode="fileSection"/>
+						</ul>
+					</xsl:if>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
 					<xsl:variable name="doc" select="document($file)"/>
@@ -70,14 +77,26 @@
 							<xsl:apply-templates select="$doc/article/section" mode="sub"/>
 						</ul>
 					</xsl:if>
-					
 				</xsl:otherwise>
 			</xsl:choose>
 		</li>
 	</xsl:template>
 	
+	<xsl:template match="section" mode="fileSection">
+		<xsl:variable name="file">../data/pages/<xsl:value-of select="@file"/></xsl:variable>
+		<xsl:variable name="doc" select="document($file)"/>
+		<xsl:variable name="title" select="$doc/article/@title"/>
+		<li>
+			<a href=""><xsl:value-of select="$title"/></a>
+			<xsl:if test="$doc/article/section">
+				<ul>
+					<xsl:apply-templates select="$doc/article/section" mode="sub"/>
+				</ul>
+			</xsl:if>
+		</li>
+	</xsl:template>
+	
 	<xsl:template match="section" mode="sub">
-		
 		<li><a href=""><xsl:value-of select="@title"/></a></li>
 	</xsl:template>
 	
