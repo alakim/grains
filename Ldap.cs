@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.Security.Principal;
@@ -53,7 +52,7 @@ namespace Turnpike {
 				SearchResult result = search.FindOne();
 				return result != null;
 			}
-			catch (Exception err) {
+			catch (Exception) {
 				return false;
 			}
 		}
