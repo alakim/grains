@@ -19,15 +19,26 @@ namespace Turnpike {
 
 		/// <summary>Возвращает текущий домен</summary>
 		private static string GetCurrentDomainPath() {
-			DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
-			string path = "LDAP://" + de.Properties["defaultNamingContext"][0].ToString();
-			return path;
+			try {
+				DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
+				string path = "LDAP://" + de.Properties["defaultNamingContext"][0].ToString();
+				return path;
+			}
+			catch (Exception err) {
+				throw new Exception("Error getting Directory Entry", err);
+			}
 		}
 
 		/// <summary>Возвращает DN текущего пользователя</summary>
 		public string GetUserDN() {
-			WindowsIdentity wi = WindowsIdentity.GetCurrent();
-			string userName = wi.Name;
+			string userName;
+			try {
+				WindowsIdentity wi = WindowsIdentity.GetCurrent();
+				userName = wi.Name;
+			}
+			catch (Exception err) {
+				throw new Exception("Error getting Windows Identity", err);
+			}
 
 			DirectoryEntry de = new DirectoryEntry(GetCurrentDomainPath());
 			DirectorySearcher ds = new DirectorySearcher(de);
@@ -35,8 +46,14 @@ namespace Turnpike {
 			string uNm = reDomain.Replace(userName, string.Empty);
 			string filter = "(&(objectCategory=User)(objectClass=person)(samaccountname=" + uNm + "))";
 			ds.Filter = filter;
-			SearchResult result = ds.FindOne();
-			return result.Properties["distinguishedname"][0].ToString();
+			try {
+				SearchResult result = ds.FindOne();
+				if (result == null) return string.Empty;
+				return result.Properties["distinguishedname"][0].ToString();
+			}
+			catch (Exception err) {
+				throw new Exception("Error finding directory entry", err);
+			}
 		}
 
 		/// <summary>Авторизация пользователя</summary>
