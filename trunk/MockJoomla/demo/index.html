@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="windows-1251"/>
+	<title>MockJoomla Demo Page</title>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<script type="text/javascript" src="../lib/html.js"></script>
+	<script type="text/javascript" src="../lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../mjoomla.js"></script>
+</head>
+<body>
+	<header>
+		<h1>MockJoomla Demo Page</h1>
+	</header>
+	<div class="main">
+		<jdoc:include type="modules" name="top" style="none" />
+		<div class="leftMenu"><jdoc:include type="modules" name="left" style="none" /></div>
+		<article><jdoc:include type="component" /></article>
+		<div class="rightPanel"><jdoc:include type="modules" name="right" style="none" /></div>
+		<div class="clear"></div>
+		<jdoc:include type="modules" name="bottom" style="none" />
+	</div>
+	<footer>MockJoomla Team &copy;2015</footer>
+</body>
+</html>
