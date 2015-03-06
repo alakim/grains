@@ -14,24 +14,24 @@
 requirejs(["jquery", "html", "aesop", "ticket"], function($, $H, $A, Ticket) {
 	$("#version").html($H.div("Powered by AesopJS v."+$A.version));
 	
-	$A.classify({}, "Ticket");
-	$A.classify({}, "Ticket");
-	$A.classify({}, "Ticket");
+	// $A.classify({}, "Ticket");
+	// $A.classify({}, "Ticket");
+	// $A.classify({}, "Ticket");
 	
-	function classList(list){with($H){
+	function template(){with($H){
 		return div(
-			ol(
-				apply(list, function(itm){
-					return li(itm.view());
-				})
-			)
+			input({type:"button", "class":"btNewTicket", value:"Создать заявку"})
 		);
 	}}
 	
 	$(function(){
-		$("#mainView").html(classList(
-			$A.getClass("Ticket").getAll()
-		));
+		var panel = $("#mainView");
+		panel.html(template())
+			.find(".btNewTicket").click(function(){
+				var t1 = Ticket.create();
+				var fc = $A.getFacet(t1,  $A.getClass("Ticket")).item();
+				fc.view(panel);
+			});
 	});
 	
 });
