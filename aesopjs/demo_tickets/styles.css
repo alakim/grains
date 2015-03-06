@@ -1,0 +1,30 @@
+﻿body{
+	font-family: Arial, Verdana, Tahoma, Sans-serif;
+	margin:3px;
+}
+
+header{
+	padding:30px;
+	text-align: center;
+	border-bottom:1px solid #ccc;
+}
+
+footer{
+	border-top:1px solid #ccc;
+	color:#ccc;
+	padding:10px;
+	text-align: center;
+}
+article{
+	margin:10px auto;
+	width: 960px;
+	min-height: calc(100vh - 240px);
+}
+
+#mainView{
+	margin: 10px;
+}
+
+#classesView{
+	margin: 10px;
+}
