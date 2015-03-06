@@ -35,13 +35,21 @@
 	new $A.Class("ConsultationTicket", "Ticket",
 		null,
 		function(inst){
+			console.log("inst", inst);
 			inst.view = function(panel){
 				function template(itm){with($H){
 					return div(
-						h2("Заявка на консультирование #", $A.getFacet(itm, "Ticket").item().ticketID)
+						h2("Заявка на консультирование #", $A.getFacet(itm, "Ticket").item().ticketID),
+						div(input({type:"button", "class":"btBack", value:"Назад"}))
 					);
 				}}
 				panel.html(template(this));
+				panel.find(".btBack").click(function(){
+					$A.declassify(inst, curClass);
+					var fc = $A.getFacet(inst, "Ticket").item();
+					console.log(fc);
+					fc.view(panel);
+				});
 			}
 		}
 	);
@@ -52,10 +60,15 @@
 			inst.view = function(panel){
 				function template(itm){with($H){
 					return div(
-						h2("Заявка на предоставление доступа #", $A.getFacet(itm, "Ticket").item().ticketID)
+						h2("Заявка на предоставление доступа #", $A.getFacet(itm, "Ticket").item().ticketID),
+						div(input({type:"button", "class":"btBack", value:"Назад"}))
 					);
 				}}
 				panel.html(template(this));
+				panel.find(".btBack").click(function(){
+					$A.declassify(inst, curClass);
+					$A.getFacet(inst, "Ticket").item().view(panel);
+				});
 			}
 		}
 	);
