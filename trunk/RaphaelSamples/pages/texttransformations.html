@@ -1,0 +1,30 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Трансформации текста</title>
+<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
+<script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../lib/raphael-min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var paper = new Raphael($("#paper1")[0]);
+		var txt = paper.text(150, 100, "Пробный текст").attr({fill:"#f00", stroke:0, "font-size":32, transform:"M 1 0 0 2 0 0"});
+
+	});
+</script>
+</head>
+<body>
+	<h1>Трансформации текста</h1>
+	<p>Указания: текст растянут в два раза по вертикали с помощью матричного преобразования.</p>
+	
+
+	<div id="paper1" class="paper" style="width:600px; height:400px;">
+	</div>
+	
+	<h2>Литература</h2>
+	<ol>
+		<li>Wilson, C. RaphaelJS Graphics and Visualization on the Web. O'Relly, 2013 г.</li>
+		<li>Dawber, D. Learning RaphaelJS Vector Graphics. Packt pub., 2013 г.</li>
+	</ol>
+</body>
+</hmtl>
