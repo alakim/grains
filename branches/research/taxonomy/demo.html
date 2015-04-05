@@ -7,6 +7,14 @@
 	<script type="text/javascript" src="js/taxonomy.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
 	<title>Taxonomy Demo Page</title>
+	<script type="text/javascript">
+	Taxonomy({level:"семейства", taxons:[
+		{name:"Гекарциновые", sub:{level:"виды", taxons:[
+			{name:"Gecarcinus quadratus"},
+			{name:"Cardisoma armatum", rname:"Радужный краб"}
+		]}}
+	]});
+	</script>
 </head>
 <body>
 	<h1>Taxonomy Demo Page</h1>
