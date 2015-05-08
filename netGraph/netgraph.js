@@ -228,7 +228,7 @@
 			
 			var pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
 			
-			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:settings.nodeColor});
+			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:nd.color||settings.nodeColor});
 			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
 			if(settings.displayLinks)
 				drawLinks(nd, this, paper, center, rate, grSize.center);
