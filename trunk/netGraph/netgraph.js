@@ -31,7 +31,22 @@
 		E: function(x, y){
 			var lng = Vector.length(x, y);
 			return {x:x/lng, y:y/lng};
-		}
+		},
+		angle: function(x, y){
+			return Math.atan2(y, x);
+		},
+		toPolar: function(x, y){
+			return {
+				mod:Vector.length(x, y), 
+				angle:Vector.angle(x, y)
+			};
+		},
+		fromPolar: function(mod, angle){
+			return {
+				x: Math.cos(angle)*mod,
+				y: Math.sin(angle)*mod
+			};
+		},
 	}
 	
 	function calcNodes(inst){
@@ -158,6 +173,7 @@
 			var cls = getClass(lnk[2], inst);
 			if(cls && !cls.visible) continue;
 			
+			var directed = lnk[3];
 			var trg = nodes[lnk[0]];
 			var x1 = (node.pos.x - grCenter.x)*rate+ctr.x,
 				y1 = (node.pos.y - grCenter.y)*rate+ctr.y,
@@ -168,6 +184,30 @@
 			pth.toBack();
 			if(settings.displayLinkLabels)
 				paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
+			if(directed){
+				// console.log("directed to ", trg);
+				var e = Vector.E(x2-x1, y2-y1),
+					offset = settings.nodeSize*3,
+					arrSize = {
+						lng:settings.nodeSize*1.5,
+						w:settings.nodeSize*.5
+					},
+					arrPos = {tx:x2-e.x*offset, ty:y2-e.y*offset};
+					arrPos.bx = arrPos.tx-e.x*arrSize.lng;
+					arrPos.by = arrPos.ty-e.y*arrSize.lng;
+				//paper.circle(x2-e.x*offset, y2-e.y*offset, 5).attr({stroke:null, fill:"#f00"});
+				var polE = Vector.toPolar(e.x, e.y),
+					eNorm = Vector.fromPolar(polE.mod, polE.angle+Math.PI/2);
+				var arrow = paper.path([
+					"M", arrPos.tx, arrPos.ty, 
+					"L", arrPos.bx-eNorm.x*arrSize.w, arrPos.by-eNorm.y*arrSize.w, 
+					"L", arrPos.bx+e.x*arrSize.lng*.2, arrPos.by+e.y*arrSize.lng*.2, 
+					"L", arrPos.bx+eNorm.x*arrSize.w, arrPos.by+eNorm.y*arrSize.w, 
+					"Z"
+				]);
+				if(cls)arrow.attr({stroke:cls.stroke, fill:cls.stroke});
+				else arrow.attr({fill:"#000"})
+			}
 		}
 	}
 	
