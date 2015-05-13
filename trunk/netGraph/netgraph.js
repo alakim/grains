@@ -92,6 +92,42 @@
 		}
 	}
 	
+	function distributeByTree(inst){
+		var nodes = inst.nodes,
+			settings = inst.settings();
+		
+		var roots = [], leaves = [];
+		for(var k in nodes){
+			var nd = nodes[k];
+			nd.incomingLinks = [];
+			for(var m in nodes){
+				var nd2 = nodes[m];
+				for(var i=0,nn; nn=nd2.links[i],i<nd2.links.length; i++){
+					if(nn[0]==nd.name) nd.incomingLinks.push(nd2.name);
+				}
+			}
+		}
+		for(var k in nodes){
+			var nd = nodes[k];
+			if(nd.incomingLinks.length==0) roots.push(nd);
+			else leaves.push(nd);
+		}
+		
+		function distribute(coll, top){
+			//console.log(coll);
+			var n = Math.ceil(Math.sqrt(coll.length)),
+				dist = settings.initialDistance;
+			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
+				nd.pos = {
+					x:(i%n)*dist,
+					y:top+((i/n)*dist/5)
+				};
+			}
+		}
+		distribute(roots, 10);
+		distribute(leaves, settings.initialDistance);
+	}
+	
 	function initNodes(inst){
 		var nodes = inst.nodes,
 			settings = inst.settings();
@@ -104,6 +140,7 @@
 		switch(settings.initialPlacement){
 			case "circle": distributeByCircle(inst, count); break;
 			case "grid": distributeByGrid(inst); break;
+			case "tree": distributeByTree(inst); break;
 			default: break;
 		}
 	}
