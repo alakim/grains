@@ -92,11 +92,7 @@
 		}
 	}
 	
-	function distributeByTree(inst){
-		var nodes = inst.nodes,
-			settings = inst.settings();
-		
-		var roots = [], leaves = [];
+	function setIncomingLinks(nodes){
 		for(var k in nodes){
 			var nd = nodes[k];
 			nd.incomingLinks = [];
@@ -107,25 +103,68 @@
 				}
 			}
 		}
-		for(var k in nodes){
-			var nd = nodes[k];
-			if(nd.incomingLinks.length==0) roots.push(nd);
-			else leaves.push(nd);
+	}
+	
+	function getLevels(nodes){
+		function selectRoots(nodes){
+			var roots = [], leaves = [];
+			for(var k in nodes){
+				var nd = nodes[k];
+				if(nd.incomingLinks.length==0) roots.push(nd);
+				else leaves.push(nd);
+			}
+			return {selected:roots, reminder:leaves};
 		}
+		var roots = selectRoots(nodes);
+		return [roots.selected, roots.reminder];
+	}
+	
+	function distributeByCircleTree(inst){
+		var nodes = inst.nodes,
+			dist0 = inst.settings().initialDistance;
+			
+		setIncomingLinks(nodes);
+		var levels = getLevels(nodes);
 		
-		function distribute(coll, top){
-			//console.log(coll);
+		function distribute(coll, level){
 			var n = Math.ceil(Math.sqrt(coll.length)),
-				dist = settings.initialDistance;
+				dist = dist0;
+			var center = {x:0, y:0},
+				rad = dist0*(level*5),
+				sect = 2*Math.PI/coll.length;
 			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
 				nd.pos = {
-					x:(i%n)*dist,
-					y:top+((i/n)*dist/5)
+					x:center.x+Math.cos(sect*i)*rad, 
+					y:center.y+Math.sin(sect*i)*rad
 				};
 			}
 		}
-		distribute(roots, 10);
-		distribute(leaves, settings.initialDistance);
+		for(var i=0; i<levels.length; i++){
+			distribute(levels[i], i+1);
+		}
+	}
+	
+	function distributeByTree(inst){
+		var nodes = inst.nodes,
+			dist0 = inst.settings().initialDistance;
+			
+		setIncomingLinks(nodes);
+		var levels = getLevels(nodes);
+		
+		function distribute(coll, level){
+			var n = Math.ceil(Math.sqrt(coll.length)),
+				dist = dist0;
+			
+			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
+				nd.pos = {
+					x:i*dist0, 
+					y:level*dist0*2
+				};
+			}
+		}
+		for(var i=0; i<levels.length; i++){
+			distribute(levels[i], i+1);
+		}
 	}
 	
 	function initNodes(inst){
@@ -140,6 +179,7 @@
 		switch(settings.initialPlacement){
 			case "circle": distributeByCircle(inst, count); break;
 			case "grid": distributeByGrid(inst); break;
+			case "circleTree": distributeByCircleTree(inst); break;
 			case "tree": distributeByTree(inst); break;
 			default: break;
 		}
@@ -205,7 +245,8 @@
 	
 	function drawLinks(node, inst, paper, ctr, rate, grCenter){
 		var nodes = inst.nodes,
-			settings = inst.settings();
+			settings = inst.settings(),
+			linkSet = [];
 		for(var i=0,lnk,c=node.links; lnk=c[i],i<c.length; i++){
 			var cls = getClass(lnk[2], inst);
 			if(cls && !cls.visible) continue;
@@ -217,35 +258,40 @@
 				x2 = (trg.pos.x - grCenter.x)*rate+ctr.x,
 				y2 = (trg.pos.y - grCenter.y)*rate+ctr.y;
 			var pth = paper.path(["M", x1, y1, "L", x2, y2]);
+			linkSet.push(pth);
 			if(cls)pth.attr("stroke", cls.stroke);
 			pth.toBack();
 			if(settings.displayLinkLabels)
 				paper.text(x1+(x2-x1)/2+settings.linkLabelOffset.x, y1+(y2-y1)/2+settings.linkLabelOffset.y, lnk[1]);
-			if(directed){
-				// console.log("directed to ", trg);
-				var e = Vector.E(x2-x1, y2-y1),
-					offset = settings.nodeSize*3,
-					arrSize = {
-						lng:settings.nodeSize*1.5,
-						w:settings.nodeSize*.5
-					},
-					arrPos = {tx:x2-e.x*offset, ty:y2-e.y*offset};
-					arrPos.bx = arrPos.tx-e.x*arrSize.lng;
-					arrPos.by = arrPos.ty-e.y*arrSize.lng;
-				//paper.circle(x2-e.x*offset, y2-e.y*offset, 5).attr({stroke:null, fill:"#f00"});
-				var polE = Vector.toPolar(e.x, e.y),
-					eNorm = Vector.fromPolar(polE.mod, polE.angle+Math.PI/2);
-				var arrow = paper.path([
-					"M", arrPos.tx, arrPos.ty, 
-					"L", arrPos.bx-eNorm.x*arrSize.w, arrPos.by-eNorm.y*arrSize.w, 
-					"L", arrPos.bx+e.x*arrSize.lng*.2, arrPos.by+e.y*arrSize.lng*.2, 
-					"L", arrPos.bx+eNorm.x*arrSize.w, arrPos.by+eNorm.y*arrSize.w, 
-					"Z"
-				]);
-				if(cls)arrow.attr({stroke:cls.stroke, fill:cls.stroke});
-				else arrow.attr({fill:"#000"})
-			}
+			
+			if(directed) drawArrow(x1, y1, x2, y2);
 		}
+			
+		function drawArrow(x1, y1, x2, y2){
+			var e = Vector.E(x2-x1, y2-y1),
+				ndSize = inst.settings().nodeSize,
+				offset = ndSize*3,
+				arrSize = {
+					lng:ndSize*1.5,
+					w:ndSize*.5
+				},
+				arrPos = {tx:x2-e.x*offset, ty:y2-e.y*offset};
+				arrPos.bx = arrPos.tx-e.x*arrSize.lng;
+				arrPos.by = arrPos.ty-e.y*arrSize.lng;
+			var polE = Vector.toPolar(e.x, e.y),
+				eNorm = Vector.fromPolar(polE.mod, polE.angle+Math.PI/2);
+			var arrow = paper.path([
+				"M", arrPos.tx, arrPos.ty, 
+				"L", arrPos.bx-eNorm.x*arrSize.w, arrPos.by-eNorm.y*arrSize.w, 
+				"L", arrPos.bx+e.x*arrSize.lng*.2, arrPos.by+e.y*arrSize.lng*.2, 
+				"L", arrPos.bx+eNorm.x*arrSize.w, arrPos.by+eNorm.y*arrSize.w, 
+				"Z"
+			]);
+			if(cls)arrow.attr({stroke:cls.stroke, fill:cls.stroke});
+			else arrow.attr({fill:"#000"})
+		}
+		
+		return linkSet;
 	}
 	
 	function getTension(node, link, nodes){
@@ -305,10 +351,22 @@
 			
 			var pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
 			
-			paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:nd.color||settings.nodeColor});
+			var icon = paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:nd.color||settings.nodeColor});
 			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
 			if(settings.displayLinks)
-				drawLinks(nd, this, paper, center, rate, grSize.center);
+				icon.grLinks = drawLinks(nd, this, paper, center, rate, grSize.center);
+			
+			icon.mouseover(function(ev){
+				this.attr({fill:"#f00"});
+				for(var i=0,lnk,c=this.grLinks; lnk=c[i],i<c.length; i++){
+					lnk.attr({stroke:"#f00"});
+				}
+			}).mouseout(function(ev){
+				this.attr({fill:nd.color||settings.nodeColor});
+				for(var i=0,lnk,c=this.grLinks; lnk=c[i],i<c.length; i++){
+					lnk.attr({stroke:"#000"});
+				}
+			})
 		}
 		
 		var reportPnl = $("#"+reportPnlID);
