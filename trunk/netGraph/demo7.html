@@ -11,9 +11,9 @@
 	<script type="text/javascript">
 		var graph = new NetGraph({"1c_rep":{name:"1c_rep",links:[]},"about":{name:"about",links:[]},"admin":{name:"admin",links:[]},"bookkeeping":{name:"bookkeeping",links:[]},"bsp":{name:"bsp",links:[["bsp_red",1, null, 1]]},"bsp4-2":{name:"bsp4-2",links:[]},"bsp5-0":{name:"bsp5-0",links:[]},"bsp_red":{name:"bsp_red",links:[]},"buch8":{name:"buch8",links:[]},"cloud":{name:"cloud",links:[]},"contacts":{name:"contacts",links:[]},"home":{name:"home",links:[["about",1, null, 1],["bsp",1, null, 1],["prod1c",1, null, 1],["support",1, null, 1],["1c_rep",1, null, 1],["outsourcing",1, null, 1]]},"hr8":{name:"hr8",links:[]},"news":{name:"news",links:[]},"outsourcing":{name:"outsourcing",links:[]},"prod1c":{name:"prod1c",links:[["buch8",1, null, 1],["hr8",1, null, 1]]},"production":{name:"production",links:[["bsp_red",1, null, 1],["bsp",1, null, 1],["prod1c",1, null, 1],["smeta",1, null, 1]]},"releases":{name:"releases",links:[["updates",1, null, 1]]},"services":{name:"services",links:[["subscript",1, null, 1],["1c_rep",1, null, 1],["support",1, null, 1],["webdev",1, null, 1],["cloud",1, null, 1],["outsourcing",1, null, 1],["bookkeeping",1, null, 1],["bsp",1, null, 1]]},"smeta":{name:"smeta",links:[]},"subscript":{name:"subscript",links:[]},"support":{name:"support",links:[]},"test":{name:"test",links:[["admin",1, null, 1]]},"updates":{name:"updates",links:[]},"webdev":{name:"webdev",links:[]},"toc":{name:"toc",links:[["home",5, null, 1],["about",5, null, 1],["production",5, null, 1],["services",5, null, 1],["releases",5, null, 1],["news",5, null, 1],["contacts",5, null, 1]]}});
 		graph.settings({
-			initialPlacement:"tree", // circle, grid, tree
+			initialPlacement:"circleTree", // circle, grid, tree, circleTree
 			nodeSize:8,
-			maxIterations:2,
+			maxIterations:8,
 			initialDistance:410,
 			gravityRate:1e3,
 			tensionRate:.001,
