@@ -259,6 +259,7 @@
 				y2 = (trg.pos.y - grCenter.y)*rate+ctr.y;
 			var pth = paper.path(["M", x1, y1, "L", x2, y2]);
 			linkSet.push(pth);
+			trg.grIcon.grIncomingLinks.push(pth);
 			if(cls)pth.attr("stroke", cls.stroke);
 			pth.toBack();
 			if(settings.displayLinkLabels)
@@ -352,21 +353,33 @@
 			var pos = {x:(nd.pos.x - grSize.center.x)*rate+center.x, y:(nd.pos.y - grSize.center.y)*rate+center.y};
 			
 			var icon = paper.circle(pos.x, pos.y, settings.nodeSize).attr({fill:nd.color||settings.nodeColor});
+			nd.grIcon = icon;
+			icon.grIncomingLinks = [];
 			paper.text(pos.x+settings.labelOffset.x, pos.y+settings.labelOffset.y, nd.name);
-			if(settings.displayLinks)
-				icon.grLinks = drawLinks(nd, this, paper, center, rate, grSize.center);
 			
 			icon.mouseover(function(ev){
 				this.attr({fill:"#f00"});
 				for(var i=0,lnk,c=this.grLinks; lnk=c[i],i<c.length; i++){
-					lnk.attr({stroke:"#f00"});
+					lnk.attr({stroke:"#f00", "stroke-width":2});
+				}
+				for(var i=0,lnk,c=this.grIncomingLinks; lnk=c[i],i<c.length; i++){
+					lnk.attr({stroke:"#0c0", "stroke-width":2});
 				}
 			}).mouseout(function(ev){
 				this.attr({fill:nd.color||settings.nodeColor});
 				for(var i=0,lnk,c=this.grLinks; lnk=c[i],i<c.length; i++){
-					lnk.attr({stroke:"#000"});
+					lnk.attr({stroke:"#000", "stroke-width":1});
+				}
+				for(var i=0,lnk,c=this.grIncomingLinks; lnk=c[i],i<c.length; i++){
+					lnk.attr({stroke:"#000", "stroke-width":1});
 				}
 			})
+		}
+		if(settings.displayLinks){
+			for(var k in this.nodes){
+				var nd = this.nodes[k];
+				nd.grIcon.grLinks = drawLinks(nd, this, paper, center, rate, grSize.center);
+			}
 		}
 		
 		var reportPnl = $("#"+reportPnlID);
