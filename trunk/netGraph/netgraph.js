@@ -115,11 +115,51 @@
 			}
 			return {selected:roots, reminder:leaves};
 		}
+		function find(coll, name){
+			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
+				if(nd.name==name) return nd;
+			}
+		}
+		function selectLinked(root, nodes){
+			var selected = [], reminder = [];
+			for(var i=0,nd,c=nodes; nd=c[i],i<c.length; i++){
+				var found = false;
+				for(var ii=0,lnk,cc=root.links; lnk=cc[ii],ii<cc.length; ii++){
+					if(lnk[0]==nd.name){
+						selected.push(nd);
+						found = true;
+						break;
+					}
+				}
+				if(!found)reminder.push(nd);
+			}
+			return {selected:selected, reminder:reminder};
+		}
+		function getLevel(roots, nodes){
+			var res = [], reminder = nodes;
+			for(var i=0,rt,c=roots; rt=c[i],i<c.length; i++){
+				var sel = selectLinked(rt, reminder);
+				res = res.concat(sel.selected);
+				reminder = sel.reminder;
+			}
+			return {selected:res, reminder:reminder};
+		}
 		var roots = selectRoots(nodes);
-		return [roots.selected, roots.reminder];
+		var levels = [roots.selected];
+		var prev = roots.selected,
+			reminder = roots.reminder;
+		for(var iLvl=0; iLvl<5; iLvl++){
+			var lvl = getLevel(prev, reminder);
+			levels.push(lvl.selected);
+			prev = lvl.selected;
+			reminder = lvl.reminder;
+			if(!prev.length || !reminder.length) break;
+		}
+		levels.push(reminder);
+		return levels;
 	}
 	
-	function distributeByCircleTree(inst){
+	function distributeByCircleTree(inst, inverced){
 		var nodes = inst.nodes,
 			dist0 = inst.settings().initialDistance;
 			
@@ -130,7 +170,8 @@
 			var n = Math.ceil(Math.sqrt(coll.length)),
 				dist = dist0;
 			var center = {x:0, y:0},
-				rad = dist0*(level*5),
+				rad = inverced?dist0*(1/level*10)
+					:dist0*(level),
 				sect = 2*Math.PI/coll.length;
 			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
 				nd.pos = {
@@ -167,6 +208,37 @@
 		}
 	}
 	
+	function distributeByArcTree(inst){
+		var nodes = inst.nodes,
+			dist0 = inst.settings().initialDistance;
+			
+		setIncomingLinks(nodes);
+		var levels = getLevels(nodes);
+		
+		function distribute(coll, level){
+			var n = Math.ceil(Math.sqrt(coll.length)),
+				dist = dist0;
+			
+			var center = {x:dist0*16, y:level*dist0*14},
+				rad = dist0*48,
+				sect = Math.PI/(2*coll.length);
+			for(var i=0,nd; nd=coll[i],i<coll.length; i++){
+				// nd.pos = {
+				// 	x:i*dist0, 
+				// 	y:level*dist0*2
+				// };
+				var alpha = Math.PI*3/4-sect*i;
+				nd.pos = {
+					x:center.x+Math.cos(alpha)*rad, 
+					y:center.y+Math.sin(alpha)*rad
+				};
+			}
+		}
+		for(var i=0; i<levels.length; i++){
+			distribute(levels[i], i+1);
+		}
+	}
+	
 	function initNodes(inst){
 		var nodes = inst.nodes,
 			settings = inst.settings();
@@ -180,7 +252,9 @@
 			case "circle": distributeByCircle(inst, count); break;
 			case "grid": distributeByGrid(inst); break;
 			case "circleTree": distributeByCircleTree(inst); break;
+			case "circleTreeInverced": distributeByCircleTree(inst, true); break;
 			case "tree": distributeByTree(inst); break;
+			case "arcTree": distributeByArcTree(inst); break;
 			default: break;
 		}
 	}
