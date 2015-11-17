@@ -1,5 +1,5 @@
 (function($, $H, $R){
-	var size = {w:520, h:550};
+	var size = {w:510, h:550};
 	var panelPos;
 	var paper;
 	
@@ -85,7 +85,7 @@
 	function knob(x, y, range, lblCount, title, onchange, defVal){
 		if(defVal==null) defVal = range.mn;
 		
-		var size = 30, color = "#999",
+		var size = 30, 
 			pos0 = 90,
 			marg = 40;
 			
@@ -96,7 +96,7 @@
 		var drag = {
 			start: function(x2, y2, e){
 				x2-=panelPos.left; y2-=panelPos.top;
-				this.attr({fill:"#777"});
+				this.attr({fill:grad2});
 				this.data("curPos", new Vector(x, y).Mul(-1).Add(x2, y2));
 			},
 			move: function(dx, dy, x1, y1, e){
@@ -114,11 +114,13 @@
 				onchange(range.mn+(range.mx-range.mn)*angle/(360-marg*2));
 			},
 			end: function(e){
-				this.attr({fill:color})
+				this.attr({fill:grad})
 			}
 		};
 		
-		paper.circle(x, y, size).attr({fill:"#999", cursor:"pointer"}).drag(drag.move, drag.start, drag.end);
+		var grad = "r(0.25, 0.25)#ccc-#888", 
+			grad2 = "r(0.25, 0.25)#aaa-#777";
+		paper.circle(x, y, size).attr({fill:grad, cursor:"pointer"}).drag(drag.move, drag.start, drag.end);
 		var defAngle = pos0+marg + (360-marg*2)*(defVal-range.mn)/(range.mx-range.mn);
 		var direction = new Vector().SetPolar(size*.7, /*pos0+marg*/ defAngle, true);
 		var marker = paper.circle(x+direction.x, y+direction.y, 3).attr({fill:"#0f0", stroke:0});
@@ -146,7 +148,7 @@
 	];
 	
 	function displayCtrl(x, y, w){var h = w;
-		paper.rect(x, y, w, h).attr({fill:"#222"});
+		paper.rect(x, y, w, h).attr({fill:"90-#222-#000"});
 		
 		function getCurvePath(){
 			var yk = curveFunc(threshold),
@@ -192,17 +194,18 @@
 		panelPos = pnl.offset();
 		
 		paper = $R(pnl.css({width:size.w, height:size.h})[0]);
-		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc", stroke:"#888"});
+		paper.rect(0, 0, size.w, size.h).attr({fill:"#ddd", stroke:"#888"});
+		paper.rect(1, 35, size.w-2, size.h-36).attr({fill:"90-#aaa-#ddd", stroke:0});
 		
 		var display = displayCtrl(100, 30, 300);
-		paper.rect(0, 0, size.w, 30).attr({fill:"#ccc", stroke:0});
+		paper.rect(1, 1, size.w-2, 30).attr({fill:"#ddd", stroke:0});
 		
 		var knobY = 450;
 		knob(100, knobY, {mn:0, mx:1}, 10, "Threshold", function(v){
 			threshold = v;
 			display.update();
 		}, threshold);
-		knob(250, knobY, {mn:1, mx:10}, 9, "Rate", function(v){
+		knob(250, knobY, {mn:1, mx:10}, 9, "Ratio", function(v){
 			rate = v;
 			display.update();
 		}, rate);
