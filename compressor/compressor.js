@@ -145,7 +145,7 @@
 		15, 16, 11, 6, 1
 	];
 	
-	function displayCtrl(x, y, w, h){
+	function displayCtrl(x, y, w){var h = w;
 		paper.rect(x, y, w, h).attr({fill:"#222"});
 		
 		function getCurvePath(){
@@ -157,7 +157,6 @@
 		var curve = paper.path(getCurvePath()).attr({stroke:"#afa", "stroke-width":2});
 		
 		function hHist(i){
-			// return histogram[i]*curveFunc(i/(histogram.length-1));
 			return y+h-h*(curveFunc((i+1)/histogram.length));
 		}
 		var xHistCtrl = [];
@@ -168,15 +167,22 @@
 			yHistCtrl[i] = paper.rect(x, hHist(i), histogram[i]*histRate, h/histogram.length).attr({fill:"#aa8"});
 		}
 		
+		paper.text(x+w-70, y+h+25, "амплитуда входного сигнала").attr({"text-anchor":"right"});
+		paper.text(x-32, y+80, "амплитуда выходного сигнала").attr({"text-anchor":"right", transform:"r-90"});
+		
+		var grStep = w/10;
+		for(var i=0; i<10; i++){
+			paper.text(x+grStep*i, y+h+10, (i*.1+"").substr(0, 3));
+			paper.text(x-12, y+(h-grStep*i), (i*.1+"").substr(0, 3));
+		}
+		paper.text(x+w, y+h+10, "1");
+		paper.text(x-12, y+6, "1");
+		
 		return {
 			update: function(){
 				curve.attr({path:getCurvePath()});
 				for(var i=0; i<yHistCtrl.length; i++){
-					yHistCtrl[i].attr({
-						//width:hHist(i)*histRate
-						y:hHist(i),
-						w:100
-					});
+					yHistCtrl[i].attr({y:hHist(i)});
 				}
 			}
 		};
@@ -188,18 +194,19 @@
 		paper = $R(pnl.css({width:size.w, height:size.h})[0]);
 		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc", stroke:"#888"});
 		
-		var display = displayCtrl(100, 30, 300, 300);
+		var display = displayCtrl(100, 30, 300);
 		paper.rect(0, 0, size.w, 30).attr({fill:"#ccc", stroke:0});
 		
-		knob(100, 430, {mn:0, mx:1}, 10, "Threshold", function(v){
+		var knobY = 450;
+		knob(100, knobY, {mn:0, mx:1}, 10, "Threshold", function(v){
 			threshold = v;
 			display.update();
 		}, threshold);
-		knob(250, 430, {mn:1, mx:10}, 9, "Rate", function(v){
+		knob(250, knobY, {mn:1, mx:10}, 9, "Rate", function(v){
 			rate = v;
 			display.update();
 		}, rate);
-		knob(400, 430, {mn:1, mx:4}, 10, "Volume", function(v){
+		knob(400, knobY, {mn:1, mx:4}, 10, "Volume", function(v){
 			volume = v;
 			display.update();
 		}, volume);
