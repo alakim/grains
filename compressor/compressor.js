@@ -204,7 +204,7 @@
 		paper.rect(1, 35, size.w-2, size.h-36).attr({fill:"90-#aaa-#ddd", stroke:0});
 		
 		var display = displayCtrl(100, 30, 300);
-		paper.rect(1, 1, size.w-2, 30).attr({fill:"#ddd", stroke:0});
+		paper.rect(1, 0, size.w-2, 30).attr({fill:"#ddd", stroke:0});
 		
 		var knobY = 450;
 		knob(100, knobY, {mn:0, mx:1}, 10, "Threshold", function(v){
