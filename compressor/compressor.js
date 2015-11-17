@@ -5,78 +5,81 @@
 	
 	var threshold = .7, rate = 3, volume = 1;
 	
-	function Vector(x, y){
-		switch(arguments.length){
-			case 2: this.x = x; this.y = y; break;
-			case 1: if(x instanceof Array){this.x = x[0]; this.y = x[1];}
+	var Vector = (function(){
+		function Vector(x, y){
+			switch(arguments.length){
+				case 2: this.x = x; this.y = y; break;
+				case 1: if(x instanceof Array){this.x = x[0]; this.y = x[1];}
+						else if(x instanceof Vector){this.x = x.x; this.y = x.y}
+					break;
+				default: this.x = 0; this.y = 0; break;
+			}
+			if(arguments.length==2){this.x = x; this.y = y;}
+		}
+		$.extend(Vector, {
+			scalarProd: function(v1, v2){return v1.x*v2.x + v1.y*v2.y;}
+		});
+		$.extend(Vector.prototype, {
+			Add: function(x, y){
+				if(x instanceof Array){this.x+=x[0]; this.y+=x[1];}
+				else if(x instanceof Vector){this.x+=x.x; this.y+=x.y;}
+				else{this.x+=x; this.y+=y;}
+				return this;
+			},
+			add: function(x, y){return (new Vector(this)).Add(x, y);},
+			Mul: function(rate){
+				if(rate instanceof Vector){
+					this.x*=rate.x; this.y*=rate.y;
+				}
+				else {
+					this.x*=rate;this.y*=rate;
+				}
+				return this;
+			},
+			mul: function(rate){return (new Vector(this)).Mul(rate);},
+			Norm: function(){var _=this;
+				var lng = Math.sqrt(_.x*_.x+_.y*_.y);
+				return _.Mul(1/lng);
+			},
+			norm: function(){
+				return (new Vector(this)).Norm();
+			},
+			getAngle: function(degreeMode){
+				degreeMode = degreeMode==null?true:degreeMode;
+				var angle = Math.atan2(this.y, this.x);
+				return degreeMode?angle/Math.PI*180:angle;
+			},
+			getLength: function(){return Math.sqrt(this.x*this.x + this.y*this.y);},
+			getPolar: function(degreeMode){
+				degreeMode = degreeMode==null?true:degreeMode;
+				return {
+					mod:this.getLength(), 
+					angle:this.getAngle(degreeMode)
+				};
+			},
+			Set: function(x, y){
+				if(arguments.length==1){
+					if(x instanceof Array){this.x = x[0]; this.y = x[1];}
 					else if(x instanceof Vector){this.x = x.x; this.y = x.y}
-				break;
-			default: this.x = 0; this.y = 0; break;
-		}
-		if(arguments.length==2){this.x = x; this.y = y;}
-	}
-	$.extend(Vector, {
-		scalarProd: function(v1, v2){return v1.x*v2.x + v1.y*v2.y;}
-	});
-	$.extend(Vector.prototype, {
-		Add: function(x, y){
-			if(x instanceof Array){this.x+=x[0]; this.y+=x[1];}
-			else if(x instanceof Vector){this.x+=x.x; this.y+=x.y;}
-			else{this.x+=x; this.y+=y;}
-			return this;
-		},
-		add: function(x, y){return (new Vector(this)).Add(x, y);},
-		Mul: function(rate){
-			if(rate instanceof Vector){
-				this.x*=rate.x; this.y*=rate.y;
+				}
+				else{
+					this.x = x; this.y = y;
+				}
+				return this;
+			},
+			SetPolar: function(mod, angle, degreeMode){
+				degreeMode = degreeMode==null?true:degreeMode;
+				if(degreeMode) angle = angle/180*Math.PI;
+				this.x = Math.cos(angle)*mod;
+				this.y = Math.sin(angle)*mod;
+				return this;
+			},
+			toString: function(){
+				return "("+[this.x, this.y].join()+")";
 			}
-			else {
-				this.x*=rate;this.y*=rate;
-			}
-			return this;
-		},
-		mul: function(rate){return (new Vector(this)).Mul(rate);},
-		Norm: function(){var _=this;
-			var lng = Math.sqrt(_.x*_.x+_.y*_.y);
-			return _.Mul(1/lng);
-		},
-		norm: function(){
-			return (new Vector(this)).Norm();
-		},
-		getAngle: function(degreeMode){
-			degreeMode = degreeMode==null?true:degreeMode;
-			var angle = Math.atan2(this.y, this.x);
-			return degreeMode?angle/Math.PI*180:angle;
-		},
-		getLength: function(){return Math.sqrt(this.x*this.x + this.y*this.y);},
-		getPolar: function(degreeMode){
-			degreeMode = degreeMode==null?true:degreeMode;
-			return {
-				mod:this.getLength(), 
-				angle:this.getAngle(degreeMode)
-			};
-		},
-		Set: function(x, y){
-			if(arguments.length==1){
-				if(x instanceof Array){this.x = x[0]; this.y = x[1];}
-				else if(x instanceof Vector){this.x = x.x; this.y = x.y}
-			}
-			else{
-				this.x = x; this.y = y;
-			}
-			return this;
-		},
-		SetPolar: function(mod, angle, degreeMode){
-			degreeMode = degreeMode==null?true:degreeMode;
-			if(degreeMode) angle = angle/180*Math.PI;
-			this.x = Math.cos(angle)*mod;
-			this.y = Math.sin(angle)*mod;
-			return this;
-		},
-		toString: function(){
-			return "("+[this.x, this.y].join()+")";
-		}
-	});
+		});
+		return Vector;
+	})();
 
 	
 	function knob(x, y, range, lblCount, title, onchange, defVal){
@@ -135,6 +138,13 @@
 			:(threshold+(x-threshold)/rate)*volume;  //(x+(1-threshold)/rate)*volume;
 	}
 	
+	var histogram = [
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 3,
+		5, 5, 8, 9, 11,
+		15, 16, 11, 6, 1
+	];
+	
 	function displayCtrl(x, y, w, h){
 		paper.rect(x, y, w, h).attr({fill:"#222"});
 		
@@ -146,9 +156,23 @@
 		
 		var curve = paper.path(getCurvePath()).attr({stroke:"#afa", "stroke-width":2});
 		
+		function hHist(i){
+			return histogram[i]*curveFunc(i/(histogram.length-1));
+		}
+		var xHistCtrl = [];
+		var yHistCtrl = [];
+		var histRate = 2;
+		for(var i=0; i<histogram.length; i++){
+			xHistCtrl[i] = paper.rect(x+i*w/histogram.length, y+h-histogram[i]*histRate, w/histogram.length, histogram[i]*histRate).attr({fill:"#aa8"});
+			yHistCtrl[i] = paper.rect(x, y+h-i*w/histogram.length, hHist(i)*histRate, h/histogram.length).attr({fill:"#aa8"});
+		}
+		
 		return {
 			update: function(){
 				curve.attr({path:getCurvePath()});
+				for(var i=0; i<yHistCtrl.length; i++){
+					yHistCtrl[i].attr({width:hHist(i)*histRate});
+				}
 			}
 		};
 	}
@@ -173,8 +197,6 @@
 			volume = v;
 			display.update();
 		}, volume);
-		
-		//paper.circle(100, 400, 3).attr({fill:"#f00"});
 	}
 	
 	$.fn.compressor = function(){
