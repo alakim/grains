@@ -1,5 +1,5 @@
 (function($, $H, $R){
-	var size = {w:520, h:500};
+	var size = {w:520, h:550};
 	var panelPos;
 	var paper;
 	
@@ -85,7 +85,7 @@
 	function knob(x, y, range, lblCount, title, onchange, defVal){
 		if(defVal==null) defVal = range.mn;
 		
-		var size = 20, color = "#999",
+		var size = 30, color = "#999",
 			pos0 = 90,
 			marg = 40;
 			
@@ -157,21 +157,26 @@
 		var curve = paper.path(getCurvePath()).attr({stroke:"#afa", "stroke-width":2});
 		
 		function hHist(i){
-			return histogram[i]*curveFunc(i/(histogram.length-1));
+			// return histogram[i]*curveFunc(i/(histogram.length-1));
+			return y+h-h*(curveFunc((i+1)/histogram.length));
 		}
 		var xHistCtrl = [];
 		var yHistCtrl = [];
 		var histRate = 2;
 		for(var i=0; i<histogram.length; i++){
 			xHistCtrl[i] = paper.rect(x+i*w/histogram.length, y+h-histogram[i]*histRate, w/histogram.length, histogram[i]*histRate).attr({fill:"#aa8"});
-			yHistCtrl[i] = paper.rect(x, y+h-i*w/histogram.length, hHist(i)*histRate, h/histogram.length).attr({fill:"#aa8"});
+			yHistCtrl[i] = paper.rect(x, hHist(i), histogram[i]*histRate, h/histogram.length).attr({fill:"#aa8"});
 		}
 		
 		return {
 			update: function(){
 				curve.attr({path:getCurvePath()});
 				for(var i=0; i<yHistCtrl.length; i++){
-					yHistCtrl[i].attr({width:hHist(i)*histRate});
+					yHistCtrl[i].attr({
+						//width:hHist(i)*histRate
+						y:hHist(i),
+						w:100
+					});
 				}
 			}
 		};
