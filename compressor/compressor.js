@@ -3,6 +3,8 @@
 	var panelPos;
 	var paper;
 	
+	var threshold = .7, rate = 3, volume = 1;
+	
 	function Vector(x, y){
 		switch(arguments.length){
 			case 2: this.x = x; this.y = y; break;
@@ -77,7 +79,9 @@
 	});
 
 	
-	function knob(x, y, range, lblCount, title, onchange){
+	function knob(x, y, range, lblCount, title, onchange, defVal){
+		if(defVal==null) defVal = range.mn;
+		
 		var size = 20, color = "#999",
 			pos0 = 90,
 			marg = 40;
@@ -96,34 +100,57 @@
 				var pos = this.data("curPos");
 				if(!pos) return;
 				var pos1 = pos.add(dx, dy);
-				// console.log(dx, dy, pos, pos1);
-				//this.data("curPos", pos);
+				
 				var angle = pos1.getAngle(true) - pos0 - marg;
-				angle = Math.abs(angle)%360;
-				// if(angle<0) angle = 0;
-				// else if(angle>360-marg*2) angle = 360-marg*2;
-				console.log(angle);
-				direction.SetPolar(size*.7, angle, true);
+				if(angle<0) angle += 360;
+				if(angle>320) angle = 0;
+				if(angle>360-marg*2) angle = 360-marg*2;
+				
+				direction.SetPolar(size*.7, angle + pos0 + marg, true);
 				marker.attr({cx:x+direction.x, cy:y+direction.y});
-				//onchange(range.mn+(360-marg*2)*pos/(range.mx-range.mn));
+				onchange(range.mn+(range.mx-range.mn)*angle/(360-marg*2));
 			},
 			end: function(e){
 				this.attr({fill:color})
 			}
 		};
 		
-		paper.circle(x, y, 20).attr({fill:"#999", cursor:"pointer"}).drag(drag.move, drag.start, drag.end);
-		var direction = new Vector().SetPolar(size*.7, pos0+marg, true);
+		paper.circle(x, y, size).attr({fill:"#999", cursor:"pointer"}).drag(drag.move, drag.start, drag.end);
+		var defAngle = pos0+marg + (360-marg*2)*(defVal-range.mn)/(range.mx-range.mn);
+		var direction = new Vector().SetPolar(size*.7, /*pos0+marg*/ defAngle, true);
 		var marker = paper.circle(x+direction.x, y+direction.y, 3).attr({fill:"#0f0", stroke:0});
 		
-		paper.text(x, y+size*2.4, title.toUpperCase()).attr({"font-size":12});
+		paper.text(x, y+size+30, title.toUpperCase()).attr({"font-size":12});
 		
 		for(var i=0,stV=(360-marg*2)/lblCount,lblDir=new Vector(), lblV=range.mn, lblSt=(range.mx-range.mn)/lblCount; i<=lblCount; i++){
-			lblDir.SetPolar(size*1.3, pos0+marg+stV*i, true);
+			lblDir.SetPolar(size+10, pos0+marg+stV*i, true);
 			paper.circle(x+lblDir.x, y+lblDir.y, 2).attr({fill:"#444", stroke:0});
-			lblDir.Mul(1.5);
+			lblDir.SetPolar(size+23, pos0+marg+stV*i, true);
 			paper.text(x+lblDir.x, y+lblDir.y, ((lblV+lblSt*i)+"").substr(0,3)/*.match(/^[0-9\.]([0-9\.][0-9\.])?/i)*/);
 		}
+	}
+	
+	function curveFunc(x){
+		return x<threshold?x*volume
+			:(threshold+(x-threshold)/rate)*volume;  //(x+(1-threshold)/rate)*volume;
+	}
+	
+	function displayCtrl(x, y, w, h){
+		paper.rect(x, y, w, h).attr({fill:"#222"});
+		
+		function getCurvePath(){
+			var yk = curveFunc(threshold),
+				ym = curveFunc(1);
+			return ["M", x, y+h, "L", x+h*threshold, y+h*(1-yk), "L", x+w, y+h*(1-ym)];
+		}
+		
+		var curve = paper.path(getCurvePath()).attr({stroke:"#afa", "stroke-width":2});
+		
+		return {
+			update: function(){
+				curve.attr({path:getCurvePath()});
+			}
+		};
 	}
 	
 	function init(pnl){
@@ -132,15 +159,21 @@
 		paper = $R(pnl.css({width:size.w, height:size.h})[0]);
 		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc", stroke:"#888"});
 		
+		var display = displayCtrl(100, 10, 300, 300);
+		
 		knob(100, 400, {mn:0, mx:1}, 10, "Threshold", function(v){
-			console.log(v);
-		});
+			threshold = v;
+			display.update();
+		}, threshold);
 		knob(250, 400, {mn:1, mx:10}, 9, "Rate", function(v){
-			console.log(v);
-		});
-		knob(400, 400, {mn:0, mx:10}, 10, "Volume", function(v){
-			console.log(v);
-		});
+			rate = v;
+			display.update();
+		}, rate);
+		knob(400, 400, {mn:1, mx:4}, 10, "Volume", function(v){
+			volume = v;
+			display.update();
+		}, volume);
+		
 		//paper.circle(100, 400, 3).attr({fill:"#f00"});
 	}
 	
