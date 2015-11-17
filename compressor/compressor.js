@@ -184,6 +184,7 @@
 		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc", stroke:"#888"});
 		
 		var display = displayCtrl(100, 30, 300, 300);
+		paper.rect(0, 0, size.w, 30).attr({fill:"#ccc", stroke:0});
 		
 		knob(100, 430, {mn:0, mx:1}, 10, "Threshold", function(v){
 			threshold = v;
