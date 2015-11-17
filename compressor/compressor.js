@@ -150,6 +150,23 @@
 	function displayCtrl(x, y, w){var h = w;
 		paper.rect(x, y, w, h).attr({fill:"90-#222-#000"});
 		
+		function drawGrid(){
+			paper.text(x+w-70, y+h+25, "амплитуда входного сигнала").attr({"text-anchor":"right"});
+			paper.text(x-32, y+80, "амплитуда выходного сигнала").attr({"text-anchor":"right", transform:"r-90"});
+		
+			var grStep = w/10, grColor ="#555";
+			for(var i=0; i<10; i++){
+				paper.text(x+grStep*i, y+h+10, (i*.1+"").substr(0, 3));
+				paper.text(x-12, y+(h-grStep*i), (i*.1+"").substr(0, 3));
+				paper.path(["M", x+grStep*i, y, "L", x+grStep*i, y+h]).attr({stroke:grColor});
+				paper.path(["M", x, y+grStep*i, "L", x+w, y+grStep*i]).attr({stroke:grColor});
+			}
+			paper.text(x+w, y+h+10, "1");
+			paper.text(x-12, y+6, "1");
+		}
+		
+		drawGrid();
+		
 		function getCurvePath(){
 			var yk = curveFunc(threshold),
 				ym = curveFunc(1);
@@ -168,17 +185,6 @@
 			xHistCtrl[i] = paper.rect(x+i*w/histogram.length, y+h-histogram[i]*histRate, w/histogram.length, histogram[i]*histRate).attr({fill:"#aa8"});
 			yHistCtrl[i] = paper.rect(x, hHist(i), histogram[i]*histRate, h/histogram.length).attr({fill:"#aa8"});
 		}
-		
-		paper.text(x+w-70, y+h+25, "амплитуда входного сигнала").attr({"text-anchor":"right"});
-		paper.text(x-32, y+80, "амплитуда выходного сигнала").attr({"text-anchor":"right", transform:"r-90"});
-		
-		var grStep = w/10;
-		for(var i=0; i<10; i++){
-			paper.text(x+grStep*i, y+h+10, (i*.1+"").substr(0, 3));
-			paper.text(x-12, y+(h-grStep*i), (i*.1+"").substr(0, 3));
-		}
-		paper.text(x+w, y+h+10, "1");
-		paper.text(x-12, y+6, "1");
 		
 		return {
 			update: function(){
