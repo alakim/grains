@@ -1,5 +1,5 @@
 (function($, $H, $R){
-	var size = {w:800, h:600};
+	var size = {w:520, h:500};
 	var panelPos;
 	var paper;
 	
@@ -183,17 +183,17 @@
 		paper = $R(pnl.css({width:size.w, height:size.h})[0]);
 		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc", stroke:"#888"});
 		
-		var display = displayCtrl(100, 10, 300, 300);
+		var display = displayCtrl(100, 30, 300, 300);
 		
-		knob(100, 400, {mn:0, mx:1}, 10, "Threshold", function(v){
+		knob(100, 430, {mn:0, mx:1}, 10, "Threshold", function(v){
 			threshold = v;
 			display.update();
 		}, threshold);
-		knob(250, 400, {mn:1, mx:10}, 9, "Rate", function(v){
+		knob(250, 430, {mn:1, mx:10}, 9, "Rate", function(v){
 			rate = v;
 			display.update();
 		}, rate);
-		knob(400, 400, {mn:1, mx:4}, 10, "Volume", function(v){
+		knob(400, 430, {mn:1, mx:4}, 10, "Volume", function(v){
 			volume = v;
 			display.update();
 		}, volume);
