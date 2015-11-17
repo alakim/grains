@@ -172,7 +172,7 @@ var JSFlow = {version:"2.13.292"};
 		Log: function(){var _=this;
 			_.log = [];
 		},
-		
+		Action: Action,
 		Continuation: function(){
 			var block = arguments.callee.caller;
 			if(block.block) block = block.block;
