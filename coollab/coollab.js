@@ -1,9 +1,6 @@
 var Coollab = (function($,$H){
 	var roots, nodesByID, nodesByTrg;
-	
-	Coollab = {
-		Docs: []
-	};
+
 	
 	function each(c, F){
 		if(!c) return;
@@ -99,7 +96,7 @@ var Coollab = (function($,$H){
 		pnl.html((function(){with($H){
 			return div(
 				apply(roots, function(r){
-					return templates[r.type](r);
+					return Coollab.Templates[r.type](r);
 				})
 			);
 		}})());
@@ -109,6 +106,12 @@ var Coollab = (function($,$H){
 		$(this).each(function(i, el){
 			init($(el), Coollab.Docs);
 		});
+	};
+		
+	Coollab = {
+		Docs: [],
+		Templates:{},
+		collectNodes: collectNodes
 	};
 	
 	return Coollab;
