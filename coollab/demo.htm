@@ -14,13 +14,27 @@
 	<script type="text/javascript" src="docs/d3.js"></script>
 	
 	<script type="text/javascript">
+		var CurrentUser = window.location.hash.substr(1) || 1;
+		
+		function refresh(){
+			setTimeout(function(){
+				window.location.reload();
+			}, 500);
+		}
+		
 		$(function(){
-			$("#workspace").coollab();
+			$("#workspace").coollab(CurrentUser);
 		});
 	</script>
 </head>
 <body>
 	<h1>Coollab Demo Page</h1>
+	<p>Войти как</p>
+	<ul>
+		<li><a href="#1" onclick="refresh()">User#1</a></li>
+		<li><a href="#2" onclick="refresh()">User#2</a></li>
+		<li><a href="#3" onclick="refresh()">User#3</a></li>
+	</ul>
 	<div id="workspace"></div>
 </body>
 </html>

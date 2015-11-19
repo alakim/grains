@@ -3,7 +3,7 @@ Coollab.Templates = (function($H){
 		calendar: function(cal){with($H){
 			return div(
 				h3("Календарь"),
-				p("Создал User#",cal._doc.user.id, ", ",cal._doc.user.name),
+				p("Создал User#",cal._.doc.user.id, ", ",cal._.doc.user.name, Coollab.UserID==cal._.doc.user.id?span(" [", span({"class":"link lnkEdit", "data-node":cal._.idx}, "edit"), "]"):null),
 				p("События"),
 				ul(
 					apply(Coollab.collectNodes(cal), function(evt){
@@ -19,7 +19,7 @@ Coollab.Templates = (function($H){
 					"Участники: ",
 					ol(
 						apply(Coollab.collectNodes(evt), function(m){
-							return li("User#", m._doc.user.id, ", ", m._doc.user.name, " ", m.value?"+":"-");
+							return li("User#", m._.doc.user.id, ", ", m._.doc.user.name, " ", m.value?"+":"-", Coollab.UserID==m._.doc.user.id?span(" [", span({"class":"link lnkEdit", "data-node":m._.idx}, "edit"), "]"):null);
 						})
 					)
 				)
