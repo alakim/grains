@@ -51,6 +51,15 @@ var Coollab = (function($,$H){
 		return nodes;
 	}
 	
+	var generateID = (function(){
+		var counters = [];
+		return function(userID){
+			if(!counters[userID]) counters[userID] = 1;
+			for(; nodesByID[userID+"."+counters[userID]]; counters[userID]++){}
+			return counters[userID];
+		};
+	})();
+	
 	function indexDocs(docs){
 		roots = [];
 		nodesByID = {};
@@ -93,6 +102,10 @@ var Coollab = (function($,$H){
 	function init(pnl, docs){
 		indexDocs(docs);
 		//console.log(nodesByTrg);
+		//console.log(generateID(1));
+		//console.log(generateID(2));
+		//console.log(generateID(3));
+
 		pnl.html((function(){with($H){
 			return div(
 				apply(roots, function(r){
