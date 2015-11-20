@@ -1,5 +1,7 @@
 var Coollab = (function($,$H){
 	var roots, nodesByID, nodesByTrg, allNodes;
+	var mainPanel;
+	var changed = false;
 
 	
 	function each(c, F){
@@ -7,6 +9,9 @@ var Coollab = (function($,$H){
 		if(c instanceof Array){
 			if(!c.length) return;
 			for(var i=0,e; e=c[i],i<c.length; i++) F(e,i);
+		}
+		else if(typeof(c)=="object"){
+			for(var k in c) F(c[k], k);
 		}
 	}
 	
@@ -30,7 +35,7 @@ var Coollab = (function($,$H){
 		};
 	})();
 	
-	function indexDocs(docs){
+	function indexDocs(){
 		roots = [];
 		nodesByID = {};
 		nodesByTrg = {};
@@ -62,7 +67,7 @@ var Coollab = (function($,$H){
 			}
 		}
 		
-		each(docs, function(d){
+		each(Coollab.Docs, function(d){
 			each(d.roots, function(r){
 				roots.push(r);
 				indexNode(r, d, d);
@@ -74,38 +79,102 @@ var Coollab = (function($,$H){
 		
 	}
 	
-	function init(pnl, docs){
-		indexDocs(docs);
-		//console.log(nodesByTrg);
-		//console.log(generateID(1));
-		//console.log(generateID(2));
-		//console.log(generateID(3));
+	
+	function updateView(){
+		indexDocs();
+		var events = [];
 
-		pnl.html((function(){with($H){
-			return div(
-				apply(roots, function(r){
-					return Coollab.Templates[r.type](r);
-				})
+		mainPanel.html((function(){with($H){
+			return div({"class":"coollabWin"},
+				changed?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
+				div({"class":"pnlTree"},
+					apply(roots, function(r){
+						if(Coollab.Templates[r.type].viewEvents)events.push(function(pnl){
+							Coollab.Templates[r.type].viewEvents(r, pnl);
+						});
+						return Coollab.Templates[r.type].view(r);
+					})
+				),
+				div({"class":"pnlProp"})
 			);
 		}})())
 		.find(".lnkEdit").click(function(){
-			var nodeIdx = $(this).attr("data-node");
-			alert("Edit node#"+ nodeIdx);
-			console.log(allNodes[nodeIdx]);
+			editNode(allNodes[$(this).attr("data-node")]);
+		}).end()
+		.find(".btSaveChanges").click(function(){
+			alert("Changes Saved!");
+			changed = false;
+			updateView();
 		}).end();
+		
+		each(events, function(evt){
+			if(evt) evt(mainPanel);
+		});
 	}
 	
-	$.fn.coollab = function(userID){
+	function init(pnl){
+		mainPanel = pnl;
+		pnl.html($H.img({src:"wait.gif"}));
+		loadDocs(updateView);
+	}
+	
+	function editNode(nd){
+		Coollab.Templates[nd.type].editor(nd, $(".pnlProp"))
+	}
+	
+	function loadDocs(callback){
+		function load(userID, callback){
+			var url = "docs/d"+userID+".txt";
+			$.get(url, {}, function(res){res=$.parseJSON(res);
+				Coollab.Docs.push(res);
+				callback();
+			});
+		}
+		
+		var semaphore = 0, counter = 0;
+		
+		each(Coollab.Users, function(uid){
+			load(uid, function(){
+				semaphore++;
+			});
+		});
+		
+		function wait(callback){
+			if(counter>20){alert("Превышен таймаут загрузки документов."); return;}
+			counter++;
+			if(semaphore<Coollab.Users.length)setTimeout(function(){
+				wait(callback);
+			}, 500);
+			else callback();
+		}
+		wait(callback);
+	}
+	
+	function acceptChanges(){
+		changed = true;
+		updateView();
+	}
+	
+	function addNode(target, type){
+		var newNode = {trg: target.id, type:"type"};
+		Coollab.Templates[type].editor(newNode, $(".pnlProp"));
+	}
+	
+	$.fn.coollab = function(userID, users){
 		Coollab.UserID = userID;
+		Coollab.Users = users instanceof Array?users:typeof(users)=="string"?users.split(";"):null;
 		$(this).each(function(i, el){
-			init($(el), Coollab.Docs);
+			init($(el));
 		});
 	};
 		
 	Coollab = {
 		Docs: [],
 		Templates:{},
-		collectNodes: collectNodes
+		collectNodes: collectNodes,
+		acceptChanges: acceptChanges,
+		addNode: addNode,
+		getNode: function(id){return nodesByID[id];}
 	};
 	
 	return Coollab;

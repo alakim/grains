@@ -9,9 +9,9 @@
 	<script type="text/javascript" src="coollab.js"></script>
 	<script type="text/javascript" src="templates.js"></script>
 	
-	<script type="text/javascript" src="docs/d1.js"></script>
-	<script type="text/javascript" src="docs/d2.js"></script>
-	<script type="text/javascript" src="docs/d3.js"></script>
+	<!--script type="text/javascript" src="docs/d1.js"></script-->
+	<!--script type="text/javascript" src="docs/d2.js"></script-->
+	<!--script type="text/javascript" src="docs/d3.js"></script-->
 	
 	<script type="text/javascript">
 		var CurrentUser = window.location.hash.substr(1) || 1;
@@ -23,7 +23,7 @@
 		}
 		
 		$(function(){
-			$("#workspace").coollab(CurrentUser);
+			$("#workspace").coollab(CurrentUser, [1,2,3]);
 		});
 	</script>
 </head>

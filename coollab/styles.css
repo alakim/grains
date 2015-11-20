@@ -1,11 +1,24 @@
 body{
 	font-family:Verdana, Arial, Sans-Serif;
 }
-
+.coollabWin{
+	/*border:1px solid #ccc;*/
+	min-height: 500px;
+}
 .link{
 	cursor:pointer;
 	color:#00f;
 }
 .link:hover{
 	text-decoration:underline;
+}
+
+.pnlTree{
+	float:left;
+	width:500px;
+	/*border:1px solid #ccc;*/
+}
+.pnlProp{
+	/*border:1px solid #ccc;*/
+	
 }

@@ -1,9 +1,0 @@
-Coollab.Docs.push({user:{id:2, name:"Петров П.П."},
-	roots:[
-		
-	],
-	nodes:[
-		{trg:"1.2", type:"appearance", value:true},
-		{trg:"1.1", type:"event", name:"Концерт в Археологии", date:"2015-12-12", id:"2.1"}
-	]
-});

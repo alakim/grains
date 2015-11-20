@@ -1,0 +1,9 @@
+{"user":{"id":3, "name":"Сидоров С.С."},
+	"roots":[
+		
+	],
+	"nodes":[
+		{"trg":"1.2", "type":"appearance", "value":-1},
+		{"trg":"2.1", "type":"appearance", "value":0}
+	]
+}
