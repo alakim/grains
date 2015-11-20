@@ -15,6 +15,22 @@ var Coollab = (function($,$H){
 		}
 	}
 	
+	function select(c,F){
+		if(!c) return;
+		if(c instanceof Array){
+			if(!c.length) return;
+			for(var i=0,e; e=c[i],i<c.length; i++){
+				if(F(e)) return e;
+			}
+		}
+		else if(typeof(c)=="object"){
+			for(var k in c){
+				var e = c[k];
+				if(F(e)) return e;
+			}
+		}
+	}
+	
 	function collectNodes(nd){
 		var nodes = [];
 		each(nd.nodes, function(n){
@@ -89,10 +105,10 @@ var Coollab = (function($,$H){
 				changed?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
 					apply(roots, function(r){
-						if(Coollab.Templates[r.type].viewEvents)events.push(function(pnl){
-							Coollab.Templates[r.type].viewEvents(r, pnl);
+						if(Coollab.Forms[r.type].view.events)events.push(function(pnl){
+							Coollab.Forms[r.type].view.events(r, pnl);
 						});
-						return Coollab.Templates[r.type].view(r);
+						return Coollab.Forms[r.type].view.template(r);
 					})
 				),
 				div({"class":"pnlProp"})
@@ -119,7 +135,7 @@ var Coollab = (function($,$H){
 	}
 	
 	function editNode(nd){
-		Coollab.Templates[nd.type].editor(nd, $(".pnlProp"))
+		Coollab.Forms[nd.type].editor(nd, $(".pnlProp"))
 	}
 	
 	function loadDocs(callback){
@@ -155,9 +171,22 @@ var Coollab = (function($,$H){
 		updateView();
 	}
 	
+	function closeEditor(){
+		$(".pnlProp").html("");
+	}
+	
+	function getUserDoc(uid){
+		uid = uid || Coollab.UserID;
+		return select(Coollab.Docs, function(d){
+			return d.user.id==uid;
+		});
+	}
+	
 	function addNode(target, type){
 		var newNode = {trg: target.id, type:"type"};
-		Coollab.Templates[type].editor(newNode, $(".pnlProp"));
+		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
+			getUserDoc().nodes.push(newNode);
+		});
 	}
 	
 	$.fn.coollab = function(userID, users){
@@ -173,6 +202,7 @@ var Coollab = (function($,$H){
 		Templates:{},
 		collectNodes: collectNodes,
 		acceptChanges: acceptChanges,
+		closeEditor: closeEditor,
 		addNode: addNode,
 		getNode: function(id){return nodesByID[id];}
 	};

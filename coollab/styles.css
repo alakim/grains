@@ -22,3 +22,6 @@ body{
 	/*border:1px solid #ccc;*/
 	
 }
+input[type='button']{
+	margin:3px 6px;;
+}
