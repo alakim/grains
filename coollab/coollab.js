@@ -1,7 +1,7 @@
 var Coollab = (function($,$H){
 	var roots, nodesByID, nodesByTrg, allNodes;
 	var mainPanel;
-	var changed = false;
+	var changed = {};
 	var docManager;
 
 	
@@ -114,7 +114,7 @@ var Coollab = (function($,$H){
 
 		pnl.html((function(){with($H){
 			return div({"class":"coollabWin"},
-				changed?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
+				changed[dataSetID]?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
 					apply(roots[dataSetID], function(r){
 						if(Coollab.Forms[r.type].view.events)events.push(function(pnl){
@@ -127,12 +127,12 @@ var Coollab = (function($,$H){
 			);
 		}})())
 		.find(".lnkEdit").click(function(){
-			editNode(allNodes[dataSetID][$(this).attr("data-node")]);
+			editNode(allNodes[dataSetID][$(this).attr("data-node")], pnl);
 		}).end()
 		.find(".btSaveChanges").click(function(){
-			docManager.save(serializeJSON(getUserDoc(dataSetID)), function(){
+			docManager.save(dataSetID, serializeJSON(getUserDoc(dataSetID)), function(){
 				alert("Изменения успешно сохранены");
-				changed = false;
+				changed[dataSetID] = false;
 				updateView(dataSetID, pnl);
 			})
 		}).end();
@@ -173,9 +173,9 @@ var Coollab = (function($,$H){
 				Coollab.Docs[dataSetID].push(LocalDocs[dataSetID][userID]);
 				callback();
 			};
-			this.save = function(content, callback){
+			this.save = function(dataSetID, content, callback){
 				var savedDoc = $.parseJSON(content);
-				console.log("Saved document: ", savedDoc);
+				console.log("Saved document: ", dataSetID, "/ ", savedDoc);
 				callback();
 			}
 		}
@@ -188,8 +188,8 @@ var Coollab = (function($,$H){
 					callback();
 				});
 			};
-			this.save = function(content, callback){
-				$.post("ws/savedoc.php", {doc:"dx"+Coollab.UserID+".txt", content:content}, function(res){res=$.parseJSON(res);
+			this.save = function(dataSetID, content, callback){
+				$.post("ws/savedoc.php", {doc:dataSetID+"/dx"+Coollab.UserID+".txt", content:content}, function(res){res=$.parseJSON(res);
 					if(res.error){alert(res.error); return;}
 					callback();
 				});
@@ -215,9 +215,8 @@ var Coollab = (function($,$H){
 		});
 	}
 	
-	function editNode(nd){
-		console.log(nd);
-		Coollab.Forms[nd.type].editor(nd, $(".pnlProp"))
+	function editNode(nd, pnl){
+		Coollab.Forms[nd.type].editor(nd, pnl.find(".pnlProp"))
 	}
 	
 	function loadDocs(dataSetID, callback){
@@ -241,9 +240,9 @@ var Coollab = (function($,$H){
 		wait(callback);
 	}
 	
-	function acceptChanges(dataSetID){
-		changed = true;
-		updateView(dataSetID);
+	function acceptChanges(dataSetID, pnl){
+		changed[dataSetID] = true;
+		updateView(dataSetID, pnl.parent());
 	}
 	
 	function closeEditor(){
@@ -269,6 +268,7 @@ var Coollab = (function($,$H){
 	function loadDataSet(dataSetID, pnl){
 		loadDocs(dataSetID, function(){
 			indexDocs(dataSetID, false);
+			changed[dataSetID] = false;
 			updateView(dataSetID, pnl);
 		});
 	}

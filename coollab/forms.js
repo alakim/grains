@@ -60,7 +60,7 @@ Coollab.Forms = (function($H){
 				.find(".btOK").click(function(){
 					cal.name = pnl.find(".tbName").val();
 					if(onready) onready();
-					Coollab.acceptChanges(cal._.dataSetID);
+					Coollab.acceptChanges(cal._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
@@ -101,7 +101,7 @@ Coollab.Forms = (function($H){
 					evt.date = pnl.find(".tbDate").val();
 					evt.name = pnl.find(".tbName").val();
 					if(onready) onready();
-					Coollab.acceptChanges(evt._.dataSetID);
+					Coollab.acceptChanges(evt._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
@@ -129,7 +129,7 @@ Coollab.Forms = (function($H){
 				.find(".btOK").click(function(){
 					app.value = +pnl.find(".selApp").val();
 					if(onready) onready();
-					Coollab.acceptChanges(app._.dataSetID);
+					Coollab.acceptChanges(app._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
@@ -181,7 +181,7 @@ Coollab.Forms = (function($H){
 				.find(".btOK").click(function(){
 					msg.text = pnl.find(".tbText").val();
 					if(onready) onready();
-					Coollab.acceptChanges(msg._.dataSetID);
+					Coollab.acceptChanges(msg._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
