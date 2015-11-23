@@ -25,3 +25,13 @@ body{
 input[type='button']{
 	margin:3px 6px;;
 }
+
+div.topic{
+	margin-left:25px;
+}
+div.topic div.message{
+	margin-left: 30px;
+}
+div.topic div.message .userLbl{
+	color:#88a;
+}

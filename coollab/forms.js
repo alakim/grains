@@ -16,11 +16,7 @@ Coollab.Forms = (function($H){
 				events: function(ds, pnl){
 					pnl.find(".lnkLoad").click(function(){
 						var id = $(this).attr("data-dsID");
-						pnl.find(".pnlDataSet").html((function(){with($H){
-							return div(
-								"DataSet "+id+" loaded"
-							);
-						}})());
+						Coollab.loadDataSet(id, pnl.find(".pnlDataSet"));
 					});
 				}
 			}
@@ -134,6 +130,58 @@ Coollab.Forms = (function($H){
 					app.value = +pnl.find(".selApp").val();
 					if(onready) onready();
 					Coollab.acceptChanges(app._.dataSetID);
+				}).end()
+				.find(".btCancel").click(function(){
+					Coollab.closeEditor();
+				}).end();
+			}
+		},
+		forum:{
+			view:{
+				template: function(forum){with($H){
+					return div(
+						h3(forum.name),
+						apply(forum.nodes, function(nd){
+							return Coollab.Forms[nd.type].view.template(nd);
+						})
+					);
+				}}
+			}
+		},
+		topic:{
+			view:{
+				template:function(tpc){with($H){
+					var messages = Coollab.collectNodes(tpc);
+					messages = messages.sort(function(m1, m2){
+						return m1.date<m2.date?-1:m1.date>m2.date?1:0;
+					});
+					return div({"class":"topic"},
+						div(tpc.name),
+						apply(messages, function(msg){
+							return div({"class":"message"},
+								span({"class":"userLbl"}, msg._.doc.user.name, " [", msg.date, "]: "), msg.text, Coollab.Forms.editLink(msg)
+							);
+						})
+					);
+				}}
+			}
+		},
+		message:{
+			editor:function(msg, pnl, onready){
+				pnl.html((function(){with($H){
+					return div(
+						h3("Сообщение"),
+						div(textarea({"class":"tbText"}, msg.text)),
+						div(
+							input({type:"button", "class":"btOK", value:"Сохранить"}),
+							input({type:"button", "class":"btCancel", value:"Отмена"})
+						)
+					);
+				}})())
+				.find(".btOK").click(function(){
+					msg.text = pnl.find(".tbText").val();
+					if(onready) onready();
+					Coollab.acceptChanges(msg._.dataSetID);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();

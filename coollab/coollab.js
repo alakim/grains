@@ -94,6 +94,7 @@ var Coollab = (function($,$H){
 		}
 		
 		each(Coollab.Docs[dataSetID], function(d){
+			if(!d) return;
 			each(d.roots, function(r){
 				roots[dataSetID].push(r);
 				indexNode(r, d, d);
@@ -106,11 +107,12 @@ var Coollab = (function($,$H){
 	}
 	
 	
-	function updateView(dataSetID){
+	function updateView(dataSetID, pnl){
 		if(!dataSetID) alert("Unknown DataSet '"+dataSetID+"'");
+		pnl = pnl || mainPanel;
 		var events = [];
 
-		mainPanel.html((function(){with($H){
+		pnl.html((function(){with($H){
 			return div({"class":"coollabWin"},
 				changed?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
@@ -131,7 +133,7 @@ var Coollab = (function($,$H){
 			docManager.save(serializeJSON(getUserDoc(dataSetID)), function(){
 				alert("Изменения успешно сохранены");
 				changed = false;
-				updateView(dataSetID);
+				updateView(dataSetID, pnl);
 			})
 		}).end();
 		
@@ -209,11 +211,12 @@ var Coollab = (function($,$H){
 		pnl.html($H.img({src:"wait.gif"}));
 		loadDocs(Coollab.rootDataSetID, function(){
 			indexDocs(Coollab.rootDataSetID, true);
-			updateView(Coollab.rootDataSetID);
+			updateView(Coollab.rootDataSetID, pnl);
 		});
 	}
 	
 	function editNode(nd){
+		console.log(nd);
 		Coollab.Forms[nd.type].editor(nd, $(".pnlProp"))
 	}
 	
@@ -263,6 +266,13 @@ var Coollab = (function($,$H){
 		});
 	}
 	
+	function loadDataSet(dataSetID, pnl){
+		loadDocs(dataSetID, function(){
+			indexDocs(dataSetID, false);
+			updateView(dataSetID, pnl);
+		});
+	}
+	
 	$.fn.coollab = function(userID, users, rootDataSetID){
 		Coollab.UserID = userID;
 		Coollab.Users = users instanceof Array?users:typeof(users)=="string"?users.split(";"):null;
@@ -274,11 +284,13 @@ var Coollab = (function($,$H){
 		
 	Coollab = {
 		Docs: [],
-		Templates:{},
+		//Templates:{},
+		Forms:{},
 		docManagerType: "php", // "local"
 		collectNodes: collectNodes,
 		acceptChanges: acceptChanges,
 		closeEditor: closeEditor,
+		loadDataSet: loadDataSet,
 		addNode: addNode,
 		getNode: function(dataSetID, id){return nodesByID[dataSetID][id];}
 	};
