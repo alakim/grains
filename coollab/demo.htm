@@ -9,9 +9,7 @@
 	<script type="text/javascript" src="coollab.js"></script>
 	<script type="text/javascript" src="forms.js"></script>
 	
-	<!--script type="text/javascript" src="docs/d1.js"></script-->
-	<!--script type="text/javascript" src="docs/d2.js"></script-->
-	<!--script type="text/javascript" src="docs/d3.js"></script-->
+	<script type="text/javascript" src="docs/localDocs.js"></script>
 	
 	<script type="text/javascript">
 		var CurrentUser = window.location.hash.substr(1) || 1;
@@ -21,6 +19,8 @@
 				window.location.reload();
 			}, 500);
 		}
+		
+		Coollab.docManagerType = "local";
 		
 		$(function(){
 			$("#workspace").coollab(CurrentUser, [1,2,3]);

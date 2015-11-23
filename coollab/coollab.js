@@ -2,6 +2,7 @@ var Coollab = (function($,$H){
 	var roots, nodesByID, nodesByTrg, allNodes;
 	var mainPanel;
 	var changed = false;
+	var docManager;
 
 	
 	function each(c, F){
@@ -118,12 +119,11 @@ var Coollab = (function($,$H){
 			editNode(allNodes[$(this).attr("data-node")]);
 		}).end()
 		.find(".btSaveChanges").click(function(){
-			$.post("ws/savedoc.php", {doc:"dx"+Coollab.UserID+".txt", content:JSON.stringify(getUserDoc())}, function(res){res=$.parseJSON(res);
-				if(res.error){alert(res.error); return;}
+			docManager.save(serializeJSON(getUserDoc()), function(){
 				alert("Изменения успешно сохранены");
 				changed = false;
 				updateView();
-			});
+			})
 		}).end();
 		
 		each(events, function(evt){
@@ -131,7 +131,71 @@ var Coollab = (function($,$H){
 		});
 	}
 	
+	function serializeJSON(obj){
+		if(typeof(obj)=="function") return "";
+		if(obj instanceof Array){
+			var res = [];
+			for(var i=0,el; el=obj[i],i<obj.length; i++){
+				res.push(serializeJSON(el));
+			}
+			return "["+res.join(",")+"]";
+		}
+		if(typeof(obj)=="object"){
+			var res = [];
+			for(var k in obj){
+				if(k=="_")continue;
+				var el = obj[k];
+				res.push("\""+k+"\":"+serializeJSON(el));
+			}
+			return "{"+res.join(",")+"}";
+		}
+		if(typeof(obj)=="string"){
+			return "\""+obj.replace(/\"/ig, "\\\"")+"\""
+		}
+		return obj+"";
+	}
+	
+	var DocManager = (function(){
+		
+		function localManager(){
+			this.load = function(userID, callback){
+				Coollab.Docs.push(LocalDocs[userID]);
+				callback();
+			};
+			this.save = function(content, callback){
+				var savedDoc = $.parseJSON(content);
+				console.log("Saved document: ", savedDoc);
+				callback();
+			}
+		}
+		
+		function phpManager(){
+			this.load = function(userID, callback){
+				var url = "docs/d"+userID+".txt";
+				$.get(url, {}, function(res){res=$.parseJSON(res);
+					Coollab.Docs.push(res);
+					callback();
+				});
+			};
+			this.save = function(content, callback){
+				$.post("ws/savedoc.php", {doc:"dx"+Coollab.UserID+".txt", content:content}, function(res){res=$.parseJSON(res);
+					if(res.error){alert(res.error); return;}
+					callback();
+				});
+			}
+		}
+		
+		return function(type){
+			switch(type){
+				case "local": return new localManager(); break;
+				case "php": return new phpManager(); break;
+				default: alert("Unknown DocManager type: '"+type+"'"); break;
+			}
+		};
+	})();
+	
 	function init(pnl){
+		docManager = DocManager(Coollab.docManagerType);
 		mainPanel = pnl;
 		pnl.html($H.img({src:"wait.gif"}));
 		loadDocs(updateView);
@@ -142,18 +206,10 @@ var Coollab = (function($,$H){
 	}
 	
 	function loadDocs(callback){
-		function load(userID, callback){
-			var url = "docs/d"+userID+".txt";
-			$.get(url, {}, function(res){res=$.parseJSON(res);
-				Coollab.Docs.push(res);
-				callback();
-			});
-		}
-		
 		var semaphore = 0, counter = 0;
 		
 		each(Coollab.Users, function(uid){
-			load(uid, function(){
+			docManager.load(uid, function(){
 				semaphore++;
 			});
 		});
@@ -205,6 +261,7 @@ var Coollab = (function($,$H){
 	Coollab = {
 		Docs: [],
 		Templates:{},
+		docManagerType: "php", // "local"
 		collectNodes: collectNodes,
 		acceptChanges: acceptChanges,
 		closeEditor: closeEditor,
