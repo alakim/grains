@@ -118,9 +118,12 @@ var Coollab = (function($,$H){
 			editNode(allNodes[$(this).attr("data-node")]);
 		}).end()
 		.find(".btSaveChanges").click(function(){
-			alert("Changes Saved!");
-			changed = false;
-			updateView();
+			$.post("ws/savedoc.php", {doc:"dx"+Coollab.UserID+".txt", content:JSON.stringify(getUserDoc())}, function(res){res=$.parseJSON(res);
+				if(res.error){alert(res.error); return;}
+				alert("Изменения успешно сохранены");
+				changed = false;
+				updateView();
+			});
 		}).end();
 		
 		each(events, function(evt){
@@ -183,6 +186,8 @@ var Coollab = (function($,$H){
 	}
 	
 	function addNode(target, type){
+		if(!target.id){alert("Добавление элемента не возможно"); return;}
+		
 		var newNode = {trg: target.id, type:"type"};
 		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
 			getUserDoc().nodes.push(newNode);
