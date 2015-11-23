@@ -42,7 +42,7 @@ Coollab.Forms = (function($H){
 				}},
 				events: function(cal, pnl){
 					pnl.find(".calView .lnkAddEvent").click(function(){
-						Coollab.addNode(cal, "event");
+						Coollab.addNode(cal, "event", false);
 					}).end();
 				}
 			},
@@ -70,19 +70,30 @@ Coollab.Forms = (function($H){
 		event: {
 			view: {
 				template:function(evt){with($H){
-					console.log("evt=", evt);
-					return markup(
+					var members = Coollab.collectNodes(evt, "appearance");
+					var myAppearance = Coollab.selectItems(members, function(m){
+						return m._.doc.user.id==Coollab.UserID;
+					});
+					return div({"class":"eventView"},
 						evt.date, ": ", evt.name, Coollab.Forms.editLink(evt),
 						div(
 							"Участники: ",
 							ol(
-								apply(Coollab.collectNodes(evt), function(m){
+								apply(members, function(m){
 									return li(m._.doc.user.name, " ", m.value>0?"придет":m.value<0?"не придет":"не решил", Coollab.Forms.editLink(m));
 								})
-							)
+							),
+							myAppearance?null:div(span({"class":"link lnkAddSelf"}, "Добавить себя"))
 						)
 					);
-				}}
+				}},
+				events:function(evt, pnl){
+					console.log(333);
+					pnl.find(".eventView .lnkAddSelf").click(function(){
+						console.log(111);
+						Coollab.addNode(evt, "appearance", true);
+					}).end();
+				}
 			},
 			editor:function(evt, pnl, onready){
 				pnl.html((function(){with($H){

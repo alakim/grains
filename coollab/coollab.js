@@ -16,7 +16,7 @@ var Coollab = (function($,$H){
 		}
 	}
 	
-	function select(c,F){
+	function selectItems(c,F){
 		if(!c) return;
 		if(c instanceof Array){
 			if(!c.length) return;
@@ -32,13 +32,15 @@ var Coollab = (function($,$H){
 		}
 	}
 	
-	function collectNodes(nd){
+	function collectNodes(nd, type){
 		var nodes = [];
 		each(nd.nodes, function(n){
-			nodes.push(n);
+			if(!type || type==n.type)
+				nodes.push(n);
 		});
 		each(nodesByTrg[nd._.dataSetID][nd.id], function(n){
-			nodes.push(n);
+			if(!type || type==n.type)
+				nodes.push(n);
 		});
 		return nodes;
 	}
@@ -251,15 +253,20 @@ var Coollab = (function($,$H){
 	
 	function getUserDoc(dataSetID, uid){
 		uid = uid || Coollab.UserID;
-		return select(Coollab.Docs[dataSetID], function(d){
+		return selectItems(Coollab.Docs[dataSetID], function(d){
 			return d.user.id==uid;
 		});
 	}
 	
-	function addNode(target, type){
-		if(!target.id){alert("Добавление элемента не возможно"); return;}
-		
-		var newNode = {trg: target.id, type:"type"};
+	function addNode(target, type, sealed){
+		console.log(target, type);
+		var newNode = {type:type};
+
+		var ownerMode = target._.doc.user.id==Coollab.UserID;
+		if(!ownerMode){
+			if(!target.id){alert("Добавление элемента не возможно"); return;}
+			newNode.trg = target.id;
+		}
 		newNode._ = {
 			parent: target,
 			doc: getUserDoc(target._.dataSetID),
@@ -267,9 +274,17 @@ var Coollab = (function($,$H){
 			dataSetID:target._.dataSetID
 		};
 		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
+			if(ownerMode)
+				target.nodes.push(newNode);
+			else
+				getUserDoc(target._.dataSetID).nodes.push(newNode);
+
 			allNodes[target._.dataSetID].push(newNode);
+			
+			if(!sealed){
+				newNode.id = generateID(target._.dataSetID, Coollab.UserID);
+			}
 			// roots = [];
-			//nodesByTrg[target._.dataSetID][target.id] = newNode;
 			
 			if(newNode.trg){
 				if(!nodesByTrg[target._.dataSetID][newNode.trg]) nodesByTrg[target._.dataSetID][newNode.trg] = [];
@@ -278,8 +293,6 @@ var Coollab = (function($,$H){
 
 			
 			if(newNode.id) nodesByID[target._.dataSetID][newNode.id] = newNode;
-
-			getUserDoc(target._.dataSetID).nodes.push(newNode);
 		});
 	}
 	
@@ -302,7 +315,6 @@ var Coollab = (function($,$H){
 		
 	Coollab = {
 		Docs: [],
-		//Templates:{},
 		Forms:{},
 		docManagerType: "php", // "local"
 		collectNodes: collectNodes,
@@ -310,6 +322,7 @@ var Coollab = (function($,$H){
 		closeEditor: closeEditor,
 		loadDataSet: loadDataSet,
 		addNode: addNode,
+		selectItems: selectItems,
 		getNode: function(dataSetID, id){return nodesByID[dataSetID][id];}
 	};
 	
