@@ -37,7 +37,7 @@ var Coollab = (function($,$H){
 		each(nd.nodes, function(n){
 			nodes.push(n);
 		});
-		each(nodesByTrg[nd.id], function(n){
+		each(nodesByTrg[nd._.dataSetID][nd.id], function(n){
 			nodes.push(n);
 		});
 		return nodes;
@@ -45,31 +45,40 @@ var Coollab = (function($,$H){
 	
 	var generateID = (function(){
 		var counters = [];
-		return function(userID){
+		return function(dataSetID, userID){
 			if(!counters[userID]) counters[userID] = 1;
-			for(; nodesByID[userID+"."+counters[userID]]; counters[userID]++){}
+			for(; nodesByID[dataSetID][userID+"."+counters[userID]]; counters[userID]++){}
 			return counters[userID];
 		};
 	})();
 	
-	function indexDocs(){
-		roots = [];
-		nodesByID = {};
-		nodesByTrg = {};
-		allNodes = [];
+	function indexDocs(dataSetID, resetIndexes){
+		if(resetIndexes){
+			roots = [];
+			nodesByID = {};
+			nodesByTrg = {};
+			allNodes = [];
+		}
+
+		
+		roots[dataSetID] = [];
+		nodesByID[dataSetID] = {};
+		nodesByTrg[dataSetID] = {};
+		allNodes[dataSetID] = [];
 		
 		function indexNode(nd, parent, doc){
 			if(typeof(nd)!="object") return;
 			nd._ = {
 				parent: parent,
 				doc: doc,
-				idx: allNodes.length
+				idx: allNodes[dataSetID].length,
+				dataSetID:dataSetID
 			};
-			allNodes.push(nd);
-			if(nd.id) nodesByID[nd.id] = nd;
+			allNodes[dataSetID].push(nd);
+			if(nd.id) nodesByID[dataSetID][nd.id] = nd;
 			if(nd.trg){
-				if(!nodesByTrg[nd.trg]) nodesByTrg[nd.trg] = [];
-				nodesByTrg[nd.trg].push(nd);
+				if(!nodesByTrg[dataSetID][nd.trg]) nodesByTrg[dataSetID][nd.trg] = [];
+				nodesByTrg[dataSetID][nd.trg].push(nd);
 			}
 			for(var k in nd){
 				if(k=="_") continue;
@@ -84,9 +93,9 @@ var Coollab = (function($,$H){
 			}
 		}
 		
-		each(Coollab.Docs, function(d){
+		each(Coollab.Docs[dataSetID], function(d){
 			each(d.roots, function(r){
-				roots.push(r);
+				roots[dataSetID].push(r);
 				indexNode(r, d, d);
 			});
 			each(d.nodes, function(nd){
@@ -97,15 +106,15 @@ var Coollab = (function($,$H){
 	}
 	
 	
-	function updateView(){
-		indexDocs();
+	function updateView(dataSetID){
+		if(!dataSetID) alert("Unknown DataSet '"+dataSetID+"'");
 		var events = [];
 
 		mainPanel.html((function(){with($H){
 			return div({"class":"coollabWin"},
 				changed?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
-					apply(roots, function(r){
+					apply(roots[dataSetID], function(r){
 						if(Coollab.Forms[r.type].view.events)events.push(function(pnl){
 							Coollab.Forms[r.type].view.events(r, pnl);
 						});
@@ -116,13 +125,13 @@ var Coollab = (function($,$H){
 			);
 		}})())
 		.find(".lnkEdit").click(function(){
-			editNode(allNodes[$(this).attr("data-node")]);
+			editNode(allNodes[dataSetID][$(this).attr("data-node")]);
 		}).end()
 		.find(".btSaveChanges").click(function(){
-			docManager.save(serializeJSON(getUserDoc()), function(){
+			docManager.save(serializeJSON(getUserDoc(dataSetID)), function(){
 				alert("Изменения успешно сохранены");
 				changed = false;
-				updateView();
+				updateView(dataSetID);
 			})
 		}).end();
 		
@@ -158,8 +167,8 @@ var Coollab = (function($,$H){
 	var DocManager = (function(){
 		
 		function localManager(){
-			this.load = function(userID, callback){
-				Coollab.Docs.push(LocalDocs[userID]);
+			this.load = function(dataSetID, userID, callback){
+				Coollab.Docs[dataSetID].push(LocalDocs[dataSetID][userID]);
 				callback();
 			};
 			this.save = function(content, callback){
@@ -170,10 +179,10 @@ var Coollab = (function($,$H){
 		}
 		
 		function phpManager(){
-			this.load = function(userID, callback){
-				var url = "docs/d"+userID+".txt";
+			this.load = function(dataSetID, userID, callback){
+				var url = dataSetID+"/d"+userID+".txt";
 				$.get(url, {}, function(res){res=$.parseJSON(res);
-					Coollab.Docs.push(res);
+					Coollab.Docs[dataSetID].push(res);
 					callback();
 				});
 			};
@@ -198,18 +207,22 @@ var Coollab = (function($,$H){
 		docManager = DocManager(Coollab.docManagerType);
 		mainPanel = pnl;
 		pnl.html($H.img({src:"wait.gif"}));
-		loadDocs(updateView);
+		loadDocs(Coollab.rootDataSetID, function(){
+			indexDocs(Coollab.rootDataSetID, true);
+			updateView(Coollab.rootDataSetID);
+		});
 	}
 	
 	function editNode(nd){
 		Coollab.Forms[nd.type].editor(nd, $(".pnlProp"))
 	}
 	
-	function loadDocs(callback){
+	function loadDocs(dataSetID, callback){
 		var semaphore = 0, counter = 0;
+		Coollab.Docs[dataSetID] = [];
 		
 		each(Coollab.Users, function(uid){
-			docManager.load(uid, function(){
+			docManager.load(dataSetID, uid, function(){
 				semaphore++;
 			});
 		});
@@ -225,18 +238,18 @@ var Coollab = (function($,$H){
 		wait(callback);
 	}
 	
-	function acceptChanges(){
+	function acceptChanges(dataSetID){
 		changed = true;
-		updateView();
+		updateView(dataSetID);
 	}
 	
 	function closeEditor(){
 		$(".pnlProp").html("");
 	}
 	
-	function getUserDoc(uid){
+	function getUserDoc(dataSetID, uid){
 		uid = uid || Coollab.UserID;
-		return select(Coollab.Docs, function(d){
+		return select(Coollab.Docs[dataSetID], function(d){
 			return d.user.id==uid;
 		});
 	}
@@ -246,13 +259,14 @@ var Coollab = (function($,$H){
 		
 		var newNode = {trg: target.id, type:"type"};
 		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
-			getUserDoc().nodes.push(newNode);
+			getUserDoc(target._.dataSetID).nodes.push(newNode);
 		});
 	}
 	
-	$.fn.coollab = function(userID, users){
+	$.fn.coollab = function(userID, users, rootDataSetID){
 		Coollab.UserID = userID;
 		Coollab.Users = users instanceof Array?users:typeof(users)=="string"?users.split(";"):null;
+		Coollab.rootDataSetID = rootDataSetID;
 		$(this).each(function(i, el){
 			init($(el));
 		});
@@ -266,7 +280,7 @@ var Coollab = (function($,$H){
 		acceptChanges: acceptChanges,
 		closeEditor: closeEditor,
 		addNode: addNode,
-		getNode: function(id){return nodesByID[id];}
+		getNode: function(dataSetID, id){return nodesByID[dataSetID][id];}
 	};
 	
 	return Coollab;

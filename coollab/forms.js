@@ -3,6 +3,28 @@ Coollab.Forms = (function($H){
 		editLink: function(node){with($H){
 			return Coollab.UserID==node._.doc.user.id?span(" [", span({"class":"link lnkEdit", "data-node":node._.idx}, "edit"), "]"):null
 		}},
+		dataSet:{
+			view:{
+				template:function(ds){with($H){
+					return div(
+						h3(ds.name),
+						div({"class":"pnlDataSet"},
+							span({"class":"link lnkLoad", "data-dsID":ds.dataSetID}, "Загрузить")
+						)
+					);
+				}},
+				events: function(ds, pnl){
+					pnl.find(".lnkLoad").click(function(){
+						var id = $(this).attr("data-dsID");
+						pnl.find(".pnlDataSet").html((function(){with($H){
+							return div(
+								"DataSet "+id+" loaded"
+							);
+						}})());
+					});
+				}
+			}
+		},
 		calendar: {
 			view:{
 				template:function(cal){with($H){
@@ -42,7 +64,7 @@ Coollab.Forms = (function($H){
 				.find(".btOK").click(function(){
 					cal.name = pnl.find(".tbName").val();
 					if(onready) onready();
-					Coollab.acceptChanges();
+					Coollab.acceptChanges(cal._.dataSetID);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
@@ -83,7 +105,7 @@ Coollab.Forms = (function($H){
 					evt.date = pnl.find(".tbDate").val();
 					evt.name = pnl.find(".tbName").val();
 					if(onready) onready();
-					Coollab.acceptChanges();
+					Coollab.acceptChanges(evt._.dataSetID);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
@@ -93,7 +115,7 @@ Coollab.Forms = (function($H){
 		appearance:{
 			editor: function(app, pnl, onready){
 				pnl.html((function(){with($H){
-					var event = Coollab.getNode(app.trg);
+					var event = Coollab.getNode(app._.dataSetID, app.trg);
 					return div(
 						h3("Участие в событии"),
 						p(event.date, " ", event.name),
@@ -111,7 +133,7 @@ Coollab.Forms = (function($H){
 				.find(".btOK").click(function(){
 					app.value = +pnl.find(".selApp").val();
 					if(onready) onready();
-					Coollab.acceptChanges();
+					Coollab.acceptChanges(app._.dataSetID);
 				}).end()
 				.find(".btCancel").click(function(){
 					Coollab.closeEditor();
