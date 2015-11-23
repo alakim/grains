@@ -70,6 +70,7 @@ Coollab.Forms = (function($H){
 		event: {
 			view: {
 				template:function(evt){with($H){
+					console.log("evt=", evt);
 					return markup(
 						evt.date, ": ", evt.name, Coollab.Forms.editLink(evt),
 						div(

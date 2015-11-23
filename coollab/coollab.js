@@ -260,7 +260,25 @@ var Coollab = (function($,$H){
 		if(!target.id){alert("Добавление элемента не возможно"); return;}
 		
 		var newNode = {trg: target.id, type:"type"};
+		newNode._ = {
+			parent: target,
+			doc: getUserDoc(target._.dataSetID),
+			idx: allNodes[target._.dataSetID].length,
+			dataSetID:target._.dataSetID
+		};
 		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
+			allNodes[target._.dataSetID].push(newNode);
+			// roots = [];
+			//nodesByTrg[target._.dataSetID][target.id] = newNode;
+			
+			if(newNode.trg){
+				if(!nodesByTrg[target._.dataSetID][newNode.trg]) nodesByTrg[target._.dataSetID][newNode.trg] = [];
+				nodesByTrg[target._.dataSetID][newNode.trg].push(newNode);
+			}
+
+			
+			if(newNode.id) nodesByID[target._.dataSetID][newNode.id] = newNode;
+
 			getUserDoc(target._.dataSetID).nodes.push(newNode);
 		});
 	}
