@@ -41,6 +41,11 @@ Coollab.Forms = (function($H){
 					);
 				}},
 				events: function(cal, pnl){
+					pnl.find(".eventView .lnkAddSelf").click(function(){
+						var evt = Coollab.getNode(cal._.dataSetID, $(this).attr("data-event"));
+						Coollab.addNode(evt, "appearance", true);
+					}).end();
+					
 					pnl.find(".calView .lnkAddEvent").click(function(){
 						Coollab.addNode(cal, "event", false);
 					}).end();
@@ -70,7 +75,9 @@ Coollab.Forms = (function($H){
 		event: {
 			view: {
 				template:function(evt){with($H){
-					var members = Coollab.collectNodes(evt, "appearance");
+					var members = Coollab.collectNodes(evt, "appearance").sort(function(m1, m2){
+						return m1._.doc.user.name<m2._.doc.user.name?-1:m1._.doc.user.name>m2._.doc.user.name?1:0;
+					});
 					var myAppearance = Coollab.selectItems(members, function(m){
 						return m._.doc.user.id==Coollab.UserID;
 					});
@@ -83,17 +90,10 @@ Coollab.Forms = (function($H){
 									return li(m._.doc.user.name, " ", m.value>0?"придет":m.value<0?"не придет":"не решил", Coollab.Forms.editLink(m));
 								})
 							),
-							myAppearance?null:div(span({"class":"link lnkAddSelf"}, "Добавить себя"))
+							myAppearance?null:div(span({"class":"link lnkAddSelf", "data-event":evt.id}, "Добавить себя"))
 						)
 					);
-				}},
-				events:function(evt, pnl){
-					console.log(333);
-					pnl.find(".eventView .lnkAddSelf").click(function(){
-						console.log(111);
-						Coollab.addNode(evt, "appearance", true);
-					}).end();
-				}
+				}}
 			},
 			editor:function(evt, pnl, onready){
 				pnl.html((function(){with($H){
@@ -123,7 +123,8 @@ Coollab.Forms = (function($H){
 		appearance:{
 			editor: function(app, pnl, onready){
 				pnl.html((function(){with($H){
-					var event = Coollab.getNode(app._.dataSetID, app.trg);
+					var event = app.trg?Coollab.getNode(app._.dataSetID, app.trg)
+						:app._.parent;
 					return div(
 						h3("Участие в событии"),
 						p(event.date, " ", event.name),
@@ -163,8 +164,7 @@ Coollab.Forms = (function($H){
 		topic:{
 			view:{
 				template:function(tpc){with($H){
-					var messages = Coollab.collectNodes(tpc);
-					messages = messages.sort(function(m1, m2){
+					var messages = Coollab.collectNodes(tpc).sort(function(m1, m2){
 						return m1.date<m2.date?-1:m1.date>m2.date?1:0;
 					});
 					return div({"class":"topic"},
@@ -173,9 +173,17 @@ Coollab.Forms = (function($H){
 							return div({"class":"message"},
 								span({"class":"userLbl"}, msg._.doc.user.name, " [", msg.date, "]: "), msg.text, Coollab.Forms.editLink(msg)
 							);
-						})
+						}),
+						div(span({"class":"link lnkAddMessage"}, "Добавить сообщение"))
 					);
-				}}
+				}},
+				events: function(tpc, pnl){
+					console.log(11111);
+					pnl.find(".topic .lnkAddMessage").click(function(){
+						//var evt = Coollab.getNode(cal._.dataSetID, $(this).attr("data-event"));
+						Coollab.addNode(tpc, "message", true);
+					}).end();
+				}
 			}
 		},
 		message:{

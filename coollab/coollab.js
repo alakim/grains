@@ -258,12 +258,14 @@ var Coollab = (function($,$H){
 		});
 	}
 	
+	function ownerMode(el){
+		return el._.doc.user.id==Coollab.UserID;
+	}
+	
 	function addNode(target, type, sealed){
-		console.log(target, type);
 		var newNode = {type:type};
 
-		var ownerMode = target._.doc.user.id==Coollab.UserID;
-		if(!ownerMode){
+		if(!ownerMode(target)){
 			if(!target.id){alert("Добавление элемента не возможно"); return;}
 			newNode.trg = target.id;
 		}
@@ -274,8 +276,10 @@ var Coollab = (function($,$H){
 			dataSetID:target._.dataSetID
 		};
 		Coollab.Forms[type].editor(newNode, $(".pnlProp"), function(){
-			if(ownerMode)
+			if(ownerMode(target)){
+				if(!target.nodes) target.nodes = [];
 				target.nodes.push(newNode);
+			}
 			else
 				getUserDoc(target._.dataSetID).nodes.push(newNode);
 
@@ -323,6 +327,7 @@ var Coollab = (function($,$H){
 		loadDataSet: loadDataSet,
 		addNode: addNode,
 		selectItems: selectItems,
+		ownerMode:ownerMode,
 		getNode: function(dataSetID, id){return nodesByID[dataSetID][id];}
 	};
 	
