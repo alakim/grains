@@ -243,8 +243,8 @@ var Coollab = (function($,$H){
 		updateView(dataSetID, pnl.parent());
 	}
 	
-	function closeEditor(){
-		$(".pnlProp").html("");
+	function closeEditor(btn){
+		$(".pnlProp").has(btn).html("");
 	}
 	
 	function getUserDoc(dataSetID, uid){

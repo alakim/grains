@@ -84,7 +84,7 @@ Coollab.Forms = (function($H){
 					Coollab.acceptChanges(cal._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
-					Coollab.closeEditor();
+					Coollab.closeEditor($(this));
 				}).end();
 			}
 		},
@@ -110,7 +110,7 @@ Coollab.Forms = (function($H){
 					Coollab.acceptChanges(evt._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
-					Coollab.closeEditor();
+					Coollab.closeEditor($(this));
 				}).end();
 			}
 		},
@@ -139,7 +139,7 @@ Coollab.Forms = (function($H){
 					Coollab.acceptChanges(app._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
-					Coollab.closeEditor();
+					Coollab.closeEditor($(this));
 				}).end();
 			}
 		},
@@ -200,7 +200,7 @@ Coollab.Forms = (function($H){
 					Coollab.acceptChanges(msg._.dataSetID, pnl);
 				}).end()
 				.find(".btCancel").click(function(){
-					Coollab.closeEditor();
+					Coollab.closeEditor($(this));
 				}).end();
 			}
 		}
