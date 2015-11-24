@@ -112,22 +112,22 @@ var Coollab = (function($,$H){
 	function updateView(dataSetID, pnl){
 		if(!dataSetID) alert("Unknown DataSet '"+dataSetID+"'");
 		pnl = pnl || mainPanel;
-		var events = [];
 
 		pnl.html((function(){with($H){
 			return div({"class":"coollabWin"},
 				changed[dataSetID]?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
 					apply(roots[dataSetID], function(r){
-						if(Coollab.Forms[r.type].view.events)events.push(function(pnl){
-							Coollab.Forms[r.type].view.events(r, pnl);
-						});
-						return Coollab.Forms[r.type].view.template(r);
+						return div({"class":"rootPnl", "data-idx":r._.idx});
 					})
 				),
 				div({"class":"pnlProp"})
 			);
 		}})())
+		.find(".rootPnl").each(function(i,rp){rp=$(rp);
+			var r = allNodes[dataSetID][rp.attr("data-idx")];
+			Coollab.Forms[r.type].view(r, rp);
+		}).end()
 		.find(".lnkEdit").click(function(){
 			editNode(allNodes[dataSetID][$(this).attr("data-node")], pnl);
 		}).end()
@@ -138,10 +138,6 @@ var Coollab = (function($,$H){
 				updateView(dataSetID, pnl);
 			})
 		}).end();
-		
-		each(events, function(evt){
-			if(evt) evt(mainPanel);
-		});
 	}
 	
 	function serializeJSON(obj){
@@ -328,7 +324,8 @@ var Coollab = (function($,$H){
 		addNode: addNode,
 		selectItems: selectItems,
 		ownerMode:ownerMode,
-		getNode: function(dataSetID, id){return nodesByID[dataSetID][id];}
+		getNodeByID: function(dataSetID, id){return nodesByID[dataSetID][id];},
+		getNodeByIdx: function(dataSetID, idx){return allNodes[dataSetID][idx];}
 	};
 	
 	return Coollab;

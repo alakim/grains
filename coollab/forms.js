@@ -1,55 +1,71 @@
 Coollab.Forms = (function($H){
+	function editLink(node){with($H){
+		return Coollab.UserID==node._.doc.user.id?span(" [", span({"class":"link lnkEdit", "data-node":node._.idx}, "edit"), "]"):null
+	}}
+	
 	return {
-		editLink: function(node){with($H){
-			return Coollab.UserID==node._.doc.user.id?span(" [", span({"class":"link lnkEdit", "data-node":node._.idx}, "edit"), "]"):null
-		}},
 		dataSet:{
-			view:{
-				template:function(ds){with($H){
+			view:function(ds, pnl){
+				pnl.html((function(){with($H){
 					return div(
 						h3(ds.name),
 						div({"class":"pnlDataSet"},
 							span({"class":"link lnkLoad", "data-dsID":ds.dataSetID}, "Загрузить")
 						)
 					);
-				}},
-				events: function(ds, pnl){
-					pnl.find(".lnkLoad").click(function(){
-						var id = $(this).attr("data-dsID");
-						Coollab.loadDataSet(id, pnl.find(".pnlDataSet"));
-					});
-				}
+				}})())
+				.find(".lnkLoad").click(function(){
+					var id = $(this).attr("data-dsID");
+					Coollab.loadDataSet(id, pnl.find(".pnlDataSet"));
+				}).end();
 			}
 		},
-		calendar: {
-			view:{
-				template:function(cal){with($H){
+		calendar:{
+			view: function(cal, pnl){
+				function eventTemplate(evt){with($H){
+					var members = Coollab.collectNodes(evt, "appearance").sort(function(m1, m2){
+						return m1._.doc.user.name<m2._.doc.user.name?-1:m1._.doc.user.name>m2._.doc.user.name?1:0;
+					});
+					var myAppearance = Coollab.selectItems(members, function(m){
+						return m._.doc.user.id==Coollab.UserID;
+					});
+					return div({"class":"eventView"},
+						evt.date, ": ", evt.name, editLink(evt),
+						div(
+							"Участники: ",
+							ol(
+								apply(members, function(m){
+									return li(m._.doc.user.name, " ", m.value>0?"придет":m.value<0?"не придет":"не решил", editLink(m));
+								})
+							),
+							myAppearance?null:div(span({"class":"link lnkAddSelf", "data-event":evt.id}, "Добавить себя"))
+						)
+					);
+				}};
+				pnl.html((function(){with($H){
 					var events = Coollab.collectNodes(cal);
 					events = events.sort(function(e1, e2){
 						return e1.date>e2.date?1:e1.date<e2.date?-1:0;
 					});
 					return div({"class":"calView"},
 						h3("Календарь: ", cal.name),
-						p("Создал ",cal._.doc.user.name, Coollab.Forms.editLink(cal)),
+						p("Создал ",cal._.doc.user.name, editLink(cal)),
 						p("События"),
 						ul(
 							apply(events, function(evt){
-								return li(Coollab.Forms.event.view.template(evt))
+								return li(eventTemplate(evt))
 							})
 						),
 						p(span({"class":"link lnkAddEvent"}, "Добавить событие"))
 					);
-				}},
-				events: function(cal, pnl){
-					pnl.find(".eventView .lnkAddSelf").click(function(){
-						var evt = Coollab.getNode(cal._.dataSetID, $(this).attr("data-event"));
-						Coollab.addNode(evt, "appearance", true);
-					}).end();
-					
-					pnl.find(".calView .lnkAddEvent").click(function(){
-						Coollab.addNode(cal, "event", false);
-					}).end();
-				}
+				}})())
+				.find(".eventView .lnkAddSelf").click(function(){
+					var evt = Coollab.getNodeByID(cal._.dataSetID, $(this).attr("data-event"));
+					Coollab.addNode(evt, "appearance", true);
+				}).end()
+				.find(".calView .lnkAddEvent").click(function(){
+					Coollab.addNode(cal, "event", false);
+				}).end();
 			},
 			editor:function(cal, pnl, onready){
 				pnl.html((function(){with($H){
@@ -73,28 +89,6 @@ Coollab.Forms = (function($H){
 			}
 		},
 		event: {
-			view: {
-				template:function(evt){with($H){
-					var members = Coollab.collectNodes(evt, "appearance").sort(function(m1, m2){
-						return m1._.doc.user.name<m2._.doc.user.name?-1:m1._.doc.user.name>m2._.doc.user.name?1:0;
-					});
-					var myAppearance = Coollab.selectItems(members, function(m){
-						return m._.doc.user.id==Coollab.UserID;
-					});
-					return div({"class":"eventView"},
-						evt.date, ": ", evt.name, Coollab.Forms.editLink(evt),
-						div(
-							"Участники: ",
-							ol(
-								apply(members, function(m){
-									return li(m._.doc.user.name, " ", m.value>0?"придет":m.value<0?"не придет":"не решил", Coollab.Forms.editLink(m));
-								})
-							),
-							myAppearance?null:div(span({"class":"link lnkAddSelf", "data-event":evt.id}, "Добавить себя"))
-						)
-					);
-				}}
-			},
 			editor:function(evt, pnl, onready){
 				pnl.html((function(){with($H){
 					return div(
@@ -123,7 +117,7 @@ Coollab.Forms = (function($H){
 		appearance:{
 			editor: function(app, pnl, onready){
 				pnl.html((function(){with($H){
-					var event = app.trg?Coollab.getNode(app._.dataSetID, app.trg)
+					var event = app.trg?Coollab.getNodeByID(app._.dataSetID, app.trg)
 						:app._.parent;
 					return div(
 						h3("Участие в событии"),
@@ -150,20 +144,25 @@ Coollab.Forms = (function($H){
 			}
 		},
 		forum:{
-			view:{
-				template: function(forum){with($H){
-					return div(
+			view:function(forum, pnl){
+				pnl.html((function(){with($H){
+					return div({"class":"forumPnl"},
 						h3(forum.name),
 						apply(forum.nodes, function(nd){
-							return Coollab.Forms[nd.type].view.template(nd);
+							// return Coollab.Forms[nd.type].view.template(nd);
+							return div({"class":"forumItem", "data-idx":nd._.idx});
 						})
 					);
-				}}
+				}})())
+				.find(".forumPnl .forumItem").each(function(i, itmPnl){itmPnl=$(itmPnl);
+					var el = Coollab.getNodeByIdx(forum._.dataSetID, itmPnl.attr("data-idx"));
+					Coollab.Forms[el.type].view(el, itmPnl);
+				}).end();
 			}
 		},
 		topic:{
-			view:{
-				template:function(tpc){with($H){
+			view:function(tpc, pnl){
+				pnl.html((function(){with($H){
 					var messages = Coollab.collectNodes(tpc).sort(function(m1, m2){
 						return m1.date<m2.date?-1:m1.date>m2.date?1:0;
 					});
@@ -171,19 +170,16 @@ Coollab.Forms = (function($H){
 						div(tpc.name),
 						apply(messages, function(msg){
 							return div({"class":"message"},
-								span({"class":"userLbl"}, msg._.doc.user.name, " [", msg.date, "]: "), msg.text, Coollab.Forms.editLink(msg)
+								span({"class":"userLbl"}, msg._.doc.user.name, " [", msg.date, "]: "), msg.text, editLink(msg)
 							);
 						}),
 						div(span({"class":"link lnkAddMessage"}, "Добавить сообщение"))
 					);
-				}},
-				events: function(tpc, pnl){
-					console.log(11111);
-					pnl.find(".topic .lnkAddMessage").click(function(){
-						//var evt = Coollab.getNode(cal._.dataSetID, $(this).attr("data-event"));
-						Coollab.addNode(tpc, "message", true);
-					}).end();
-				}
+				}})())
+				.find(".topic .lnkAddMessage").click(function(){
+					//var evt = Coollab.getNodeByID(cal._.dataSetID, $(this).attr("data-event"));
+					Coollab.addNode(tpc, "message", true);
+				}).end();
 			}
 		},
 		message:{
