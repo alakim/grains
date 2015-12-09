@@ -1,0 +1,58 @@
+.calendarDlgShild{
+	position:absolute;
+	top:0; left:0;
+	width:100vw;
+	height:100vh;
+	background-color:#888;
+	opacity:.7;
+	z-index:1000;
+	display:none;
+}
+.calendarDlg{
+	position:absolute;
+	background-color:#fff;
+	border:1px solid #ccc;
+	z-index:1001;
+	display:none;
+	opacity:1;
+}
+.calendarDlg .header{
+	text-align: center;
+	padding:5px;
+	border-bottom:1px solid #ccc;
+}
+.calendBtn{
+	position:absolute;
+	border:1px solid #ccc;
+	border-radius:8px;
+	cursor:pointer;
+	text-align:center;
+}
+.calendBtn:hover{
+	background:#f8f8f8;
+}
+.calendBtn.weekend{
+	color:#f00;
+}
+.calendBtn.current{
+	background:#eee;
+}
+.calendarDlg .monthPnl{
+	height:25px;
+	padding:0;
+	border-bottom:1px solid #ccc;
+	text-align: center;
+}
+.calendarDlg .monthPnl div{
+	float:left;
+}
+.calendarDlg .daysPnl{
+	height:25px;
+}
+.calendarDlg .daysPnl div{
+	float:left;
+}
+.calendarDlg .button{
+	cursor:pointer;
+}
+

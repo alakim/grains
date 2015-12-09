@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Calendar Demo Page</title>
+	<style type="text/css">
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+		}
+	</style>
+	<script type="text/javascript" src="js/html.js"></script>
+	<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="calendar/calendar.js"></script>
+	<link rel="stylesheet" type="text/css" href="calendar/calendar.css"/>
+	<script type="text/javascript">
+		$(function(){
+			$(".calendar").calendar();
+		});
+	</script>
+</head>
+<body>
+	<h1>Calendar Demo Page</h1>
+	<table>
+		<tr>
+			<th>Дата начала</th>
+			<td><input type="text" class="calendar" value="09.12.2015"/></td>
+		</tr>
+		<tr>
+			<th>Дата завершения</th>
+			<td><input type="text" class="calendar"/></td>
+		</tr>
+	</table>
+</body>
+</html>
