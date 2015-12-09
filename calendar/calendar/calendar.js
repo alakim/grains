@@ -10,6 +10,8 @@
 		};
 	}
 	
+	var homeDate;
+	
 	function parseDate(dd){
 		if(!(dd&&dd.length)) return new Date();
 		var mt = dd.match(/(\d\d?)\.(\d\d?)\.(\d\d\d\d)/i);
@@ -41,16 +43,11 @@
 						+ $(".calendarDlg .daysPnl").height();
 		
 		var btnSize = {w:size.w/7-margin, h:(size.h - headerH)/5-margin*5};
-		//console.log(btnSize);
-		var dateMonth = date.getMonth();
 		var dd = new Date(date);
 		dd.setDate(1);
-		//dd.setMonth(3);
 		var curMonth = dd.getMonth(),
 			day1 = dd.getDay();
 			if(day1==0) day1 = 7;
-		//console.log(day1);
-		//console.log(day, dd, dd.getDay());
 		for(i=1; dd.setDate(i),i<=31&&dd.getMonth()==curMonth; i++){
 			var day = day1+i-2;
 			var pdTop = 3;
@@ -66,26 +63,22 @@
 			pnl.append(btn);
 			btn.click(function(){
 				var d = +$(this).html()
-				//console.log(nr);
 				date.setDate(d);
 				field.val(formatDate(date, true));
 				hideDialog();
 			});
-			if(i==date.getDate() && dd.getMonth()==dateMonth) btn.addClass("current");
+			if(date.getYear()==homeDate.getYear() && date.getMonth()==homeDate.getMonth() && i==date.getDate()) btn.addClass("current");
 			if(day%7==6) btn.addClass("weekend");
 		}
 	}
 	
 	function MonthPanel(pnl, date, field){
-		//console.log(date);
-
 		function incDate(di){
 			var d2 = new Date(date);
 			d2.setMonth(date.getMonth()+di);
 			$(".calendarDlg .calendDaysTable").control(DaysTable, d2, field);
 			$(".calendarDlg .monthPnl").control(MonthPanel, d2, field);
 		}
-		
 		pnl.html((function(){with($H){
 			return div(
 				div({"class":"button btnMonthBk"}, "&lt;"),
@@ -115,10 +108,11 @@
 	function Calendar(pnl, field){
 		var val = field.val(),
 			date = parseDate(val);
+		homeDate = date;
 		
 		pnl.html((function(){with($H){
 			return div(
-				div({"class":"header"}, formatDate(date, false)),
+				div({"class":"header"}, div({"class":"button btHome"}, formatDate(date, false))),
 				div({"class":"monthPnl"}),
 				div({"class":"daysPnl"}),
 				div({"class":"calendDaysTable", style:style({height:size.h*.8})}),
@@ -132,7 +126,11 @@
 		}).end()
 		.find(".monthPnl").control(MonthPanel, date, field).end()
 		.find(".calendDaysTable").control(DaysTable, date, field).end()
-		.find(".daysPnl").control(DaysPanel).end();
+		.find(".daysPnl").control(DaysPanel).end()
+		.find(".btHome").click(function(){
+			$(".calendarDlg .calendDaysTable").control(DaysTable, homeDate, field);
+			$(".calendarDlg .monthPnl").control(MonthPanel, homeDate, field);
+		}).end();
 	}
 	
 	function hideDialog(){
