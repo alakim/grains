@@ -1,8 +1,8 @@
 (function($,$H){
 	var size = {w:400, h:300};
 	
-	if(!$.fn.control){
-		$.fn.control = function(constr, x, y, z){
+	if(!$.fn.calendControl){
+		$.fn.calendControl = function(constr, x, y, z){
 			$(this).each(function(i, el){
 				constr($(el), x, y, z);
 			});
@@ -76,17 +76,19 @@
 		function incDate(di){
 			var d2 = new Date(date);
 			d2.setMonth(date.getMonth()+di);
-			$(".calendarDlg .calendDaysTable").control(DaysTable, d2, field);
-			$(".calendarDlg .monthPnl").control(MonthPanel, d2, field);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field);
 		}
 		pnl.html((function(){with($H){
+			var prevMonth = new Date(date); prevMonth.setMonth(date.getMonth()-1);
+			var nextMonth = new Date(date); nextMonth.setMonth(date.getMonth()+1);
 			return div(
-				div({"class":"button btnMonthBk"}, "&lt;"),
-				div({style:style({width:size.w*.7})},
+				div({"class":"button btnMonthBk"}, "&lt;"+months.N[prevMonth.getMonth()]),
+				div(
 					months.N[date.getMonth()], " ",
 					date.getYear()+1900, " г."
 				),
-				div({"class":"button btnMonthFr"}, "&gt;")
+				div({"class":"button btnMonthFr"}, months.N[nextMonth.getMonth()]+"&gt;")
 			);
 		}})())
 		.find(".btnMonthBk").click(function(){incDate(-1);}).end()
@@ -124,12 +126,12 @@
 		.find(".btCancel").click(function(){
 			hideDialog();
 		}).end()
-		.find(".monthPnl").control(MonthPanel, date, field).end()
-		.find(".calendDaysTable").control(DaysTable, date, field).end()
-		.find(".daysPnl").control(DaysPanel).end()
+		.find(".monthPnl").calendControl(MonthPanel, date, field).end()
+		.find(".calendDaysTable").calendControl(DaysTable, date, field).end()
+		.find(".daysPnl").calendControl(DaysPanel).end()
 		.find(".btHome").click(function(){
-			$(".calendarDlg .calendDaysTable").control(DaysTable, homeDate, field);
-			$(".calendarDlg .monthPnl").control(MonthPanel, homeDate, field);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, homeDate, field);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, homeDate, field);
 		}).end();
 	}
 	
@@ -152,9 +154,9 @@
 		dialog.css({
 			width:size.w,
 			height:size.h,
-			top:$("body").height()/2+size.h - 200,
+			top:100, //$("body").height()/2+size.h - 200,
 			left:$("body").width()/2-size.w
-		}).control(Calendar, fld).show();
+		}).calendControl(Calendar, fld).show();
 	}
 	
 	function CalendarField(fld){
@@ -166,7 +168,7 @@
 	}
 	
 	$.fn.calendar = function(){
-		$(this).control(CalendarField);
+		$(this).calendControl(CalendarField);
 	};
 
 })(jQuery, Html);

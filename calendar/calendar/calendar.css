@@ -1,5 +1,5 @@
 .calendarDlgShild{
-	position:absolute;
+	position:fixed;
 	top:0; left:0;
 	width:100vw;
 	height:100vh;
@@ -9,7 +9,7 @@
 	display:none;
 }
 .calendarDlg{
-	position:absolute;
+	position:fixed;
 	background-color:#fff;
 	border:1px solid #ccc;
 	z-index:1001;
@@ -46,9 +46,8 @@
 	border-bottom:1px solid #ccc;
 	text-align: center;
 }
-.calendarDlg .monthPnl div{
-	float:left;
-}
+.calendarDlg .monthPnl .btnMonthBk{float:left;}
+.calendarDlg .monthPnl .btnMonthFr{float:right;}
 .calendarDlg .daysPnl{
 	height:25px;
 }
