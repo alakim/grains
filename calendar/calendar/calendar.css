@@ -12,49 +12,68 @@
 	position:fixed;
 	background-color:#fff;
 	border:1px solid #ccc;
+	border-radius:8px;
 	z-index:1001;
 	display:none;
 	opacity:1;
+	cursor:default;
+	padding:5px 0;
 }
 .calendarDlg .header{
 	text-align: center;
-	padding:5px;
+	/*padding:5px;*/
 	border-bottom:1px solid #ccc;
+	font-weight:bold;
 }
 .calendarDlg .btHome{
 	
 }
-.calendBtn{
+.calendarDlg .calendBtn{
 	position:absolute;
 	border:1px solid #ccc;
 	border-radius:8px;
 	cursor:pointer;
 	text-align:center;
 }
-.calendBtn:hover{
+.calendarDlg .calendBtn:hover{
 	background:#f8f8f8;
 }
-.calendBtn.weekend{
+.calendarDlg .calendBtn.weekend{
 	color:#f00;
 }
-.calendBtn.current{
+.calendarDlg .calendBtn.current{
 	background:#eee;
 }
 .calendarDlg .monthPnl{
 	height:25px;
-	padding:0;
+	padding:5px 0 0 0;
 	border-bottom:1px solid #ccc;
 	text-align: center;
 }
+.calendarDlg .monthPnl .curMonth{float:left; font-weight:bold;}
 .calendarDlg .monthPnl .btnMonthBk{float:left;}
 .calendarDlg .monthPnl .btnMonthFr{float:right;}
 .calendarDlg .daysPnl{
-	height:25px;
+	padding:5px 0 0 0;
 }
 .calendarDlg .daysPnl div{
 	float:left;
+	text-align:center;
+	padding: 5px 0 0 0;
+}
+.calendarDlg .monthBtn{
+	padding-top:4px;
+	font-size:80%;
 }
 .calendarDlg .button{
 	cursor:pointer;
+	border-radius:8px;
 }
-
+.calendarDlg .button:hover{
+	color:#44c;
+}
+.calendarDlg .btCancel{
+	padding:5px;
+	border:1px solid #ccc;
+	background: #eee;
+}

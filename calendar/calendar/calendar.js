@@ -38,11 +38,9 @@
 	
 	function DaysTable(pnl, date, field){
 		pnl.html("");
-		var margin = 3,
-			headerH = $(".calendarDlg .monthPnl").height() 
-						+ $(".calendarDlg .daysPnl").height();
+		var margin = 3;
 		
-		var btnSize = {w:size.w/7-margin, h:(size.h - headerH)/5-margin*5};
+		var btnSize = {w:size.w/7-margin, h:(size.h*.6)/5-margin*3};
 		var dd = new Date(date);
 		dd.setDate(1);
 		var curMonth = dd.getMonth(),
@@ -54,7 +52,7 @@
 			var btn = $($H.div(
 				{"class":"calendBtn", style:$H.style({
 					width: btnSize.w, height:btnSize.h-pdTop,
-					top: 30+headerH+margin+(Math.floor((day)/7)*(btnSize.h+margin)), 
+					top: margin+(Math.floor((day)/7)*(btnSize.h+margin)), 
 					left:day%7*(btnSize.w+margin),
 					"padding-top":pdTop+"px"
 				})},
@@ -83,12 +81,12 @@
 			var prevMonth = new Date(date); prevMonth.setMonth(date.getMonth()-1);
 			var nextMonth = new Date(date); nextMonth.setMonth(date.getMonth()+1);
 			return div(
-				div({"class":"button btnMonthBk"}, "&lt;"+months.N[prevMonth.getMonth()]),
-				div(
+				div({"class":"button monthBtn btnMonthBk"}, "&lt; "+months.N[prevMonth.getMonth()]),
+				div({"class":"curMonth", style:style({"margin-left":80+"px", "float":"left"})},
 					months.N[date.getMonth()], " ",
 					date.getYear()+1900, " г."
 				),
-				div({"class":"button btnMonthFr"}, months.N[nextMonth.getMonth()]+"&gt;")
+				div({"class":"button monthBtn btnMonthFr"}, months.N[nextMonth.getMonth()]+" &gt;")
 			);
 		}})())
 		.find(".btnMonthBk").click(function(){incDate(-1);}).end()
@@ -101,7 +99,7 @@
 		pnl.html((function(){with($H){
 			return div(
 				apply(days, function(d){
-					return div({style:style({width:ww, "text-align":"center"})}, d);
+					return div({style:style({width:ww})}, d);
 				})
 			);
 		}})());
@@ -114,12 +112,17 @@
 		
 		pnl.html((function(){with($H){
 			return div(
-				div({"class":"header"}, div({"class":"button btHome"}, formatDate(date, false))),
-				div({"class":"monthPnl"}),
-				div({"class":"daysPnl"}),
-				div({"class":"calendDaysTable", style:style({height:size.h*.8})}),
-				div({style:"margin:"+(size.h*0)+"px "+(size.w/2-30)+"px;"},
-					input({type:"button", value:"Закрыть", "class":"btCancel"})
+				div({"class":"header", style:style({height:size.h*.1})}, div({"class":"button btHome"}, formatDate(date, false))),
+				div({"class":"monthPnl", style:style({height:size.h*.1})}),
+				div({"class":"daysPnl", style:style({height:size.h*.1})}),
+				div({"class":"calendDaysTable", style:style({height:size.h*.55, position:"relative"})}),
+				div(
+					{style:style({
+						margin:(size.h*0)+"px "+(size.w/2-30)+"px;",
+						height:size.h*.1
+					})},
+					//input({type:"button", value:"Закрыть", "class":"btCancel"})
+					span({"class":"button btCancel"}, "Отмена")
 				)
 			);
 		}})())
@@ -155,7 +158,7 @@
 			width:size.w,
 			height:size.h,
 			top:100, //$("body").height()/2+size.h - 200,
-			left:$("body").width()/2-size.w
+			left:($("body").width()-size.w)/2
 		}).calendControl(Calendar, fld).show();
 	}
 	
