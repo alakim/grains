@@ -115,6 +115,7 @@ var Coollab = (function($,$H){
 
 		pnl.html((function(){with($H){
 			return div({"class":"coollabWin"},
+				div(input({type:"button", value:"Обновить", "class":"btReload"})),
 				changed[dataSetID]?div(input({type:"button", value:"Сохранить изменения", "class":"btSaveChanges"})):null,
 				div({"class":"pnlTree"},
 					apply(roots[dataSetID], function(r){
@@ -137,6 +138,9 @@ var Coollab = (function($,$H){
 				changed[dataSetID] = false;
 				updateView(dataSetID, pnl);
 			})
+		}).end()
+		.find(".btReload").click(function(){
+			reload();
 		}).end();
 	}
 	
@@ -180,14 +184,13 @@ var Coollab = (function($,$H){
 		
 		function phpManager(){
 			this.load = function(dataSetID, userID, callback){
-				var url = dataSetID+"/d"+userID+".txt";
-				$.get(url, {}, function(res){res=$.parseJSON(res);
+				$.get("ws/loaddoc.php", {doc:dataSetID+"/d"+userID+".txt"}, function(res){res=$.parseJSON(res);
 					Coollab.Docs[dataSetID].push(res);
 					callback();
 				});
 			};
 			this.save = function(dataSetID, content, callback){
-				$.post("ws/savedoc.php", {doc:dataSetID+"/dx"+Coollab.UserID+".txt", content:content}, function(res){res=$.parseJSON(res);
+				$.post("ws/savedoc.php", {doc:dataSetID+"/d"+Coollab.UserID+".txt", content:content}, function(res){res=$.parseJSON(res);
 					if(res.error){alert(res.error); return;}
 					callback();
 				});
@@ -202,6 +205,14 @@ var Coollab = (function($,$H){
 			}
 		};
 	})();
+	
+	
+	function reload(){
+		loadDocs(Coollab.rootDataSetID, function(){
+			indexDocs(Coollab.rootDataSetID, true);
+			updateView(Coollab.rootDataSetID, mainPanel);
+		});
+	}
 	
 	function init(pnl){
 		docManager = DocManager(Coollab.docManagerType);
@@ -317,6 +328,7 @@ var Coollab = (function($,$H){
 		Docs: [],
 		Forms:{},
 		docManagerType: "php", // "local"
+		reload: reload,
 		collectNodes: collectNodes,
 		acceptChanges: acceptChanges,
 		closeEditor: closeEditor,
