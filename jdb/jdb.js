@@ -11,6 +11,7 @@ var JDB = (function(){
 	}
 	
 	function JDB(coll){
+		if(typeof(coll.raw)=="function") coll = coll.raw();
 		var mon = (function(){
 			return {
 				raw: function(){return coll;},
@@ -48,6 +49,64 @@ var JDB = (function(){
 							if(F(e, k)) res[k] = e;
 						});
 					}
+					return JDB(res);
+				},
+				index: function(F){
+					if(typeof(F)=="string"){
+						res = {};
+						each(coll, function(e){
+							if(e) res[e[F]] = e;
+						});
+					}
+					else{
+						res = {};
+						each(coll, function(e){
+							if(e) res[F(e)] = e;
+						});
+					}
+					return JDB(res);
+				},
+				groupBy: function(F){
+					if(typeof(F)=="string"){
+						res = {};
+						each(coll, function(e){
+							if(!e) return;
+							var k = e[F];
+							if(!res[k]) res[k] = [];
+							res[k].push(e);
+						});
+					}
+					else{
+						res = {};
+						each(coll, function(e){
+							if(!e) return;
+							var k = F(e);
+							if(!res[k]) res[k] = [];
+							res[k].push(e);
+						})
+					}
+					return JDB(res); 
+				},
+				extend: function(c2){
+					res = {};
+					each(coll, function(e,k){res[k] = e;})
+					each(c2, function(e, k){res[k] = e;});
+					return JDB(res);
+				},
+				toArray: function(){
+					if(this.raw() instanceof Array) return this;
+					res = [];
+					each(coll, function(e){res.push(e);});
+					return JDB(res);
+				},
+				treeToArray: function(childField, F){
+					res = [];
+					function tree(nd){
+						var v = typeof(F)=="function"?F(nd):nd[F];
+						res.push(v);
+						each(nd[childField], tree);
+					}
+					tree(coll);
 					return JDB(res);
 				}
 			};

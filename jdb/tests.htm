@@ -1,6 +1,7 @@
 <html>
 <head>
-<title>Html Unit Tests</title>
+<meta charset="windows-1251"/>
+<title>JDB Unit Tests</title>
 <script type="text/javascript" src="../tools/jsUnit.js"></script>
 <script type="text/javascript" src="jdb.js"></script>
 <script type="text/javascript">
@@ -12,6 +13,7 @@ new JSUnit.Test("Конструктор", "Basic").run = function(){
 	var coll = [1, 2, 3];
 	var d = JDB(coll);
 	this.assert(d.raw(), coll);
+	this.assert(JDB(d).raw(), coll); // повторная обертка не приводит к ошибкам
 }
 
 new JSUnit.Test("Map", "Basic").run = function(){
@@ -31,6 +33,90 @@ new JSUnit.Test("Each", "Basic").run = function(){
 new JSUnit.Test("Select", "Basic").run = function(){
 	this.assert(JDB([1, 2, 3]).select(function(x){return x<3;}).raw(), [1, 2]);
 	this.assert(JDB({x:1, y:2, z:3}).select(function(x){return x<3;}).raw(), {x:1, y:2});
+}
+
+new JSUnit.Test("Index", "Basic").run = function(){
+	var coll = [
+		{id:1, nm:"John"},
+		{id:2, nm:"Phill"},
+		{id:3, nm:"James"}
+	];
+	this.assert(JDB(coll).index("id").raw(), {
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	});
+	this.assert(JDB(coll).index(function(e){return e.id;}).raw(), {
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	});
+}
+new JSUnit.Test("GroupBy", "Basic").run = function(){
+	var coll = [
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"},
+		{salary:100, nm:"James"}
+	];
+	this.assert(JDB(coll).groupBy("salary").raw(), {
+		100:[
+			{salary:100, nm:"John"},
+			{salary:100, nm:"James"}
+		],
+		200:[{salary:200, nm:"Phill"}],
+	});
+	this.assert(JDB(coll).groupBy(function(e){return e.salary;}).raw(), {
+		100:[
+			{salary:100, nm:"John"},
+			{salary:100, nm:"James"}
+		],
+		200:[{salary:200, nm:"Phill"}],
+	});
+}
+
+new JSUnit.Test("extend", "Basic").run = function(){
+	var coll = {
+		1:{id:1, nm:"John"}
+	};
+	this.assert(JDB(coll).extend({
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	}).raw(), {
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	});
+}
+
+new JSUnit.Test("ToArray", "Basic").run = function(){
+	this.assert(JDB({
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	}).toArray().raw(), [
+		{id:1, nm:"John"},
+		{id:2, nm:"Phill"},
+		{id:3, nm:"James"}
+	]);
+}
+
+new JSUnit.Test("TreeToArray", "Basic").run = function(){
+	var tree = {nm:"library", children:[
+		{nm:"scifi", children:[
+		]},
+		{nm:"classics", children:[
+			{nm:"russian", children:[
+				{nm:"Pushkin"},
+				{nm:"Tolstoy"}
+			]}
+		]}
+	]};
+	this.assert(JDB(tree).treeToArray("children", function(e){return e.nm;}).raw(), [
+		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
+	]);
+	this.assert(JDB(tree).treeToArray("children", "nm").raw(), [
+		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
+	]);
 }
 
 
