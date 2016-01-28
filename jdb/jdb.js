@@ -105,10 +105,13 @@ var JDB = (function(){
 					each(c2, function(e){res.push(e);});
 					return JDB(res);
 				},
-				toArray: function(){
+				toArray: function(F){
 					if(this.raw() instanceof Array) return this;
 					res = [];
-					each(coll, function(e){res.push(e);});
+					var mapMode = typeof(F)=="function";
+					each(coll, function(e, k){
+						res.push(mapMode?F(e, k):e);
+					});
 					return JDB(res);
 				},
 				treeToArray: function(childField, F){
@@ -119,6 +122,26 @@ var JDB = (function(){
 						each(nd[childField], tree);
 					}
 					tree(coll);
+					return JDB(res);
+				},
+				sort: function(F){
+					if(!F){
+						return JDB(coll.sort());
+					}
+					else if(typeof(F)=="function"){
+						return JDB(coll.sort(F));
+					}
+					else if(typeof(F)=="string"){
+						return JDB(coll.sort(function(a,b){
+							return a[F]>b[F]?1:a[F]<b[F]?-1:0;
+						}));
+					}
+				},
+				reverse: function(){
+					var res = [];
+					for(var i=coll.length-1; i>=0; i--){
+						res.push(coll[i]);
+					}
 					return JDB(res);
 				}
 			};

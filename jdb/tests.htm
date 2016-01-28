@@ -137,6 +137,16 @@ new JSUnit.Test("toArray", "Basic Monadic").run = function(){
 		{id:2, nm:"Phill"},
 		{id:3, nm:"James"}
 	]);
+
+	this.assert(JDB({
+		1:{nm:"John"},
+		2:{nm:"Phill"},
+		3:{nm:"James"}
+	}).toArray(function(e, k){e.id = +k; return e;}).raw(), [
+		{id:1, nm:"John"},
+		{id:2, nm:"Phill"},
+		{id:3, nm:"James"}
+	]);
 }
 
 new JSUnit.Test("treeToArray", "Basic Monadic").run = function(){
@@ -158,7 +168,30 @@ new JSUnit.Test("treeToArray", "Basic Monadic").run = function(){
 	]);
 }
 
+new JSUnit.Test("sort", "Basic Monadic").run = function(){
+	var coll = [1, 5, 3];
+	this.assert(JDB(coll).sort().raw(), [1, 3, 5]);
+	coll = [
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"},
+		{salary:80, nm:"James"}
+	];
+	this.assert(JDB(coll).sort(function(a,b){return a.salary>b.salary?1:a.salary<b.salary?-1:0;}).raw(), [
+		{salary:80, nm:"James"},
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"}
+	]);
+	this.assert(JDB(coll).sort("salary").raw(), [
+		{salary:80, nm:"James"},
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"}
+	]);
+}
 
+new JSUnit.Test("reverse", "Basic Monadic").run = function(){
+	var coll = [1, 2, 3, 4];
+	this.assert(JDB(coll).reverse().raw(), [4, 3, 2, 1]);
+}
 
 function init(){
 	document.getElementById("versionPanel").innerHTML = JDB.version;
