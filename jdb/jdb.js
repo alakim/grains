@@ -10,6 +10,10 @@ var JDB = (function(){
 		}
 	}
 	
+	function extend(o, s){
+		for(var k in s) o[k] = s[k];
+	}
+	
 	function JDB(coll){
 		if(typeof(coll.raw)=="function") coll = coll.raw();
 		var mon = (function(){
@@ -121,7 +125,10 @@ var JDB = (function(){
 		})();
 		return mon;
 	}
-	
-	JDB.version = "1.0.0";
+	extend(JDB, {
+		version: "1.0.0",
+		extend: extend,
+		each: each
+	});
 	return JDB;
 })();
