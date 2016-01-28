@@ -16,12 +16,12 @@ new JSUnit.Test("Конструктор", "Basic").run = function(){
 	this.assert(JDB(d).raw(), coll); // повторная обертка не приводит к ошибкам
 }
 
-new JSUnit.Test("Map", "Basic").run = function(){
+new JSUnit.Test("map", "Basic").run = function(){
 	this.assert(JDB([1, 2, 3]).map(function(x){return x*2;}).raw(), [2, 4, 6]);
 	this.assert(JDB({x:1, y:2, z:3}).map(function(x){return x*2;}).raw(), {x:2, y:4, z:6});
 }
 
-new JSUnit.Test("Each", "Basic").run = function(){
+new JSUnit.Test("each", "Basic").run = function(){
 	var log = [];
 	this.assert(JDB([1, 2, 3]).each(function(x){log.push(x);}).raw(), [1, 2, 3]);
 	this.assert(log, [1, 2, 3]);
@@ -30,12 +30,12 @@ new JSUnit.Test("Each", "Basic").run = function(){
 	this.assert(log, ["x:1", "y:2", "z:3"]);
 }
 
-new JSUnit.Test("Select", "Basic").run = function(){
+new JSUnit.Test("select", "Basic").run = function(){
 	this.assert(JDB([1, 2, 3]).select(function(x){return x<3;}).raw(), [1, 2]);
 	this.assert(JDB({x:1, y:2, z:3}).select(function(x){return x<3;}).raw(), {x:1, y:2});
 }
 
-new JSUnit.Test("Index", "Basic").run = function(){
+new JSUnit.Test("index", "Basic").run = function(){
 	var coll = [
 		{id:1, nm:"John"},
 		{id:2, nm:"Phill"},
@@ -52,7 +52,7 @@ new JSUnit.Test("Index", "Basic").run = function(){
 		3:{id:3, nm:"James"}
 	});
 }
-new JSUnit.Test("GroupBy", "Basic").run = function(){
+new JSUnit.Test("groupBy", "Basic").run = function(){
 	var coll = [
 		{salary:100, nm:"John"},
 		{salary:200, nm:"Phill"},
@@ -86,9 +86,23 @@ new JSUnit.Test("extend", "Basic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
+	this.assert(JDB(coll).extend(JDB({
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	})).raw(), {
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	});
 }
 
-new JSUnit.Test("ToArray", "Basic").run = function(){
+new JSUnit.Test("concat", "Basic").run = function(){
+	var coll = [1, 2, 3];
+	this.assert(JDB(coll).concat([4, 5]).raw(), [1, 2, 3, 4, 5]);
+	this.assert(JDB(coll).concat(JDB([4, 5])).raw(), [1, 2, 3, 4, 5]);
+}
+
+new JSUnit.Test("toArray", "Basic").run = function(){
 	this.assert(JDB({
 		1:{id:1, nm:"John"},
 		2:{id:2, nm:"Phill"},
@@ -100,7 +114,7 @@ new JSUnit.Test("ToArray", "Basic").run = function(){
 	]);
 }
 
-new JSUnit.Test("TreeToArray", "Basic").run = function(){
+new JSUnit.Test("treeToArray", "Basic").run = function(){
 	var tree = {nm:"library", children:[
 		{nm:"scifi", children:[
 		]},

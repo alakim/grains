@@ -88,9 +88,17 @@ var JDB = (function(){
 					return JDB(res); 
 				},
 				extend: function(c2){
+					if(typeof(c2.raw)=="function") c2 = c2.raw();
 					res = {};
-					each(coll, function(e,k){res[k] = e;})
+					each(coll, function(e,k){res[k] = e;});
 					each(c2, function(e, k){res[k] = e;});
+					return JDB(res);
+				},
+				concat: function(c2){
+					if(typeof(c2.raw)=="function") c2 = c2.raw();
+					res = [];
+					each(coll, function(e){res.push(e);});
+					each(c2, function(e){res.push(e);});
 					return JDB(res);
 				},
 				toArray: function(){
