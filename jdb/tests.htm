@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>Html Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="jdb.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля JDB", "Configuration").run = function(){
+	this.assert(typeof(JDB), "function");
+}
+
+new JSUnit.Test("Конструктор", "Basic").run = function(){
+	var coll = [1, 2, 3];
+	var d = JDB(coll);
+	this.assert(d.raw(), coll);
+}
+
+new JSUnit.Test("Map", "Basic").run = function(){
+	this.assert(JDB([1, 2, 3]).map(function(x){return x*2;}).raw(), [2, 4, 6]);
+	this.assert(JDB({x:1, y:2, z:3}).map(function(x){return x*2;}).raw(), {x:2, y:4, z:6});
+}
+
+new JSUnit.Test("Each", "Basic").run = function(){
+	var log = [];
+	this.assert(JDB([1, 2, 3]).each(function(x){log.push(x);}).raw(), [1, 2, 3]);
+	this.assert(log, [1, 2, 3]);
+	log = [];
+	this.assert(JDB({x:1, y:2, z:3}).each(function(x, n){log.push(n+":"+x);}).raw(), {x:1, y:2, z:3});
+	this.assert(log, ["x:1", "y:2", "z:3"]);
+}
+
+new JSUnit.Test("Select", "Basic").run = function(){
+	this.assert(JDB([1, 2, 3]).select(function(x){return x<3;}).raw(), [1, 2]);
+	this.assert(JDB({x:1, y:2, z:3}).select(function(x){return x<3;}).raw(), {x:1, y:2});
+}
+
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = JDB.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>JDB Unit Tests</h1>
+	<p>JDB - модуль для операций над коллекциями в формате JSON</p>
+	<p>JDB v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
