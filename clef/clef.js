@@ -36,7 +36,7 @@
 		if(!(staff instanceof Array)){
 			staff = staff.split(" ");
 		}
-		//console.log(staff);
+		console.log(staff);
 		
 		var offset = {x:10, y:15};
 		var paper = new $R(pnl[0], staffSize.w, staffSize.h+offset.y*2);
@@ -49,12 +49,12 @@
 		signs.clef(paper, offset.x, offset.y);
 		
 		var duration = 1;
-		var reDur = /([a-g])(((es)|(is))?)('*)(\d)?/i,
-			notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
+		var reNote = /([a-g])(((es)|(is))?)('*)(\d)?/i;
+		var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 		//console.log(1, notes);
 		var posX = offset.x + 25;
 		$D.each(staff, function(s, i){
-			var mt = s.match(reDur);
+			var mt = s.match(reNote);
 			//console.log(s, mt);
 			var note = mt[1],
 				alt = mt[2]
