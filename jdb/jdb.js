@@ -147,7 +147,7 @@ var JDB = (function(){
 				map: function(F){return JDB(map(coll, F));},
 				each: function(F){each(coll, F); return this;},
 				select: function(F){return JDB(select(coll, F));},
-				index: function(F){return JDB(index(coll, F));},
+				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
 				extend: function(c2){
 					if(typeof(c2.raw)=="function") c2 = c2.raw();

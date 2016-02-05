@@ -200,6 +200,7 @@ new JSUnit.Test("index", "Basic Monadic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
+	this.assert(JDB("a;b;c".split(";")).index(function(x){return x;}, function(x, i){return i;}).raw(), {a:0, b:1, c:2});
 }
 
 new JSUnit.Test("groupBy", "Basic Monadic").run = function(){
