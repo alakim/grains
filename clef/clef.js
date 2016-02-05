@@ -37,7 +37,7 @@
 	function init(pnl, staff){
 		if(!(staff instanceof Array)){
 			var chords = [];
-			staff = staff.replace(/&lt;([a-g]([ei]s)?'* +)*[a-g]([ei]s)?'*&gt;\d/ig, function(x){
+			staff = staff.replace(/&lt;([a-g]([ei]?s)?'* +)*[a-g]([ei]?s)?'*&gt;\d/ig, function(x){
 				var idx = chords.length;
 				chords.push(x);
 				return "#CH"+idx;
@@ -58,7 +58,7 @@
 		
 		var duration = 1;
 		
-		var reNote = /([a-g])(((es)|(is))?)('*)(\d)?/i,
+		var reNote = /([a-g])(((e?s)|(is))?)('*)(\d)?/i,
 			reChord = /#CH(\d+)/;
 		var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
@@ -73,7 +73,7 @@
 			var sign = {1:signs.whole, 4:signs.quarter}[duration]; 
 			if(sign) sign(paper, posX, posY);
 			
-			var altSign = {"is":signs.sharp, "es":signs.flat}[alt];
+			var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat}[alt];
 			if(altSign) altSign(paper, posX, posY);
 		}
 		
