@@ -7,7 +7,7 @@
 		body{
 			font-family:Verdana, Arial, Sans-Serif;
 		}
-		#out1{
+		.staff{
 			width:300px;
 			height:50px;
 			border:1px solid #ccc;
@@ -20,13 +20,15 @@
 	<script type="text/javascript" src="clef.js"></script>
 	<script type="text/javascript">
 		$(function(){
-			$("#out1").clef("c4 d e f g");
+			$("#out1").clef("c'1 d'4 e'4 f'1 g'");
+			$("#out2").clef("d'1 e' fis' g' a' bes' cis''");
 		});
 	</script>
 </head>
 <body>
 	<h1>Clef Demo Page</h1>
 	<p>Библиотека для отображения нотного текста</p>
-	<div id="out1"></div>
+	<div class="staff" id="out1"></div>
+	<div class="staff" id="out2"></div>
 </body>
 </html>
