@@ -42,6 +42,7 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
+	this.assert(JDB.index("a;b;c".split(";"), function(x){return x;}, function(x, i){return i;}), {a:0, b:1, c:2});
 }
 
 new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){

@@ -48,18 +48,18 @@ var JDB = (function(){
 		return res;
 	}
 	
-	function index(coll, F){
+	function index(coll, F, Fobj){
 		var res;
 		if(typeof(F)=="string"){
 			res = {};
-			each(coll, function(e){
-				if(e) res[e[F]] = e;
+			each(coll, function(e, i){
+				if(e) res[e[F]] = Fobj?Fobj(e, i):e;
 			});
 		}
 		else{
 			res = {};
-			each(coll, function(e){
-				if(e) res[F(e)] = e;
+			each(coll, function(e, i){
+				if(e) res[F(e)] = Fobj?Fobj(e, i):e;
 			});
 		}
 		return res;
