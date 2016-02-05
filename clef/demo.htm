@@ -20,15 +20,19 @@
 	<script type="text/javascript" src="clef.js"></script>
 	<script type="text/javascript">
 		$(function(){
-			$("#out1").clef("c'1 d'4 e'4 f'1 g'");
-			$("#out2").clef("d'1 e' fis' g' a' bes' cis''");
+			$(".staff").each(function(i, el){el=$(el);
+				var ss = el.html();
+				var pnl = $(Html.p({style:"margin:18px 0 0 25px;"}, ss));
+				el.before(pnl);
+				el.staff();
+			});
 		});
 	</script>
 </head>
 <body>
 	<h1>Clef Demo Page</h1>
 	<p>Библиотека для отображения нотного текста</p>
-	<div class="staff" id="out1"></div>
-	<div class="staff" id="out2"></div>
+	<div class="staff">c'1 d'4 e'4 f'1 g'</div>
+	<div class="staff">d'1 e' fis' g' a' bes' cis''</div>
 </body>
 </html>

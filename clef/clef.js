@@ -81,9 +81,11 @@
 		//signs.quarter(paper, offset.x+80, offset.y+15);
 	}
 	
-	$.fn.clef = function(staff){
-		$(this).each(function(i,el){
-			init($(el), staff);
+	$.fn.staff = function(){
+		$(this).each(function(i,el){el=$(el);
+			var staff = el.html();
+			el.html("");
+			init(el, staff);
 		});
 	};
 	
