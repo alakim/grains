@@ -28,15 +28,23 @@
 		},
 		quarter: function(paper, x, y){
 			var p = "m 0.12463,0.287643 c 0,0.723825 -0.45475,1.455058 -1.084901,1.999659 C -1.573694,2.831186 -2.385219,3.15355 -3.097335,3.113404 -3.550174,3.090704 -3.970274,2.899291 -4.259661,2.619941 -4.565536,2.337963 -4.74237,1.956335 -4.74237,1.53743 c 0,-0.660977 0.449015,-1.268665 1.063155,-1.729868 0.613662,-0.475301 1.391732,-0.799816 2.039566,-0.814153 0.567064,-0.01219 1.039976,0.02485 1.329363,0.281022 0,-4.179019 0,-8.357561 0,-12.536581 0.144812,0.01912 0.290103,0.03967 0.434677,0.06285 2.39e-4,4.495409 2.39e-4,8.990819 2.39e-4,13.486945 z";
-			paper.path(p).attr({fill:signColor, "stroke-width":0}).transform(["T", x+3, y, "S", 1.5]);
+			paper.path(p).attr({fill:signColor, "stroke-width":0}).transform(["T", x+3, y-1, "S", 1.5]);
 		}
 	};
+
+
 	
 	function init(pnl, staff){
 		if(!(staff instanceof Array)){
+			var chords = [];
+			staff = staff.replace(/&lt;([a-g]([ei]s)?'* +)*[a-g]([ei]s)?'*&gt;\d/ig, function(x){
+				var idx = chords.length;
+				chords.push(x);
+				return "#CH"+idx;
+			});
 			staff = staff.split(" ");
 		}
-		console.log(staff);
+		//console.log(staff);
 		
 		var offset = {x:10, y:15};
 		var paper = new $R(pnl[0], staffSize.w, staffSize.h+offset.y*2);
@@ -49,20 +57,12 @@
 		signs.clef(paper, offset.x, offset.y);
 		
 		var duration = 1;
-		var reNote = /([a-g])(((es)|(is))?)('*)(\d)?/i;
+		
+		var reNote = /([a-g])(((es)|(is))?)('*)(\d)?/i,
+			reChord = /#CH(\d+)/;
 		var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
-		//console.log(1, notes);
-		var posX = offset.x + 25;
-		$D.each(staff, function(s, i){
-			var mt = s.match(reNote);
-			//console.log(s, mt);
-			var note = mt[1],
-				alt = mt[2]
-				octave = mt[6];
-			if(mt[7])
-				duration = +mt[7];
-			//console.log(mt, note, alt, octave, duration);
-			posX += alt?24:15;
+
+		function drawNote(paper, note, octave, alt){
 			posY = offset.y + staffSize.h - (notes[note]-1)*step/2;
 			posY += octave=="''"?step/2 - 1*staffSize.h
 				:octave==""?1*staffSize.h
@@ -70,11 +70,45 @@
 			
 			if(posY> offset.y+staffSize.h) signs.addLine(paper, posX, posY);
 			
-			var sign = {1:signs.whole, 4:signs.quarter}[duration];
+			var sign = {1:signs.whole, 4:signs.quarter}[duration]; 
 			if(sign) sign(paper, posX, posY);
 			
 			var altSign = {"is":signs.sharp, "es":signs.flat}[alt];
-			if(altSign) altSign(paper, posX, posY)
+			if(altSign) altSign(paper, posX, posY);
+		}
+		
+		var posX = offset.x + 25;
+		$D.each(staff, function(s, i){
+			var mt;
+			if(mt = s.match(reChord)){
+				posX+=24;
+				$D.each(s.split(" "), function(n){
+					var cIdx = +n.match(/\d+/);
+					var chrd = chords[cIdx];
+					var dur = chrd.match(/\d$/);
+					if(dur) duration = +dur;
+					chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
+					$D.each(chrd.split(" "), function(nn){
+						var mmt = nn.match(/([a-g])((is)|(es))?(''*)/i);
+						var note = mmt[1],
+							alt = mmt[2],
+							octave = mmt[5];
+						drawNote(paper, note, octave, alt);
+					});
+					
+				});
+			}
+			else{
+				mt = s.match(reNote);
+				//console.log(s, mt);
+				var note = mt[1],
+					alt = mt[2]
+					octave = mt[6];
+				if(mt[7])
+					duration = +mt[7];
+				posX += alt?24:15;
+				drawNote(paper, note, octave, alt);
+			}
 		});
 		
 		//signs.whole(paper, offset.x+40, offset.y+15);
