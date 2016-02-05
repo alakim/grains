@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Clef Demo Page</title>
+	<style type="text/css">
+		body{
+			font-family:Verdana, Arial, Sans-Serif;
+		}
+		#out1{
+			width:300px;
+			height:50px;
+			border:1px solid #ccc;
+		}
+	</style>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../coollab/lib/html.js"></script>
+	<script type="text/javascript" src="../floorLayout/js/lib/raphael-min.js"></script>
+	<script type="text/javascript" src="../jdb/jdb.js"></script>
+	<script type="text/javascript" src="clef.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#out1").clef("c4 d e f g");
+		});
+	</script>
+</head>
+<body>
+	<h1>Clef Demo Page</h1>
+	<p>Библиотека для отображения нотного текста</p>
+	<div id="out1"></div>
+</body>
+</html>
