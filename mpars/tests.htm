@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta charset="windows-1251"/>
+<title>MPars Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="mpars.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля MPars", "Configuration").run = function(){
+	this.assert(typeof(Parser), "object");
+}
+
+new JSUnit.Test("Simple Parsing 1", "Basic").run = function(){
+	var res = Parser.string("abc", "varName").parse("abc");
+	this.assert(res, {value:"abc", type:"varName", success:true});
+}
+
+new JSUnit.Test("Simple Parsing 2", "Basic").run = function(){
+	var res = Parser.string("var ", "varKW")
+		.next(Parser.string("x", "varName"))
+		.parse("var x");
+	console.log(res);
+	this.assert(res, [{value:"var ", type:"varKW", pos:4}, {value:"x", type:"varName", success:true}]);
+}
+
+
+
+
+function init(){
+	document.getElementById("versionPanel").innerHTML = Parser.version;
+	JSUnit.init();
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>MPars Unit Tests</h1>
+	<p>MPars - модуль для создания парсеров в монадном стиле</p>
+	<p>MPars v.<span id="versionPanel"></span></p>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
