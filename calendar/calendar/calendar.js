@@ -13,7 +13,7 @@
 	var homeDate;
 	
 	function parseDate(dd, xsdMode){
-		xsdMode = xsdMode || true;
+		xsdMode = xsdMode || false;
 		if(!(dd&&dd.length)) return new Date();
 		var mt = xsdMode?dd.match(/(\d\d\d\d)\-(\d\d)-(\d\d)/i)
 			:dd.match(/(\d\d?)\.(\d\d?)\.(\d\d\d\d)/i);
