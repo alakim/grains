@@ -12,12 +12,14 @@
 	
 	var homeDate;
 	
-	function parseDate(dd){
+	function parseDate(dd, xsdMode){
+		xsdMode = xsdMode || true;
 		if(!(dd&&dd.length)) return new Date();
-		var mt = dd.match(/(\d\d?)\.(\d\d?)\.(\d\d\d\d)/i);
-		var y = +mt[3],
+		var mt = xsdMode?dd.match(/(\d\d\d\d)\-(\d\d)-(\d\d)/i)
+			:dd.match(/(\d\d?)\.(\d\d?)\.(\d\d\d\d)/i);
+		var y = +mt[xsdMode?1:3],
 			m = parseInt(mt[2], 10) - 1,
-			d = parseInt(mt[1], 10);
+			d = parseInt(mt[xsdMode?3:1], 10);
 		var dr = new Date();
 		dr.setYear(y);
 		dr.setMonth(m);
@@ -30,13 +32,15 @@
 		G:"января,февраля,марта,апреля,мая,июня,июля,августа,сентября,октября,ноября,декабря".split(",")
 	};
 	
-	function formatDate(dd, digitalMode){
+	function formatDate(dd, digitalMode, xsdMode){
+		xsdMode = xsdMode || false;
 		var d = dd.getDate(), m = dd.getMonth()+1, y = dd.getYear()+1900;
-		return digitalMode?[d<10?"0"+d:d, m<10?"0"+m:m, y].join(".")
+		return xsdMode?[y, m<10?"0"+m:m, d<10?"0"+d:d].join("-")
+			:digitalMode?[d<10?"0"+d:d, m<10?"0"+m:m, y].join(".")
 			:[d, months.G[m-1], y , " г."].join(" ");
 	}
 	
-	function DaysTable(pnl, date, field){
+	function DaysTable(pnl, date, field, xsdMode){
 		pnl.html("");
 		var margin = 3;
 		
@@ -62,7 +66,7 @@
 			btn.click(function(){
 				var d = +$(this).html()
 				date.setDate(d);
-				field.val(formatDate(date, true));
+				field.val(formatDate(date, true, xsdMode));
 				hideDialog();
 			});
 			if(date.getYear()==homeDate.getYear() && date.getMonth()==homeDate.getMonth() && i==date.getDate()) btn.addClass("current");
@@ -70,12 +74,12 @@
 		}
 	}
 	
-	function MonthPanel(pnl, date, field){
+	function MonthPanel(pnl, date, field, xsdMode){
 		function incDate(di){
 			var d2 = new Date(date);
 			d2.setMonth(date.getMonth()+di);
-			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field);
-			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field, xsdMode);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field, xsdMode);
 		}
 		pnl.html((function(){with($H){
 			var prevMonth = new Date(date); prevMonth.setMonth(date.getMonth()-1);
@@ -105,9 +109,9 @@
 		}})());
 	}
 	
-	function Calendar(pnl, field){
+	function Calendar(pnl, field, xsdMode){
 		var val = field.val(),
-			date = parseDate(val);
+			date = parseDate(val, xsdMode);
 		homeDate = date;
 		
 		pnl.html((function(){with($H){
@@ -129,12 +133,12 @@
 		.find(".btCancel").click(function(){
 			hideDialog();
 		}).end()
-		.find(".monthPnl").calendControl(MonthPanel, date, field).end()
-		.find(".calendDaysTable").calendControl(DaysTable, date, field).end()
+		.find(".monthPnl").calendControl(MonthPanel, date, field, xsdMode).end()
+		.find(".calendDaysTable").calendControl(DaysTable, date, field, xsdMode).end()
 		.find(".daysPnl").calendControl(DaysPanel).end()
 		.find(".btHome").click(function(){
-			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, homeDate, field);
-			$(".calendarDlg .monthPnl").calendControl(MonthPanel, homeDate, field);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, homeDate, field, xsdMode);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, homeDate, field, xsdMode);
 		}).end();
 	}
 	
@@ -142,7 +146,7 @@
 		$(".calendarDlg").hide();
 		$(".calendarDlgShild").hide();
 	}
-	function showDialog(fld){
+	function showDialog(fld, xsdMode){
 		var shild = $(".calendarDlgShild");
 		if(!shild.length){
 			shild = $($H.div({"class":"calendarDlgShild"}));
@@ -159,19 +163,20 @@
 			height:size.h,
 			top:100, //$("body").height()/2+size.h - 200,
 			left:($("body").width()-size.w)/2
-		}).calendControl(Calendar, fld).show();
+		}).calendControl(Calendar, fld, xsdMode).show();
 	}
 	
-	function CalendarField(fld){
+	function CalendarField(fld, xsdMode){
 		fld.attr({readonly:true})
 			.css({cursor:"pointer"})
 			.click(function(){
-				showDialog(fld);
+				showDialog(fld, xsdMode);
 			});
 	}
 	
-	$.fn.calendar = function(){
-		$(this).calendControl(CalendarField);
+	$.fn.calendar = function(xsdMode){
+		xsdMode = xsdMode || false;
+		$(this).calendControl(CalendarField, xsdMode);
 	};
 
 })(jQuery, Html);
