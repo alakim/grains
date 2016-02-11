@@ -19,7 +19,21 @@
 			$(".calendar2").calendar({restrict:function(d){
 				var d1 = new Date(2015, 11, 9);
 				return d<d1;
-			}});
+			}});;
+			$(".lnkCalend").calendar(function(d){
+				console.log(d, " selected");
+			});
+			$(".lnkCalend2").calendar({
+				onOpen:function(ctrl){
+					console.log("Calendar opened!", ctrl);
+				},
+				onCancel:function(ctrl){
+					console.log("Canceled", ctrl);
+				},
+				onSelect:function(d, ctrl){
+					console.log(d, " selected from ", ctrl);
+				}
+			});
 		});
 	</script>
 </head>
@@ -33,6 +47,10 @@
 		<tr>
 			<th>Дата завершения</th>
 			<td><input type="text" class="calendarXSD" value="2016-02-05"/></td>
+		</tr>
+		<tr>
+			<th>Отчетная дата</th>
+			<td><span class="link lnkCalend">Выбрать</span> <span class="link lnkCalend2">Тест 2</span></td>
 		</tr>
 	</table>
 	<hr/>

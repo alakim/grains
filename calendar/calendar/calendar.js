@@ -68,8 +68,10 @@
 			if(!locked) btn.click(function(){
 				var d = +$(this).html()
 				date.setDate(d);
-				field.val(formatDate(date, true, settings.xsdMode));
+				var sDD = formatDate(date, true, settings.xsdMode);
+				field.val(sDD);
 				hideDialog();
+				if(settings.onSelect){settings.onSelect(sDD, field);}
 			});
 			if(date.getYear()==homeDate.getYear() && date.getMonth()==homeDate.getMonth() && i==date.getDate()) btn.addClass("current");
 			if(day%7==6) btn.addClass("weekend");
@@ -134,6 +136,7 @@
 		}})())
 		.find(".btCancel").click(function(){
 			hideDialog();
+			if(settings.onCancel) settings.onCancel(field);
 		}).end()
 		.find(".monthPnl").calendControl(MonthPanel, date, field, settings).end()
 		.find(".calendDaysTable").calendControl(DaysTable, date, field, settings).end()
@@ -173,10 +176,12 @@
 			.css({cursor:"pointer"})
 			.click(function(){
 				showDialog(fld, settings);
+				if(settings.onOpen) settings.onOpen(fld);
 			});
 	}
 	
 	$.fn.calendar = function(settings){
+		if(typeof(settings)=="function") settings = {onSelect:settings};
 		settings = settings || {};
 		$(this).calendControl(CalendarField, settings);
 	};
