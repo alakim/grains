@@ -40,9 +40,10 @@
 			:[d, months.G[m-1], y , " г."].join(" ");
 	}
 	
-	function DaysTable(pnl, date, field, xsdMode){
+	function DaysTable(pnl, date, field, settings){
 		pnl.html("");
 		var margin = 3;
+		var restrict = settings.restrict || function(){return false;}
 		
 		var btnSize = {w:size.w/7-margin, h:(size.h*.6)/5-margin*3};
 		var dd = new Date(date);
@@ -53,8 +54,9 @@
 		for(i=1; dd.setDate(i),i<=31&&dd.getMonth()==curMonth; i++){
 			var day = day1+i-2;
 			var pdTop = 3;
+			var locked = restrict(dd);
 			var btn = $($H.div(
-				{"class":"calendBtn", style:$H.style({
+				{"class":"calendBtn"+(locked?"":" active"), style:$H.style({
 					width: btnSize.w, height:btnSize.h-pdTop,
 					top: margin+(Math.floor((day)/7)*(btnSize.h+margin)), 
 					left:day%7*(btnSize.w+margin),
@@ -63,10 +65,10 @@
 				i
 			));
 			pnl.append(btn);
-			btn.click(function(){
+			if(!locked) btn.click(function(){
 				var d = +$(this).html()
 				date.setDate(d);
-				field.val(formatDate(date, true, xsdMode));
+				field.val(formatDate(date, true, settings.xsdMode));
 				hideDialog();
 			});
 			if(date.getYear()==homeDate.getYear() && date.getMonth()==homeDate.getMonth() && i==date.getDate()) btn.addClass("current");
@@ -74,12 +76,12 @@
 		}
 	}
 	
-	function MonthPanel(pnl, date, field, xsdMode){
+	function MonthPanel(pnl, date, field, settings){
 		function incDate(di){
 			var d2 = new Date(date);
 			d2.setMonth(date.getMonth()+di);
-			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field, xsdMode);
-			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field, xsdMode);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field, settings);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field, settings);
 		}
 		pnl.html((function(){with($H){
 			var prevMonth = new Date(date); prevMonth.setMonth(date.getMonth()-1);
@@ -109,9 +111,9 @@
 		}})());
 	}
 	
-	function Calendar(pnl, field, xsdMode){
+	function Calendar(pnl, field, settings){
 		var val = field.val(),
-			date = parseDate(val, xsdMode);
+			date = parseDate(val, settings.xsdMode);
 		homeDate = date;
 		
 		pnl.html((function(){with($H){
@@ -133,12 +135,12 @@
 		.find(".btCancel").click(function(){
 			hideDialog();
 		}).end()
-		.find(".monthPnl").calendControl(MonthPanel, date, field, xsdMode).end()
-		.find(".calendDaysTable").calendControl(DaysTable, date, field, xsdMode).end()
+		.find(".monthPnl").calendControl(MonthPanel, date, field, settings).end()
+		.find(".calendDaysTable").calendControl(DaysTable, date, field, settings).end()
 		.find(".daysPnl").calendControl(DaysPanel).end()
 		.find(".btHome").click(function(){
-			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, homeDate, field, xsdMode);
-			$(".calendarDlg .monthPnl").calendControl(MonthPanel, homeDate, field, xsdMode);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, homeDate, field, settings);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, homeDate, field, settings);
 		}).end();
 	}
 	
@@ -146,7 +148,7 @@
 		$(".calendarDlg").hide();
 		$(".calendarDlgShild").hide();
 	}
-	function showDialog(fld, xsdMode){
+	function showDialog(fld, settings){
 		var shild = $(".calendarDlgShild");
 		if(!shild.length){
 			shild = $($H.div({"class":"calendarDlgShild"}));
@@ -163,20 +165,20 @@
 			height:size.h,
 			top:100, //$("body").height()/2+size.h - 200,
 			left:($("body").width()-size.w)/2
-		}).calendControl(Calendar, fld, xsdMode).show();
+		}).calendControl(Calendar, fld, settings).show();
 	}
 	
-	function CalendarField(fld, xsdMode){
+	function CalendarField(fld, settings){
 		fld.attr({readonly:true})
 			.css({cursor:"pointer"})
 			.click(function(){
-				showDialog(fld, xsdMode);
+				showDialog(fld, settings);
 			});
 	}
 	
-	$.fn.calendar = function(xsdMode){
-		xsdMode = xsdMode || false;
-		$(this).calendControl(CalendarField, xsdMode);
+	$.fn.calendar = function(settings){
+		settings = settings || {};
+		$(this).calendControl(CalendarField, settings);
 	};
 
 })(jQuery, Html);

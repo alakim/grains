@@ -32,10 +32,15 @@
 	position:absolute;
 	border:1px solid #ccc;
 	border-radius:8px;
-	cursor:pointer;
+	cursor:default;
 	text-align:center;
+	color:#aaa;
 }
-.calendarDlg .calendBtn:hover{
+.calendarDlg .calendBtn.active{
+	color:#000;
+	cursor:pointer;
+}
+.calendarDlg .calendBtn.active:hover{
 	background:#f8f8f8;
 }
 .calendarDlg .calendBtn.weekend{

@@ -23,6 +23,16 @@ new JSUnit.Test("Simple Parsing 2", "Basic").run = function(){
 }
 
 
+new JSUnit.Test("Simple Parsing 3", "Basic").run = function(){
+	//var parser = Parser.string("var").space().then(varName).
+	
+	var varKW = Parser.string("var"),
+		space = Parser.string(" "),
+		varNm = Parser.string("x"),
+		varVal = Parser();
+	var res = varKW.then(space).then(varNm).optionally(varVal).then(Parser.string(";")).parse("var x;");
+	console.log(res);
+}
 
 
 function init(){

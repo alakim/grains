@@ -15,7 +15,11 @@
 	<script type="text/javascript">
 		$(function(){
 			$(".calendar").calendar();
-			$(".calendarXSD").calendar(true);
+			$(".calendarXSD").calendar({xsdMode:true});
+			$(".calendar2").calendar({restrict:function(d){
+				var d1 = new Date(2015, 11, 9);
+				return d<d1;
+			}});
 		});
 	</script>
 </head>
@@ -39,7 +43,7 @@
 	<table style="margin-bottom:200px;">
 		<tr>
 			<th>Дата начала</th>
-			<td><input type="text" class="calendar" value="09.12.2015"/></td>
+			<td><input type="text" class="calendar2" value="09.12.2015"/></td>
 		</tr>
 		<tr>
 			<th>Дата завершения</th>
