@@ -59,7 +59,9 @@
 		var duration = 1;
 		
 		var reNote = /([a-g])(((e?s)|(is))?)('*)(\d)?/i,
-			reChord = /#CH(\d+)/;
+			reChord = /#CH(\d+)/,
+			reBar = /\s*\|\s*/,
+			reEmpty = /^\s*$/;
 		var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
 		function drawNote(paper, note, octave, alt){
@@ -80,7 +82,14 @@
 		var posX = offset.x + 25;
 		$D.each(staff, function(s, i){
 			var mt;
-			if(mt = s.match(reChord)){
+			//console.log("'"+s+"'");
+			if(s.match(reEmpty)){
+			}
+			else if(s.match(reBar)){
+				posX+=15;
+				paper.path(["M", posX, offset.y, "L", posX, offset.y + staffSize.h]).attr({stroke:staffColor})
+			}
+			else if(mt = s.match(reChord)){
 				posX+=24;
 				$D.each(s.split(" "), function(n){
 					var cIdx = +n.match(/\d+/);
@@ -100,7 +109,8 @@
 			}
 			else{
 				mt = s.match(reNote);
-				//console.log(s, mt);
+				if(!mt)
+					console.log(s, mt);
 				var note = mt[1],
 					alt = mt[2]
 					octave = mt[6];
