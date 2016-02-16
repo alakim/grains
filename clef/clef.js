@@ -99,6 +99,7 @@
 				reGroup = /#GRP(\d+)/,
 				reBar = /\s*\|\s*/,
 				reEmpty = /^\s*$/,
+				reClef = /\$(\d)([#b])/,
 				reChordSym = /[ABCDEFG][b#]?m?\:/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
@@ -145,10 +146,33 @@
 					}
 				}
 			}
+
+			
 			$D.each(seq, function(s, i){
 				var mt;
 				// console.log("'"+s+"'");
 				if(s.match(reEmpty)){
+				}
+				else if(mt = s.match(reClef)){
+					var num = +mt[1],
+						sign = mt[2];
+					// var signs = "f;c;g;d;a;e;b".split(";");
+					var notes = [4,1,5,2,6,3,7];
+					if(sign=="#"){
+						for(var i=0; i<num; i++){
+							var posY = offset.y + staffSize.h - (notes[i]-2)*step/2;
+							posY+=step/2 - 1*staffSize.h;
+							signs.sharp(paper, posX+10+5*i, posY);
+						}
+					}
+					else if(sign=="b"){
+						for(var i=0; i<num; i++){
+							var posY = offset.y + staffSize.h - (notes[notes.length-i-1]-1.5)*step/2;
+							if(i%2) posY+=step/2 - 1*staffSize.h;
+							signs.flat(paper, posX+10+5*i, posY);
+						}
+					}
+					posX+=num*stepX*.2;
 				}
 				else if(s.match(reChordSym)){
 					var sym = s.replace(":", "");
