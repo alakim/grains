@@ -35,26 +35,25 @@
 		quarter: function(paper, x, y){
 			var p = "m 0.12463,0.287643 c 0,0.723825 -0.45475,1.455058 -1.084901,1.999659 C -1.573694,2.831186 -2.385219,3.15355 -3.097335,3.113404 -3.550174,3.090704 -3.970274,2.899291 -4.259661,2.619941 -4.565536,2.337963 -4.74237,1.956335 -4.74237,1.53743 c 0,-0.660977 0.449015,-1.268665 1.063155,-1.729868 0.613662,-0.475301 1.391732,-0.799816 2.039566,-0.814153 0.567064,-0.01219 1.039976,0.02485 1.329363,0.281022 0,-4.179019 0,-8.357561 0,-12.536581 0.144812,0.01912 0.290103,0.03967 0.434677,0.06285 2.39e-4,4.495409 2.39e-4,8.990819 2.39e-4,13.486945 z";
 			paper.path(p).attr({fill:signColor, "stroke-width":0}).transform(["T", x+3.5, y-1, "S", 1.5]);
+		},
+		noteHead: function(paper, x, y){
+			var p = "m 1.04066,0.091566 c 0,1.839233 -1.155516,3.697288 -2.756723,5.081115 -1.558702,1.382005 -3.62078,2.201128 -5.430259,2.099117 -1.150659,-0.05769 -2.21813,-0.544058 -2.953458,-1.253884 -0.777226,-0.716505 -1.22656,-1.686216 -1.22656,-2.750651 0,-1.679537 1.140943,-3.223666 2.701467,-4.395577 1.55931,-1.207736 3.536378,-2.032324 5.182518,-2.068757 1.440904,-0.03097 2.642568,0.06315 3.377897,0.714077 5.48e-4,3.91e-4 1.021579,0.729699 1.105118,2.57456 z";
+			paper.path(p).attr({fill:signColor, "stroke-width":0}).transform(["T", x+5.5, y+1, "S", .6]);
 		}
 	};
 
 
 	
 	function init(pnl, staff){
-		if(!(staff instanceof Array)){
-			var chords = [];
-			staff = staff.replace(/&lt;([a-g]([ei]?s)?'* +)*[a-g]([ei]?s)?'*&gt;\d/ig, function(x){
-				var idx = chords.length;
-				chords.push(x);
-				return "#CH"+idx;
-			});
-			staff = staff.split(" ");
-		}
-		//console.log(staff);
 		
 		var offset = {x:10, y:19};
 		var paper = new $R(pnl[0], staffSize.w, staffSize.h+offset.y*2);
-		var step = staffSize.h/4;
+		var step = staffSize.h/4,
+			stepX = 25,
+			beamSize = 20;
+			
+		var posX = offset.x + stepX;
+		
 		for(var i=0; i<5; i++){
 			var y = offset.y + i*step;
 			var p = ["M", offset.x, y, "L", offset.x+staffSize.w, y];
@@ -62,78 +61,127 @@
 		}
 		signs.clef(paper, offset.x, offset.y);
 		
-		var duration = 1;
-		
-		var reNote = /([a-g])(((e?s)|(is))?)('*)(\d)?/i,
-			reChord = /#CH(\d+)/,
-			reBar = /\s*\|\s*/,
-			reEmpty = /^\s*$/,
-			reChordSym = /[ABCDEFG][b#]?m?\:/;
-		var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
+		function drawSequence(seq, groupMode){
+			groupMode = groupMode || false;
+			
+			if(!(seq instanceof Array)){
+				var chords = [], groups = [];
+				seq = seq.replace(/&lt;([a-g]([ei]?s)?'* +)*[a-g]([ei]?s)?'*&gt;\d/ig, function(x){
+					var idx = chords.length;
+					chords.push(x);
+					return "#CH"+idx;
+				});
+				seq = seq.replace(/\[([^\]]+)\]/g, function(x){
+					x = x.substr(1, x.length-2);
+					var idx = groups.length;
+					//console.log(x);
+					groups.push(x);
+					return "#GRP"+idx;
+				});
+				seq = seq.split(" ");
+			}
+			// console.log(seq);
+			// console.log(groups);
+			
+			var duration = 1;
+			
+			var groupSize;
+			if(groupMode)
+				groupSize = [];
+			
+			
+			var reNote = /([a-g])(((e?s)|(is))?)('*)(\d+)?/i,
+				reChord = /#CH(\d+)/,
+				reGroup = /#GRP(\d+)/,
+				reBar = /\s*\|\s*/,
+				reEmpty = /^\s*$/,
+				reChordSym = /[ABCDEFG][b#]?m?\:/;
+			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
-		function drawNote(paper, note, octave, alt){
-			posY = offset.y + staffSize.h - (notes[note]-1)*step/2;
-			posY += octave=="''"?step/2 - 1*staffSize.h
-				:octave==""?1*staffSize.h - step/2
-				:0;
+			function drawNote(paper, note, octave, alt){
+				posY = offset.y + staffSize.h - (notes[note]-1)*step/2;
+				posY += octave=="''"?step/2 - 1*staffSize.h
+					:octave==""?1*staffSize.h - step/2
+					:0;
+					
+				if(groupSize){
+					if(!groupSize[0]) groupSize[0] = {x:posX+3.5, y:posY};
+					groupSize[1] = {x:posX+3.5, y:posY};
+				}
+				
+				if(posY> offset.y+staffSize.h) signs.addLines(paper, posX, posY, step, offset);
+				
+				var sign = groupMode?signs.noteHead
+					:{1:signs.whole, 2:signs.half, 4:signs.quarter}[duration]; 
+				if(sign) sign(paper, posX, posY);
+				
+				var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat}[alt];
+				if(altSign) altSign(paper, posX, posY);
+				
+				if(groupMode)
+					paper.path(["M", posX+3, posY, "L", posX+3, posY-beamSize]).attr({stroke:signColor});
+			}
 			
-			if(posY> offset.y+staffSize.h) signs.addLines(paper, posX, posY, step, offset);
-			
-			var sign = {1:signs.whole, 2:signs.half, 4:signs.quarter}[duration]; 
-			if(sign) sign(paper, posX, posY);
-			
-			var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat}[alt];
-			if(altSign) altSign(paper, posX, posY);
+			function drawBeam(){
+				//console.log("beam for "+seq.length);
+				paper.path(["M", groupSize[0].x, groupSize[0].y-beamSize, "L", groupSize[1].x, groupSize[1].y-beamSize]).attr({"stroke-width":2, stroke:signColor});
+				if(duration==16)
+					paper.path(["M", groupSize[0].x, groupSize[0].y-beamSize+4, "L", groupSize[1].x, groupSize[1].y-beamSize+4]).attr({"stroke-width":2, stroke:signColor});
+			}
+			$D.each(seq, function(s, i){
+				var mt;
+				// console.log("'"+s+"'");
+				if(s.match(reEmpty)){
+				}
+				else if(s.match(reChordSym)){
+					var sym = s.replace(":", "");
+					paper.text(posX+24, offset.y-12, sym).attr({"stroke-width":0, fill:signColor, "font-size":14});
+				}
+				else if(s.match(reBar)){
+					posX+=15;
+					paper.path(["M", posX, offset.y, "L", posX, offset.y + staffSize.h]).attr({stroke:staffColor})
+				}
+				else if(mt = s.match(reChord)){
+					posX+=24;
+					$D.each(s.split(" "), function(n){
+						var cIdx = +n.match(/\d+/);
+						var chrd = chords[cIdx];
+						var dur = chrd.match(/\d+$/);
+						if(dur) duration = +dur;
+						chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
+						$D.each(chrd.split(" "), function(nn){
+							var mmt = nn.match(/([a-g])((is)|(es))?(''*)/i);
+							var note = mmt[1],
+								alt = mmt[2],
+								octave = mmt[5];
+							drawNote(paper, note, octave, alt);
+						});
+						
+					});
+				}
+				else if(mt=s.match(reGroup)){
+					var gIdx = +mt[1];
+					// paper.path(["M", posX, offset.y+15, "L", posX+20, offset.y+15]).attr({"stroke-width":2, stroke:signColor});
+					drawSequence(groups[gIdx], true);
+				}
+				else{
+					mt = s.match(reNote);
+					if(!mt)
+						console.log(s, mt);
+					var note = mt[1],
+						alt = mt[2]
+						octave = mt[6];
+					if(mt[7])
+						duration = +mt[7];
+					posX += alt?24:15;
+					drawNote(paper, note, octave, alt);
+				}
+			});
+			if(groupMode) drawBeam();
 		}
 		
-		var posX = offset.x + 25;
-		$D.each(staff, function(s, i){
-			var mt;
-			//console.log("'"+s+"'");
-			if(s.match(reEmpty)){
-			}
-			else if(s.match(reChordSym)){
-				var sym = s.replace(":", "");
-				paper.text(posX+24, offset.y-12, sym).attr({"stroke-width":0, fill:signColor, "font-size":14});
-			}
-			else if(s.match(reBar)){
-				posX+=15;
-				paper.path(["M", posX, offset.y, "L", posX, offset.y + staffSize.h]).attr({stroke:staffColor})
-			}
-			else if(mt = s.match(reChord)){
-				posX+=24;
-				$D.each(s.split(" "), function(n){
-					var cIdx = +n.match(/\d+/);
-					var chrd = chords[cIdx];
-					var dur = chrd.match(/\d$/);
-					if(dur) duration = +dur;
-					chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
-					$D.each(chrd.split(" "), function(nn){
-						var mmt = nn.match(/([a-g])((is)|(es))?(''*)/i);
-						var note = mmt[1],
-							alt = mmt[2],
-							octave = mmt[5];
-						drawNote(paper, note, octave, alt);
-					});
-					
-				});
-			}
-			else{
-				mt = s.match(reNote);
-				if(!mt)
-					console.log(s, mt);
-				var note = mt[1],
-					alt = mt[2]
-					octave = mt[6];
-				if(mt[7])
-					duration = +mt[7];
-				posX += alt?24:15;
-				drawNote(paper, note, octave, alt);
-			}
-		});
+		drawSequence(staff);
 		
-		//signs.whole(paper, offset.x+40, offset.y+15);
-		//signs.quarter(paper, offset.x+80, offset.y+15);
 	}
 	
 	$.fn.staff = function(){
