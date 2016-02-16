@@ -1,5 +1,5 @@
 (function($,$R,$D){
-	var staffSize = {w:300, h:24};
+	var staffSize = {w:500, h:24};
 	var staffColor = "#888",
 		signColor = "#000";
 	
@@ -104,10 +104,7 @@
 					:octave==""?1*staffSize.h - step/2
 					:0;
 					
-				if(groupSize){
-					if(!groupSize[0]) groupSize[0] = {x:posX+3.5, y:posY};
-					groupSize[1] = {x:posX+3.5, y:posY};
-				}
+				if(groupSize) groupSize.push({x:posX+3.5, y:posY, dur:duration});
 				
 				if(posY> offset.y+staffSize.h) signs.addLines(paper, posX, posY, step, offset);
 				
@@ -118,15 +115,31 @@
 				var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat}[alt];
 				if(altSign) altSign(paper, posX, posY);
 				
-				if(groupMode)
-					paper.path(["M", posX+3, posY, "L", posX+3, posY-beamSize]).attr({stroke:signColor});
+				// if(groupMode)
+				// 	paper.path(["M", posX+3, posY, "L", posX+3, posY-beamSize]).attr({"stroke-width":1, stroke:signColor});
 			}
 			
 			function drawBeam(){
 				//console.log("beam for "+seq.length);
-				paper.path(["M", groupSize[0].x, groupSize[0].y-beamSize, "L", groupSize[1].x, groupSize[1].y-beamSize]).attr({"stroke-width":2, stroke:signColor});
-				if(duration==16)
-					paper.path(["M", groupSize[0].x, groupSize[0].y-beamSize+4, "L", groupSize[1].x, groupSize[1].y-beamSize+4]).attr({"stroke-width":2, stroke:signColor});
+				var iMx = groupSize.length-1;
+				paper.path(["M", groupSize[0].x-.5, groupSize[0].y-beamSize, "L", groupSize[iMx].x+.5, groupSize[iMx].y-beamSize]).attr({"stroke-width":2, stroke:signColor});
+				// if(duration==16)
+				// 	paper.path(["M", groupSize[0].x-.5, groupSize[0].y-beamSize+4, "L", groupSize[iMx].x+.5, groupSize[iMx].y-beamSize+4]).attr({"stroke-width":2, stroke:signColor});
+				var bmAng = (groupSize[groupSize.length-1].y - groupSize[0].y)/(groupSize.length-1),
+					bmY = groupSize[0].y-beamSize;
+				for(var i=0; i<groupSize.length; i++){
+					var sz = groupSize[i];
+					paper.path(["M", sz.x, sz.y, "L", sz.x, bmY+bmAng*i]).attr({"stroke-width":1, stroke:signColor});
+					if(sz.dur==16){
+						if(i>0 && groupSize[i-1].dur==16)
+							paper.path(["M", groupSize[i-1].x, bmY+bmAng*(i-1)+4, "L", sz.x, bmY+bmAng*i+4]).attr({"stroke-width":2, stroke:signColor});
+						else if(i==groupSize.length-1 && groupSize[i-1].dur!=16)
+							paper.path(["M", groupSize[i-1].x+stepX*.4, bmY+bmAng*(i-1)*1.6+4, "L", sz.x, bmY+bmAng*i+4]).attr({"stroke-width":2, stroke:signColor});
+						else if(i==0 && groupSize[1].dur!=16)
+							paper.path(["M", sz.x, bmY+bmAng*i+4, "L", groupSize[1].x-stepX*.4, bmY+bmAng*(i-1)*1.4+1.4]).attr({"stroke-width":2, stroke:signColor});
+						
+					}
+				}
 			}
 			$D.each(seq, function(s, i){
 				var mt;
