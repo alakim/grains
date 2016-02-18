@@ -101,7 +101,7 @@
 			var reNote = /([a-g])(((e?s)|(is)|n)?)('*)(\d+)?/i,
 				reChord = /#CH(\d+)/,
 				reGroup = /#GRP(\d+)/,
-				reBar = /\s*\|\s*/,
+				reBar = /\s*\|\|?\s*/,
 				reEmpty = /^\s*$/,
 				reClef = /\$(\d)([#b])/,
 				reChordSym = /[ABCDEFG][b#]?m?\:/;
@@ -184,7 +184,9 @@
 				}
 				else if(s.match(reBar)){
 					posX+=15;
-					paper.path(["M", posX, settings.offset.y, "L", posX, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor})
+					paper.path(["M", posX, settings.offset.y, "L", posX, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
+					if(s=="||")
+						paper.path(["M", posX+3, settings.offset.y, "L", posX+3, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
 				}
 				else if(mt = s.match(reChord)){
 					posX+=24;
