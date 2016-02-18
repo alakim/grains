@@ -232,7 +232,7 @@
 			var staff = el.html();
 			var mt = staff.split("!");
 			if(mt.length>1){
-				$D.extend(settings, $.parseJSON(mt[0]));
+				$D.extend(settings, $.parseJSON(mt[0]), true);
 				staff = mt[1];
 			}
 			else staff = mt[0];
