@@ -10,8 +10,15 @@ var JDB = (function(){
 		}
 	}
 	
-	function extend(o, s){
-		for(var k in s) o[k] = s[k];
+	function extend(o, s, deep){
+		deep = deep || false;
+		for(var k in s){
+			var el = o[k];
+			if(deep && typeof(el)=="object")
+				extend(el, s[k]);
+			else
+				o[k] = s[k];
+		}
 	}
 	
 	function map(coll, F){
@@ -149,11 +156,12 @@ var JDB = (function(){
 				select: function(F){return JDB(select(coll, F));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
-				extend: function(c2){
+				extend: function(c2, deep){
 					if(typeof(c2.raw)=="function") c2 = c2.raw();
-					res = {};
-					each(coll, function(e,k){res[k] = e;});
-					each(c2, function(e, k){res[k] = e;});
+					res = typeof(coll.raw)=="function"?coll.raw():coll;
+					// each(coll, function(e,k){res[k] = e;});
+					// each(c2, function(e, k){res[k] = e;});
+					extend(res, c2, deep);
 					return JDB(res);
 				},
 				concat: function(c2){return JDB(concat(coll, c2));},

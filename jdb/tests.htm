@@ -86,6 +86,22 @@ new JSUnit.Test("extend", "Simple Non-monadic").run = function(){
 	});
 }
 
+new JSUnit.Test("extend deep", "Simple Non-monadic").run = function(){
+	var coll = {
+		1:{name:"John", salary:300},
+		2:{name:"Phill", salary:500},
+		3:{name:"James", salary:400}
+	};
+	JDB.extend(coll, {
+		1:{salary:600}
+	}, true);
+	this.assert(coll, {
+		1:{name:"John", salary:600},
+		2:{name:"Phill", salary:500},
+		3:{name:"James", salary:400}
+	});
+}
+
 new JSUnit.Test("concat", "Simple Non-monadic").run = function(){
 	var coll = [1, 2, 3];
 	this.assert(JDB.concat(coll, [4, 5]), [1, 2, 3, 4, 5]);
@@ -244,6 +260,22 @@ new JSUnit.Test("extend", "Basic Monadic").run = function(){
 		1:{id:1, nm:"John"},
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
+	});
+}
+
+new JSUnit.Test("extend deep", "Simple Non-monadic").run = function(){
+	var coll = {
+		1:{name:"John", salary:300},
+		2:{name:"Phill", salary:500},
+		3:{name:"James", salary:400}
+	};
+	var res = JDB(coll).extend({
+		1:{salary:600}
+	}, true).raw();
+	this.assert(res, {
+		1:{name:"John", salary:600},
+		2:{name:"Phill", salary:500},
+		3:{name:"James", salary:400}
 	});
 }
 
