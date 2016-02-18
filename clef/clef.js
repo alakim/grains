@@ -1,6 +1,8 @@
 (function($,$R,$D){
 	var settings = {
 		staffSize: {w:500, h:24},
+		offset: {x:10, y:19},
+		chordOffset:{x:24, y:12},
 		staffColor: "#888",
 		signColor: "#000"
 	};
@@ -52,20 +54,20 @@
 	
 	function init(pnl, staff){
 		
-		var offset = {x:10, y:19};
-		var paper = new $R(pnl[0], settings.staffSize.w, settings.staffSize.h+offset.y*2);
+		//var offset = {x:10, y:19};
+		var paper = new $R(pnl[0], settings.staffSize.w, settings.staffSize.h+settings.offset.y*2);
 		var step = settings.staffSize.h/4,
 			stepX = 25,
 			beamSize = 20;
 			
-		var posX = offset.x + stepX;
+		var posX = settings.offset.x + stepX;
 		
 		for(var i=0; i<5; i++){
-			var y = offset.y + i*step;
-			var p = ["M", offset.x, y, "L", offset.x+settings.staffSize.w, y];
+			var y = settings.offset.y + i*step;
+			var p = ["M", settings.offset.x, y, "L", settings.offset.x+settings.staffSize.w, y];
 			paper.path(p).attr({stroke:settings.staffColor});
 		}
-		signs.clef(paper, offset.x, offset.y);
+		signs.clef(paper, settings.offset.x, settings.offset.y);
 		
 		function drawSequence(seq, groupMode){
 			groupMode = groupMode || false;
@@ -106,14 +108,14 @@
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
 			function drawNote(paper, note, octave, alt){
-				posY = offset.y + settings.staffSize.h - (notes[note]-1)*step/2;
+				posY = settings.offset.y + settings.staffSize.h - (notes[note]-1)*step/2;
 				posY += octave=="''"?step/2 - 1*settings.staffSize.h
 					:octave==""?1*settings.staffSize.h - step/2
 					:0;
 					
 				if(groupSize) groupSize.push({x:posX+3.5, y:posY, dur:duration});
 				
-				if(posY> offset.y+settings.staffSize.h) signs.addLines(paper, posX, posY, step, offset);
+				if(posY> settings.offset.y+settings.staffSize.h) signs.addLines(paper, posX, posY, step, settings.offset);
 				
 				var sign = groupMode?signs.noteHead
 					:{1:signs.whole, 2:signs.half, 4:signs.quarter}[duration]; 
@@ -162,14 +164,14 @@
 					var notes = [4,1,5,2,6,3,7];
 					if(sign=="#"){
 						for(var i=0; i<num; i++){
-							var posY = offset.y + settings.staffSize.h - (notes[i]-2)*step/2;
+							var posY = settings.offset.y + settings.staffSize.h - (notes[i]-2)*step/2;
 							posY+=step/2 - 1*settings.staffSize.h;
 							signs.sharp(paper, posX+10+5*i, posY);
 						}
 					}
 					else if(sign=="b"){
 						for(var i=0; i<num; i++){
-							var posY = offset.y + settings.staffSize.h - (notes[notes.length-i-1]-1.5)*step/2;
+							var posY = settings.offset.y + settings.staffSize.h - (notes[notes.length-i-1]-1.5)*step/2;
 							if(i%2) posY+=step/2 - 1*settings.staffSize.h;
 							signs.flat(paper, posX+10+5*i, posY);
 						}
@@ -178,11 +180,11 @@
 				}
 				else if(s.match(reChordSym)){
 					var sym = s.replace(":", "");
-					paper.text(posX+24, offset.y-12, sym).attr({"stroke-width":0, fill:settings.signColor, "font-size":14});
+					paper.text(posX+settings.chordOffset.x, settings.offset.y-settings.chordOffset.y, sym).attr({"stroke-width":0, fill:settings.signColor, "font-size":14});
 				}
 				else if(s.match(reBar)){
 					posX+=15;
-					paper.path(["M", posX, offset.y, "L", posX, offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor})
+					paper.path(["M", posX, settings.offset.y, "L", posX, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor})
 				}
 				else if(mt = s.match(reChord)){
 					posX+=24;
@@ -204,7 +206,7 @@
 				}
 				else if(mt=s.match(reGroup)){
 					var gIdx = +mt[1];
-					// paper.path(["M", posX, offset.y+15, "L", posX+20, offset.y+15]).attr({"stroke-width":2, stroke:settings.signColor});
+					// paper.path(["M", posX, settings.offset.y+15, "L", posX+20, settings.offset.y+15]).attr({"stroke-width":2, stroke:settings.signColor});
 					drawSequence(groups[gIdx], true);
 				}
 				else{
