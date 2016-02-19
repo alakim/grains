@@ -16,37 +16,44 @@
 		addLines: function(paper, x, y, step, offset){
 			y+=3.5;
 			var dX = 7;
-			for(var yL = offset.y+settings.staffSize.h + step; yL<=y; yL+=step){
-				paper.path(["M", x-dX+1, yL, "L", x+dX+1, yL]).attr({stroke:settings.staffColor});
+			if(y<settings.staffSize.h){
+				for(var yL = offset.y - step+.5; yL>=y; yL-=step){
+					paper.path(["M", x-dX+1, yL, "L", x+dX+1, yL]).attr({stroke:settings.staffColor});
+				}
+			}
+			else{
+				for(var yL = offset.y+settings.staffSize.h + step+.5; yL<=y; yL+=step){
+					paper.path(["M", x-dX+1, yL, "L", x+dX+1, yL]).attr({stroke:settings.staffColor});
+				}
 			}
 		},
-		sharp: function(paper, x, y){
+		sharp: function(paper, x, y, colorIdx){
 			var p = "M 1.342469,0.9957 C 1.1279074,1.1106353 0.73529712,1.0381921 0.64044525,1.2730548 0.66418748,1.9474552 0.64596109,2.6237134 0.65246244,3.2985715 0.35437128,3.4260789 0.20153859,3.1845131 0.29585354,2.9100731 0.32095945,2.3666195 0.30082748,1.8212812 0.307298,1.2770528 0.12076783,1.2780737 -0.26293028,1.4979286 -0.179395,1.1728574 -0.17862427,0.88269429 -0.17935411,0.59174862 -0.18274047,0.30237716 -0.0045875,0.1618023 0.44500135,0.24497878 0.32393721,-0.13168721 0.30144466,-0.55528058 0.30797322,-0.979418 0.307298,-1.4034509 c -0.1853778,0.00773 -0.56886149,0.2713095 -0.486693,-0.064529 0.004026,-0.289337 -0.008193,-0.5825039 0.006339,-0.8685234 0.27218104,-0.071654 0.60882687,-0.124824 0.48941181,-0.491868 -0.0253096,-0.5462942 0.0105614,-1.094323 -0.0259335,-1.6400535 -0.0745049,-0.214866 0.41896642,-0.2979025 0.36132633,-0.074688 0,0.6546293 0,1.3092587 0,1.963888 0.21462768,-0.1147099 0.607154,-0.042375 0.7021072,-0.2771054 -0.0234,-0.6549625 -0.00638,-1.3114324 -0.011552,-1.9670712 0.074761,-0.1498159 0.4400376,-0.094872 0.344818,0.1249129 0,0.6223539 0,1.2447078 0,1.8670617 0.1865174,-0.00105 0.5700142,-0.2217498 0.486509,0.1034574 -0.00267,0.2751959 0.0051,0.5530287 -0.00335,0.8258821 -0.2093365,0.1160309 -0.6169085,0.062756 -0.4969772,0.4272675 0.01935,0.4218194 0.012949,0.84403262 0.013866,1.2661504 0.1832539,-0.0164567 0.5676158,-0.30690592 0.486509,0.0361169 0.00235,0.28188472 -0.00811,0.56430729 0.013386,0.84540063 -0.059423,0.2414143 -0.5735044,0.0647637 -0.4998951,0.38470363 3.066e-4,0.5812826 -0.00255,1.1629032 0.00592,1.743803 C 1.6895353,2.9927957 1.236242,3.001728 1.342358,2.7522538 1.3424663,2.1667359 1.3425037,1.581218 1.342491,0.9957 M 0.65191,0.058105 c 0.22521526,-0.08023907 0.5054622,-0.07443798 0.6918286,-0.22068083 -0.00161,-0.50086937 -0.00139,-1.00590427 -0.00127,-1.50857497 -0.2253103,0.079881 -0.50550503,0.07448 -0.69182856,0.2207714 0.001611,0.50078806 0.00139,1.0059221 0.001271,1.5084844 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x-9.5, y+4, "S", 2]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x-9.5, y+4, "S", 2]);
 		},
-		flat: function(paper, x, y){
+		flat: function(paper, x, y, colorIdx){
 			var p = "m 0.78685,-0.2242889 c 0.2443889,-0.0794908 0.6674822,-0.16805839 0.55781,0.21424498 0,2.18721752 0,4.37443512 0,6.56165262 C 1.8924066,6.1312642 2.6265601,5.7072529 3.3280054,6.00001 4.0466942,6.2909718 4.4034947,7.180423 4.117818,7.8945523 3.7160184,8.9876642 2.663483,9.6075163 1.8556162,10.37124 1.5023916,10.669651 1.1057727,11.084291 0.78655,11.319407 0.78674869,7.4715083 0.78615176,3.6236089 0.78685,-0.2242886 Z M 1.34466,10.236456 C 2.0215613,9.4880697 2.8463095,8.7102176 2.944617,7.6447372 3.0121807,7.1427294 2.6424514,6.4764573 2.0656902,6.5984994 1.6535265,6.7409471 1.2623283,7.1607042 1.3436253,7.62476 c 0.0024,0.8705402 3.528e-4,1.7411381 0.00104,2.611696 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x-11, y-5, "S", 1.5]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x-11, y-5, "S", 1.5]);
 		},
-		natural: function(paper, x, y){
+		natural: function(paper, x, y, colorIdx){
 			var p = "m 0.85319,1.65318 c 0.752,-0.124 1.86,-0.676 1.86,0.238 0,1.367 0,2.735 0,4.103 0,2.514 0,5.026 0,7.538 2.797,-0.848 5.623,-1.581 8.405,-2.083 0,6.414 0,12.828 0,19.241 0,3.361 0,6.725 0,10.086 0,0.997 0.267,1.133 -0.802,1.282 -0.45,0.062 -1.058,0.377 -1.058,-0.157 0,-0.707 0,-1.415 0,-2.124 0,-3.187 0,-6.373 0,-9.56 -2.798,0.848 -5.624,1.579 -8.406,2.076 0.001,-10.213 0.001,-20.426 0.001,-30.64 m 1.86,24.784 c 0.674,-0.125 6.55,-1.41 6.545,-1.743 0,-2.466 0,-4.934 0,-7.4 -0.676,0.132 -6.551,1.428 -6.545,1.761 0,2.46 0,4.923 0,7.382";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x-14, y-18, "S", .4]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x-14, y-18, "S", .4]);
 		},
-		whole: function(paper, x, y){
+		whole: function(paper, x, y, colorIdx){
 			var p = "M 0.890558,1.1090854 C 2.076764,1.0761814 4.254094,1.8401509 4.299524,3.454775 4.351974,5.0289796 2.132717,5.8251848 0.979414,5.8004648 -0.239529,5.8316988 -2.383954,5.0688984 -2.429719,3.454775 -2.481829,1.8971062 -0.24621,1.0841987 0.890558,1.1090854 Z M 1.334675,5.3982705 C 2.040854,5.272668 2.315943,4.9122294 2.266504,3.8471154 2.184994,2.3888258 1.357057,1.339913 0.535464,1.5005904 c -0.690145,0.1433069 -0.981101,0.4477923 -0.931996,1.5129064 0.06514,1.4577884 0.909447,2.5449501 1.731207,2.3847737 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x, y, "S", 1.5]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x, y, "S", 1.5]);
 		},
-		half: function(paper, x, y){
+		half: function(paper, x, y, colorIdx){
 			var p = "m 1.3105576,0.07516 c 0.2729632,0.03513 0.5459265,0.07477 0.8179888,0.117563 0,8.584379 0,17.168757 0,25.753136 -0.054052,2.643149 -3.3886174,5.427734 -5.9268154,5.26828 -0.763486,-0.03243 -1.533279,-0.202245 -2.140014,-0.671598 -0.971587,-0.763486 -1.177886,-1.832367 -1.148157,-2.951246 0.08513,-2.650356 3.29763,-4.596232 5.928167,-4.782261 0.761684,-0.04865 1.5269723,0.0095 2.4683802,0.562592 C 1.3105576,15.606137 1.3105576,7.840198 1.3105576,0.07516 Z M -6.102691,29.111962 c 0,0.427913 0.211704,0.5707 0.728352,0.710785 0.882401,0.153598 2.530991,-0.488271 3.904816,-1.62787 1.405355,-1.099059 2.7071102,-2.710714 2.6152216,-3.65032 -0.029729,-0.335123 -0.3292675,-0.517549 -0.6337612,-0.531963 -1.3071604,-0.163507 -3.6917604,1.540035 -4.6367714,2.263433 -1.159869,0.92294 -2.039117,1.938219 -1.977857,2.835935 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x+3.5, y-22, "S", .8]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x+3.5, y-22, "S", .8]);
 		},
-		quarter: function(paper, x, y){
+		quarter: function(paper, x, y, colorIdx){
 			var p = "M 0.12463,0.287643 C 0.08025109,1.4219563 -0.816495,2.348957 -1.7860167,2.8310293 -2.6253345,3.2614165 -3.7968888,3.245469 -4.4177909,2.4512296 -4.9985689,1.7731198 -4.7219607,0.73658352 -4.1044233,0.179474 c 0.9000454,-0.90867196 2.2823733,-1.4696692 3.54408257,-1.05873947 0.35400741,0.33829936 0.23014409,-0.10922877 0.25005473,-0.35890553 0,-4.007993 0,-8.015986 0,-12.023979 0.80072835,-0.05636 0.29246304,1.023767 0.43474716,1.537907 1.6885e-4,4.0039607 1.6884e-4,8.007932 1.6884e-4,12.011886 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x+3.5, y-1, "S", 1.5]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x+3.5, y-1, "S", 1.5]);
 		},
-		noteHead: function(paper, x, y){
+		noteHead: function(paper, x, y, colorIdx){
 			var p = "m -1.716063,5.172681 c -2.5639768,1.8175766 -5.1111384,3.1629704 -8.383717,0.845233 -2.434925,-2.6708249 -0.640624,-5.52103702 1.474907,-7.146228 2.2935631,-1.451071 6.2679001,-3.1413802 8.560415,-1.35468 2.2925149,1.78670017 0.59987032,5.6629972 -1.651605,7.655675 z";
-			paper.path(p).attr({fill:settings.signColor, "stroke-width":0}).transform(["T", x+5.5, y+1, "S", .6]);
+			paper.path(p).attr({fill:colorIdx<0?settings.signColor:settings.color[colorIdx], "stroke-width":0}).transform(["T", x+5.5, y+1, "S", .6]);
 		},
 		n2: function(paper, x, y){
 			var p = "M 1.2694901,0.302889 C 0.93243351,-2.1752163 1.9068629,-4.7376911 3.7445896,-6.4205497 5.7159781,-8.359262 8.4119924,-9.2714654 10.55591,-10.97172 c 1.247106,-1.005291 1.72606,-3.000403 0.718304,-4.330316 -1.056013,-1.414389 -3.0736385,-1.583241 -4.6676428,-1.190088 -0.9469132,0.256345 -1.8925554,0.91596 -2.1942424,1.87376 0.7997707,0.122928 1.8483123,-0.233792 2.4862875,0.576336 1.073284,1.080328 0.6892888,3.065015 -0.6387029,3.764982 -1.7134894,1.0737207 -4.4280307,0.217412 -4.8776073,-1.85266 -0.64356727,-2.308222 0.6395616,-4.801466 2.6491379,-5.981912 2.6562053,-1.706519 6.056298,-1.779859 9.036616,-1.011261 2.240531,0.638867 4.366257,2.365076 4.762048,4.76317 0.463807,2.15794 -0.451256,4.5295188 -2.295924,5.7610872 -2.306511,1.6722827 -5.268957,1.861195 -7.785151,3.0908964 -1.0552404,0.4754671 -2.080564,1.1017428 -2.8005429,2.0266144 2.2242986,-1.3213154 4.9581473,-1.202895 7.3792709,-0.5675898 1.027197,0.3104112 2.697646,0.4871278 3.060535,-0.8400238 0.28515,-0.5243825 -0.125838,-1.8427856 0.78925,-1.6323864 0.734648,0 1.469296,0 2.203944,0 0.107195,2.1041961 0.0295,4.5355823 -1.589135,6.09993787 C 14.937895,1.1802039 12.175649,1.1422582 9.9828315,0.33046992 8.4385448,-0.21067576 6.8794093,-1.0953075 5.1938647,-0.88997777 4.3370711,-0.51575612 3.926079,0.67063582 2.8128588,0.30590658 2.298402,0.30655005 1.7839341,0.30727915 1.2694901,0.302889 Z";
@@ -106,7 +113,7 @@
 			
 			if(!(seq instanceof Array)){
 				var chords = [], groups = [];
-				seq = seq.replace(/&lt;([a-g]([ei]?s|n)?'* +)*[a-g]([ei]?s|n)?'*&gt;\d/ig, function(x){
+				seq = seq.replace(/&lt;([a-g]([ei]?s|n)?'*(@\d+)? +)*[a-g]([ei]?s|n)?'*(@\d+)?&gt;\d/ig, function(x){
 					var idx = chords.length;
 					chords.push(x);
 					return "#CH"+idx;
@@ -130,32 +137,34 @@
 				groupSize = [];
 			
 			
-			var reNote = /([a-g])(((e?s)|(is)|n)?)('*)(\d+)?/i,
+			var reNote = /([a-g])(((e?s)|(is)|n)?)('*)(\d+)?(@\d+)?/i,
 				reChord = /#CH(\d+)/,
 				reGroup = /#GRP(\d+)/,
-				reBar = /\s*\|\|?\s*/,
+				reBar = /\s*\|[\|\.]?\s*/,
 				reEmpty = /^\s*$/,
 				reClef = /\$(\d)([#b])/,
 				reChordSym = /[ABCDEFG][b#]?m?\:/,
 				reTime = /t(\d)\/(\d)/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
-			function drawNote(paper, note, octave, alt){
+			function drawNote(paper, note, octave, alt, colorIdx){
 				posY = settings.offset.y + settings.staffSize.h - (notes[note]-1)*step/2;
-				posY += octave=="''"?step/2 - 1*settings.staffSize.h
+				posY += octave=="'''"?step - 2*settings.staffSize.h
+					:octave=="''"?step/2 - 1*settings.staffSize.h
 					:octave==""?1*settings.staffSize.h - step/2
 					:0;
 					
 				if(groupSize) groupSize.push({x:posX+3.5, y:posY, dur:duration});
 				
-				if(posY> settings.offset.y+settings.staffSize.h) signs.addLines(paper, posX, posY, step, settings.offset);
+				if(posY > settings.offset.y+settings.staffSize.h) signs.addLines(paper, posX, posY, step, settings.offset);
+				if(posY < settings.offset.y) signs.addLines(paper, posX, posY, step, settings.offset);
 				
 				var sign = groupMode?signs.noteHead
 					:{1:signs.whole, 2:signs.half, 4:signs.quarter}[duration]; 
-				if(sign) sign(paper, posX, posY);
+				if(sign) sign(paper, posX, posY, colorIdx);
 				
 				var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat, "n":signs.natural}[alt];
-				if(altSign) altSign(paper, posX, posY);
+				if(altSign) altSign(paper, posX, posY, colorIdx);
 				
 				// if(groupMode)
 				// 	paper.path(["M", posX+3, posY, "L", posX+3, posY-beamSize]).attr({"stroke-width":1, stroke:settings.signColor});
@@ -224,9 +233,11 @@
 				}
 				else if(s.match(reBar)){
 					posX+=15;
-					paper.path(["M", posX, settings.offset.y, "L", posX, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
+					paper.path(["M", posX+.5, settings.offset.y, "L", posX+.5, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
 					if(s=="||")
-						paper.path(["M", posX+3, settings.offset.y, "L", posX+3, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
+						paper.path(["M", posX+3.5, settings.offset.y, "L", posX+3.5, settings.offset.y + settings.staffSize.h]).attr({stroke:settings.staffColor});
+					else if(s=="|.")
+						paper.path(["M", posX+4.5, settings.offset.y, "L", posX+4.5, settings.offset.y + settings.staffSize.h]).attr({"stroke-width":4, stroke:settings.staffColor});
 				}
 				else if(mt = s.match(reChord)){
 					posX+=24;
@@ -237,11 +248,15 @@
 						if(dur) duration = +dur;
 						chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
 						$D.each(chrd.split(" "), function(nn){
-							var mmt = nn.match(/([a-g])((is)|(es)|n)?(''*)/i);
+							var mmt = nn.match(/([a-g])((is)|(es)|n)?('*)(@\d+)?/i);
 							var note = mmt[1],
 								alt = mmt[2],
-								octave = mmt[5];
-							drawNote(paper, note, octave, alt);
+								octave = mmt[5],
+								colorIdx = -1;
+							if(mmt[6]){
+								colorIdx = parseInt(mmt[6].substr(1));
+							}
+							drawNote(paper, note, octave, alt, colorIdx);
 						});
 						
 					});
@@ -257,11 +272,14 @@
 						console.log(s, mt);
 					var note = mt[1],
 						alt = mt[2]
-						octave = mt[6];
+						octave = mt[6],
+						colorIdx = -1;
 					if(mt[7])
 						duration = +mt[7];
+					if(mt[8])
+						colorIdx = parseInt(mt[8].substr(1));
 					posX += alt?24:15;
-					drawNote(paper, note, octave, alt);
+					drawNote(paper, note, octave, alt, colorIdx);
 				}
 			});
 			if(groupMode) drawBeam();
@@ -277,6 +295,10 @@
 			var mt = staff.split("!");
 			if(mt.length>1){
 				$D.extend(settings, $.parseJSON(mt[0]), true);
+				// if(typeof(settings.color)=="string"){
+				// 	settings.color = settings.color.split(";");
+				// 	settings.color = $D.map(settings.color, function(clr){return "#"+clr;});
+				// }
 				staff = mt[1];
 			}
 			else staff = mt[0];
