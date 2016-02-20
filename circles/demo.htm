@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Circles Demo Page</title>
+	<style type="text/css">
+		body{
+			font-family:Verdana, Arial, Sans-Serif;
+		}
+		.circle{
+			width:200px;
+			height:200px;
+			margin:5px;
+			border:1px solid #ccc;
+		}
+	</style>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../coollab/lib/html.js"></script>
+	<script type="text/javascript" src="../floorLayout/js/lib/raphael-min.js"></script>
+	<script type="text/javascript" src="../jdb/jdb.js"></script>
+	<script type="text/javascript" src="circles.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$(".circle").each(function(i, el){el=$(el);
+				var ss = el.html();
+				var pnl = $(Html.p({style:"margin:18px 0 0 25px;"}, ss));
+				el.before(pnl);
+				el.circle();
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Circles Demo Page</h1>
+	<p>Библиотека для отображения диаграмм на основе квинтового или хроматического круга</p>
+	<div class="circle">C7:c@root;e;g;bes</div>
+	<div class="circle">Cdim:c@root;es;ges;a</div>
+	<div class="circle">Dm:d@root;f;a</div>
+</body>
+</html>
