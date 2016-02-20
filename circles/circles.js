@@ -1,7 +1,8 @@
 (function($,$R,$D){
 	var settings = {
 		size: 200,
-		margin:3
+		margin:3,
+		drawGroups:false
 	};
 	
 	var scale = {};
@@ -27,28 +28,60 @@
 		paper.text(center, center, title).attr({"font-size":22});
 		
 		for(var i=0; i<12; i++){
-			// if(i) paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
-			// else paper.circle(origin.x, origin.y, 6).attr({fill:"#fff", stroke:"#000", "stroke-width":3});
 			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
 			if(names[i].length==1){
 				var pos = {x:origin.x, y:origin.y-size*.083};
 				paper.text(pos.x, pos.y, names[i].toUpperCase()).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
 			}
 		}
+		
+		colorGroups = {};
+		
 		$D(code.split(";")).each(function(tone, i){
 			tone = tone.split("@");
-			var tonePos = scale[tone[0]];
-			if(tone[1]=="root") paper.circle(origin.x, origin.y, 6).attr({fill:"#fff", stroke:"#000", "stroke-width":3}).transform(["R", alpha*tonePos, center, center]);
-			else paper.circle(origin.x, origin.y, 4).attr({fill:"#000"}).transform(["R", alpha*tonePos, center, center]);
+			var tonePos = scale[tone[0]],
+				command = tone[1]?tone[1].split("#"):[],
+				type = command[0],
+				color = "#"+(command[1]||"000");
+			//console.log(tone, command, type, color);
+			var point;
+			if(type=="root") point = paper.circle(origin.x, origin.y, 6).attr({fill:"#fff", stroke:color, "stroke-width":3}).transform(["R", alpha*tonePos, center, center]);
+			else point = paper.circle(origin.x, origin.y, 4).attr({fill:color}).transform(["R", alpha*tonePos, center, center]);
+			
+			if(!colorGroups[color]) colorGroups[color] = [];
+			colorGroups[color].push(point);
 		});
+		
+		// var colors = $D(colorGroups).toArray(function(g, clr){return clr;}).raw();
+		// console.log(colors);
+		if(settings.drawGroups){
+			$D(colorGroups).each(function(grp, clr){
+				var path = ["M"];
+				$D(grp).each(function(nd, i){
+					if(i) path.push("L");
+					var bbox = nd.getBBox();
+					path.push(bbox.cx);
+					path.push(bbox.cy);
+				});
+				path.push("Z");
+				paper.path(path).attr({fill:clr, "stroke-width":0, opacity:.3});
+				paper.path(path).attr({fill:null, "stroke-width":1, stroke:clr, opacity:1});
+			});
+		}
 	}
 	
 	$.fn.circle = function(){
 		$(this).each(function(i,el){el=$(el);
 			var code = el.html();
 			el.html("");
+			code = code.split("!");
+			if(code.length>1){
+				$D.extend(settings, $.parseJSON(code[0]), true);
+				code = code[1];
+			}
+			else code = code[0];
 			code = code.split(":");
-			init(el, code[1], code[0]);
+			init(el, code.length>1?code[1]:code[0], code.length>1?code[0]:"");
 		});
 	};
 	
