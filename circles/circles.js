@@ -1,21 +1,29 @@
 (function($,$R,$D){
 	var settings = {
+		fifthMode:false,
 		size: 200,
 		margin:3,
 		drawGroups:false
 	};
 	
-	var scale = {};
-	$D("c;cis,des;d;dis,es;e;f;fis,ges;g;gis,as;a;ais,bes;b".split(";")).each(function(x, i){
-		$D(x.split(",")).each(function(s){scale[s] = i});
-	});
-	
-	var names = [];
-	$D(scale).each(function(nr, nm){
-		if(names.length==nr) names.push(nm);
-	});
+	function noteName(note){
+		note = note.replace(/([a-g])e?s$/, "$1b");
+		return note.substr(0, 1).toUpperCase() + note.substr(1).toLowerCase();
+	}
 	
 	function init(pnl, code, title){
+		var scale = {};
+		$D((settings.fifthMode?"c;g;d;a;e;b;ges,fis;des,cis;as,gis;es,dis;bes,ais;f"
+				:"c;cis,des;d;dis,es;e;f;fis,ges;g;gis,as;a;ais,bes;b"
+			).split(";")).each(function(x, i){
+			$D(x.split(",")).each(function(s){scale[s] = i});
+		});
+		
+		var names = [];
+		$D(scale).each(function(nr, nm){
+			if(names.length==nr) names.push(nm);
+		});
+		
 		var paper = $R(pnl[0], settings.size, settings.size);
 		var size = settings.size - settings.margin*2,
 			diameter = size*.7,
@@ -29,9 +37,9 @@
 		
 		for(var i=0; i<12; i++){
 			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
-			if(names[i].length==1){
+			if(names[i].length==1 || settings.fifthMode){
 				var pos = {x:origin.x, y:origin.y-size*.083};
-				paper.text(pos.x, pos.y, names[i].toUpperCase()).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
+				paper.text(pos.x, pos.y, noteName(names[i])).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
 			}
 		}
 		
