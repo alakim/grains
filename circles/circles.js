@@ -78,10 +78,8 @@
 		}
 	}
 	
-	$.fn.circle = function(){
+	$.fn.circle = function(code){
 		$(this).each(function(i,el){el=$(el);
-			var code = el.html();
-			el.html("");
 			code = code.split("!");
 			if(code.length>1){
 				$D.extend(settings, $.parseJSON(code[0]), true);

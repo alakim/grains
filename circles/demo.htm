@@ -25,7 +25,9 @@
 				var ss = el.html();
 				var pnl = $(Html.p({style:"margin:18px 0 0 25px;"}, ss));
 				el.before(pnl);
-				el.circle();
+				var code = el.html();
+				el.html("");
+				el.circle(code);
 			});
 		});
 	</script>
