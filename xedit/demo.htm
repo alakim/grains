@@ -16,46 +16,76 @@ var docSpec = {
 		console.log("I be validatin' now!")
 	},
 	elements: {
-		"list": {
+		"library": {
 			menu: [{
-				caption: "Append an <item>",
+				caption: "Добавить книгу <book>",
 				action: XEdit.newElementChild,
-				actionParameter: "<item/>"
+				actionParameter: "<book/>"
 			}]
 		},
-		"item": {
+		"book": {
 			menu: [
 				{
-					caption: "Add @label=\"something\"",
+					caption: "Добавить заголовок @title=\"***\"",
 					action: XEdit.newAttribute,
-					actionParameter: {name: "label", value: "something"},
+					actionParameter: {name: "title", value: "***"},
 					hideIf: function(jsElement){
-						return jsElement.hasAttribute("label");
+						return jsElement.hasAttribute("title");
 					}
 				},
 				{
-					caption: "Delete this <item>",
+					caption: "Добавить аннотацию @annotation=\"\"",
+					action: XEdit.newAttribute,
+					actionParameter: {name: "annotation", value: ""},
+					hideIf: function(jsElement){
+						return jsElement.hasAttribute("annotation");
+					}
+				},
+				{
+					caption: "Добавить жанр @genre=\"\"",
+					action: XEdit.newAttribute,
+					actionParameter: {name: "genre", value: ""},
+					hideIf: function(jsElement){
+						return jsElement.hasAttribute("genre");
+					}
+				},
+				{
+					caption: "Удалить эту книгу <book>",
 					action: XEdit.deleteElement
 				}, 
 				{
-					caption: "New <item> before this",
+					caption: "Вставить книгу <book> перед этой",
 					action: XEdit.newElementBefore,
-					actionParameter: "<item/>"
+					actionParameter: "<book/>"
 				},
 				{
-					caption: "New <item> after this",
+					caption: "Вставить книгу <book> после этой",
 					action: XEdit.newElementAfter,
-					actionParameter: "<item/>"
+					actionParameter: "<book/>"
 				}
 			],
-			canDropTo: ["list"],
+			canDropTo: ["library"],
 			attributes: {
-				"label": {
+				"title": {
 					asker: XEdit.askString,
 					menu: [{
-						caption: "Delete this @label",
+						caption: "Удалить этот заголовок @title",
 						action: XEdit.deleteAttribute
 					}]
+				},
+				"annotation":{
+					asker: XEdit.askLongString,
+					menu: [{
+						caption: "Удалить эту аннотацию @annotation",
+						action: XEdit.deleteAttribute
+					}]
+				},
+				genre:{
+					asker: XEdit.askPicklist,
+					askerParameter: [
+						{value: "novel", caption: "роман"},
+						{value: "story", caption: "повесть"}
+					]
 				}
 			}
 		}
@@ -63,7 +93,7 @@ var docSpec = {
 };
 	
 		function start(){
-			var xml = "<list><item label='one'/><item label='two'/></list>";
+			var xml = "<library><book title='Война и мир'/><book title='Капитанская дочка'/></library>";
 			XEdit.render(xml, $("#editor")[0], docSpec);
 		}
 		function submit(){
