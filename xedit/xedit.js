@@ -688,9 +688,11 @@
 			var bubble=document.createElement("div");
 			bubble.id=settings.bubbleID;
 			bubble.className=XEdit.mode;
-			bubble.innerHTML="<div class='inside' onclick='XEdit.notclick=true;'>"
-					+"<div id='"+settings.bubbleID+"Content'>"+content+"</div>"
-				+"</div>";
+			bubble.innerHTML = (function(){with($H){
+				return div({"class":"inside", onclick:'XEdit.notclick=true;'},
+					div({id:settings.bubbleID+"Content"}, content)
+				);
+			}})();
 			return bubble;
 		},
 		showBubble: function($anchor) {

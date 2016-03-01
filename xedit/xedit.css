@@ -156,7 +156,7 @@
 /*Pop-up box*/
 #xeditBubble { display: none; position: absolute; z-index: 2; min-width: 100px; }
 #xeditBubble > div.inside { box-shadow: 0px 0px 5px #99cbff; border: 1px solid #333333; background-color: #dddddd; border-radius: 2px; margin-top: 8px; }
-#xeditBubble > div.inside > #xeditBubbleContent { font-family: Verdana, sans-serif; font-size: 11px; color: #666666; margin: 5px; padding: 5px; background-color: #ffffff; border-radius: 2px; }
+#xeditBubble > div.inside > #xeditBubbleContent { font-family: Verdana, sans-serif; font-size: 11px; color: #666666; /*margin: 5px;*/ padding: 5px; background-color: #ffffff; border-radius: 2px; }
 #xeditBubble span.punc { color: #669acc; }
 #xeditBubble.laic > div.inside { box-shadow: 0px 0px 5px #666666; }
 #xeditBubble.laic span.punc { display: none; }

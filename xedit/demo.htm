@@ -9,11 +9,18 @@
 	<script type="text/javascript" src="xedit.js"></script>
 	<script type="text/javascript">
 		var docSpec = {
+			validate: function(root){
+				if(root.children.length<3) XEdit.warnings.push({
+					htmlID: root.htmlID,
+					text:"en:Too few books! | ru:Слишком мало книг! "
+				});
+				for(var i=0,el; el=root.children[i],i<root.children.length; i++){
+					var elementSpec=docSpec.elements[el.name];
+					if(el.type=='element') elementSpec.validate(el);
+				}
+			},
 			onchange: function(){
 				console.log("I been changed now!")
-			},
-			validate: function(obj){
-				console.log("I be validatin' now!")
 			},
 			elements: {
 				"library": {
@@ -82,6 +89,12 @@
 								{value: "story", caption: "повесть"}
 							]
 						}
+					},
+					validate:function(el){
+						if(!el.hasAttribute("title")) XEdit.warnings.push({
+							htmlID: el.htmlID,
+							text:"en:Missing title! | ru:Отсутствует заголовок! "
+						});
 					}
 				},
 				annotation:{
@@ -128,13 +141,15 @@
 		function start(){
 			XEdit.lang = $(".selLang").val();
 			$(".selLang").change(setLang);
+			
+			XEdit.setMode($(".selMode").val());
+			$(".selMode").change(function(){
+				XEdit.setMode($(this).val());
+			});
 			XEdit.render(xml, $("#editor")[0], docSpec);
 		}
 		function submit(){
 			console.log(XEdit.harvest());
-		}
-		function setMode(m){
-			XEdit.setMode(m);
 		}
 		
 		function setLang(){
@@ -149,8 +164,12 @@
 	<h1>XEdit Demo Page</h1>
 	<div>
 		<input type="button" onclick="submit()" value="Harvest"/>
-		<input type="button" onclick="setMode('nerd')" value="Nerd Mode"/>
-		<input type="button" onclick="setMode('laic')" value="Laic Mode"/>
+		
+		Mode:  
+		<select class="selMode">
+			<option value="nerd" selected="true">Nerd</option>
+			<option value="laic">Laic</option>
+		</select>
 		
 		Language:  
 		<select class="selLang">
