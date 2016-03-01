@@ -1,6 +1,11 @@
 ﻿var XEdit = (function($){
 	function extend(o,s){for(var k in s){o[k]=s[k];}}
 	
+	var settings = {
+		cssClass:"xedit",
+		bubbleID: "xeditBubble"
+	};
+	
 	var XEdit={
 		lang: "", //"en"|"de"|fr"| ...
 		mode: "nerd", //"nerd"|"laic"
@@ -8,8 +13,8 @@
 	extend(XEdit, {
 		setMode: function(mode) {
 			if(mode=="nerd" || mode=="laic") XEdit.mode=mode;
-			if(mode=="nerd") $(".xedit").removeClass("laic").addClass("nerd");
-			if(mode=="laic") $(".xedit").removeClass("nerd").addClass("laic");
+			if(mode=="nerd") $("."+settings.cssClass).removeClass("laic").addClass("nerd");
+			if(mode=="laic") $("."+settings.cssClass).removeClass("nerd").addClass("laic");
 		},
 		xmlEscape: function(str) {
 			return String(str)
@@ -55,10 +60,10 @@
 			js.children=[];
 			for(var i=0; i<xml.childNodes.length; i++) {
 				var child=xml.childNodes[i];
-				if(child.nodeType==1) { //element node
+				if(child.nodeType==1) { 
 					js["children"].push(XEdit.xml2js(child, js));
 				}
-				if(child.nodeType==3) { //text node
+				if(child.nodeType==3) { 
 					js["children"].push({type: "text", value: child.nodeValue, htmlID: ""});
 				}
 			}
@@ -81,8 +86,8 @@
 				xml+=">";
 				for(var i=0; i<js.children.length; i++) {
 					var child=js.children[i];
-					if(child.type=="text") xml+=XEdit.xmlEscape(child.value); //text node
-					else if(child.type=="element") xml+=XEdit.js2xml(child); //element node
+					if(child.type=="text") xml+=XEdit.xmlEscape(child.value); 
+					else if(child.type=="element") xml+=XEdit.js2xml(child); 
 				}
 				xml+="</"+js.name+">";
 			} else {
@@ -128,7 +133,7 @@
 			else
 				return function() { return defaultValue };
 		},
-		verifyDocSpecElement: function(name) { //make sure the DocSpec object has such an element, that the element has everything it needs
+		verifyDocSpecElement: function(name) { 
 			if(!XEdit.docSpec.elements[name] || typeof(XEdit.docSpec.elements[name])!="object") XEdit.docSpec.elements[name]={};
 			var spec=XEdit.docSpec.elements[name];
 			if(!spec.attributes || typeof(spec.attributes)!="object") spec.attributes={};
@@ -163,15 +168,15 @@
 		lastIDNum: 0,
 		docSpec: null,
 		refresh: function() {
-			$(".xedit .children ").each(function(){ //determine whether each element does or doesn't have children:
+			$("."+settings.cssClass +" .children ").each(function(){ 
 				if(this.childNodes.length==0 && !$(this.parentNode).hasClass("hasText")) $(this.parentNode).addClass("noChildren");
 				else {
 					$(this.parentNode).removeClass("noChildren");
 					XEdit.updateCollapsoid(this.parentNode.id);
 				}
 			});
-			var merged=false; while(!merged) { //merge adjacent text nodes
-				merged=true; var textnodes=$(".xedit .textnode").toArray();
+			var merged=false; while(!merged) { 
+				merged=true; var textnodes=$("."+settings.cssClass +" .textnode").toArray();
 				for(var i=0; i<textnodes.length; i++) {
 					var $this=$(textnodes[i]);
 					if($this.next().hasClass("textnode")) {
@@ -185,9 +190,9 @@
 					}
 				}
 			}
-			$(".xedit .element ").each(function(){ //reorder elements if necessary
+			$("."+settings.cssClass + " .element ").each(function(){ 
 				var elSpec=XEdit.docSpec.elements[this.getAttribute("data-name")];
-				if(elSpec.mustBeBefore) { //is it after an element it cannot be after? then move it up until it's not!
+				if(elSpec.mustBeBefore) { 
 					var $this=$(this);
 					var ok; do {
 						ok=true;
@@ -199,7 +204,7 @@
 						}
 					} while(!ok)
 				}
-				if(elSpec.mustBeAfter) { //is it before an element it cannot be before? then move it down until it's not!
+				if(elSpec.mustBeAfter) { 
 					var $this=$(this);
 					var ok; do {
 						ok=true;
@@ -212,7 +217,7 @@
 					} while(!ok)
 				}
 			});
-			$(".xedit .attribute ").each(function(){ //reorder attributes if necessary
+			$("."+settings.cssClass + " .attribute ").each(function(){ 
 				var atName=this.getAttribute("data-name");
 				var elName=this.parentNode.parentNode.parentNode.getAttribute("data-name");
 				var elSpec=XEdit.docSpec.elements[elName];
@@ -222,7 +227,7 @@
 				var mustBeBefore=[]; var seen=false; for(var sibName in elSpec.attributes) {
 					if(sibName==atName) seen=true; else if(seen) mustBeBefore.push(sibName);
 				}
-				if(mustBeBefore.length>0) { //is it after an attribute it cannot be after? then move it up until it's not!
+				if(mustBeBefore.length>0) { 
 					var $this=$(this);
 					var ok; do {
 						ok=true;
@@ -234,7 +239,7 @@
 						}
 					} while(!ok)
 				}
-				if(mustBeAfter.length>0) { //is it before an attribute it cannot be before? then move it down until it's not!
+				if(mustBeAfter.length>0) { 
 					var $this=$(this);
 					var ok; do {
 						ok=true;
@@ -249,7 +254,7 @@
 			});
 		},
 		harvest: function() {
-			var rootElement=$(".xedit .element").first().toArray()[0];
+			var rootElement=$("."+settings.cssClass + " .element").first().toArray()[0];
 			var js=XEdit.harvestElement(rootElement);
 			for(var key in XEdit.namespaces) {
 				js.attributes.push({
@@ -310,7 +315,7 @@
 			}
 			return jsParent;
 		},
-		render: function(data, editor, docSpec) { //renders the contents of an editor
+		render: function(data, editor, docSpec) { 
 			XEdit.docSpec=docSpec;
 			XEdit.verifyDocSpec();
 			
@@ -404,7 +409,7 @@
 		},
 		renderAttribute: function(attribute, optionalParentName) {
 			var htmlID=XEdit.nextID();
-			var readonly=false; //TBE
+			var readonly=false; 
 			classNames="attribute"; if(readonly) classNames+=" readonly";
 			
 			var displayName=attribute.name;
@@ -447,47 +452,47 @@
 		},
 		chewText: function(txt) {
 			var ret="";
-			ret+="<span class='word'>"; //start word
+			ret+="<span class='word'>"; 
 			for(var i=0; i<txt.length; i++) {
-				if(txt[i]==" ") ret+="</span>"; //end word
+				if(txt[i]==" ") ret+="</span>"; 
 				var t=XEdit.xmlEscape(txt[i])
-				if(i==0 && t==" ") t="&nbsp;"; //leading space
-				if(i==txt.length-1 && t==" ") t="&nbsp;"; //trailing space
+				if(i==0 && t==" ") t="&nbsp;"; 
+				if(i==txt.length-1 && t==" ") t="&nbsp;"; 
 				ret+="<span class='char'>"+t+"<span class='selector'><span class='inside' onclick='XEdit.charClick(this.parentNode.parentNode)'></span></span></span>";
-				if(txt[i]==" ") ret+="<span class='word'>"; //start word
+				if(txt[i]==" ") ret+="<span class='word'>"; 
 			}
-			ret+="</span>"; //end word
+			ret+="</span>"; 
 			return ret;
 		},
 		charClick: function(c) {
 			XEdit.clickoff();
 			XEdit.notclick=true;
 			if(
-				$(".xedit .char.on").toArray().length==1 && //if there is precisely one previously selected character
-				$(".xedit .char.on").closest(".element").is($(c).closest(".element")) //and if it has the same parent element as this character
+				$("."+settings.cssClass + " .char.on").toArray().length==1 && 
+				$("."+settings.cssClass + " .char.on").closest(".element").is($(c).closest(".element")) 
 			) {
-				var $element=$(".xedit .char.on").closest(".element");
+				var $element=$("."+settings.cssClass + " .char.on").closest(".element");
 				var chars=$element.find(".char").toArray();
-				var iFrom=$.inArray($(".xedit .char.on").toArray()[0], chars);
+				var iFrom=$.inArray($("."+settings.cssClass + " .char.on").toArray()[0], chars);
 				var iTill=$.inArray(c, chars);
 				if(iFrom>iTill) {var temp=iFrom; iFrom=iTill; iTill=temp;}
-				for(var i=0; i<chars.length; i++) { //highlight all chars between start and end
+				for(var i=0; i<chars.length; i++) { 
 					if(i>=iFrom && i<=iTill) $(chars[i]).addClass("on");
 				}
 				XEdit.textFromID=$(chars[iFrom]).closest(".textnode").attr("id");
 				XEdit.textTillID=$(chars[iTill]).closest(".textnode").attr("id");
 				XEdit.textFromIndex=$.inArray(chars[iFrom], $("#"+XEdit.textFromID).find(".char").toArray());
 				XEdit.textTillIndex=$.inArray(chars[iTill], $("#"+XEdit.textTillID).find(".char").toArray());
-				//Show inline menu etc:
+				
 				var htmlID=$element.attr("id");
-				var content=XEdit.inlineMenu(htmlID); //compose bubble content
+				var content=XEdit.inlineMenu(htmlID); 
 				if(content!="") {
-					document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-					XEdit.showBubble($("#"+htmlID+" .char.on").last()); //anchor bubble to highlighted chars
+					document.body.appendChild(XEdit.makeBubble(content)); 
+					XEdit.showBubble($("#"+htmlID+" .char.on").last()); 
 				}
 				XEdit.clearChars=true;
 			} else {
-				$(".xedit .char.on").removeClass("on");
+				$("."+settings.cssClass + " .char.on").removeClass("on");
 				$(c).addClass("on");
 			}
 		},
@@ -495,7 +500,7 @@
 			XEdit.clickoff();
 			var xml=param.template;
 			var ph=param.placeholder;
-			if(XEdit.textFromID==XEdit.textTillID) { //abc --> a<XYZ>b</XYZ>c
+			if(XEdit.textFromID==XEdit.textTillID) { 
 				var jsOld=XEdit.harvestText(document.getElementById(XEdit.textFromID));
 				var txtOpen=jsOld.value.substring(0, XEdit.textFromIndex);
 				var txtMiddle=jsOld.value.substring(XEdit.textFromIndex, XEdit.textTillIndex+1);
@@ -506,7 +511,7 @@
 				html+=XEdit.renderElement(XEdit.xml2js(xml));
 				html+=XEdit.renderText({type: "text", value: txtClose});
 				$("#"+XEdit.textFromID).replaceWith(html);
-			} else { //ab<...>cd --> a<XYZ>b<...>c</XYZ>d
+			} else { 
 				var jsOldOpen=XEdit.harvestText(document.getElementById(XEdit.textFromID));
 				var jsOldClose=XEdit.harvestText(document.getElementById(XEdit.textTillID));
 				var txtOpen=jsOldOpen.value.substring(0, XEdit.textFromIndex);
@@ -572,35 +577,35 @@
 		click: function(htmlID, what) {
 			if(!XEdit.notclick) {
 				XEdit.clickoff();
-				$(".xedit .char.on").removeClass("on");
+				$("."+settings.cssClass + " .char.on").removeClass("on");
 				if(what=="openingTagName" || what=="closingTagName") {
-					$("#"+htmlID).addClass("current"); //make the element current
-					var content=XEdit.elementMenu(htmlID); //compose bubble content
+					$("#"+htmlID).addClass("current"); 
+					var content=XEdit.elementMenu(htmlID); 
 					if(content!="") {
-						document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-						if(what=="openingTagName") XEdit.showBubble($("#"+htmlID+" > .tag.opening > .name")); //anchor bubble to opening tag
-						if(what=="closingTagName") XEdit.showBubble($("#"+htmlID+" > .tag.closing > .name")); //anchor bubble to closing tag
+						document.body.appendChild(XEdit.makeBubble(content)); 
+						if(what=="openingTagName") XEdit.showBubble($("#"+htmlID+" > .tag.opening > .name")); 
+						if(what=="closingTagName") XEdit.showBubble($("#"+htmlID+" > .tag.closing > .name")); 
 					}
 				}
 				if(what=="attributeName") {
-					$("#"+htmlID).addClass("current"); //make the attribute current
-					var content=XEdit.attributeMenu(htmlID); //compose bubble content
+					$("#"+htmlID).addClass("current"); 
+					var content=XEdit.attributeMenu(htmlID); 
 					if(content!="") {
-						document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-						XEdit.showBubble($("#"+htmlID+" > .name")); //anchor bubble to attribute name
+						document.body.appendChild(XEdit.makeBubble(content)); 
+						XEdit.showBubble($("#"+htmlID+" > .name")); 
 					}
 				}
 				if(what=="attributeValue") {
-					$("#"+htmlID+" > .valueContainer").addClass("current"); //make attribute value current
-					var name=$("#"+htmlID).attr("data-name"); //obtain attribute's name
-					var value=$("#"+htmlID).attr("data-value"); //obtain current value
+					$("#"+htmlID+" > .valueContainer").addClass("current"); 
+					var name=$("#"+htmlID).attr("data-name"); 
+					var value=$("#"+htmlID).attr("data-value"); 
 					var elName=$("#"+htmlID).closest(".element").attr("data-name");
 					XEdit.verifyDocSpecAttribute(elName, name);
 					var spec=XEdit.docSpec.elements[elName].attributes[name];
-					var content=spec.asker(value, spec.askerParameter); //compose bubble content
+					var content=spec.asker(value, spec.askerParameter); 
 					if(content!="") {
-						document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-						XEdit.showBubble($("#"+htmlID+" > .valueContainer > .value")); //anchor bubble to value
+						document.body.appendChild(XEdit.makeBubble(content)); 
+						XEdit.showBubble($("#"+htmlID+" > .valueContainer > .value")); 
 						XEdit.answer=function(val) {
 							var obj=document.getElementById(htmlID);
 							var html=XEdit.renderAttribute({type: "attribute", name: name, value: val}, elName);
@@ -612,16 +617,16 @@
 				}
 				if(what=="text") {
 					$("#"+htmlID).addClass("current");
-					var value=$("#"+htmlID).attr("data-value"); //obtain current value
+					var value=$("#"+htmlID).attr("data-value"); 
 					var elName=$("#"+htmlID).closest(".element").attr("data-name");
 					var spec=XEdit.docSpec.elements[elName];
 					if (typeof(spec.asker) != "function") {
-						var content=XEdit.askLongString(value); //compose bubble content  
+						var content=XEdit.askLongString(value); 
 					} else {
-						var content=spec.asker(value, spec.askerParameter); //use specified asker
+						var content=spec.asker(value, spec.askerParameter); 
 					}			
-					document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-					XEdit.showBubble($("#"+htmlID+" > .value")); //anchor bubble to value
+					document.body.appendChild(XEdit.makeBubble(content)); 
+					XEdit.showBubble($("#"+htmlID+" > .value")); 
 					XEdit.answer=function(val) {
 						var obj=document.getElementById(htmlID);
 						var jsText = {type: "text", value: val};
@@ -632,16 +637,16 @@
 					};
 				}
 				if(what=="warner") {
-					//$("#"+htmlID).addClass("current");
-					var content=""; //compose bubble content
+					
+					var content=""; 
 					for(var iWarning=0; iWarning<XEdit.warnings.length; iWarning++) {
 						var warning=XEdit.warnings[iWarning];
 						if(warning.htmlID==htmlID) {
 							content+="<div class='warning'>"+XEdit.formatCaption(XEdit.textByLang(warning.text))+"</div>";
 						}
 					}
-					document.body.appendChild(XEdit.makeBubble(content)); //create bubble
-					XEdit.showBubble($("#"+htmlID+" .warner .inside").first()); //anchor bubble to warner
+					document.body.appendChild(XEdit.makeBubble(content)); 
+					XEdit.showBubble($("#"+htmlID+" .warner .inside").first()); 
 				}
 				XEdit.notclick=true;
 			}
@@ -661,32 +666,32 @@
 		clickoff: function() { 
 			if(!XEdit.notclick) {
 				XEdit.destroyBubble();
-				$(".xedit .current").removeClass("current");
+				$("."+settings.cssClass + " .current").removeClass("current");
 				if(XEdit.clearChars) {
-					$(".xedit .char.on").removeClass("on");
+					$("."+settings.cssClass + " .char.on").removeClass("on");
 					XEdit.clearChars=false;
 				}
 			}
 			XEdit.notclick=false;
 		},
 		destroyBubble: function() {
-			if(document.getElementById("xeditBubble")) {
-				var bubble=document.getElementById("xeditBubble");
+			if(document.getElementById(settings.bubbleID)) {
+				var bubble=document.getElementById(settings.bubbleID);
 				bubble.parentNode.removeChild(bubble);
 			}
 		},
 		makeBubble: function(content) {
 			XEdit.destroyBubble();
 			var bubble=document.createElement("div");
-			bubble.id="xeditBubble";
+			bubble.id=settings.bubbleID;
 			bubble.className=XEdit.mode;
 			bubble.innerHTML="<div class='inside' onclick='XEdit.notclick=true;'>"
-					+"<div id='xeditBubbleContent'>"+content+"</div>"
+					+"<div id='"+settings.bubbleID+"Content'>"+content+"</div>"
 				+"</div>";
 			return bubble;
 		},
 		showBubble: function($anchor) {
-			var $bubble=$("#xeditBubble");
+			var $bubble=$("#"+settings.bubbleID);
 			var offset=$anchor.offset(); var left=offset.left; var top=offset.top;
 			var screenWidth=$("body").width();
 			if(left<screenWidth/2) {
@@ -702,7 +707,7 @@
 				$bubble.css({top: (top+height)+"px", right: (screenWidth-left)+"px"});
 			}
 			$bubble.slideDown("fast", function() {
-				$bubble.find(".focusme").first().focus(); //if the context menu contains anything with the class name 'focusme', focus it.
+				$bubble.find(".focusme").first().focus(); 
 			});
 		},
 		askString: function(defaultString) {
@@ -738,8 +743,8 @@
 			return html;
 		},
 		attributeMenu: function(htmlID) {
-			var name=$("#"+htmlID).attr("data-name"); //obtain attribute's name
-			var elName=$("#"+htmlID).closest(".element").attr("data-name"); //obtain element's name
+			var name=$("#"+htmlID).attr("data-name"); 
+			var elName=$("#"+htmlID).closest(".element").attr("data-name"); 
 			XEdit.verifyDocSpecAttribute(elName, name);
 			var spec=XEdit.docSpec.elements[elName].attributes[name];
 			var html="";
@@ -756,7 +761,7 @@
 			return html;
 		},
 		elementMenu: function(htmlID) {
-			var elName=$("#"+htmlID).attr("data-name"); //obtain element's name
+			var elName=$("#"+htmlID).attr("data-name"); 
 			var spec=XEdit.docSpec.elements[elName];
 			var html="";
 			for(var i=0; i<spec.menu.length; i++) {
@@ -772,7 +777,7 @@
 			return html;
 		},
 		inlineMenu: function(htmlID) {
-			var elName=$("#"+htmlID).attr("data-name"); //obtain element's name
+			var elName=$("#"+htmlID).attr("data-name"); 
 			var spec=XEdit.docSpec.elements[elName];
 			var html="";
 			for(var i=0; i<spec.inlineMenu.length; i++) {
@@ -854,22 +859,22 @@
 			$("#"+htmlID).replaceWith(html);
 			XEdit.refresh();
 		},
-		draggingID: null, //what are we dragging?
-		drag: function(ev) { //called when dragging starts
+		draggingID: null, 
+		drag: function(ev) { 
 			XEdit.clickoff();
 			var htmlID=ev.target.parentNode.parentNode.id;
 			var $element=$("#"+htmlID);
 			var elementName=$element.attr("data-name");
 			var elSpec=XEdit.docSpec.elements[elementName];
 			$element.addClass("dragging");
-			$(".xedit .children").append("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
-			$(".xedit .children .element").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
-			$(".xedit .children .text").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
-			$(".xedit .dragging .elementDropper").remove(); //remove drop targets inside the element being dragged
-			$(".xedit .dragging").prev(".elementDropper").remove(); //remove drop targets from immediately before the element being dragged
-			$(".xedit .dragging").next(".elementDropper").remove(); //remove drop targets from immediately after the element being dragged
-			if(elSpec.canDropTo) { //remove the drop target from elements it cannot be dropped into
-				var droppers=$(".xedit .elementDropper").toArray();
+			$("."+settings.cssClass + " .children").append("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
+			$("."+settings.cssClass + " .children .element").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
+			$("."+settings.cssClass + " .children .text").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
+			$("."+settings.cssClass + " .dragging .elementDropper").remove(); 
+			$("."+settings.cssClass + " .dragging").prev(".elementDropper").remove(); 
+			$("."+settings.cssClass + " .dragging").next(".elementDropper").remove(); 
+			if(elSpec.canDropTo) { 
+				var droppers=$("."+settings.cssClass + " .elementDropper").toArray();
 				for(var i=0; i<droppers.length; i++) {
 					var dropper=droppers[i];
 					var parentElementName=$(dropper.parentNode.parentNode).toArray()[0].getAttribute("data-name");
@@ -878,8 +883,8 @@
 					}
 				}
 			}
-			if(elSpec.mustBeBefore) { //remove the drop target from after elements it cannot be after
-				var droppers=$(".xedit .elementDropper").toArray();
+			if(elSpec.mustBeBefore) { 
+				var droppers=$("."+settings.cssClass + " .elementDropper").toArray();
 				for(var i=0; i<droppers.length; i++) {
 					var dropper=droppers[i];
 					for(var ii=0; ii<elSpec.mustBeBefore.length; ii++) {
@@ -889,8 +894,8 @@
 					}
 				}
 			}
-			if(elSpec.mustBeAfter) { //remove the drop target from before elements it cannot be before
-				var droppers=$(".xedit .elementDropper").toArray();
+			if(elSpec.mustBeAfter) { 
+				var droppers=$("."+settings.cssClass + " .elementDropper").toArray();
 				for(var i=0; i<droppers.length; i++) {
 					var dropper=droppers[i];
 					for(var ii=0; ii<elSpec.mustBeAfter.length; ii++) {
@@ -910,29 +915,29 @@
 		},
 		dragOut: function(ev) {
 			ev.preventDefault();
-			$(".xedit .activeDropper").removeClass("activeDropper");
+			$("."+settings.cssClass + " .activeDropper").removeClass("activeDropper");
 		},
 		drop: function(ev) {
 			ev.preventDefault();
-			var node=document.getElementById(XEdit.draggingID); //the thing we are moving
+			var node=document.getElementById(XEdit.draggingID); 
 			$(ev.target.parentNode).replaceWith(node);
 			XEdit.changed();
 		},
 		dragend: function(ev) {
-			$(".xedit .attributeDropper").remove();
-			$(".xedit .elementDropper").remove();
-			$(".xedit .dragging").removeClass("dragging");
+			$("."+settings.cssClass + " .attributeDropper").remove();
+			$("."+settings.cssClass + " .elementDropper").remove();
+			$("."+settings.cssClass + " .dragging").removeClass("dragging");
 			XEdit.refresh();
 		},
-		changed: function(jsElement) { //called when the document changes
+		changed: function(jsElement) { 
 			XEdit.validate();
-			XEdit.docSpec.onchange(jsElement); //report that the document has changed
+			XEdit.docSpec.onchange(jsElement); 
 		},
 		validate: function() {
-			var js=XEdit.harvestElement($(".xedit .element").toArray()[0], null);
-			$(".xedit .invalid").removeClass("invalid");
+			var js=XEdit.harvestElement($("."+settings.cssClass + " .element").toArray()[0], null);
+			$("."+settings.cssClass + " .invalid").removeClass("invalid");
 			XEdit.warnings=[];
-			XEdit.docSpec.validate(js); //validate the document
+			XEdit.docSpec.validate(js); 
 			for(var iWarning=0; iWarning<XEdit.warnings.length; iWarning++) {
 				var warning=XEdit.warnings[iWarning];
 				$("#"+warning.htmlID).addClass("invalid");
@@ -950,6 +955,10 @@
 			}
 			ret=$.trim(ret);
 			return ret;
+		},
+		settings: function(ss){
+			if(!ss) return settings;
+			extend(settings, ss);
 		}
 	});
 	
