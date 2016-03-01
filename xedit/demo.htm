@@ -126,7 +126,8 @@
 		var xml = "<library><book title='Война и мир'/><book title='Капитанская дочка'/></library>";
 		
 		function start(){
-			XEdit.lang = "en";
+			XEdit.lang = $(".selLang").val();
+			$(".selLang").change(setLang);
 			XEdit.render(xml, $("#editor")[0], docSpec);
 		}
 		function submit(){
@@ -135,12 +136,12 @@
 		function setMode(m){
 			XEdit.setMode(m);
 		}
-		function setLang(lang){
-			XEdit.lang = lang;
-			var content = XEdit.harvest();
-			XEdit.render(content, $("#editor")[0], docSpec);
-			//XEdit.refresh();
+		
+		function setLang(){
+			XEdit.lang = $(".selLang").val();
+			XEdit.render(XEdit.harvest(), $("#editor")[0], docSpec);
 		}
+
 		$(start);
 	</script>
 </head>
@@ -151,8 +152,11 @@
 		<input type="button" onclick="setMode('nerd')" value="Nerd Mode"/>
 		<input type="button" onclick="setMode('laic')" value="Laic Mode"/>
 		
-		<input type="button" onclick="setLang('en')" value="EN"/>
-		<input type="button" onclick="setLang('ru')" value="RU"/>
+		Language:  
+		<select class="selLang">
+			<option value="en" selected="true">EN</option>
+			<option value="ru">RU</option>
+		</select>
 		
 	</div>
 	<div id="editor"></div>
