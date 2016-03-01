@@ -98,6 +98,8 @@
 					}
 				},
 				annotation:{
+					// hasText:true,
+					// oneliner: true,
 					menu: [
 						{
 							caption: "Удалить эту аннотацию <annotation>",
@@ -113,6 +115,8 @@
 					collapsed: function(el){return !el.hasChildElement("p");}
 				},
 				p:{
+					displayName: "en:p | ru:абзац",
+					hasText:true,
 					menu: [
 						{
 							caption: "Удалить этот абзац <p>",
@@ -129,14 +133,50 @@
 							actionParameter: "<p/>"
 						}
 					],
+					inlineMenu: [{
+						caption: "en:Wrap with <sel> | ru:Выделить",
+						action: XEdit.wrap,
+						actionParameter: {template: "<sel>$</sel>", placeholder: "$"}
+					}],
 					canDropTo: ["annotation"],
 					asker: XEdit.askLongString,
 					collapsed: true
+				},
+				sel:{
+					displayName: "en:sel | ru:выделение",
+					hasText:true,
+					canDropTo: ["p"],
+					asker: XEdit.askString,
+					menu: [
+						{
+							caption: "en: Remove this selection | ru:Удалить это выделение",
+							action: XEdit.deleteElement
+						}
+					]
 				}
 			}
 		};
 		
-		var xml = "<library><book title='Война и мир'/><book title='Капитанская дочка'/></library>";
+		function defineXmlTags(tags){tags = tags.split(";");
+			function defTag(nm){return function(){return Html.tag(nm, arguments, true);}}
+			var res = {}
+			for(var i=0,t; t=tags[i],i<tags.length; i++) res[t] = defTag(t);
+			return res;
+		}
+		
+		var xml = (function(){with(defineXmlTags("library;book;annotation;p;sel")){
+			return library(
+				book({title:"Война и мир"}),
+				book({title:"Капитанская дочка"},
+					annotation(
+						p("Исторический роман (или повесть) ", sel("А. С. Пушкина"), ", действие которого происходит во время восстания Емельяна Пугачёва."),
+						p("Впервые опубликован без указания имени автора в 4-й книжке журнала «Современник», поступившей в продажу в последней декаде 1836 года.")
+					)
+				)
+			);
+		}})();
+		
+		//console.log(xml);
 		
 		function start(){
 			XEdit.lang = $(".selLang").val();
@@ -147,6 +187,11 @@
 				XEdit.setMode($(this).val());
 			});
 			XEdit.render(xml, $("#editor")[0], docSpec);
+			
+			$(".cbPreserve").change(function(){
+				var on = $(this)[0].checked;
+				XEdit.settings({insertPreserveSpace:on});
+			});
 		}
 		function submit(){
 			console.log(XEdit.harvest());
@@ -176,6 +221,8 @@
 			<option value="en" selected="true">EN</option>
 			<option value="ru">RU</option>
 		</select>
+		
+		Preserve space: <input type="checkbox" class="cbPreserve"/>
 		
 	</div>
 	<div id="editor"></div>
