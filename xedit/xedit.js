@@ -1,10 +1,27 @@
-﻿var XEdit = (function($){
+﻿var XEdit = (function($,$H){
 	function extend(o,s){for(var k in s){o[k]=s[k];}}
 	
 	var settings = {
 		cssClass:"xedit",
 		bubbleID: "xeditBubble"
 	};
+	
+	function surrogate(jsParent) {
+		this.internalParent=jsParent;
+	}
+	surrogate.prototype.parent = function() {
+		if (!this.internalParent) {
+			this.internalParent=XEdit.harvestParentOf(this);
+		}
+		return this.internalParent;
+	};
+	
+	var nextID = (function(){
+		var lastIDNum = 0;
+		return function(){
+			return "xedit"+(++lastIDNum);
+		}
+	})();
 	
 	var XEdit={
 		lang: "", //"en"|"de"|fr"| ...
@@ -42,7 +59,7 @@
 		xml2js: function(xml, jsParent) {
 			if(typeof(xml)=="string") xml=$.parseXML(xml);
 			if(xml.documentElement) xml=xml.documentElement;
-			var js=new XEdit.surrogate(jsParent);
+			var js=new surrogate(jsParent);
 			js.type="element";
 			js.name=xml.nodeName;
 			js.htmlID="";
@@ -162,10 +179,6 @@
 			if(!menuItem.action || typeof(menuItem.action)!="function") menuItem.action=function(){};
 			if(!menuItem.hideIf) menuItem.hideIf=function(){return false;};
 		},
-		nextID: function() { 
-			return "xedit"+(++XEdit.lastIDNum);
-		},
-		lastIDNum: 0,
 		docSpec: null,
 		refresh: function() {
 			$("."+settings.cssClass +" .children ").each(function(){ 
@@ -267,7 +280,7 @@
 			return XEdit.js2xml(js);
 		},
 		harvestElement: function(htmlElement, jsParent) {
-			var js=new XEdit.surrogate(jsParent);
+			var js=new surrogate(jsParent);
 			js.type="element";
 			js.name=htmlElement.getAttribute("data-name");
 			js.htmlID=htmlElement.id;
@@ -288,18 +301,15 @@
 			return js;
 		},
 		harvestAttribute: function(htmlAttribute, jsParent) {
-			var js = new XEdit.surrogate(jsParent);
+			var js = new surrogate(jsParent);
 			js.type = "attribute";
 			js.name = htmlAttribute.getAttribute("data-name");
 			js.htmlID = htmlAttribute.id;
 			js.value = htmlAttribute.getAttribute("data-value");
 			return js;
 		},
-		surrogate: function(jsParent) {
-			this.internalParent=jsParent;
-		},
 		harvestText: function (htmlText, jsParent) {
-			var js = new XEdit.surrogate(jsParent);
+			var js = new surrogate(jsParent);
 			js.type = "text";
 			js.htmlID = htmlText.id;
 			js.value = htmlText.getAttribute("data-value");
@@ -342,7 +352,7 @@
 			XEdit.validate();
 		},
 		renderElement: function(element) {
-			var htmlID=XEdit.nextID();
+			var htmlID = nextID();
 			XEdit.verifyDocSpecElement(element.name);
 			var spec=XEdit.docSpec.elements[element.name];
 			var classNames="element";
@@ -358,7 +368,7 @@
 			}
 			if(spec.menu.length>0) classNames+=" hasMenu"; 
 			var displayName=element.name;
-			if(spec.displayName) displayName="<span class='displayName'>"+XEdit.textByLang(spec.displayName)+"</span>";
+			if(spec.displayName) displayName = $H.span({"class":"displayName"}, XEdit.textByLang(spec.displayName));
 			var html="";
 			html+='<div data-name="'+element.name+'" id="'+htmlID+'" class="'+classNames+'">';
 				html+='<span class="connector">';
@@ -408,7 +418,7 @@
 			return html;
 		},
 		renderAttribute: function(attribute, optionalParentName) {
-			var htmlID=XEdit.nextID();
+			var htmlID = nextID();
 			var readonly=false; 
 			classNames="attribute"; if(readonly) classNames+=" readonly";
 			
@@ -438,7 +448,7 @@
 			return html;
 		},
 		renderText: function(text) {
-			var htmlID=XEdit.nextID();
+			var htmlID = nextID();
 			var classNames="textnode";
 			if($.trim(text.value)=="") classNames+=" whitespace";
 			if(text.value=="") classNames+=" empty";
@@ -652,13 +662,6 @@
 			}
 		}
 	});
-	
-	XEdit.surrogate.prototype.parent = function() {
-		if (!this.internalParent) {
-			this.internalParent=XEdit.harvestParentOf(this);
-		}
-		return this.internalParent;
-	};
 	
 	extend(XEdit, {
 		notclick: false,
@@ -963,4 +966,4 @@
 	});
 	
 	return XEdit;
-})(jQuery);
+})(jQuery, Html);

@@ -8,15 +8,81 @@
 	<script type="text/javascript" src="../coollab/lib/html.js"></script>
 	<script type="text/javascript" src="xedit.js"></script>
 	<script type="text/javascript">
+var docSpec = {
+	onchange: function(){
+		console.log("I been changed now!")
+	},
+	validate: function(obj){
+		console.log("I be validatin' now!")
+	},
+	elements: {
+		"list": {
+			menu: [{
+				caption: "Append an <item>",
+				action: XEdit.newElementChild,
+				actionParameter: "<item/>"
+			}]
+		},
+		"item": {
+			menu: [
+				{
+					caption: "Add @label=\"something\"",
+					action: XEdit.newAttribute,
+					actionParameter: {name: "label", value: "something"},
+					hideIf: function(jsElement){
+						return jsElement.hasAttribute("label");
+					}
+				},
+				{
+					caption: "Delete this <item>",
+					action: XEdit.deleteElement
+				}, 
+				{
+					caption: "New <item> before this",
+					action: XEdit.newElementBefore,
+					actionParameter: "<item/>"
+				},
+				{
+					caption: "New <item> after this",
+					action: XEdit.newElementAfter,
+					actionParameter: "<item/>"
+				}
+			],
+			canDropTo: ["list"],
+			attributes: {
+				"label": {
+					asker: XEdit.askString,
+					menu: [{
+						caption: "Delete this @label",
+						action: XEdit.deleteAttribute
+					}]
+				}
+			}
+		}
+	}
+};
+	
 		function start(){
 			var xml = "<list><item label='one'/><item label='two'/></list>";
-			XEdit.render(xml, $("#editor")[0], null);
+			XEdit.render(xml, $("#editor")[0], docSpec);
+		}
+		function submit(){
+			console.log(XEdit.harvest());
+		}
+		function setMode(m){
+			XEdit.setMode(m);
 		}
 		$(start);
 	</script>
 </head>
 <body>
 	<h1>XEdit Demo Page</h1>
+	<div>
+		<input type="button" onclick="submit()" value="Harvest"/>
+		<input type="button" onclick="setMode('nerd')" value="Nerd Mode"/>
+		<input type="button" onclick="setMode('laic')" value="Laic Mode"/>
+		
+	</div>
 	<div id="editor"></div>
 </body>
 </html>
