@@ -99,12 +99,12 @@
 .xedit .element .children .textnode.empty .value:focus { background-color: #f2f2f2; }
 
 /*Plus-minus collapsor*/
-.xedit .element > .connector > .plusminus { background-image: url(minus.gif); width: 9px; height: 9px; position: absolute; top: -5px; left: -5px; cursor: pointer; }
+.xedit .element > .connector > .plusminus { background-image: url(icons/minus.gif); width: 9px; height: 9px; position: absolute; top: -5px; left: -5px; cursor: pointer; }
 .xedit .element.hasText .element.oneliner .connector .plusminus { top: 4px; left: 4px; }
 .xedit.laic .element > .connector > .plusminus { left: 0px; }
 
 /*Collapsed elements*/
-.xedit .element.collapsed > .connector > .plusminus { background-image: url(plus.gif); }
+.xedit .element.collapsed > .connector > .plusminus { background-image: url(icons/plus.gif); }
 .xedit .element.collapsed > .children { display: none !important; }
 .xedit .element.hasText .element.oneliner.collapsed > .tag { display: none; }
 .xedit.laic .element.hasText .element.oneliner.collapsed > .tag { display: none !important; }
@@ -125,7 +125,7 @@
 .xedit .element.uncollapsible > .childrenCollapsed { display: none; }
 
 /*Drag handle*/
-.xedit .connector > .draghandle { display: none; width: 9px; height: 13px; background-image: url(draghandle.gif); position: absolute; top: -7px; right: 2px; cursor: move; }
+.xedit .connector > .draghandle { display: none; width: 9px; height: 13px; background-image: url(icons/draghandle.gif); position: absolute; top: -7px; right: 2px; cursor: move; }
 .xedit .element.draggable > .connector > .draghandle { display: block; }
 
 /*Classes involved in dragging and dropping*/
@@ -194,7 +194,7 @@
 
 /*The exclamation mark that lets you know if there is a warning attached to an element or attribute*/
 .xedit .warner { display: none; width: 16px; margin: 0px 1px 0px 1px; }
-.xedit .warner .inside { position: absolute; bottom: -4px; left: 0px; background-image: url(exclamation.png); background-position: 0px 0px; width: 16px; height: 16px; cursor: pointer; }
+.xedit .warner .inside { position: absolute; bottom: -4px; left: 0px; background-image: url(icons/exclamation.png); background-position: 0px 0px; width: 16px; height: 16px; cursor: pointer; }
 .xedit .element.invalid > .tag > .warner { display: inline-block; }
 .xedit .attribute.invalid > .warner { display: inline-block; }
 

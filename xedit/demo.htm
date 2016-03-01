@@ -8,128 +8,125 @@
 	<script type="text/javascript" src="../coollab/lib/html.js"></script>
 	<script type="text/javascript" src="xedit.js"></script>
 	<script type="text/javascript">
-var docSpec = {
-	onchange: function(){
-		console.log("I been changed now!")
-	},
-	validate: function(obj){
-		console.log("I be validatin' now!")
-	},
-	elements: {
-		"library": {
-			menu: [{
-				caption: "Добавить книгу <book>",
-				action: XEdit.newElementChild,
-				actionParameter: "<book/>"
-			}]
-		},
-		"book": {
-			menu: [
-				{
-					caption: "Добавить заголовок @title=\"***\"",
-					action: XEdit.newAttribute,
-					actionParameter: {name: "title", value: "***"},
-					hideIf: function(jsElement){
-						return jsElement.hasAttribute("title");
-					}
-				},
-				{
-					caption: "Добавить аннотацию <annotation>",
-					action: XEdit.newElementChild,
-					actionParameter: "<annotation>***</annotation>",
-					hideIf: function(jsElement){
-						return jsElement.hasChildElement("annotation");
-					}
-				},
-				{
-					caption: "Добавить жанр @genre=\"\"",
-					action: XEdit.newAttribute,
-					actionParameter: {name: "genre", value: ""},
-					hideIf: function(jsElement){
-						return jsElement.hasAttribute("genre");
-					}
-				},
-				{
-					caption: "Удалить эту книгу <book>",
-					action: XEdit.deleteElement
-				}, 
-				{
-					caption: "Вставить книгу <book> перед этой",
-					action: XEdit.newElementBefore,
-					actionParameter: "<book/>"
-				},
-				{
-					caption: "Вставить книгу <book> после этой",
-					action: XEdit.newElementAfter,
-					actionParameter: "<book/>"
-				}
-			],
-			canDropTo: ["library"],
-			attributes: {
-				"title": {
-					asker: XEdit.askString,
+		var docSpec = {
+			onchange: function(){
+				console.log("I been changed now!")
+			},
+			validate: function(obj){
+				console.log("I be validatin' now!")
+			},
+			elements: {
+				"library": {
+					displayName: "en: library | ru: библиотека",
 					menu: [{
-						caption: "Удалить этот заголовок @title",
-						action: XEdit.deleteAttribute
+						caption: "ru: Добавить книгу | en: Add new <book>",
+						action: XEdit.newElementChild,
+						actionParameter: "<book/>"
 					}]
 				},
-				// "annotation":{
-				// 	asker: XEdit.askLongString,
-				// 	menu: [{
-				// 		caption: "Удалить эту аннотацию @annotation",
-				// 		action: XEdit.deleteAttribute
-				// 	}]
-				// },
-				genre:{
-					asker: XEdit.askPicklist,
-					askerParameter: [
-						{value: "novel", caption: "роман"},
-						{value: "story", caption: "повесть"}
-					]
+				"book": {
+					displayName: "en: book | ru: книга",
+					menu: [
+						{
+							caption: "Добавить заголовок @title=\"***\"",
+							action: XEdit.newAttribute,
+							actionParameter: {name: "title", value: "***"},
+							hideIf: function(jsElement){
+								return jsElement.hasAttribute("title");
+							}
+						},
+						{
+							caption: "Добавить аннотацию <annotation>",
+							action: XEdit.newElementChild,
+							actionParameter: "<annotation>***</annotation>",
+							hideIf: function(jsElement){
+								return jsElement.hasChildElement("annotation");
+							}
+						},
+						{
+							caption: "Добавить жанр @genre=\"\"",
+							action: XEdit.newAttribute,
+							actionParameter: {name: "genre", value: ""},
+							hideIf: function(jsElement){
+								return jsElement.hasAttribute("genre");
+							}
+						},
+						{
+							caption: "Удалить эту книгу <book>",
+							action: XEdit.deleteElement
+						}, 
+						{
+							caption: "Вставить книгу <book> перед этой",
+							action: XEdit.newElementBefore,
+							actionParameter: "<book/>"
+						},
+						{
+							caption: "Вставить книгу <book> после этой",
+							action: XEdit.newElementAfter,
+							actionParameter: "<book/>"
+						}
+					],
+					canDropTo: ["library"],
+					attributes: {
+						"title": {
+							asker: XEdit.askString,
+							menu: [{
+								caption: "Удалить этот заголовок @title",
+								action: XEdit.deleteAttribute
+							}]
+						},
+						genre:{
+							asker: XEdit.askPicklist,
+							askerParameter: [
+								{value: "novel", caption: "роман"},
+								{value: "story", caption: "повесть"}
+							]
+						}
+					}
+				},
+				annotation:{
+					menu: [
+						{
+							caption: "Удалить эту аннотацию <annotation>",
+							action: XEdit.deleteElement
+						},
+						{
+							caption: "Добавить абзац <p>",
+							action: XEdit.newElementChild,
+							actionParameter: "<p>***</p>"
+						}
+					],
+					canDropTo: ["book"],
+					collapsed: function(el){return !el.hasChildElement("p");}
+				},
+				p:{
+					menu: [
+						{
+							caption: "Удалить этот абзац <p>",
+							action: XEdit.deleteElement
+						}, 
+						{
+							caption: "Вставить абзац <p> перед этим",
+							action: XEdit.newElementBefore,
+							actionParameter: "<p/>"
+						},
+						{
+							caption: "Вставить абзац <p> после этого",
+							action: XEdit.newElementAfter,
+							actionParameter: "<p/>"
+						}
+					],
+					canDropTo: ["annotation"],
+					asker: XEdit.askLongString,
+					collapsed: true
 				}
 			}
-		},
-		annotation:{
-			menu: [
-				{
-					caption: "Удалить эту аннотацию <annotation>",
-					action: XEdit.deleteElement
-				},
-				{
-					caption: "Добавить абзац <p>",
-					action: XEdit.newElementChild,
-					actionParameter: "<p>***</p>"
-				}
-			],
-			canDropTo: ["book"],
-			collapsed: function(el){return !el.hasChildElement("p");}
-		},
-		p:{
-			menu: [
-				{
-					caption: "Удалить этот абзац <p>",
-					action: XEdit.deleteElement
-				}, 
-				{
-					caption: "Вставить абзац <p> перед этим",
-					action: XEdit.newElementBefore,
-					actionParameter: "<p/>"
-				},
-				{
-					caption: "Вставить абзац <p> после этого",
-					action: XEdit.newElementAfter,
-					actionParameter: "<p/>"
-				}
-			],
-			canDropTo: ["annotation"],
-			asker: XEdit.askLongString,
-			collapsed: true
-		}
-	}
-};
-	
+		};
+		
+		var xml = "<library><book title='Война и мир'/><book title='Капитанская дочка'/></library>";
+		
 		function start(){
-			var xml = "<library><book title='Война и мир'/><book title='Капитанская дочка'/></library>";
+			XEdit.lang = "en";
 			XEdit.render(xml, $("#editor")[0], docSpec);
 		}
 		function submit(){
@@ -137,6 +134,12 @@ var docSpec = {
 		}
 		function setMode(m){
 			XEdit.setMode(m);
+		}
+		function setLang(lang){
+			XEdit.lang = lang;
+			var content = XEdit.harvest();
+			XEdit.render(content, $("#editor")[0], docSpec);
+			//XEdit.refresh();
 		}
 		$(start);
 	</script>
@@ -147,6 +150,9 @@ var docSpec = {
 		<input type="button" onclick="submit()" value="Harvest"/>
 		<input type="button" onclick="setMode('nerd')" value="Nerd Mode"/>
 		<input type="button" onclick="setMode('laic')" value="Laic Mode"/>
+		
+		<input type="button" onclick="setLang('en')" value="EN"/>
+		<input type="button" onclick="setLang('ru')" value="RU"/>
 		
 	</div>
 	<div id="editor"></div>
