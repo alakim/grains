@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>XEdit Demo Page</title>
+	<link rel="stylesheet" type="text/css" href="xedit.css"/>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../coollab/lib/html.js"></script>
+	<script type="text/javascript" src="xedit.js"></script>
+	<script type="text/javascript">
+		function start(){
+			var xml = "<list><item label='one'/><item label='two'/></list>";
+			XEdit.render(xml, $("#editor")[0], null);
+		}
+		$(start);
+	</script>
+</head>
+<body>
+	<h1>XEdit Demo Page</h1>
+	<div id="editor"></div>
+</body>
+</html>
