@@ -34,11 +34,11 @@ var docSpec = {
 					}
 				},
 				{
-					caption: "Добавить аннотацию @annotation=\"\"",
-					action: XEdit.newAttribute,
-					actionParameter: {name: "annotation", value: ""},
+					caption: "Добавить аннотацию <annotation>",
+					action: XEdit.newElementChild,
+					actionParameter: "<annotation>***</annotation>",
 					hideIf: function(jsElement){
-						return jsElement.hasAttribute("annotation");
+						return jsElement.hasChildElement("annotation");
 					}
 				},
 				{
@@ -73,13 +73,13 @@ var docSpec = {
 						action: XEdit.deleteAttribute
 					}]
 				},
-				"annotation":{
-					asker: XEdit.askLongString,
-					menu: [{
-						caption: "Удалить эту аннотацию @annotation",
-						action: XEdit.deleteAttribute
-					}]
-				},
+				// "annotation":{
+				// 	asker: XEdit.askLongString,
+				// 	menu: [{
+				// 		caption: "Удалить эту аннотацию @annotation",
+				// 		action: XEdit.deleteAttribute
+				// 	}]
+				// },
 				genre:{
 					asker: XEdit.askPicklist,
 					askerParameter: [
@@ -88,6 +88,42 @@ var docSpec = {
 					]
 				}
 			}
+		},
+		annotation:{
+			menu: [
+				{
+					caption: "Удалить эту аннотацию <annotation>",
+					action: XEdit.deleteElement
+				},
+				{
+					caption: "Добавить абзац <p>",
+					action: XEdit.newElementChild,
+					actionParameter: "<p>***</p>"
+				}
+			],
+			canDropTo: ["book"],
+			collapsed: function(el){return !el.hasChildElement("p");}
+		},
+		p:{
+			menu: [
+				{
+					caption: "Удалить этот абзац <p>",
+					action: XEdit.deleteElement
+				}, 
+				{
+					caption: "Вставить абзац <p> перед этим",
+					action: XEdit.newElementBefore,
+					actionParameter: "<p/>"
+				},
+				{
+					caption: "Вставить абзац <p> после этого",
+					action: XEdit.newElementAfter,
+					actionParameter: "<p/>"
+				}
+			],
+			canDropTo: ["annotation"],
+			asker: XEdit.askLongString,
+			collapsed: true
 		}
 	}
 };
