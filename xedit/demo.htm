@@ -148,9 +148,13 @@
 					canDropTo: ["p"],
 					asker: XEdit.askString,
 					menu: [
+						// {
+						// 	caption: "en: Remove this selection | ru:Удалить это выделение",
+						// 	action: XEdit.deleteElement
+						// },
 						{
-							caption: "en: Remove this selection | ru:Удалить это выделение",
-							action: XEdit.deleteElement
+							caption: "en:Unwrap <sel> | ru: Снять выделение",
+							action: XEdit.unwrap
 						}
 					]
 				}
