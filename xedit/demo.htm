@@ -5,7 +5,7 @@
 	<title>XEdit Demo Page</title>
 	<link rel="stylesheet" type="text/css" href="xedit.css"/>
 	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
-	<script type="text/javascript" src="../coollab/lib/html.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
 	<script type="text/javascript" src="xedit.js"></script>
 	<script type="text/javascript">
 		var docSpec = {
@@ -161,14 +161,7 @@
 			}
 		};
 		
-		function defineXmlTags(tags){tags = tags.split(";");
-			function defTag(nm){return function(){return Html.tag(nm, arguments, true);}}
-			var res = {}
-			for(var i=0,t; t=tags[i],i<tags.length; i++) res[t] = defTag(t);
-			return res;
-		}
-		
-		var xml = (function(){with(defineXmlTags("library;book;annotation;p;sel")){
+		var xml = (function(){with(Html.defineXmlTags("library;book;annotation;p;sel")){
 			return library(
 				book({title:"Война и мир"}),
 				book({title:"Капитанская дочка"},
