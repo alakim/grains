@@ -99,7 +99,6 @@
 
 	
 	function init(pnl, staff){
-		
 		//var offset = {x:10, y:19};
 		var paper = new $R(pnl[0], settings.staffSize.w, settings.staffSize.h+settings.offset.y*2);
 		var step = settings.staffSize.h/4,
@@ -150,7 +149,7 @@
 				reBar = /\s*\|[\|\.]?\s*/,
 				reEmpty = /^\s*$/,
 				reClef = /\$(\d)([#b])/,
-				reChordSym = /[ABCDEFG][b#]?m?\:/,
+				reChordSym = /[ABCDEFG][b#]?[^\:]*\:/,
 				reTime = /t(\d)\/(\d)/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
@@ -203,7 +202,6 @@
 			
 			$D.each(seq, function(s, i){
 				var mt;
-				// console.log("'"+s+"'");
 				if(s.match(reEmpty)){
 				}
 				else if(mt = s.match(reClef)){
