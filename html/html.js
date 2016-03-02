@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.7.457",
+	version: "2.8.457",
 	xhtmlMode: true	
 };
 
@@ -28,6 +28,13 @@ var Html = {
 			res.push(tag);
 		});
 		return res.join("");
+	}
+	
+	function repeat(count, F, delim){
+		var h = [];
+		for(var i=0; i<count; i++)
+			h.push(F(i+1));
+		return h.join(delim||"");
 	}
 	
 	function emptyValue(v){return !v ||(typeof(v)=="string"&&v.length==0);}
@@ -70,12 +77,8 @@ var Html = {
 			return h.join(delim||"");
 		},
 		
-		times: function(count, F, delim){
-			var h = [];
-			for(var i=0; i<count; i++)
-				h.push(F(i+1));
-			return h.join(delim||"");
-		},
+		times: repeat,
+		repeat: repeat,
 		
 		markup: markup,
 		tagCollection: markup,
@@ -132,6 +135,13 @@ var Html = {
 				args.push(arg);
 			}
 			return [name, "(", args.join(","), ")"].join("");
+		},
+		
+		defineXmlTags: function(tags){tags = tags.split(";");
+			function defTag(nm){return function(){return Html.tag(nm, arguments, true);}}
+			var res = {}
+			for(var i=0,t; t=tags[i],i<tags.length; i++) res[t] = defTag(t);
+			return res;
 		}
 	});
 	

@@ -312,6 +312,16 @@ new JSUnit.Test("Style attribute", "Formatting").run = function(){ with(Html){
 	this.assert(style, "width:100px;color:#f00");
 }}
 
+new JSUnit.Test("Document type definition", "XML").run = function(){ with(Html){
+	var xml = (function(){with(Html.defineXmlTags("library;book")){
+		return library(
+			book({title:"Война и мир"}),
+			book({title:"Капитанская дочка"})
+		);
+	}})();
+	this.assert(xml, "<library><book title=\"Война и мир\"/><book title=\"Капитанская дочка\"/></library>");
+}}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;
 	JSUnit.init();
