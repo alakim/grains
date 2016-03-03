@@ -76,9 +76,10 @@
 					canDropTo: ["library"],
 					attributes: {
 						"title": {
+							displayName:"en:title | ru:название",
 							asker: XEdit.askString,
 							menu: [{
-								caption: "Удалить этот заголовок @title",
+								caption: "en:delete this @title | ru:удалить это название",
 								action: XEdit.deleteAttribute
 							}]
 						},
@@ -161,7 +162,7 @@
 			}
 		};
 		
-		var xml = (function(){with(Html.defineXmlTags("library;book;annotation;p;sel")){
+		var xml = (function(){with(Html.getTagDefinitions("library;book;annotation;p;sel")){
 			return library(
 				book({title:"Война и мир"}),
 				book({title:"Капитанская дочка"},
@@ -185,10 +186,20 @@
 			});
 			XEdit.render(xml, $("#editor")[0], docSpec);
 			
+			XEdit.settings({insertPreserveSpace:$(".cbPreserve")[0].checked});
 			$(".cbPreserve").change(function(){
 				var on = $(this)[0].checked;
 				XEdit.settings({insertPreserveSpace:on});
 			});
+			
+			XEdit.settings({prettyPrint:$(".cbPretty")[0].checked});
+			$(".cbPretty").change(function(){
+				var on = $(this)[0].checked;
+				XEdit.settings({prettyPrint:on});
+			});
+			
+			XEdit.settings({inlineTags:"sel"});
+			XEdit.settings({textTags:"p;sel"});
 		}
 		function submit(){
 			console.log(XEdit.harvest());
@@ -220,6 +231,7 @@
 		</select>
 		
 		Preserve space: <input type="checkbox" class="cbPreserve"/>
+		Pretty print: <input type="checkbox" class="cbPretty"/>
 		
 	</div>
 	<div id="editor"></div>

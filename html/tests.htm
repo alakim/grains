@@ -313,13 +313,44 @@ new JSUnit.Test("Style attribute", "Formatting").run = function(){ with(Html){
 }}
 
 new JSUnit.Test("Document type definition", "XML").run = function(){ with(Html){
-	var xml = (function(){with(Html.defineXmlTags("library;book")){
+	var xml = (function(){with(Html.getTagDefinitions("library;book")){
 		return library(
 			book({title:"Война и мир"}),
 			book({title:"Капитанская дочка"})
 		);
 	}})();
 	this.assert(xml, "<library><book title=\"Война и мир\"/><book title=\"Капитанская дочка\"/></library>");
+}}
+new JSUnit.Test("Document type definition 2", "XML").run = function(){ with(Html){
+	var xml = (function(){with(Html.getTagDefinitions(["library", "book"])){
+		return library(
+			book({title:"Война и мир"}),
+			book({title:"Капитанская дочка"})
+		);
+	}})();
+	this.assert(xml, "<library><book title=\"Война и мир\"/><book title=\"Капитанская дочка\"/></library>");
+}}
+new JSUnit.Test("Tag Definitions", "Extensions").run = function(){ with(Html){
+	Html.defineTags("ss;ssl");
+	var html = (function(){with(Html){
+		return ss(
+			ssl("abc"),
+			ssl("def"),
+			p("ghi")
+		);
+	}})();
+	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p></ss>");
+}}
+new JSUnit.Test("Tag Definitions 2", "Extensions").run = function(){ with(Html){
+	Html.defineTags(["ss", "ssl"]);
+	var html = (function(){with(Html){
+		return ss(
+			ssl("abc"),
+			ssl("def"),
+			p("ghi")
+		);
+	}})();
+	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p></ss>");
 }}
 
 function init(){

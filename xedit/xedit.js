@@ -4,7 +4,10 @@
 	var settings = {
 		cssClass:"xedit",
 		bubbleID: "xeditBubble",
-		insertPreserveSpace: false
+		insertPreserveSpace: false,
+		prettyPrint: false,
+		inlineTags: {},
+		textTags: {}
 	};
 	
 	function surrogate(jsParent) {
@@ -23,6 +26,30 @@
 			return "xedit"+(++lastIDNum);
 		}
 	})();
+	
+	function isInlineTag(t){
+		if(typeof(settings.inlineTags)=="string"){
+			var inline = settings.inlineTags.split(";");
+			var res = {};
+			for(var i=0; i<inline.length; i++){
+				res[inline[i]] = true;
+			}
+			settings.inlineTags = res;
+		}
+		return settings.inlineTags[t];
+	}
+	
+	function isTextTag(t){
+		if(typeof(settings.textTags)=="string"){
+			var inline = settings.textTags.split(";");
+			var res = {};
+			for(var i=0; i<inline.length; i++){
+				res[inline[i]] = true;
+			}
+			settings.textTags = res;
+		}
+		return settings.textTags[t];
+	}
 	
 	var XEdit={
 		lang: "", //"en"|"de"|fr"| ...
@@ -88,8 +115,14 @@
 			js=XEdit.enrichElement(js);
 			return js;
 		},
-		js2xml: function(js) {
-			var xml="<"+js.name;
+		js2xml: function(js, level) {
+			level = level || 0;
+			var pretty = settings.prettyPrint, offset = "";
+			if(pretty && !isInlineTag(js.name)){
+				offset = "\n"+$H.repeat(level, function(){return "\t";});
+			}
+			
+			var xml = (level>0?offset:"")+"<"+js.name;
 			for(var i=0; i<js.attributes.length; i++) {
 				var att=js.attributes[i];
 				xml+=" "+att.name+"='"+XEdit.xmlEscape(att.value)+"'";
@@ -105,9 +138,9 @@
 				for(var i=0; i<js.children.length; i++) {
 					var child=js.children[i];
 					if(child.type=="text") xml+=XEdit.xmlEscape(child.value); 
-					else if(child.type=="element") xml+=XEdit.js2xml(child); 
+					else if(child.type=="element") xml+=XEdit.js2xml(child, level+1); 
 				}
-				xml+="</"+js.name+">";
+				xml+=(isTextTag(js.name)?"":offset)+"</"+js.name+">";
 			} else {
 				xml+="/>";
 			}

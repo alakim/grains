@@ -136,8 +136,12 @@ var Html = {
 			}
 			return [name, "(", args.join(","), ")"].join("");
 		},
-		
-		defineXmlTags: function(tags){tags = tags.split(";");
+		defineTags: function(tags){
+			if(!(tags instanceof(Array)))tags=tags.split(";");
+			defineTags(tags);
+		},
+		getTagDefinitions: function(tags){
+			if(!(tags instanceof(Array)))tags=tags.split(";");
 			function defTag(nm){return function(){return Html.tag(nm, arguments, true);}}
 			var res = {}
 			for(var i=0,t; t=tags[i],i<tags.length; i++) res[t] = defTag(t);
