@@ -5,10 +5,10 @@
 		cssClass:"xedit",
 		bubbleID: "xeditBubble",
 		insertPreserveSpace: false,
-		prettyPrint: false,
-		inlineTags: {},
-		textTags: {}
+		prettyPrint: false
 	};
+	
+	var textTags = {};
 	
 	function surrogate(jsParent) {
 		this.internalParent=jsParent;
@@ -27,28 +27,21 @@
 		}
 	})();
 	
-	function isInlineTag(t){
-		if(typeof(settings.inlineTags)=="string"){
-			var inline = settings.inlineTags.split(";");
-			var res = {};
-			for(var i=0; i<inline.length; i++){
-				res[inline[i]] = true;
-			}
-			settings.inlineTags = res;
+	function prepareRules(){
+		textTags = {};
+		for(var k in XEdit.docSpec.elements){
+			if(XEdit.docSpec.elements[k].hasText()) textTags[k] = true;
 		}
-		return settings.inlineTags[t];
+	}
+	
+	function isInlineTag(t){
+		if(!t.internalParent) return false;
+		if(isTextTag(t.internalParent.name)) return true;
+		return isInlineTag(t.internalParent);
 	}
 	
 	function isTextTag(t){
-		if(typeof(settings.textTags)=="string"){
-			var inline = settings.textTags.split(";");
-			var res = {};
-			for(var i=0; i<inline.length; i++){
-				res[inline[i]] = true;
-			}
-			settings.textTags = res;
-		}
-		return settings.textTags[t];
+		return textTags[t];
 	}
 	
 	var XEdit={
@@ -118,7 +111,7 @@
 		js2xml: function(js, level) {
 			level = level || 0;
 			var pretty = settings.prettyPrint, offset = "";
-			if(pretty && !isInlineTag(js.name)){
+			if(pretty && !isInlineTag(js)){
 				offset = "\n"+$H.repeat(level, function(){return "\t";});
 			}
 			
@@ -301,6 +294,7 @@
 			});
 		},
 		harvest: function() {
+			if(settings.prettyPrint) prepareRules();
 			var rootElement=$("."+settings.cssClass + " .element").first().toArray()[0];
 			var js=XEdit.harvestElement(rootElement);
 			for(var key in XEdit.namespaces) {
