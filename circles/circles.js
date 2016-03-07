@@ -1,10 +1,13 @@
 (function($,$R,$D){
-	var settings = {
+	var defaultSettings = {
 		fifthMode:false,
 		size: 200,
 		margin:3,
 		drawGroups:false
 	};
+	
+	var settings = {};
+	$D.extend(settings, defaultSettings);
 	
 	function noteName(note){
 		note = note.replace(/([a-g])e?s$/, "$1b");
@@ -33,13 +36,13 @@
 		//paper.rect(settings.margin, settings.margin, size, size).attr({stroke:"#ccc", fill:"#fff"});
 		paper.circle(center, center, diameter/2).attr({stroke:"#888"});
 		
-		paper.text(center, center, title).attr({"font-size":22});
+		paper.text(center, center, title.replace(/([A-G])b/g, "$1♭").replace("#", "♯")).attr({"font-size":22});
 		
 		for(var i=0; i<12; i++){
 			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
 			if(names[i].length==1 || settings.fifthMode){
 				var pos = {x:origin.x, y:origin.y-size*.083};
-				paper.text(pos.x, pos.y, noteName(names[i])).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
+				paper.text(pos.x, pos.y, noteName(names[i]).replace(/([A-G])b/g, "$1♭").replace("#", "♯")).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
 			}
 		}
 		
@@ -80,6 +83,7 @@
 	
 	$.fn.circle = function(code){
 		$(this).each(function(i,el){el=$(el);
+			$D.extend(settings = {}, defaultSettings);
 			code = code.split("!");
 			if(code.length>1){
 				$D.extend(settings, $.parseJSON(code[0]), true);
