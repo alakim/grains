@@ -1,9 +1,10 @@
 (function($,$R,$D){
 	var defaultSettings = {
-		fifthMode:false,
+		fifthMode: false,
 		size: 200,
-		margin:3,
-		drawGroups:false
+		margin: 3,
+		drawGroups: false,
+		flatsMode: false
 	};
 	
 	var settings = {};
@@ -38,15 +39,9 @@
 		
 		paper.text(center, center, title.replace(/([A-G])b/g, "$1♭").replace("#", "♯")).attr({"font-size":22});
 		
-		for(var i=0; i<12; i++){
-			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
-			if(names[i].length==1 || settings.fifthMode){
-				var pos = {x:origin.x, y:origin.y-size*.083};
-				paper.text(pos.x, pos.y, noteName(names[i]).replace(/([A-G])b/g, "$1♭").replace("#", "♯")).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
-			}
-		}
 		
 		colorGroups = {};
+		var toneNames = {};
 		
 		$D(code.split(";")).each(function(tone, i){
 			tone = tone.split("@");
@@ -55,6 +50,7 @@
 				type = command[0],
 				color = "#"+(command[1]||"000");
 			//console.log(tone, command, type, color);
+			toneNames[tonePos] = tone[0];
 			var point;
 			if(type=="root") point = paper.circle(origin.x, origin.y, 6).attr({fill:"#fff", stroke:color, "stroke-width":3}).transform(["R", alpha*tonePos, center, center]);
 			else point = paper.circle(origin.x, origin.y, 4).attr({fill:color}).transform(["R", alpha*tonePos, center, center]);
@@ -62,6 +58,24 @@
 			if(!colorGroups[color]) colorGroups[color] = [];
 			colorGroups[color].push(point);
 		});
+		//console.log("toneNames:", toneNames);
+		for(var i=0; i<12; i++){
+			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
+			
+			var pos = {x:origin.x, y:origin.y-size*.083};
+			if(settings.fifthMode){
+				var nm = noteName(names[i]).replace(/([A-G])b/g, "$1♭").replace("#", "♯");
+				paper.text(pos.x, pos.y, nm).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);			
+			}
+			else if (toneNames[i]){
+				var nm = noteName(toneNames[i] || names[i]).replace(/([A-G])(e?s)|(b)/g, "$1♭").replace(/([A-G])is/g, "$1♯");
+				paper.text(pos.x, pos.y, nm).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
+			}
+			else
+				paper.text(pos.x, pos.y, noteName(names[i]).replace(/([A-G])e?s/g, "$1♭").replace(/([A-G])is/g, "$1♯")).attr({"font-size":10, opacity:.6}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);
+			
+		}
+
 		
 		// var colors = $D(colorGroups).toArray(function(g, clr){return clr;}).raw();
 		// console.log(colors);
