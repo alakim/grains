@@ -4,7 +4,7 @@
 		size: 200,
 		margin: 3,
 		drawGroups: false,
-		flatsMode: false
+		drawSigns: false
 	};
 	
 	var settings = {};
@@ -17,7 +17,7 @@
 	
 	function init(pnl, code, title){
 		var scale = {};
-		$D((settings.fifthMode?"c;g;d;a;e;b;ges,fis;des,cis;as,gis;es,dis;bes,ais;f"
+		$D((settings.fifthMode?settings.drawSigns=="minor"?"c;g;d;a;e;b;fis;cis;gis;es;bes;f":"c;g;d;a;e;b;ges,fis;des,cis;as,gis;es,dis;bes,ais;f"
 				:"c;cis,des;d;dis,es;e;f;fis,ges;g;gis,as;a;ais,bes;b"
 			).split(";")).each(function(x, i){
 			$D(x.split(",")).each(function(s){scale[s] = i});
@@ -44,6 +44,7 @@
 		var toneNames = {};
 		
 		$D(code.split(";")).each(function(tone, i){
+			if(!tone.length) return;
 			tone = tone.split("@");
 			var tonePos = scale[tone[0]],
 				command = tone[1]?tone[1].split("#"):[],
@@ -59,13 +60,13 @@
 			colorGroups[color].push(point);
 		});
 		//console.log("toneNames:", toneNames);
+		
+		var pos = {x:origin.x, y:origin.y + size*(settings.drawSigns?.08:-.083)};
 		for(var i=0; i<12; i++){
 			paper.path(["M", origin.x, origin.y - 3, "L", origin.x, origin.y+3]).attr({fill:"#000"}).transform(["R", alpha*i, center, center]);
-			
-			var pos = {x:origin.x, y:origin.y-size*.083};
 			if(settings.fifthMode){
-				var nm = noteName(names[i]).replace(/([A-G])b/g, "$1♭").replace("#", "♯");
-				paper.text(pos.x, pos.y, nm).attr({"font-size":18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);			
+				var nm = noteName(names[i]).replace(/([A-G])b/g, "$1♭").replace(/([A-G])is/, "$1♯");
+				paper.text(pos.x, pos.y, nm).attr({"font-size":settings.drawSigns?14:18}).transform(["R", -alpha*i, pos.x, pos.y, "R", alpha*i, center, center]);			
 			}
 			else if (toneNames[i]){
 				var nm = noteName(toneNames[i] || names[i]).replace(/([A-G])(e?s)|(b)/g, "$1♭").replace(/([A-G])is/g, "$1♯");
@@ -92,6 +93,22 @@
 				paper.path(path).attr({fill:clr, "stroke-width":0, opacity:.3});
 				paper.path(path).attr({fill:null, "stroke-width":1, stroke:clr, opacity:1});
 			});
+		}
+		
+		if(settings.drawSigns){
+			var pos = {x:origin.x, y:origin.y + size*(settings.drawSigns=="minor"?-.10:-.08)};
+			for(var i=0; i<12; i++){
+				var n, s;
+				
+				if(i<6){n=i; s="♯";}
+				else if(i<11) {n=12-i; s="♭";}
+				else {n=1; s="♭";}
+				
+				var beta = settings.drawSigns=="minor"?alpha*(i+3):alpha*i;
+				
+				for(var j=0; j<n; j++)
+					paper.text(pos.x - 8 + j*5, pos.y + (s=="♯"?[0,5]:[5,0])[j%2], s).attr({"font-size":14}).transform(["R", -beta, pos.x, pos.y, "R", beta, center, center]);
+			}
 		}
 	}
 	
