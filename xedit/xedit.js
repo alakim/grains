@@ -88,27 +88,34 @@
 			for(var i=0; i<xml.attributes.length; i++) {
 				var attr=xml.attributes[i];
 				if(!XEdit.isNamespaceDeclaration(attr.nodeName)) {
-					if(attr.name!="xml:space") {
+					if(attr.name!="xml:space")
 						js["attributes"].push({type: "attribute", name: attr.nodeName, value: attr.value, htmlID: ""});
-					}
 				} else {
 					XEdit.namespaces[attr.nodeName]=attr.value;
 				}
 			}
 			js.children=[];
-			for(var i=0; i<xml.childNodes.length; i++) {
-				var child=xml.childNodes[i];
-				if(child.nodeType==1) { 
-					js["children"].push(XEdit.xml2js(child, js));
-				}
-				if(child.nodeType==3) { 
-					js["children"].push({type: "text", value: child.nodeValue, htmlID: ""});
+			for(var i=0,child; child=xml.childNodes[i],i<xml.childNodes.length; i++) {
+				switch(child.nodeType){
+					case 1: js["children"].push(XEdit.xml2js(child, js)); break;
+					case 3: js["children"].push({type: "text", value: child.nodeValue, htmlID: ""}); break;
+					case 4: 
+						js["children"].push({type: "cdata", value: child.nodeValue, htmlID: ""});
+						//console.log("CDATA: ", child); 
+						break;
+					case 8: 
+						js["children"].push({type: "comment", value: child.nodeValue, htmlID: ""});
+						//console.log("Comment: ", child); 
+						break;
+					default: break;
 				}
 			}
+			//console.log(js.children);
 			js=XEdit.enrichElement(js);
 			return js;
 		},
 		js2xml: function(js, level) {
+			//console.log(level, js);
 			level = level || 0;
 			var pretty = settings.prettyPrint, offset = "";
 			if(pretty && !isInlineTag(js)){
@@ -128,10 +135,14 @@
 				}
 				if(hasText && settings.insertPreserveSpace) xml+=" xml:space='preserve'";
 				xml+=">";
-				for(var i=0; i<js.children.length; i++) {
-					var child=js.children[i];
-					if(child.type=="text") xml+=XEdit.xmlEscape(child.value); 
-					else if(child.type=="element") xml+=XEdit.js2xml(child, level+1); 
+				for(var i=0,child; child=js.children[i],i<js.children.length; i++) {
+					//if(child.type=="text") xml+=XEdit.xmlEscape(child.value); 
+					//else if(child.type=="element") xml+=XEdit.js2xml(child, level+1); 
+					switch(child.type){
+						case "text": xml+=XEdit.xmlEscape(child.value); break;
+						case "element": xml+=XEdit.js2xml(child, level+1); break;
+						default: console.log("Unknown child type: ", child.type); break;
+					}
 				}
 				xml+=(isTextTag(js.name)?"":offset)+"</"+js.name+">";
 			} else {
@@ -397,53 +408,98 @@
 			if(spec.menu.length>0) classNames+=" hasMenu"; 
 			var displayName=element.name;
 			if(spec.displayName) displayName = $H.span({"class":"displayName"}, XEdit.textByLang(spec.displayName));
-			var html="";
-			html+='<div data-name="'+element.name+'" id="'+htmlID+'" class="'+classNames+'">';
-				html+='<span class="connector">';
-					html+='<span class="plusminus" onclick="XEdit.plusminus(\''+htmlID+'\')"></span>';
-					html+='<span class="draghandle" draggable="true" ondragstart="XEdit.drag(event)"></span>';
-				html+='</span>';
-				html+='<span class="tag opening" style="background-color: '+spec.backgroundColour+';">';
-					html+='<span class="punc">&lt;</span>';
-					html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'openingTagName\')">'+displayName+'</span>';
-					html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
-					html+='<span class="attributes">';
-						for(var i=0; i<element.attributes.length; i++) {
-							XEdit.verifyDocSpecAttribute(element.name, element.attributes[i].name);
-							html+=XEdit.renderAttribute(element.attributes[i], element.name);
-						}
-					html+='</span>';
-					html+='<span class="punc slash">/</span>';
-					html+='<span class="punc">&gt;</span>';
-				html+='</span>';
-				html+='<span class="childrenCollapsed" onclick="XEdit.plusminus(\''+htmlID+'\', true)">&middot;&middot;&middot;</span>';
-				html+='<div class="children">';
-					var prevChildType="";
-					if(hasText && (element.children.length==0 || element.children[0].type=="element")) {
-						html+=XEdit.renderText({type: "text", value: ""}); 
-					}
-					for(var i=0; i<element.children.length; i++) {
-						var child=element.children[i];
-						if(hasText && prevChildType=="element" && child.type=="element") {
-							html+=XEdit.renderText({type: "text", value: ""}); 
-						}
-						if(child.type=="text") html+=XEdit.renderText(child); 
-						else if(child.type=="element") html+=XEdit.renderElement(child); 
-						prevChildType=child.type;
-					}
-					if(hasText && element.children.length>1 && element.children[element.children.length-1].type=="element") {
-						html+=XEdit.renderText({type: "text", value: ""}); 
-					}
-				html+='</div>';
-				html+='<span class="tag closing" style="background-color: '+spec.backgroundColour+';">';
-					html+='<span class="punc">&lt;</span>';
-					html+='<span class="punc">/</span>';
-					html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'closingTagName\')">'+displayName+'</span>';
-					html+='<span class="punc">&gt;</span>';
-				html+='</span>';
-			html+='</div>';
+			var html2 = (function(){with($H){
+				var prevChildType="";
+				return div({"data-name":element.name, id:htmlID, "class":classNames},
+					span({"class":"connector"},
+						span({"class":"plusminus", onclick:callFunction("XEdit.plusminus", htmlID)}),
+						span({"class":"draghandle", draggable:true, ondragstart:"XEdit.drag(event)"})
+					),
+					span({"class":"tag opening", style:style({"background-color":spec.backgroundColour})},
+						span({"class":"punc"}, "&lt;"),
+						span({"class":"name", onclick:callFunction("XEdit.click", htmlID, "openingTagName")}, displayName),
+						span({"class":"warner"}, 
+							span({"class":"inside", onclick:callFunction("XEdit.click", htmlID, "warner")})
+						),
+						span({"class":"attributes"},
+							apply(element.attributes, function(attr){
+								XEdit.verifyDocSpecAttribute(element.name, attr.name);
+								return XEdit.renderAttribute(attr, element.name);
+							})
+						),
+						span({"class":"punc slash"}, "/"),
+						span({"class":"punc"}, "&gt;")
+					),
+					span({"class":"childrenCollapsed", onclick:callFunction("XEdit.plusminus", htmlID, true)}, "&middot;&middot;&middot;"),
+					div({"class":"children"},
+						hasText && (element.children.length==0 || element.children[0].type=="element")?XEdit.renderText({type: "text", value: ""}):null,
+						apply(element.children, function(child){
+							var mrk = markup(
+								hasText && prevChildType=="element" && child.type=="element"?XEdit.renderText({type: "text", value: ""}):null,
+								child.type=="text"?XEdit.renderText(child)
+									:child.type=="element"?XEdit.renderElement(child)
+									:null
+							);
+							prevChildType=child.type;
+							return mrk;
+						}),
+						hasText && element.children.length>1 && element.children[element.children.length-1].type=="element"?XEdit.renderText({type: "text", value: ""}):null
+					),
+					span({"class":"tag closing", style:style({"background-color":spec.backgroundColour})},
+						span({"class":"punc"}, "&lt;"),
+						span({"class":"punc"}, "/"),
+						span({"class":"name", onclick:callFunction("XEdit.click", htmlID, "closingTagName")}, displayName),
+						span({"class":"punc"}, "&gt;")
+					)
+				)
+			}})();
+			// var html="";
+			// html+='<div data-name="'+element.name+'" id="'+htmlID+'" class="'+classNames+'">';
+			// 	html+='<span class="connector">';
+			// 		html+='<span class="plusminus" onclick="XEdit.plusminus(\''+htmlID+'\')"></span>';
+			// 		html+='<span class="draghandle" draggable="true" ondragstart="XEdit.drag(event)"></span>';
+			// 	html+='</span>';
+			// 	html+='<span class="tag opening" style="background-color: '+spec.backgroundColour+';">';
+			// 		html+='<span class="punc">&lt;</span>';
+			// 		html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'openingTagName\')">'+displayName+'</span>';
+			// 		html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
+			// 		html+='<span class="attributes">';
+			// 			for(var i=0; i<element.attributes.length; i++) {
+			// 				XEdit.verifyDocSpecAttribute(element.name, element.attributes[i].name);
+			// 				html+=XEdit.renderAttribute(element.attributes[i], element.name);
+			// 			}
+			// 		html+='</span>';
+			// 		html+='<span class="punc slash">/</span>';
+			// 		html+='<span class="punc">&gt;</span>';
+			// 	html+='</span>';
+			// 	html+='<span class="childrenCollapsed" onclick="XEdit.plusminus(\''+htmlID+'\', true)">&middot;&middot;&middot;</span>';
+			// 	html+='<div class="children">';
+			// 		var prevChildType="";
+			// 		if(hasText && (element.children.length==0 || element.children[0].type=="element")) {
+			// 			html+=XEdit.renderText({type: "text", value: ""}); 
+			// 		}
+			// 		for(var i=0; i<element.children.length; i++) {
+			// 			var child=element.children[i];
+			// 			if(hasText && prevChildType=="element" && child.type=="element") {
+			// 				html+=XEdit.renderText({type: "text", value: ""}); 
+			// 			}
+			// 			if(child.type=="text") html+=XEdit.renderText(child); 
+			// 			else if(child.type=="element") html+=XEdit.renderElement(child); 
+			// 			prevChildType=child.type;
+			// 		}
+			// 		if(hasText && element.children.length>1 && element.children[element.children.length-1].type=="element") {
+			// 			html+=XEdit.renderText({type: "text", value: ""}); 
+			// 		}
+			// 	html+='</div>';
+			// 	html+='<span class="tag closing" style="background-color: '+spec.backgroundColour+';">';
+			// 		html+='<span class="punc">&lt;</span>';
+			// 		html+='<span class="punc">/</span>';
+			// 		html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'closingTagName\')">'+displayName+'</span>';
+			// 		html+='<span class="punc">&gt;</span>';
+			// 	html+='</span>';
+			// html+='</div>';
 			element.htmlID = htmlID;
-			return html;
+			return html2;
 		},
 		renderAttribute: function(attribute, optionalParentName) {
 			var htmlID = nextID();
@@ -458,35 +514,63 @@
 				}
 			}
 			
-			var html="";
-			html+='<span data-name="'+attribute.name+'" data-value="'+XEdit.xmlEscape(attribute.value)+'" id="'+htmlID+'" class="'+classNames+'">';
-				html+='<span class="punc"> </span>';
-				var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeName\')"';
-				html+='<span class="name"'+onclick+'>'+displayName+'</span>';
-				html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
-				html+='<span class="punc">=</span>';
-				var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeValue\')"';
-				html+='<span class="valueContainer"'+onclick+'>';
-					html+='<span class="punc">"</span>';
-					html+='<span class="value">'+XEdit.xmlEscape(attribute.value)+'</span>';
-					html+='<span class="punc">"</span>';
-				html+='</span>';
-			html+='</span>';
+			var html2 = (function(){with($H){
+				return span({"data-name":attribute.name, "data-value":XEdit.xmlEscape(attribute.value), id:htmlID, "class":classNames},
+					span({"class":"punc"}, "&nbsp;"),
+					span({"class":"name"}, readonly?null:{onclick:callFunction("XEdit.click", htmlID, "attributeName")}, displayName),
+					span({"class":"warner"},
+						span({"class":"inside", onclick:callFunction("XEdit.click", htmlID, "warner")})
+					),
+					span({"class":"punc"}, "="),
+					span({"class":"valueContainer"}, readonly?null:{onclick:callFunction("XEdit.click", htmlID, "attributeValue")},
+						span({"class":"punc"}, "\""),
+						span({"class":"value"}, XEdit.xmlEscape(attribute.value)),
+						span({"class":"punc"}, "\"")
+					)
+				);
+			}})();
+			
+			// var html="";
+			// html+='<span data-name="'+attribute.name+'" data-value="'+XEdit.xmlEscape(attribute.value)+'" id="'+htmlID+'" class="'+classNames+'">';
+			// 	html+='<span class="punc"> </span>';
+			// 	var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeName\')"';
+			// 	html+='<span class="name"'+onclick+'>'+displayName+'</span>';
+			// 	html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
+			// 	html+='<span class="punc">=</span>';
+			// 	var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeValue\')"';
+			// 	html+='<span class="valueContainer"'+onclick+'>';
+			// 		html+='<span class="punc">"</span>';
+			// 		html+='<span class="value">'+XEdit.xmlEscape(attribute.value)+'</span>';
+			// 		html+='<span class="punc">"</span>';
+			// 	html+='</span>';
+			// html+='</span>';
 			attribute.htmlID = htmlID;
-			return html;
+			return html2;
 		},
 		renderText: function(text) {
 			var htmlID = nextID();
 			var classNames="textnode";
 			if($.trim(text.value)=="") classNames+=" whitespace";
 			if(text.value=="") classNames+=" empty";
-			var html="";
-			html+='<div id="'+htmlID+'" data-value="'+XEdit.xmlEscape(text.value)+'" class="'+classNames+'">';
-				html+='<span class="connector"></span>';
-				html+='<span class="value" onclick="XEdit.click(\''+htmlID+'\', \'text\')"><span class="insertionPoint"><span class="inside"></span></span><span class="dots"></span>'+XEdit.chewText(text.value)+'</span>';
-			html+='</div>';
+			var html2 = (function(){with($H){
+				return div({id:htmlID, "data-value":XEdit.xmlEscape(text.value), "class":classNames},
+					span({"class":"connector"}),
+					span({"class":"value", onclick:callFunction("XEdit.click", htmlID, "text")},
+						span({"class":"insertionPoint"},
+							span({"class":"inside"})
+						),
+						span({"class":"dots"}),
+						XEdit.chewText(text.value)
+					)
+				);
+			}})();
+			// var html="";
+			// html+='<div id="'+htmlID+'" data-value="'+XEdit.xmlEscape(text.value)+'" class="'+classNames+'">';
+			// 	html+='<span class="connector"></span>';
+			// 	html+='<span class="value" onclick="XEdit.click(\''+htmlID+'\', \'text\')"><span class="insertionPoint"><span class="inside"></span></span><span class="dots"></span>'+XEdit.chewText(text.value)+'</span>';
+			// html+='</div>';
 			text.htmlID = htmlID;
-			return html;
+			return html2;
 		},
 		chewText: function(txt) {
 			var ret="";
