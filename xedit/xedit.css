@@ -52,6 +52,9 @@
 .xedit .element > .tag.opening > .attributes > .attribute > .valueContainer.current { background-color: #ffff99; padding: 0px 3px; margin: 0px -3px; border-radius: 2px; }
 .xedit .element > .tag.opening > .attributes > .attribute > .valueContainer.current > .value { color: #00cc00; border-radius: 2px; }
 .xedit .element > .children > .textnode.current > .value { background-color: #ffff99 !important; color: #00cc00; padding: 0px 3px; margin: 0px -3px; border-radius: 2px; }
+.xedit .cdata .current { background-color: #ffff99; color: #00cc00; padding: 0px 3px; margin: 0px -3px; border-radius: 2px; }
+.xedit .comment .current { background-color: #ffff99; color: #00cc00; padding: 0px 3px; margin: 0px -3px; border-radius: 2px; }
+
 .xedit.laic .element.current > .tag > .name { background-color: #ffff99; color: #00cc00; padding: 3px 10px 3px 10px; margin: 0px; border-radius: 0px; }
 .xedit.laic .element > .tag.opening > .attributes > .attribute.current > .name { background-color: #ffff99; color: #00cc00; padding: 3px 10px; margin: 0px 0px 0px 0px; border-radius: 0px; }
 .xedit.laic .element > .tag.opening > .attributes > .attribute > .valueContainer.current { background-color: #ffff99; padding: 3px 10px 3px 10px; margin: 0px; border-radius: 0px; }

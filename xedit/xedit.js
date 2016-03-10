@@ -44,6 +44,42 @@
 		return textTags[t];
 	}
 	
+	function renderCdata(ch){with($H){
+		var htmlID = nextID(), val =  XEdit.xmlEscape(ch.value);
+		return span({"class":"cdata"},
+			span({"class":"punc"}, "&lt;![CDATA["),
+			span({"class":"value", "data-value":val, id:htmlID, onclick:callFunction("XEdit.click", htmlID, "cdata")}, val),
+			span({"class":"punc"}, "]]&gt;")
+		);
+	}}
+	
+	function harvestCdata(htmlCdata, jsParent){
+		var js = new surrogate(jsParent);
+		js.type = "cdata";
+		var fld = $(htmlCdata).find(".value");
+		js.htmlID = fld.attr("id");
+		js.value = fld.attr("data-value");
+		return js;
+	}
+	
+	function harvestComment(htmlComment, jsParent){
+		var js = new surrogate(jsParent);
+		js.type = "comment";
+		var fld = $(htmlComment).find(".value");
+		js.htmlID = fld.attr("id");
+		js.value = fld.attr("data-value");
+		return js;
+	}
+	
+	function renderComment(ch){with($H){
+		var htmlID = nextID(), val =  XEdit.xmlEscape(ch.value);
+		return span({"class":"comment"},
+			span({"class":"punc"}, "&lt;!--"),
+			span({"class":"value", "data-value":val, id:htmlID, onclick:callFunction("XEdit.click", htmlID, "comment")}, val),
+			span({"class":"punc"}, "--&gt;")
+		);
+	}}
+	
 	var XEdit={
 		lang: "", //"en"|"de"|fr"| ...
 		mode: "nerd", //"nerd"|"laic"
@@ -101,21 +137,17 @@
 					case 3: js["children"].push({type: "text", value: child.nodeValue, htmlID: ""}); break;
 					case 4: 
 						js["children"].push({type: "cdata", value: child.nodeValue, htmlID: ""});
-						//console.log("CDATA: ", child); 
 						break;
 					case 8: 
 						js["children"].push({type: "comment", value: child.nodeValue, htmlID: ""});
-						//console.log("Comment: ", child); 
 						break;
 					default: break;
 				}
 			}
-			//console.log(js.children);
 			js=XEdit.enrichElement(js);
 			return js;
 		},
 		js2xml: function(js, level) {
-			//console.log(level, js);
 			level = level || 0;
 			var pretty = settings.prettyPrint, offset = "";
 			if(pretty && !isInlineTag(js)){
@@ -136,10 +168,10 @@
 				if(hasText && settings.insertPreserveSpace) xml+=" xml:space='preserve'";
 				xml+=">";
 				for(var i=0,child; child=js.children[i],i<js.children.length; i++) {
-					//if(child.type=="text") xml+=XEdit.xmlEscape(child.value); 
-					//else if(child.type=="element") xml+=XEdit.js2xml(child, level+1); 
 					switch(child.type){
 						case "text": xml+=XEdit.xmlEscape(child.value); break;
+						case "cdata": xml+=["<![CDATA[", child.value,"]]>"].join(""); break;
+						case "comment": xml+=["<!--", child.value,"-->"].join(""); break;
 						case "element": xml+=XEdit.js2xml(child, level+1); break;
 						default: console.log("Unknown child type: ", child.type); break;
 					}
@@ -331,10 +363,12 @@
 			}
 			js.children=[];
 			var htmlChildren=$(htmlElement).children(".children").toArray()[0];
-			for(var i=0; i<htmlChildren.childNodes.length; i++) {
-				var htmlChild=htmlChildren.childNodes[i];
-				if($(htmlChild).hasClass("element")) js["children"].push(XEdit.harvestElement(htmlChild, js));
-				else if($(htmlChild).hasClass("textnode")) js["children"].push(XEdit.harvestText(htmlChild, js));
+			for(var i=0,htmlChild; htmlChild=$(htmlChildren.childNodes[i]),i<htmlChildren.childNodes.length; i++) {
+				if(htmlChild.hasClass("element")) js["children"].push(XEdit.harvestElement(htmlChild[0], js));
+				else if(htmlChild.hasClass("textnode")) js["children"].push(XEdit.harvestText(htmlChild[0], js));
+				else if(htmlChild.hasClass("cdata")) js["children"].push(harvestCdata(htmlChild[0], js));
+				else if(htmlChild.hasClass("comment")) js["children"].push(harvestComment(htmlChild[0], js));
+				else console.log("Unknown child: ", htmlChild[0]);
 			}
 			js=XEdit.enrichElement(js);
 			return js;
@@ -438,7 +472,10 @@
 								hasText && prevChildType=="element" && child.type=="element"?XEdit.renderText({type: "text", value: ""}):null,
 								child.type=="text"?XEdit.renderText(child)
 									:child.type=="element"?XEdit.renderElement(child)
+									:child.type=="cdata"?renderCdata(child)
+									:child.type=="comment"?renderComment(child)
 									:null
+									//:span({"class":"error"}, "Unknown child type: ", child.type)
 							);
 							prevChildType=child.type;
 							return mrk;
@@ -453,51 +490,6 @@
 					)
 				)
 			}})();
-			// var html="";
-			// html+='<div data-name="'+element.name+'" id="'+htmlID+'" class="'+classNames+'">';
-			// 	html+='<span class="connector">';
-			// 		html+='<span class="plusminus" onclick="XEdit.plusminus(\''+htmlID+'\')"></span>';
-			// 		html+='<span class="draghandle" draggable="true" ondragstart="XEdit.drag(event)"></span>';
-			// 	html+='</span>';
-			// 	html+='<span class="tag opening" style="background-color: '+spec.backgroundColour+';">';
-			// 		html+='<span class="punc">&lt;</span>';
-			// 		html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'openingTagName\')">'+displayName+'</span>';
-			// 		html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
-			// 		html+='<span class="attributes">';
-			// 			for(var i=0; i<element.attributes.length; i++) {
-			// 				XEdit.verifyDocSpecAttribute(element.name, element.attributes[i].name);
-			// 				html+=XEdit.renderAttribute(element.attributes[i], element.name);
-			// 			}
-			// 		html+='</span>';
-			// 		html+='<span class="punc slash">/</span>';
-			// 		html+='<span class="punc">&gt;</span>';
-			// 	html+='</span>';
-			// 	html+='<span class="childrenCollapsed" onclick="XEdit.plusminus(\''+htmlID+'\', true)">&middot;&middot;&middot;</span>';
-			// 	html+='<div class="children">';
-			// 		var prevChildType="";
-			// 		if(hasText && (element.children.length==0 || element.children[0].type=="element")) {
-			// 			html+=XEdit.renderText({type: "text", value: ""}); 
-			// 		}
-			// 		for(var i=0; i<element.children.length; i++) {
-			// 			var child=element.children[i];
-			// 			if(hasText && prevChildType=="element" && child.type=="element") {
-			// 				html+=XEdit.renderText({type: "text", value: ""}); 
-			// 			}
-			// 			if(child.type=="text") html+=XEdit.renderText(child); 
-			// 			else if(child.type=="element") html+=XEdit.renderElement(child); 
-			// 			prevChildType=child.type;
-			// 		}
-			// 		if(hasText && element.children.length>1 && element.children[element.children.length-1].type=="element") {
-			// 			html+=XEdit.renderText({type: "text", value: ""}); 
-			// 		}
-			// 	html+='</div>';
-			// 	html+='<span class="tag closing" style="background-color: '+spec.backgroundColour+';">';
-			// 		html+='<span class="punc">&lt;</span>';
-			// 		html+='<span class="punc">/</span>';
-			// 		html+='<span class="name" onclick="XEdit.click(\''+htmlID+'\', \'closingTagName\')">'+displayName+'</span>';
-			// 		html+='<span class="punc">&gt;</span>';
-			// 	html+='</span>';
-			// html+='</div>';
 			element.htmlID = htmlID;
 			return html2;
 		},
@@ -529,21 +521,6 @@
 					)
 				);
 			}})();
-			
-			// var html="";
-			// html+='<span data-name="'+attribute.name+'" data-value="'+XEdit.xmlEscape(attribute.value)+'" id="'+htmlID+'" class="'+classNames+'">';
-			// 	html+='<span class="punc"> </span>';
-			// 	var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeName\')"';
-			// 	html+='<span class="name"'+onclick+'>'+displayName+'</span>';
-			// 	html+='<span class="warner"><span class="inside" onclick="XEdit.click(\''+htmlID+'\', \'warner\')"></span></span>';
-			// 	html+='<span class="punc">=</span>';
-			// 	var onclick=''; if(!readonly) onclick=' onclick="XEdit.click(\''+htmlID+'\', \'attributeValue\')"';
-			// 	html+='<span class="valueContainer"'+onclick+'>';
-			// 		html+='<span class="punc">"</span>';
-			// 		html+='<span class="value">'+XEdit.xmlEscape(attribute.value)+'</span>';
-			// 		html+='<span class="punc">"</span>';
-			// 	html+='</span>';
-			// html+='</span>';
 			attribute.htmlID = htmlID;
 			return html2;
 		},
@@ -564,11 +541,6 @@
 					)
 				);
 			}})();
-			// var html="";
-			// html+='<div id="'+htmlID+'" data-value="'+XEdit.xmlEscape(text.value)+'" class="'+classNames+'">';
-			// 	html+='<span class="connector"></span>';
-			// 	html+='<span class="value" onclick="XEdit.click(\''+htmlID+'\', \'text\')"><span class="insertionPoint"><span class="inside"></span></span><span class="dots"></span>'+XEdit.chewText(text.value)+'</span>';
-			// html+='</div>';
 			text.htmlID = htmlID;
 			return html2;
 		},
@@ -709,7 +681,7 @@
 						if(what=="closingTagName") XEdit.showBubble($("#"+htmlID+" > .tag.closing > .name")); 
 					}
 				}
-				if(what=="attributeName") {
+				else if(what=="attributeName") {
 					$("#"+htmlID).addClass("current"); 
 					var content=XEdit.attributeMenu(htmlID); 
 					if(content!="") {
@@ -717,7 +689,7 @@
 						XEdit.showBubble($("#"+htmlID+" > .name")); 
 					}
 				}
-				if(what=="attributeValue") {
+				else if(what=="attributeValue") {
 					$("#"+htmlID+" > .valueContainer").addClass("current"); 
 					var name=$("#"+htmlID).attr("data-name"); 
 					var value=$("#"+htmlID).attr("data-value"); 
@@ -737,7 +709,7 @@
 						};
 					}
 				}
-				if(what=="text") {
+				else if(what=="text") {
 					$("#"+htmlID).addClass("current");
 					var value=$("#"+htmlID).attr("data-value"); 
 					var elName=$("#"+htmlID).closest(".element").attr("data-name");
@@ -758,8 +730,7 @@
 						XEdit.changed(XEdit.harvestText(document.getElementById(jsText.htmlID)));
 					};
 				}
-				if(what=="warner") {
-					
+				else if(what=="warner") {
 					var content=""; 
 					for(var iWarning=0; iWarning<XEdit.warnings.length; iWarning++) {
 						var warning=XEdit.warnings[iWarning];
@@ -769,6 +740,38 @@
 					}
 					document.body.appendChild(XEdit.makeBubble(content)); 
 					XEdit.showBubble($("#"+htmlID+" .warner .inside").first()); 
+				}
+				else if(what=="cdata") {
+					var fld = $("#"+htmlID);
+					fld.addClass("current"); 
+					var value = fld.attr("data-value"); 
+					var content=XEdit.askLongString(value);
+					document.body.appendChild(XEdit.makeBubble(content)); 
+					XEdit.showBubble(fld); 
+					
+					XEdit.answer=function(val) {
+						var jsCdata = {type: "cdata", value: val},
+							el = $(renderCdata(jsCdata))
+						fld.parent().replaceWith(el);
+						XEdit.clickoff();
+						XEdit.changed(harvestCdata(el[0]));
+					};
+				}
+				else if(what=="comment") {
+					var fld = $("#"+htmlID);
+					fld.addClass("current"); 
+					var value = fld.attr("data-value"); 
+					var content=XEdit.askLongString(value);
+					document.body.appendChild(XEdit.makeBubble(content)); 
+					XEdit.showBubble(fld); 
+					
+					XEdit.answer=function(val) {
+						var jsComment = {type: "comment", value: val},
+							el = $(renderComment(jsComment))
+						fld.parent().replaceWith(el);
+						XEdit.clickoff();
+						XEdit.changed(harvestComment(el[0]));
+					};
 				}
 				XEdit.notclick=true;
 			}
