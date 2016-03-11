@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>XEdit Demo Page 3</title>
+	<link rel="stylesheet" type="text/css" href="xedit.css"/>
+	<style type="text/css">
+		.error{
+			color:#f00;
+			background-color:#ff0;
+		}
+	</style>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="xedit.js"></script>
+	<script type="text/javascript">
+		var docSpec = {};
+		
+		var xml = (function(){with(Html.getTagDefinitions("library;book;annotation;p;sel")){
+			return library(
+				book({title:"Война и мир"}, "<![CDATA[&copy;Толстой Л.Н.]]>"),
+				"<!-- <book title=\"Война миров\"\>\n\t<annotation><p>Фантастический роман г.Уэллса.</p></annotation>\n</book> -->",
+				book({title:"Капитанская дочка"},
+					annotation(
+						p("Исторический роман (или повесть) ", sel("А. С. Пушкина"), ", действие которого происходит во время восстания Емельяна Пугачёва."),
+						p("Впервые опубликован без указания имени автора в 4-й книжке журнала «Современник», поступившей в продажу в последней декаде 1836 года.")
+					)
+				)
+			);
+		}})();
+		
+		console.log(xml);
+		
+		function start(){
+			XEdit.lang = $(".selLang").val();
+			$(".selLang").change(setLang);
+			
+			XEdit.setMode($(".selMode").val());
+			$(".selMode").change(function(){
+				XEdit.setMode($(this).val());
+			});
+			XEdit.render(xml, $("#editor")[0], docSpec);
+			
+			XEdit.settings({insertPreserveSpace:$(".cbPreserve")[0].checked});
+			$(".cbPreserve").change(function(){
+				var on = $(this)[0].checked;
+				XEdit.settings({insertPreserveSpace:on});
+			});
+			
+			XEdit.settings({prettyPrint:$(".cbPretty")[0].checked});
+			$(".cbPretty").change(function(){
+				var on = $(this)[0].checked;
+				XEdit.settings({prettyPrint:on});
+			});
+		}
+		function submit(){
+			console.log(XEdit.harvest());
+		}
+		
+		function setLang(){
+			XEdit.lang = $(".selLang").val();
+			XEdit.render(XEdit.harvest(), $("#editor")[0], docSpec);
+		}
+
+		$(start);
+	</script>
+</head>
+<body>
+	<h1>XEdit Demo Page 3</h1>
+	<p>Работа с нетипизованными документами.</p>
+	
+	<div>
+		<input type="button" onclick="submit()" value="Harvest"/>
+		
+		Mode:  
+		<select class="selMode">
+			<option value="nerd" selected="true">Nerd</option>
+			<option value="laic">Laic</option>
+		</select>
+		
+		Language:  
+		<select class="selLang">
+			<option value="en" selected="true">EN</option>
+			<option value="ru">RU</option>
+		</select>
+		
+		Preserve space: <input type="checkbox" class="cbPreserve"/>
+		Pretty print: <input type="checkbox" class="cbPretty"/>
+		
+	</div>
+	<div id="editor"></div>
+</body>
+</html>
