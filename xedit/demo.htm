@@ -134,11 +134,18 @@
 							actionParameter: "<p/>"
 						}
 					],
-					inlineMenu: [{
-						caption: "en:Wrap with <sel> | ru:Выделить",
-						action: XEdit.wrap,
-						actionParameter: {template: "<sel>$</sel>", placeholder: "$"}
-					}],
+					inlineMenu: [
+						{
+							caption: "en:Wrap with <sel> | ru:Выделить",
+							action: XEdit.wrap,
+							actionParameter: {template: "<sel>$</sel>", placeholder: "$"}
+						},
+						{
+							caption: "en:Wrap with <ref> | ru:Добавить ссылку",
+							action: XEdit.wrap,
+							actionParameter: {template: "<ref>$</ref>", placeholder: "$"}
+						}
+					],
 					canDropTo: ["annotation"],
 					asker: XEdit.askLongString,
 					collapsed: true
@@ -158,16 +165,38 @@
 							action: XEdit.unwrap
 						}
 					]
+				},
+				ref:{
+					displayName: "en:ref | ru:ссылка",
+					hasText: true,
+					canDropTo: ["p", "sel"],
+					attributes: {
+						"url": {
+							displayName:"en:url | ru:адрес",
+							asker: XEdit.askString,
+							menu: [{
+								caption: "en:delete this @url | ru:удалить этот адрес",
+								action: XEdit.deleteAttribute
+							}]
+						}
+					},
+					asker: XEdit.askString,
+					menu:[
+						{
+							caption: "en:remove <ref> | ru: Удалить ссылку",
+							action: XEdit.unwrap
+						}
+					]
 				}
 			}
 		};
 		
-		var xml = (function(){with(Html.getTagDefinitions("library;book;annotation;p;sel")){
+		var xml = (function(){with(Html.getTagDefinitions("library;book;annotation;p;sel;ref")){
 			return library(
 				book({title:"Война и мир"}),
 				book({title:"Капитанская дочка"},
 					annotation(
-						p("Исторический роман (или повесть) ", sel("А. С. Пушкина"), ", действие которого происходит во время восстания Емельяна Пугачёва."),
+						p("Исторический роман (или повесть) ", sel("А. С. Пушкина"), ", действие которого происходит во время ", ref({url:"http://ru.wikipedia.org/wiki"}, "восстания Емельяна Пугачёва"), "."),
 						p("Впервые опубликован без указания имени автора в 4-й книжке журнала «Современник», поступившей в продажу в последней декаде 1836 года.")
 					)
 				)
