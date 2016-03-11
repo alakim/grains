@@ -171,7 +171,7 @@
 		var xml = (function(){with(Html.getTagDefinitions("library;book;annotation;p;sel")){
 			return library(
 				book({title:"Война и мир"}, "<![CDATA[&copy;Толстой Л.Н.]]>"),
-				"<!-- <book title=\"Война миров\"\/> -->",
+				"<!-- <book title=\"Война миров\"\>\n\t<annotation><p>Фантастический роман г.Уэллса.</p></annotation>\n</book> -->",
 				book({title:"Капитанская дочка"},
 					annotation(
 						p("Исторический роман (или повесть) ", sel("А. С. Пушкина"), ", действие которого происходит во время восстания Емельяна Пугачёва."),
