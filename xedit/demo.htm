@@ -14,10 +14,16 @@
 					htmlID: root.htmlID,
 					text:"en:Too few books! | ru:Слишком мало книг! "
 				});
-				for(var i=0,el; el=root.children[i],i<root.children.length; i++){
-					var elementSpec=docSpec.elements[el.name];
-					if(el.type=='element') elementSpec.validate(el);
+				function validateChildren(elem){
+					for(var i=0,el; el=elem.children[i],i<elem.children.length; i++){
+						if(el.type=='element'){
+							var elementSpec=docSpec.elements[el.name];
+							if(elementSpec.validate)elementSpec.validate(el);
+							validateChildren(el);
+						}
+					}
 				}
+				validateChildren(root);
 			},
 			onchange: function(){
 				console.log("I been changed now!")
@@ -185,8 +191,22 @@
 						{
 							caption: "en:remove <ref> | ru: Удалить ссылку",
 							action: XEdit.unwrap
+						},
+						{
+							caption: "en: add @url=\"***\" | ru: Добавить адрес",
+							action: XEdit.newAttribute,
+							actionParameter: {name: "url", value: "http://"},
+							hideIf: function(jsElement){
+								return jsElement.hasAttribute("url");
+							}
 						}
-					]
+					],
+					validate: function(el){
+						if(!el.hasAttribute("url")) XEdit.warnings.push({
+							htmlID: el.htmlID,
+							text:"en:Missing url! | ru:Отсутствует адрес! "
+						});
+					}
 				}
 			}
 		};
