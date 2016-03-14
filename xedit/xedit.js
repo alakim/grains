@@ -368,7 +368,7 @@
 				else if(htmlChild.hasClass("textnode")) js["children"].push(XEdit.harvestText(htmlChild[0], js));
 				else if(htmlChild.hasClass("cdata")) js["children"].push(harvestCdata(htmlChild[0], js));
 				else if(htmlChild.hasClass("comment")) js["children"].push(harvestComment(htmlChild[0], js));
-				else console.log("Unknown child: ", htmlChild[0]);
+				//else console.log("Unknown child: ", htmlChild[0]);
 			}
 			js=XEdit.enrichElement(js);
 			return js;
@@ -778,6 +778,12 @@
 		}
 	});
 	
+	var templates = {
+		elDropper: $H.div({"class":"elementDropper", ondragover:'XEdit.dragOver(event)', ondragleave:'XEdit.dragOut(event)', ondrop:'XEdit.drop(event)'},
+			$H.div({"class":"inside"})
+		)
+	};
+	
 	extend(XEdit, {
 		notclick: false,
 		clearChars: false, 
@@ -830,22 +836,20 @@
 				$bubble.find(".focusme").first().focus(); 
 			});
 		},
-		askString: function(defaultString) {
-			var html="";
-			html+="<form onsubmit='XEdit.answer(this.val.value); return false'>";
-				html+="<input name='val' class='textbox focusme' value='"+XEdit.xmlEscape(defaultString)+"'/>";
-				html+=" <input type='submit' value='OK'>";
-			html+="</form>";
-			return html;
-		},
-		askLongString: function(defaultString) {
-			var html="";
-			html+="<form onsubmit='XEdit.answer(this.val.value); return false'>";
-				html+="<textarea name='val' class='textbox focusme' spellcheck='false'>"+XEdit.xmlEscape(defaultString)+"</textarea>";
-				html+="<div class='submitline'><input type='submit' value='OK'></div>";
-			html+="</form>";
-			return html;
-		},
+		askString: function(defaultString) {with($H){
+			return form({onsubmit:'XEdit.answer(this.val.value); return false'},
+				input({name:'val', "class":'textbox focusme', value:XEdit.xmlEscape(defaultString)}),
+				input({type:'submit', value:'OK'})
+			);
+		}},
+		askLongString: function(defaultString) {with($H){
+			return form({onsubmit:'XEdit.answer(this.val.value); return false'},
+				textarea({name:'val', "class":'textbox focusme', spellcheck:'false'}, XEdit.xmlEscape(defaultString)),
+				div({"class":'submitline'},
+					input({type:'submit', value:'OK'})
+				)
+			);
+		}},
 		askPicklist: function(defaultString, picklist) {
 			var html="";
 			html+="<div class='menu'>";
@@ -987,9 +991,9 @@
 			var elementName=$element.attr("data-name");
 			var elSpec=XEdit.docSpec.elements[elementName];
 			$element.addClass("dragging");
-			$("."+settings.cssClass + " .children").append("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
-			$("."+settings.cssClass + " .children .element").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
-			$("."+settings.cssClass + " .children .text").before("<div class='elementDropper' ondragover='XEdit.dragOver(event)' ondragleave='XEdit.dragOut(event)' ondrop='XEdit.drop(event)'><div class='inside'></div></div>")
+			$("."+settings.cssClass + " .children").append(templates.elDropper)
+			$("."+settings.cssClass + " .children .element").before(templates.elDropper)
+			$("."+settings.cssClass + " .children .text").before(templates.elDropper)
 			$("."+settings.cssClass + " .dragging .elementDropper").remove(); 
 			$("."+settings.cssClass + " .dragging").prev(".elementDropper").remove(); 
 			$("."+settings.cssClass + " .dragging").next(".elementDropper").remove(); 
