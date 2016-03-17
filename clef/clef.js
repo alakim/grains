@@ -137,7 +137,7 @@
 			
 			if(!(seq instanceof Array)){
 				var chords = [], groups = [];
-				seq = seq.replace(/&lt;([a-g]([ei]?s|n)?'*(@\d+)? +)*[a-g]([ei]?s|n)?'*(@\d+)?&gt;\d/ig, function(x){
+				seq = seq.replace(/&lt;([a-g]([ei]?s|n)?'*(@\d+)? +)*[a-g]([ei]?s|n)?'*(@\d+)?([\+\-]\d+)?&gt;\d/ig, function(x){
 					var idx = chords.length;
 					chords.push(x);
 					return "#CH"+idx;
@@ -161,7 +161,7 @@
 				groupSize = [];
 			
 			
-			var reNote = /([a-g])(((e?s)|(is)|n)?)('*)(\d+)?(@\d+)?/i,
+			var reNote = /([a-g])(((e?s)|(is)|n)?)('*)(\d+)?(@\d+)?([\+\-]\d+)?/i,
 				reChord = /#CH(\d+)/,
 				reGroup = /#GRP(\d+)/,
 				reBar = /\s*\|[\|\.]?\s*/,
@@ -171,7 +171,8 @@
 				reTime = /t(\d)\/(\d)/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
-			function drawNote(paper, note, octave, alt, colorIdx){
+			function drawNote(paper, note, octave, alt, colorIdx, shift){
+				posX+=shift;
 				posY = settings.offset.y + settings.staffSize.h - (notes[note]-1)*step/2;
 				if(settings.clef=="f")
 					posY -= settings.staffSize.h * 1.5;
@@ -273,15 +274,17 @@
 						if(dur) duration = +dur;
 						chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
 						$D.each(chrd.split(" "), function(nn){
-							var mmt = nn.match(/([a-g])((is)|(es)|n)?('*)(@\d+)?/i);
+							var mmt = nn.match(/([a-g])((is)|(es)|n)?('*)(@\d+)?([\+\-]\d+)?/i);
 							var note = mmt[1],
 								alt = mmt[2],
 								octave = mmt[5],
+								shift = 0,
 								colorIdx = -1;
-							if(mmt[6]){
+							if(mmt[6])
 								colorIdx = parseInt(mmt[6].substr(1));
-							}
-							drawNote(paper, note, octave, alt, colorIdx);
+							if(mmt[7])
+								shift = parseInt(mmt[7]);
+							drawNote(paper, note, octave, alt, colorIdx, shift);
 						});
 						
 					});
@@ -298,13 +301,16 @@
 					var note = mt[1],
 						alt = mt[2]
 						octave = mt[6],
+						shift = 0,
 						colorIdx = -1;
 					if(mt[7])
 						duration = +mt[7];
 					if(mt[8])
 						colorIdx = parseInt(mt[8].substr(1));
+					if(mt[9])
+						shift = parseInt(mt[9]);
 					posX += alt?24:15;
-					drawNote(paper, note, octave, alt, colorIdx);
+					drawNote(paper, note, octave, alt, colorIdx, shift);
 				}
 			});
 			if(groupMode) drawBeam();
