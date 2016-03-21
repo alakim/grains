@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Custom Languages Demo 1</title>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../jdb/jdb.js"></script>
+	<script type="text/javascript">
+		// библиотека сущностей
+		var Cars = (function(){
+			// конструктор сущностей
+			function car(regNum){var _=this;
+				this.regNum = regNum;
+				instances.push(this);
+				var _state = "off"; // скрытое поле "состояние", доступное через getter
+				this.state = function(ss){ // getter для состояния
+					if(ss) {_state = ss; return _;}
+					else return _state;
+				}
+			}
+			
+			var instances = [];
+			
+			return {
+				car: function(regNum){	// определение сущности - вызывает соответствующий конструктор
+					return new car(regNum);
+				},
+				listCars: function(){	// вспомогательная функция - выводит листинг экземпляров на консоль
+					JDB.each(instances, function(c){
+						console.log(c, c.state());
+					});
+				}
+			}
+		})();
+		
+		
+		function createCars(){with(Cars){ // используем библиотеку сущностей
+			car("55-35 slk").state("on");	// создаем сущности 
+			car("55-32 slk");
+		}}
+		
+		$(function(){
+			createCars();
+			Cars.listCars();
+		});
+	</script>
+</head>
+<body>
+	<h1>Custom Languages Demo 1</h1>
+	<div id="out"></div>
+</body>
+</html>
