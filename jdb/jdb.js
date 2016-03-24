@@ -178,6 +178,31 @@ var JDB = (function(){
 		})();
 		return mon;
 	}
+	
+	function Dictionary(){var _=this;
+		var data = {};
+		
+		_.empty = function(){
+			for(var k in data) return false;
+			return true;
+		};
+		_.set = function(name, val){
+			val = val || true;
+			data[name] = val;
+		}
+		_.get = function(name){
+			return data[name];
+		}
+		_.count = function(){
+			var n = 0;
+			for(var k in data) n++;
+			return n;
+		}
+		_.data = function(){
+			return data;
+		}
+	}
+	
 	extend(JDB, {
 		version: "1.0.0",
 		extend: extend,
@@ -190,7 +215,8 @@ var JDB = (function(){
 		toArray: toArray,
 		treeToArray: treeToArray,
 		sort: sort,
-		reverse: reverse
+		reverse: reverse,
+		Dictionary: Dictionary
 	});
 	return JDB;
 })();

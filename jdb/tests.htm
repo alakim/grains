@@ -351,6 +351,20 @@ new JSUnit.Test("reverse", "Basic Monadic").run = function(){
 	this.assert(JDB(coll).reverse().raw(), [4, 3, 2, 1]);
 }
 
+new JSUnit.Test("Dictionary", "Containers").run = function(){
+	var dict = new JDB.Dictionary();
+	this.assert(dict.empty(), true);
+	dict.set("x", 5);
+	dict.set("y", "abc");
+	dict.set("z");
+	this.assert(dict.get("x"), 5);
+	this.assert(dict.get("y"), "abc");
+	this.assert(dict.get("z"), true);
+	this.assert(dict.empty(), false);
+	this.assert(dict.count(), 3);
+	this.assert(dict.data(), {x:5, y:"abc", z:true});
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = JDB.version;
 	JSUnit.init();
