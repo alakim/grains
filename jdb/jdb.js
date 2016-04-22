@@ -55,6 +55,16 @@ var JDB = (function(){
 		return res;
 	}
 	
+	function first(coll, count){
+		var res = [];
+		if(coll instanceof Array){
+			for(var i=0; i<count && i<coll.length; i++){
+				res.push(coll[i]);
+			}
+		}
+		return res;
+	}
+	
 	function index(coll, F, Fobj){
 		var res;
 		if(typeof(F)=="string"){
@@ -154,6 +164,7 @@ var JDB = (function(){
 				map: function(F){return JDB(map(coll, F));},
 				each: function(F){each(coll, F); return this;},
 				select: function(F){return JDB(select(coll, F));},
+				first: function(count){return JDB(first(coll, count));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
 				extend: function(c2, deep){
@@ -204,11 +215,12 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "1.0.0",
+		version: "2.0.0",
 		extend: extend,
 		each: each,
 		map: map,
 		select: select,
+		first: first,
 		index: index,
 		groupBy: groupBy,
 		concat: concat,
