@@ -63,6 +63,18 @@ var JDB = (function(){
 			}
 		}
 		return res;
+	}	
+	function page(coll, size, nr){
+		if(nr<1) return [];
+		var res = [],
+		minIdx = size*(nr-1),
+		maxIdx = size*nr;
+		if(coll instanceof Array){
+			for(var i=minIdx; i<maxIdx && i<coll.length; i++){
+				res.push(coll[i]);
+			}
+		}
+		return res;
 	}
 	
 	function index(coll, F, Fobj){
@@ -165,6 +177,7 @@ var JDB = (function(){
 				each: function(F){each(coll, F); return this;},
 				select: function(F){return JDB(select(coll, F));},
 				first: function(count){return JDB(first(coll, count));},
+				page: function(size, nr){return JDB(page(coll, size, nr));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
 				extend: function(c2, deep){
@@ -221,6 +234,7 @@ var JDB = (function(){
 		map: map,
 		select: select,
 		first: first,
+		page: page,
 		index: index,
 		groupBy: groupBy,
 		concat: concat,

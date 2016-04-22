@@ -33,6 +33,14 @@ new JSUnit.Test("first", "Simple Non-monadic").run = function(){
 	this.assert(JDB.first([1, 2, 3], 3), [1, 2, 3]);
 	this.assert(JDB.first([1, 2, 3], 4), [1, 2, 3]);
 }
+new JSUnit.Test("page", "Simple Non-monadic").run = function(){
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 0), []);
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 1), [1, 2, 3]);
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 2), [4, 5, 6]);
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 3), [7, 8, 9]);
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 4), [10]);
+	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 5), []);
+}
 
 new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 	var coll = [
@@ -215,6 +223,16 @@ new JSUnit.Test("first", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).first(3).raw(), [1, 2, 3]);
 	this.assert(JDB([1, 2, 3]).first(4).raw(), [1, 2, 3]);
 }
+
+new JSUnit.Test("page", "Basic Monadic").run = function(){
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 0).raw(), []);
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 1).raw(), [1, 2, 3]);
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 2).raw(), [4, 5, 6]);
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 3).raw(), [7, 8, 9]);
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 4).raw(), [10]);
+	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 5).raw(), []);
+}
+
 new JSUnit.Test("index", "Basic Monadic").run = function(){
 	var coll = [
 		{id:1, nm:"John"},
