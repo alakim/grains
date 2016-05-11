@@ -3,34 +3,34 @@ a.yellowButton {
 	before: " ";
 	background: url(img/btn_m_bg.png) repeat-x scroll 0 0 transparent;
 	display: inline-block;
+	position: relative;
 	height: 43px;
 	margin: 0 41px;
 	min-width: 5px;
-	position: relative;
 	text-decoration: none;
 	vertical-align: middle;
 }
 
 a.yellowButton p {
+	position: relative;
 	color: white;
 	font-family: Arial, Tahoma, Sans-serif;
 	font-size: 14px;
 	font-weight: bold;
 	margin: 0 -20px;
-	position: relative;
 	text-align: center;
 	text-shadow: 1px 1px #FE832E, -1px 1px #FE832D, 0 -1px #FE9F4F;
 	top: 9px;
 	z-index: +1;
 }
 
-a.yellowButton:before,a.yellowButton:after,a.yellowButton>.before,a.yellowButton>.after {
+a.yellowButton:before,a.yellowButton:after, a.yellowButton>.before,a.yellowButton>.after {
 	background: url(img/btn_m_corn.png) no-repeat scroll 0 0 transparent;
 	content: "";
 	display: inline-block;
+	position: absolute;
 	height: 43px;
 	width: 41px;
-	position: absolute;
 	top: 0;
 }
 
