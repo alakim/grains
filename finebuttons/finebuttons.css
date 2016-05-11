@@ -1,0 +1,197 @@
+a.yellowButton {
+	after: " ";
+	before: " ";
+	background: url(img/btn_m_bg.png) repeat-x scroll 0 0 transparent;
+	display: inline-block;
+	height: 43px;
+	margin: 0 41px;
+	min-width: 5px;
+	position: relative;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
+a.yellowButton p {
+	color: white;
+	font-family: Arial, Tahoma, Sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0 -20px;
+	position: relative;
+	text-align: center;
+	text-shadow: 1px 1px #FE832E, -1px 1px #FE832D, 0 -1px #FE9F4F;
+	top: 9px;
+	z-index: +1;
+}
+
+a.yellowButton:before,a.yellowButton:after,a.yellowButton>.before,a.yellowButton>.after {
+	background: url(img/btn_m_corn.png) no-repeat scroll 0 0 transparent;
+	content: "";
+	display: inline-block;
+	height: 43px;
+	width: 41px;
+	position: absolute;
+	top: 0;
+}
+
+a.yellowButton:before,a.yellowButton>.before {
+	left: -41px;
+}
+
+a.yellowButton:after,a.yellowButton>.after {
+	background-position: -41px 0;
+	right: -41px;
+}
+
+a.yellowButton:hover,a.yellowButton:hover:before,a.yellowButton:hover>.before,a.yellowButton:focus,a.yellowButton:focus:before,a.yellowButton:focus>.before{
+	background-position: 0 -44px;
+}
+
+a.yellowButton:hover:after,a.yellowButton:hover>.after,a.yellowButton:focus:after,a.yellowButton:focus>.after{
+	background-position: -41px -44px;
+}
+
+a.yellowButton:hover>p,a.yellowButton:focus>p {
+	color: white;
+	text-shadow: 1px 1px #FEA22B, -1px 1px #FEA22B, 0 -1px #FEB750;
+}
+
+a.yellowButton:active,a.yellowButton:active:before,a.yellowButton:active>.before {
+	background-position: 0 -88px;
+}
+
+a.yellowButton:active:after,a.yellowButton:active>.after {
+	background-position: -41px -88px;
+}
+
+a.yellowButton.disable,a.yellowButton.disable:before,a.yellowButton.disable>.before {
+	background-position: 0 -133px;
+}
+
+a.yellowButton.disable:after,a.yellowButton.disable>.after {
+	background-position: -41px -133px;
+}
+
+a.yellowButton.disable p {
+	color: #E0E0E0;
+	text-shadow: 1px 1px #FEAF7B, -1px 1px #FEAF7B, 0 -1px #FEC595;
+}
+
+/* **************************************************************** */
+
+a.blueButton {
+	after: " ";
+	before: " ";
+	display: inline-block;
+	height: 84px;
+	margin: 0 109px;
+	min-width: 5px;
+	position: relative;
+	text-decoration: none;
+	background-image: url(img/btn_lb_bg.png);
+}
+
+a.blueButton p {
+	color: white;
+	font-family: Arial, Tahoma, Sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0 -80px;
+	position: relative;
+	text-align: center;
+	top: 27px;
+	z-index: +1;
+}
+
+a.blueButton.blue p {
+	text-shadow: 1px 1px #2C78B5, -1px 1px #2C78B5, 0 -1px #4190C8;
+}
+
+a.blueButton.red p {
+	text-shadow: 1px 1px #FE7B24, -1px 1px #FE7B24, 0 -1px #FE923F;
+}
+
+a.blueButton.disable p {
+	color: #E9E9E9;
+	text-shadow: 1px 1px #929292, -1px 1px #929292, 0 -1px #9F9F9F
+		!important;
+}
+
+a.blueButton.two_lines p {
+	top: 19px;
+}
+
+a.blueButton:before,a.blueButton:after,a.blueButton>.before,a.blueButton>.after
+	{
+	background: transparent no-repeat scroll;
+	content: "";
+	display: inline-block;
+	height: 84px;
+	width: 109px;
+	position: absolute;
+	top: 0;
+}
+
+a.blueButton:before,a.blueButton:after,a.blueButton>.before,a.blueButton>.after
+	{
+	background-image: url(img/btn_lb_corn.png);
+}
+
+
+a.blueButton:before,a.blueButton>.before {
+	background-position: 0 0;
+	left: -109px;
+}
+
+a.blueButton:after,a.blueButton>.after {
+	background-position: -109px 0;
+	right: -109px;
+}
+
+a.blueButton:hover,a.blueButton:hover:before,a.blueButton:hover>.before,a.blueButton:focus,a.blueButton:focus:before,a.blueButton:focus>.before
+	{
+	background-position: 0 -90px;
+}
+
+a.blueButton:hover:after,a.blueButton:hover>.after,a.blueButton:focus:after,a.blueButton:focus>.after
+	{
+	background-position: -109px -90px;
+}
+
+a.blueButton.blue:hover p,a.blueButton.blue:focus p {
+	color: white;
+	text-shadow: 1px 1px #2B99CE, -1px 1px #2B99CE, 0 -1px #3AA9D9;
+}
+
+a.blueButton.red:hover p,a.blueButton.red:focus p {
+	color: white;
+	text-shadow: 1px 1px #FEA32D, -1px 1px #FEA32D, 0 -1px #FEB145;
+}
+
+a.blueButton.blue:active p {
+	color: white;
+	text-shadow: 1px 1px #1D5F9F, -1px 1px #266BA9, 0 -1px #2E75B2;
+}
+
+a.blueButton.red:active p {
+	color: white;
+	text-shadow: 1px 1px #FC550A, -1px 1px #FC5409, 0 -1px #FF6A00;
+}
+
+a.blueButton:active,a.blueButton:active:before,a.blueButton:active>.before
+	{
+	background-position: 0 -180px;
+}
+
+a.blueButton:active:after,a.blueButton:active>.after {
+	background-position: -109px -180px;
+}
+
+a.blueButton.disable,a.blueButton.disable:before,a.blueButton.disable>.before
+	{
+	background-position: 0 -270px;
+}
+
+a.blueButton.disable:after,a.blueButton.disable>.after {
+	background-position: -109px -270px;
+}
