@@ -12,6 +12,20 @@
 	
 	<script type="text/javascript" src="../compressor/lib/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="finebuttons.js"></script>
+	<script type="text/javascript">
+		Finebuttons.registerClass({
+			name: "finebutton",
+			backgroundFill: "img/btn_m_bg.png",
+			backgroundCorner: "img/btn_m_corn.png",
+			height: 43, width: 41
+		});
+		Finebuttons.registerClass({
+			name: "finebutton2",
+			backgroundFill: "img/btn_lb_bg.png",
+			backgroundCorner: "img/btn_lb_corn.png",
+			height: 84, width: 109
+		});
+	</script>
 </head>
 <body>
 	<h1>Красивые кнопочки</h1>
@@ -26,6 +40,7 @@
 	<div>
 		<p>Решение на JS</p>
 		<a class="finebutton" href="#">Нажать!</a>
+		<a class="finebutton2" href="#">Нажать!</a>
 	</div>
 	
 </body>
