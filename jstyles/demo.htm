@@ -22,11 +22,11 @@
 				padding:"5px",
 				margin:"10px",
 				"text-indent":0,
-				" li":{
+				" li":{ // вложенный стиль, соответствующий селектору ".instrumets li"
 					margin:"0 33px",
 					"font-style":"italic",
-					" a":{
-						":link":{"text-decoration":"none", color:linkColor},
+					">a":{
+						":link":{"text-decoration":"none", color:linkColor}, // соответствует селектору ".instruments li>a:link"
 						":visited":{"text-decoration":"none", color:linkColor},
 						":hover":{"text-decoration":"underline", color:linkHiColor}
 					}
