@@ -7,10 +7,12 @@ JStyles = (function(){
 	}
 	
 	function writeStyle(defs, sel, stylesheet){
+		if(typeof(defs)=="function") defs = defs();
 		var children = {};
 		
 		stylesheet.push(sel+"{");
 		each(defs, function(v, nm){
+			if(typeof(v)=="function") v = v();
 			if(typeof(v)!="object")
 				stylesheet.push([nm, ":", v, ";"].join(" "));
 			else{
@@ -32,7 +34,6 @@ JStyles = (function(){
 			writeStyle(defs, sel, stylesheet);
 		});
 		stylesheet.push('</style>');
-		console.log(stylesheet);
 		document.write(stylesheet.join("\n"));
 	}
 	

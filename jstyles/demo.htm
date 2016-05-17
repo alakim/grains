@@ -4,11 +4,13 @@
 	<meta charset="utf-8"/>
 	<title>JStyles Demo Page</title>
 	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="lib/tinycolor-min.js"></script>
 	<script type="text/javascript" src="jstyles.js"></script>
 	<script type="text/javascript">
 		var color = "#068",
 			linkColor = "#800",
-			linkHiColor = "#f00";
+			buttonColor = "#eef";
+			
 		JStyles({
 			body:{
 				"font-family":"Verdana, Arial, Sans-Serif",
@@ -28,7 +30,24 @@
 					">a":{
 						":link":{"text-decoration":"none", color:linkColor}, // соответствует селектору ".instruments li>a:link"
 						":visited":{"text-decoration":"none", color:linkColor},
-						":hover":{"text-decoration":"underline", color:linkHiColor}
+						":hover":{"text-decoration":"underline", color:tinycolor(linkColor).brighten(40).toHexString()}
+					}
+				}
+			},
+			".fine":{
+				" p": function(){ // можно использовать функции, возвращающие соответствующие стили и значения атрибутов
+					return {color:"#0a0", "text-transform":function(){return "uppercase"}};
+				},
+				" input[type='button']":{
+					color:"#09f",
+					"font-weight":"bold",
+					background:"linear-gradient(to bottom, "+buttonColor+" 0%, "+tinycolor(buttonColor).darken(10).toHexString()+" 100%)",
+					":hover":{
+						color:"#f00",
+						background:function(){
+							var clr = tinycolor(buttonColor).brighten(5).saturate(80);
+							return "linear-gradient(to bottom, "+clr.toHexString()+" 0%, "+clr.darken(10).toHexString()+" 100%)";
+						}
 					}
 				}
 			}
@@ -44,5 +63,9 @@
 		<li><a href="#">flute</a></li>
 		<li><a href="#">oboe</a></li>
 	</ul>
+	<div class="fine">
+		<p>abcdefg</p>
+		<input type="button" value="Start"/>
+	</div>
 </body>
 </html>
