@@ -6,18 +6,43 @@
 	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="jstyles.js"></script>
 	<script type="text/javascript">
-		var color = "#068";
+		var color = "#068",
+			linkColor = "#800",
+			linkHiColor = "#f00";
 		JStyles({
 			body:{
 				"font-family":"Verdana, Arial, Sans-Serif",
 				"font-size":"14px",
 				color:color
+			},
+			".instruments":{
+				background:"#ffe",
+				width:"200px",
+				border:"1px solid #ccf",
+				padding:"5px",
+				margin:"10px",
+				"text-indent":0,
+				" li":{
+					margin:"0 33px",
+					"font-style":"italic",
+					" a":{
+						":link":{"text-decoration":"none", color:linkColor},
+						":visited":{"text-decoration":"none", color:linkColor},
+						":hover":{"text-decoration":"underline", color:linkHiColor}
+					}
+				}
 			}
 		});
 	</script>
 </head>
 <body>
 	<h1>JStyles Demo Page</h1>
-	
+	<ul class="instruments">
+		<li><a href="#">guitar</a></li>
+		<li><a href="#">trumpet</a></li>
+		<li><a href="#">clarinet</a></li>
+		<li><a href="#">flute</a></li>
+		<li><a href="#">oboe</a></li>
+	</ul>
 </body>
 </html>

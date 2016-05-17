@@ -6,16 +6,34 @@ JStyles = (function(){
 			for(var k in coll){F(coll[k], k);}
 	}
 	
-	function render(css){
-		document.write('<style type="text/css">\n');
-		each(css, function(d, sel){
-			document.write(sel+"{");
-			each(d, function(v, attr){
-				document.write([attr, ":", v, ";\n"].join(" "));
-			});
-			document.write("}\n");
+	function writeStyle(defs, sel, stylesheet){
+		var children = {};
+		
+		stylesheet.push(sel+"{");
+		each(defs, function(v, nm){
+			if(typeof(v)!="object")
+				stylesheet.push([nm, ":", v, ";"].join(" "));
+			else{
+				children[nm] = v;
+			}
 		});
-		document.write('</style>\n');
+		stylesheet.push("}");
+		
+		each(children, function(cDef, cSel){
+			writeStyle(cDef, sel+cSel, stylesheet);
+		});
+	}
+	
+
+	function render(css){
+		var stylesheet = [];
+		stylesheet.push('<style type="text/css">');
+		each(css, function(defs, sel){
+			writeStyle(defs, sel, stylesheet);
+		});
+		stylesheet.push('</style>');
+		console.log(stylesheet);
+		document.write(stylesheet.join("\n"));
 	}
 	
 	return render;
