@@ -1,5 +1,5 @@
 var Html = {
-	version: "2.8.457",
+	version: "3.0.844",
 	xhtmlMode: true	
 };
 
@@ -8,10 +8,10 @@ var Html = {
 	
 	function each(coll, F){
 		if(!coll) return;
-		if(coll.length)
-			for(var i=0; i<coll.length;i++) F(coll[i], i);
+		if(coll instanceof Array)
+			for(var i=0; i<coll.length; i++){F(coll[i], i);}
 		else
-			for(var k in coll) F(coll[k], k);
+			for(var k in coll){F(coll[k], k);}
 	}
 	
 	function defineTags(tags, selfClosing, notEmpty){
@@ -152,4 +152,35 @@ var Html = {
 	defineTags(["div", "a", "p", "span", "nobr", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "optgroup", "h1", "h2", "h3", "h4", "h5", "h6", "button", "form","dl", "dt","dd"]);
 	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
 	defineNotEmptyTags(["th", "td"]);
+	
+	function writeStyle(defs, sel, stylesheet){
+		if(typeof(defs)=="function") defs = defs();
+		var children = {};
+		
+		stylesheet.push(sel+"{");
+		each(defs, function(v, nm){
+			if(typeof(v)=="function") v = v();
+			if(typeof(v)!="object")
+				stylesheet.push([nm, ":", v, ";"].join(" "));
+			else{
+				children[nm] = v;
+			}
+		});
+		stylesheet.push("}");
+		
+		each(children, function(cDef, cSel){
+			writeStyle(cDef, sel+cSel, stylesheet);
+		});
+	}
+	
+
+	Html.stylesheet = function(css){
+		var stylesheet = [];
+		stylesheet.push('<style type="text/css">');
+		each(css, function(defs, sel){
+			writeStyle(defs, sel, stylesheet);
+		});
+		stylesheet.push('</style>');
+		document.write(stylesheet.join("\n"));
+	}
 })();

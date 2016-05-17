@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>JStyles Demo Page</title>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../jstyles/lib/tinycolor-min.js"></script>
+	<script type="text/javascript" src="html.js"></script>
+	<script type="text/javascript">
+		var color = "#068",
+			linkColor = "#800",
+			buttonColor = "#eef";
+			
+		Html.stylesheet({
+			body:{
+				"font-family":"Verdana, Arial, Sans-Serif",
+				"font-size":"14px",
+				color:color
+			},
+			".instruments":{
+				background:"#ffe",
+				width:"200px",
+				border:"1px solid #ccf",
+				padding:"5px",
+				margin:"10px",
+				"text-indent":0,
+				" li":{ // вложенный стиль, соответствующий селектору ".instrumets li"
+					margin:"0 33px",
+					"font-style":"italic",
+					">a":{
+						":link":{"text-decoration":"none", color:linkColor}, // соответствует селектору ".instruments li>a:link"
+						":visited":{"text-decoration":"none", color:linkColor},
+						":hover":{"text-decoration":"underline", color:tinycolor(linkColor).brighten(40).toHexString()}
+					}
+				}
+			},
+			".fine":{
+				" p": function(){ // можно использовать функции, возвращающие соответствующие стили и значения атрибутов
+					return {color:"#0a0", "text-transform":function(){return "uppercase"}};
+				},
+				" input[type='button']":{
+					color:"#09f",
+					"font-weight":"bold",
+					background:"linear-gradient(to bottom, "+buttonColor+" 0%, "+tinycolor(buttonColor).darken(10).toHexString()+" 100%)",
+					":hover":{
+						color:"#f00",
+						background:function(){
+							var clr = tinycolor(buttonColor).brighten(5).saturate(80);
+							return "linear-gradient(to bottom, "+clr.toHexString()+" 0%, "+clr.darken(10).toHexString()+" 100%)";
+						}
+					}
+				}
+			}
+		});
+	</script>
+</head>
+<body>
+	<h1>JStyles Demo Page</h1>
+	<ul class="instruments">
+		<li><a href="#">guitar</a></li>
+		<li><a href="#">trumpet</a></li>
+		<li><a href="#">clarinet</a></li>
+		<li><a href="#">flute</a></li>
+		<li><a href="#">oboe</a></li>
+	</ul>
+	<div class="fine">
+		<p>abcdefg</p>
+		<input type="button" value="Start"/>
+	</div>
+</body>
+</html>

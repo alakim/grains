@@ -1,5 +1,6 @@
 JStyles = (function(){
 	function each(coll, F){
+		if(!coll) return;
 		if(coll instanceof Array)
 			for(var i=0; i<coll.length; i++){F(coll[i], i);}
 		else
