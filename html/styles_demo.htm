@@ -11,7 +11,12 @@
 			linkColor = "#800",
 			buttonColor = "#eef";
 			
-		Html.stylesheet({
+		Html.cssAttributes = { // можно задавать алиасы для атрибутов CSS
+			txtIndent: "text-indent",
+			fWeight: "font-weight"
+		};
+		
+		Html.writeStylesheet({
 			body:{
 				"font-family":"Verdana, Arial, Sans-Serif",
 				"font-size":"14px",
@@ -23,7 +28,7 @@
 				border:"1px solid #ccf",
 				padding:"5px",
 				margin:"10px",
-				"text-indent":0,
+				txtIndent:0,
 				" li":{ // вложенный стиль, соответствующий селектору ".instrumets li"
 					margin:"0 33px",
 					"font-style":"italic",
@@ -40,7 +45,7 @@
 				},
 				" input[type='button']":{
 					color:"#09f",
-					"font-weight":"bold",
+					fWeight:"bold",
 					background:"linear-gradient(to bottom, "+buttonColor+" 0%, "+tinycolor(buttonColor).darken(10).toHexString()+" 100%)",
 					":hover":{
 						color:"#f00",
@@ -50,12 +55,22 @@
 						}
 					}
 				}
+			},
+			"#version":{
+				"font-size":"80%",
+				color:"#aaa",
+				"font-style":"italic"
 			}
+		});
+		
+		$(function(){
+			$("#version").html("Powered by Html v."+Html.version);
 		});
 	</script>
 </head>
 <body>
 	<h1>JStyles Demo Page</h1>
+	<p id="version"></p>
 	<ul class="instruments">
 		<li><a href="#">guitar</a></li>
 		<li><a href="#">trumpet</a></li>

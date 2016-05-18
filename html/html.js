@@ -1,5 +1,5 @@
 var Html = {
-	version: "3.0.844",
+	version: "3.1.846",
 	xhtmlMode: true	
 };
 
@@ -153,6 +153,8 @@ var Html = {
 	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
 	defineNotEmptyTags(["th", "td"]);
 	
+	
+	
 	function writeStyle(defs, sel, stylesheet){
 		if(typeof(defs)=="function") defs = defs();
 		var children = {};
@@ -161,7 +163,7 @@ var Html = {
 		each(defs, function(v, nm){
 			if(typeof(v)=="function") v = v();
 			if(typeof(v)!="object")
-				stylesheet.push([nm, ":", v, ";"].join(" "));
+				stylesheet.push([Html.cssAttributes[nm] || nm, ":", v, ";"].join(" "));
 			else{
 				children[nm] = v;
 			}
@@ -172,8 +174,9 @@ var Html = {
 			writeStyle(cDef, sel+cSel, stylesheet);
 		});
 	}
-	
 
+	Html.cssAttributes = {};
+	
 	Html.stylesheet = function(css){
 		var stylesheet = [];
 		stylesheet.push('<style type="text/css">');
@@ -181,6 +184,10 @@ var Html = {
 			writeStyle(defs, sel, stylesheet);
 		});
 		stylesheet.push('</style>');
-		document.write(stylesheet.join("\n"));
+		return stylesheet.join("\n");
+	}
+	
+	Html.writeStylesheet = function(css){
+		document.write(Html.stylesheet(css));
 	}
 })();
