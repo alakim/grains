@@ -1,5 +1,5 @@
 var Html = {
-	version: "3.1.846",
+	version: "3.2.847",
 	xhtmlMode: true	
 };
 
@@ -179,15 +179,15 @@ var Html = {
 	
 	Html.stylesheet = function(css){
 		var stylesheet = [];
-		stylesheet.push('<style type="text/css">');
 		each(css, function(defs, sel){
 			writeStyle(defs, sel, stylesheet);
 		});
-		stylesheet.push('</style>');
 		return stylesheet.join("\n");
 	}
 	
 	Html.writeStylesheet = function(css){
+		document.write('<style type="text/css">\n');
 		document.write(Html.stylesheet(css));
+		document.write('\n</style>\n');
 	}
 })();
