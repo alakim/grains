@@ -56,6 +56,7 @@ var JDB = (function(){
 	}
 	
 	function first(coll, count){
+		count = count || 1;
 		var res = [];
 		if(coll instanceof Array){
 			for(var i=0; i<count && i<coll.length; i++){
@@ -228,7 +229,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.0",
+		version: "2.0.1",
 		extend: extend,
 		each: each,
 		map: map,
