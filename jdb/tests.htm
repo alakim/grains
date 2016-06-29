@@ -198,6 +198,12 @@ new JSUnit.Test("raw", "Basic Monadic").run = function(){
 	this.assert(JDB(d).raw(), coll); // повторная обертка не приводит к ошибкам
 }
 
+new JSUnit.Test("trace", "Basic Monadic").run = function(){
+	alert("Проверь вывод в консоли массива [1, 2, 3]!");
+	var coll = [1, 2, 3];
+	this.assert(JDB(coll).trace("Тестовый вывод"), coll);
+}
+
 new JSUnit.Test("map", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).map(function(x){return x*2;}).raw(), [2, 4, 6]);
 	this.assert(JDB({x:1, y:2, z:3}).map(function(x){return x*2;}).raw(), {x:2, y:4, z:6});

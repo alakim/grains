@@ -174,6 +174,11 @@ var JDB = (function(){
 		var mon = (function(){
 			return {
 				raw: function(){return coll;},
+				trace: function(msg){
+					if(msg) console.log(msg, coll);
+					else console.log(coll);
+					return coll;
+				},
 				map: function(F){return JDB(map(coll, F));},
 				each: function(F){each(coll, F); return this;},
 				select: function(F){return JDB(select(coll, F));},
@@ -229,7 +234,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.1",
+		version: "2.0.2",
 		extend: extend,
 		each: each,
 		map: map,
