@@ -1,5 +1,5 @@
 var Html = {
-	version: "3.2.847",
+	version: "3.3.850",
 	xhtmlMode: true	
 };
 
@@ -189,5 +189,16 @@ var Html = {
 		document.write('<style type="text/css">\n');
 		document.write(Html.stylesheet(css));
 		document.write('\n</style>\n');
+	}
+	
+	Html.unit = function(name){
+		return 	function(v){
+			if(arguments.length==1) return v+name;
+			var res = [];
+			for(var i=0,a; a=arguments[i],i<arguments.length; i++){
+				res.push(a);
+			}
+			return res.join(name+" ")+name;
+		}
 	}
 })();

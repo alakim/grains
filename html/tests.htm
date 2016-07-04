@@ -353,6 +353,13 @@ new JSUnit.Test("Tag Definitions 2", "Extensions").run = function(){ with(Html){
 	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p></ss>");
 }}
 
+
+new JSUnit.Test("Units", "Extensions").run = function(){
+	var px = Html.unit("px");
+	this.assert(px(22), "22px");
+	this.assert(px(3, 5, 10), "3px 5px 10px");
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version;
 	JSUnit.init();
