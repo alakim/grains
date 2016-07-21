@@ -21,6 +21,13 @@ new JSUnit.Test("each", "Simple Non-monadic").run = function(){
 	this.assert(log, ["0:1", "1:2", "2:3"]);
 }
 
+new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
+	var coll = [{x:1}, {x:2}, {x:3}];
+	var aggr = JDB.aggregate(coll, 0, function(e, aggr){return aggr + e.x;});
+	this.assert(aggr, 6);
+}
+
+
 new JSUnit.Test("select", "Simple Non-monadic").run = function(){
 	this.assert(JDB.select([1, 2, 3], function(x){return x<3;}), [1, 2]);
 	this.assert(JDB.select({x:1, y:2, z:3}, function(x){return x<3;}), {x:1, y:2});
@@ -218,6 +225,11 @@ new JSUnit.Test("each", "Basic Monadic").run = function(){
 	this.assert(log, ["x:1", "y:2", "z:3"]);
 }
 
+new JSUnit.Test("aggregate", "Basic Monadic").run = function(){
+	var coll = [{x:1}, {x:2}, {x:3}];
+	var aggr = JDB(coll).aggregate(0, function(e, aggr){return aggr + e.x;});
+	this.assert(aggr, 6);
+}
 new JSUnit.Test("select", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).select(function(x){return x<3;}).raw(), [1, 2]);
 	this.assert(JDB({x:1, y:2, z:3}).select(function(x){return x<3;}).raw(), {x:1, y:2});

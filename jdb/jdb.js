@@ -10,6 +10,14 @@ var JDB = (function(){
 		}
 	}
 	
+	function aggregate(coll, initial, F){
+		var res = initial;
+		each(coll, function(e){
+			res = F(e, res);
+		});
+		return res;
+	}
+	
 	function extend(o, s, deep){
 		deep = deep || false;
 		for(var k in s){
@@ -181,6 +189,7 @@ var JDB = (function(){
 				},
 				map: function(F){return JDB(map(coll, F));},
 				each: function(F){each(coll, F); return this;},
+				aggregate: function(initial, F){return aggregate(coll, initial, F)},
 				select: function(F){return JDB(select(coll, F));},
 				first: function(count){return JDB(first(coll, count));},
 				page: function(size, nr){return JDB(page(coll, size, nr));},
@@ -234,9 +243,10 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.2",
+		version: "2.0.3",
 		extend: extend,
 		each: each,
+		aggregate: aggregate,
 		map: map,
 		select: select,
 		first: first,
