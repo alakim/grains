@@ -152,25 +152,58 @@ var TimelineEditor = (function($, $H, $R, $D){
 		var paper = $R(pnl[0], size.w, ribbonHeight);
 		paper.rect(0, 0, size.w, ribbonHeight).attr({fill:"#ccc"});
 		var margin = 5;
-		var frWidth = 80;
-		var frmColor = {lo:"#ccf", hi:"#cfc"};
-		var frm = paper.rect(margin, margin, frWidth, ribbonHeight - margin*2).attr({fill:frmColor.lo, stroke:"#88c", cursor:"move"});
+		var frmPrm = {
+			size:{w:80, h:ribbonHeight - margin*2},
+			color:{lo:"#ccf", hi:"#cfc"}
+		};
+		var controlPrm = {
+			w:10,
+			color:{lo:"#cca", hi:"#880"}
+		};
+		var frm = paper.set();
 		
-				
+		var body = paper.rect(margin, margin, frmPrm.size.w, frmPrm.size.h).attr({fill:frmPrm.color.lo, stroke:"#88c", cursor:"move"});
+		var control = paper.rect(margin+frmPrm.size.w, margin, controlPrm.w, frmPrm.size.h).attr({fill:controlPrm.color.lo});
+		
+		frm.push(body, control);
+		frm.data("frmSet", frm);
+		
 		frm.drag(
 			function(dx, dy, x, y, e) {//dragmove
+				if(this==control)return;
 				var pos = this.data("curPos") + dx;
-				if(pos<margin || pos>size.w-frWidth-margin) return;
+				if(pos<margin || pos>size.w-frmPrm.size.w-margin) return;
+				
+				var frmSet = this.data("frmSet");
+				frmSet.transform(this.data("mytransform")+'T'+dx+','+0);
+			},
+			function(x, y, e) {//dragstart
+				var frmSet = this.data("frmSet");
+				frmSet.data("mytransform", this.transform());
+				
+				this.data("curPos", this.getBBox().x);
+				this.attr("fill", frmPrm.color.hi);
+			},
+			function(e) {//dragend
+				this.attr("fill", frmPrm.color.lo);
+			}
+		);
+		control.drag(
+			function(dx, dy, x, y, e) {//dragmove
+				var pos = this.data("curPos") + dx;
 				this.attr({x:pos});
+				
+				body.attr({width: pos - body.attr("x")});
 			},
 			function(x, y, e) {//dragstart
 				this.data("curPos", this.attr("x"));
-				this.attr("fill", frmColor.hi);
+				this.attr("fill", controlPrm.color.hi);
 			},
 			function(e) {//dragend
-				this.attr("fill", frmColor.lo);
+				this.attr("fill", controlPrm.color.lo);
+
 			}
-		);
+		)
 	}
 	
 	function viewControls(){
