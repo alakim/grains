@@ -21,29 +21,55 @@ var TimelineEditor = (function($, $H, $R, $D){
 		return [v1[0]+v2[0], v1[1]+v2[1]];
 	}
 	
+	function labelText(obj){
+		return $H.format("{0} (t:{1}, d:{2})", obj.name, obj.time, obj.duration);
+	}
+	
 	function displayObject(obj, paper){
 		var pict = paper.set();
+		var pos = {
+			x: (obj.time - time.min)*ratio + margin,
+			y: obj.y + margin
+		};
 		
 		var body = paper.rect(
-			(obj.time - time.min)*ratio + margin, 
-			obj.y + margin, 
+			pos.x, 
+			pos.y, 
 			obj.duration*ratio, 
 			objectHeight
 		).attr({fill:objColor.body, stroke:"#008", cursor:"move"});
 		
+		var label = paper.text(
+			pos.x + objectMargin,
+			pos.y - objectHeight/2,
+			//pos.y + objectHeight/2,
+			labelText(obj)
+		).attr({"text-anchor":"start", cursor:"move"});
+		
 		var control = paper.rect(
-			(obj.time - time.min)*ratio + margin + obj.duration*ratio - objectHeight, 
-			obj.y + margin + objectMargin, 
+			pos.x + obj.duration*ratio - objectHeight, 
+			pos.y + objectMargin, 
 			controlSize.w,
 			controlSize.h
 		).attr({fill:objColor.control.lo, cursor:"e-resize"});
 		
-		pict.push(body, control);
+		pict.push(body, control, label);
 		pict.data("pSet", pict);
 		pict.drag(
 			function(dx, dy, x, y, e) {//dragmove
 				if(this==control) return;
 				var pSet = this.data("pSet");
+				//console.log(this.data("mytransform"));
+				//console.log(x, dx);
+				
+				//if(x<0 || x>size.w || y<0 || y>size.h) return;
+				//if(y>size.h) return;
+				
+				//** var bbox = pSet.getBBox();
+				//** //console.log(bbox);
+				//** if((bbox.x2 + dx) > size.w) return;
+				//** if((bbox.y2 + dy) > size.h) return;
+				
 				pSet.transform(this.data("mytransform")+'T'+dx+','+dy);
 			},
 			function(x, y, e) {//dragstart
@@ -54,8 +80,9 @@ var TimelineEditor = (function($, $H, $R, $D){
 				var pSet = this.data("pSet");
 				pSet.data("mytransform", this.transform());
 				var bbox = body.getBBox();
-				obj.time = time.min + bbox.x/ratio;
+				obj.time = Math.round(time.min + bbox.x/ratio);
 				obj.y = bbox.y;
+				label.attr("text", labelText(obj));
 			}
 		);
 		
@@ -72,7 +99,8 @@ var TimelineEditor = (function($, $H, $R, $D){
 			},
 			function(e) {//dragend
 				this.attr("fill", objColor.control.lo);
-				obj.duration = obj.time - (time.min + control.attr("x")/ratio);
+				obj.duration = Math.round(obj.time - (time.min + control.attr("x")/ratio));
+				label.attr("text", labelText(obj));
 			}
 		);
 		
