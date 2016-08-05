@@ -20,6 +20,10 @@
 					padding:px(5),
 					width:px(800),
 					height:px(300)
+				},
+				" #result":{
+					width:px(800),
+					height:px(300)
 				}
 			}
 		});
@@ -35,6 +39,11 @@
 			$(".btAddObject").click(function(){
 				TimelineEditor.addObject();
 			});
+			$(".btHarvest").click(function(){
+				var res = TimelineEditor.harvest();
+				console.log(res);
+				$("#result").val(JSON.stringify(res));
+			});
 		});
 	</script>
 
@@ -44,7 +53,11 @@
 <body>
 	<h1>Timeline Editor Demo Page</h1>
 	<p>Пример реализации редактора таймлайнов</p>
-	<div><input type="button" class="btAddObject" value="Добавить объект"/></div>
+	<div>
+		<input type="button" class="btAddObject" value="Добавить объект"/> 
+		<input type="button" class="btHarvest" value="Показать результат"/>
+	</div>
 	<div id="tledit"></div>
+	<textarea id="result"></textarea>
 </body>
 </html>
