@@ -24,9 +24,16 @@
 			}
 		});
 		
+		var sampleTimeline = [
+			{type:"point", time:2, duration:10, name:"Объект 1", y:10},
+			{type:"point", time:5, duration:3, name:"Объект 2", y:25},
+			{type:"point", time:12, duration:10, name:"Объект 3", y:40}
+		];
+		
 		$(function(){
-			TimelineEditor.init($("#tledit"));
+			TimelineEditor.init($("#tledit"), sampleTimeline);
 			$(".btAddObject").click(function(){
+				TimelineEditor.addObject();
 			});
 		});
 	</script>
