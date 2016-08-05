@@ -1,6 +1,8 @@
 var TimelineEditor = (function($, $H, $R, $D){
-	var size, time, ratio, timeline,
+	var size = {w:800, h:400}, time, ratio, timeline,
 		margin = 10, objectHeight = 20, objectMargin = 3;
+	var ribbonHeight = 50;
+	var controlPanelHeight = 30;
 	var controlSize = {
 		w: objectHeight - objectMargin,
 		h: objectHeight - objectMargin*2
@@ -12,6 +14,28 @@ var TimelineEditor = (function($, $H, $R, $D){
 			hi:"#f00"
 		}
 	};
+	
+	var px = $H.unit("px");
+	$H.writeStylesheet({
+		".timelineEditor":{
+			" .controlPanel":{
+				//width: px(size.w),
+				//height:px(controlPanelHeight),
+				//border:"1px solid #f00"
+			},
+			" .framePanel":{
+				margin:px(10, 0),
+				//width:px(size.w),
+				//height:px(size.h),
+				//border:"1px solid #0f0"
+			},
+			" .ribbonPanel":{
+				//width: px(size.w),
+				//height:px(ribbonHeight),
+				//border:"1px solid #00f"
+			}
+		}
+	});
 	
 	function addObject(type){
 		
@@ -88,13 +112,13 @@ var TimelineEditor = (function($, $H, $R, $D){
 		
 		control.drag(
 			function(dx, dy, x, y, e) {//dragmove
-				var pos = addVect(this.data("curPos"), [dx, dy]);
-				this.attr({x:pos[0]});
-				var bbox = body.getBBox();
-				body.attr({width: pos[0] - body.attr("x") + controlSize.w + objectMargin});
+				var pos = this.data("curPos") + dx;
+				this.attr({x:pos});
+				
+				body.attr({width: pos - body.attr("x") + controlSize.w + objectMargin});
 			},
 			function(x, y, e) {//dragstart
-				this.data("curPos", [this.attr("x"), this.attr("y")]);
+				this.data("curPos", this.attr("x"));
 				this.attr("fill", objColor.control.hi);
 			},
 			function(e) {//dragend
@@ -111,11 +135,68 @@ var TimelineEditor = (function($, $H, $R, $D){
 		return timeline.raw();
 	}
 	
+	function viewFrame(){
+		var pnl = $(".timelineEditor .framePanel");
+		pnl.css({width:size.w, height:size.h});
+		var paper = $R(pnl[0], size.w, size.h);
+		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc"});
+		timeline.each(function(obj){
+			displayObject(obj, paper);
+		});
+	}
+	
+	function viewRibbon(){
+		var pnl = $(".timelineEditor .ribbonPanel");
+		pnl.css({width:size.w, height:ribbonHeight});
+		var paper = $R(pnl[0], size.w, ribbonHeight);
+		paper.rect(0, 0, size.w, ribbonHeight).attr({fill:"#ccc"});
+		var margin = 5;
+		var frWidth = 80;
+		var frmColor = {lo:"#ccf", hi:"#cfc"};
+		var frm = paper.rect(0, margin, frWidth, ribbonHeight - margin*2).attr({fill:frmColor.lo, stroke:"#88c", cursor:"move"});
+		
+				
+		frm.drag(
+			function(dx, dy, x, y, e) {//dragmove
+				var pos = this.data("curPos") + dx;
+				this.attr({x:pos});
+			},
+			function(x, y, e) {//dragstart
+				this.data("curPos", this.attr("x"));
+				this.attr("fill", frmColor.hi);
+			},
+			function(e) {//dragend
+				this.attr("fill", frmColor.lo);
+			}
+		);
+	}
+	
+	function viewControls(){
+		var pnl = $(".timelineEditor .controlPanel");
+		pnl.css({width:size.w, height:controlPanelHeight});
+		pnl.html((function(){with($H){
+			return div(
+				"Продолжительность: ",
+				input({type:"text", "class":"tbDuration", value:time.max - time.min})
+			);
+		}})())
+		.find(".tbDuration").change(function(){
+			var v = parseInt($(this).val());
+			
+		}).end();
+	}
+	
+	
+	
 	function init(pnl, data){pnl=$(pnl); timeline = $D(data).sort("time");
-		size = {
-			w: pnl.width(),
-			h: pnl.height()
-		};
+		pnl.html((function(){with($H){
+			return div({"class":"timelineEditor"},
+				div({"class":"controlPanel"}),
+				div({"class":"framePanel"}),
+				div({"class":"ribbonPanel"})
+			);
+		}})());
+
 		time = (function(){
 			var times = timeline.raw(),
 				last = times[times.length-1];
@@ -126,12 +207,9 @@ var TimelineEditor = (function($, $H, $R, $D){
 		})();
 		ratio = (size.w - margin*2)/(time.max - time.min);
 		
-		var paper = $R(pnl[0], size.w, size.h);
-		paper.rect(0, 0, size.w, size.h).attr({fill:"#ccc"});
-		//paper.circle(20, 20, 10).attr({fill:"#f00"});
-		timeline.each(function(obj){
-			displayObject(obj, paper);
-		});
+		viewControls();
+		viewFrame();
+		viewRibbon();
 	}
 	
 	
