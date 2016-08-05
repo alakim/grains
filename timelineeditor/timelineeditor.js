@@ -1,7 +1,8 @@
 var TimelineEditor = (function($, $H, $R, $D){
 	var size = {w:800, h:400}, time, ratio, timeline,
 		margin = 10, objectHeight = 20, objectMargin = 3;
-	var ribbonHeight = 50;
+
+	var ribbonHeight = 50, frameTime = 30;
 	var controlPanelHeight = 30;
 	var controlSize = {
 		w: objectHeight - objectMargin,
