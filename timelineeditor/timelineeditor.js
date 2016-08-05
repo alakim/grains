@@ -153,12 +153,13 @@ var TimelineEditor = (function($, $H, $R, $D){
 		var margin = 5;
 		var frWidth = 80;
 		var frmColor = {lo:"#ccf", hi:"#cfc"};
-		var frm = paper.rect(0, margin, frWidth, ribbonHeight - margin*2).attr({fill:frmColor.lo, stroke:"#88c", cursor:"move"});
+		var frm = paper.rect(margin, margin, frWidth, ribbonHeight - margin*2).attr({fill:frmColor.lo, stroke:"#88c", cursor:"move"});
 		
 				
 		frm.drag(
 			function(dx, dy, x, y, e) {//dragmove
 				var pos = this.data("curPos") + dx;
+				if(pos<margin || pos>size.w-frWidth-margin) return;
 				this.attr({x:pos});
 			},
 			function(x, y, e) {//dragstart
