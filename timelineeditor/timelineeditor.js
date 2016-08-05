@@ -64,7 +64,7 @@ var TimelineEditor = (function($, $H, $R, $D){
 				var pos = addVect(this.data("curPos"), [dx, dy]);
 				this.attr({x:pos[0]});
 				var bbox = body.getBBox();
-				body.attr({width: pos[0] - bbox.x + controlSize.w + objectMargin});
+				body.attr({width: pos[0] - body.attr("x") + controlSize.w + objectMargin});
 			},
 			function(x, y, e) {//dragstart
 				this.data("curPos", [this.attr("x"), this.attr("y")]);
