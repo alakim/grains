@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Timeline Editor Demo Page</title>
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="lib/jdb.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="lib/raphael-min.js"></script>
+	<script type="text/javascript" src="timelineeditor.js"></script>
+	<script type="text/javascript">
+		var px = Html.unit("px");
+		Html.writeStylesheet({
+			body:{
+				"font-family":"Verdana, Arial, Sans-Serif",
+				"font-size":px(14),
+				" #tledit":{
+					margin:px(10, 25),
+					border:"1px solid #ccc",
+					padding:px(5),
+					width:px(800),
+					height:px(300)
+				}
+			}
+		});
+		
+		$(function(){
+			TimelineEditor.init($("#tledit"));
+			$(".btAddObject").click(function(){
+			});
+		});
+	</script>
+
+
+
+</head>
+<body>
+	<h1>Timeline Editor Demo Page</h1>
+	<p>Пример реализации редактора таймлайнов</p>
+	<div><input type="button" class="btAddObject" value="Добавить объект"/></div>
+	<div id="tledit"></div>
+</body>
+</html>
