@@ -163,7 +163,7 @@ var TimelineEditor = (function($, $H, $R, $D){
 		var frm = paper.set();
 		
 		var body = paper.rect(margin, margin, frmPrm.size.w, frmPrm.size.h).attr({fill:frmPrm.color.lo, stroke:"#88c", cursor:"move"});
-		var control = paper.rect(margin+frmPrm.size.w, margin, controlPrm.w, frmPrm.size.h).attr({fill:controlPrm.color.lo});
+		var control = paper.rect(margin+frmPrm.size.w, margin, controlPrm.w, frmPrm.size.h).attr({fill:controlPrm.color.lo, cursor:"e-resize"});
 		
 		frm.push(body, control);
 		frm.data("frmSet", frm);
