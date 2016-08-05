@@ -9,7 +9,7 @@ var TimelineEditor = (function($, $H, $R, $D){
 		body:"#ffe",
 		control:{
 			lo:"#ffa",
-			hi:"#ff0"
+			hi:"#f00"
 		}
 	};
 	
