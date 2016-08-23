@@ -279,7 +279,7 @@ new JSUnit.Test("index", "Basic Monadic").run = function(){
 
 new JSUnit.Test("keys", "Basic Monadic").run = function(){
 	var obj = {x:3, y:5, z:'slls'};
-	this.assert(JDB(obj).keys(), ["x", "y", "z"]);
+	this.assert(JDB(obj).keys().raw(), ["x", "y", "z"]);
 }
 
 

@@ -200,7 +200,7 @@ var JDB = (function(){
 				first: function(count){return JDB(first(coll, count));},
 				page: function(size, nr){return JDB(page(coll, size, nr));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
-				keys: function(){return JDB.keys(coll);},
+				keys: function(){return JDB(keys(coll));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
 				extend: function(c2, deep){
 					if(typeof(c2.raw)=="function") c2 = c2.raw();
