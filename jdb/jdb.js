@@ -103,6 +103,12 @@ var JDB = (function(){
 		return res;
 	}
 	
+	function keys(obj){
+		var res = [];
+		for(var k in obj) res.push(k);
+		return res;
+	}
+	
 	function groupBy(coll, F){
 		var res;
 		if(typeof(F)=="string"){
@@ -194,6 +200,7 @@ var JDB = (function(){
 				first: function(count){return JDB(first(coll, count));},
 				page: function(size, nr){return JDB(page(coll, size, nr));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
+				keys: function(){return JDB.keys(coll);},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
 				extend: function(c2, deep){
 					if(typeof(c2.raw)=="function") c2 = c2.raw();
@@ -243,7 +250,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.3",
+		version: "2.0.4",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
@@ -252,6 +259,7 @@ var JDB = (function(){
 		first: first,
 		page: page,
 		index: index,
+		keys: keys,
 		groupBy: groupBy,
 		concat: concat,
 		toArray: toArray,

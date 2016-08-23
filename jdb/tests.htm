@@ -69,6 +69,11 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 	this.assert(JDB.index("a;b;c".split(";"), function(x){return x;}, function(x, i){return i;}), {a:0, b:1, c:2});
 }
 
+new JSUnit.Test("keys", "Simple Non-monadic").run = function(){
+	var obj = {x:3, y:5, z:'slls'};
+	this.assert(JDB.keys(obj), ["x", "y", "z"]);
+}
+
 new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
 	var coll = [
 		{salary:100, nm:"John"},
@@ -271,6 +276,12 @@ new JSUnit.Test("index", "Basic Monadic").run = function(){
 	});
 	this.assert(JDB("a;b;c".split(";")).index(function(x){return x;}, function(x, i){return i;}).raw(), {a:0, b:1, c:2});
 }
+
+new JSUnit.Test("keys", "Basic Monadic").run = function(){
+	var obj = {x:3, y:5, z:'slls'};
+	this.assert(JDB(obj).keys(), ["x", "y", "z"]);
+}
+
 
 new JSUnit.Test("groupBy", "Basic Monadic").run = function(){
 	var coll = [
