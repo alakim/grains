@@ -243,6 +243,32 @@ new JSUnit.Test("trace", "Basic Monadic").run = function(){
 new JSUnit.Test("map", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).map(function(x){return x*2;}).raw(), [2, 4, 6]);
 	this.assert(JDB({x:1, y:2, z:3}).map(function(x){return x*2;}).raw(), {x:2, y:4, z:6});
+	this.assert(JDB({x:1, y:2, z:3}).map("x|x*2").raw(), {x:2, y:4, z:6}, "Error lambda");
+	this.assert(JDB({
+		a:{
+			nm:"e1",
+			param:{
+				p1:{nm:"p11"},
+				p2:{nm:"p12"}
+			}
+		},
+		b:{
+			nm:"e2",
+			param:{
+				p1:{nm:"p21"},
+				p2:{nm:"p22"}
+			}
+		}
+	}).map("x|x.param").raw(), {
+		a:{
+			p1:{nm:"p11"},
+			p2:{nm:"p12"}
+		},
+		b:{
+			p1:{nm:"p21"},
+			p2:{nm:"p22"}
+		}
+	}, "Error lambda 2");
 }
 
 new JSUnit.Test("each", "Basic Monadic").run = function(){
