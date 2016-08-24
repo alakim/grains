@@ -84,7 +84,18 @@ var JDB = (function(){
 			}
 		}
 		return res;
-	}	
+	}
+	
+	function flat(arr){
+		if(!arr instanceof Array) return arr;
+		var res = []
+		for(var i=0,el; el=arr[i],i<arr.length; i++){
+			if(el instanceof Array) res = res.concat(el);
+			else res.push(el);
+		}
+		return res;
+	}
+	
 	function page(coll, size, nr){
 		if(nr<1) return [];
 		var res = [],
@@ -216,6 +227,7 @@ var JDB = (function(){
 				aggregate: function(initial, F){return aggregate(coll, initial, F)},
 				select: function(F){return JDB(select(coll, F));},
 				first: function(count){return JDB(first(coll, count));},
+				flat: function(){return JDB(flat(coll))},
 				page: function(size, nr){return JDB(page(coll, size, nr));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				keys: function(){return JDB(keys(coll));},
@@ -268,13 +280,14 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.5",
+		version: "2.0.6",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
 		map: map,
 		select: select,
 		first: first,
+		flat: flat,
 		page: page,
 		index: index,
 		keys: keys,
