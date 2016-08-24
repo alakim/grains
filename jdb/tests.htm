@@ -237,7 +237,7 @@ new JSUnit.Test("raw", "Basic Monadic").run = function(){
 new JSUnit.Test("trace", "Basic Monadic").run = function(){
 	alert("Проверь вывод в консоли массива [1, 2, 3]!");
 	var coll = [1, 2, 3];
-	this.assert(JDB(coll).trace("Тестовый вывод"), coll);
+	this.assert(JDB(coll).trace("Тестовый вывод").raw(), coll);
 }
 
 new JSUnit.Test("map", "Basic Monadic").run = function(){

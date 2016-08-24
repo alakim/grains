@@ -209,7 +209,7 @@ var JDB = (function(){
 				trace: function(msg){
 					if(msg) console.log(msg, coll);
 					else console.log(coll);
-					return coll;
+					return this;
 				},
 				map: function(F){return JDB(map(coll, F));},
 				each: function(F){each(coll, F); return this;},
