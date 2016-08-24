@@ -12,6 +12,7 @@ new JSUnit.Test("Подключение модуля JDB", "Configuration").run = function(){
 new JSUnit.Test("map", "Simple Non-monadic").run = function(){
 	this.assert(JDB.map([1, 2, 3], function(x){return x*2;}), [2, 4, 6]);
 	this.assert(JDB.map({x:1, y:2, z:3}, function(x){return x*2;}), {x:2, y:4, z:6});
+	this.assert(JDB.map({x:1, y:2, z:3}, "x|x*2"), {x:2, y:4, z:6}, "Error lambda");
 }
 
 new JSUnit.Test("each", "Simple Non-monadic").run = function(){
@@ -24,6 +25,7 @@ new JSUnit.Test("each", "Simple Non-monadic").run = function(){
 new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 	var coll = [{x:1}, {x:2}, {x:3}];
 	var aggr = JDB.aggregate(coll, 0, function(e, aggr){return aggr + e.x;});
+	var aggr = JDB.aggregate(coll, 0, "e,aggr|aggr+e.x", "Error lambda");
 	this.assert(aggr, 6);
 }
 
@@ -31,6 +33,7 @@ new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 new JSUnit.Test("select", "Simple Non-monadic").run = function(){
 	this.assert(JDB.select([1, 2, 3], function(x){return x<3;}), [1, 2]);
 	this.assert(JDB.select({x:1, y:2, z:3}, function(x){return x<3;}), {x:1, y:2});
+	this.assert(JDB.select({x:1, y:2, z:3}, "x|x<3"), {x:1, y:2}, "Error lambda");
 }
 
 new JSUnit.Test("first", "Simple Non-monadic").run = function(){
@@ -66,7 +69,13 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
+	this.assert(JDB.index(coll, "e|e.id"), {
+		1:{id:1, nm:"John"},
+		2:{id:2, nm:"Phill"},
+		3:{id:3, nm:"James"}
+	}, "Error lambda 1");
 	this.assert(JDB.index("a;b;c".split(";"), function(x){return x;}, function(x, i){return i;}), {a:0, b:1, c:2});
+	this.assert(JDB.index("a;b;c".split(";"), "x|x", "x,i|i"), {a:0, b:1, c:2}, "Error lambda 2");
 }
 
 new JSUnit.Test("keys", "Simple Non-monadic").run = function(){
@@ -94,6 +103,13 @@ new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
 		],
 		200:[{salary:200, nm:"Phill"}],
 	});
+	this.assert(JDB.groupBy(coll, "e|e.salary"), {
+		100:[
+			{salary:100, nm:"John"},
+			{salary:100, nm:"James"}
+		],
+		200:[{salary:200, nm:"Phill"}],
+	}, "Error lambda");
 }
 
 new JSUnit.Test("extend", "Simple Non-monadic").run = function(){
@@ -173,6 +189,9 @@ new JSUnit.Test("treeToArray", "Simple Non-monadic").run = function(){
 	this.assert(JDB.treeToArray(tree, "children", function(e){return e.nm;}), [
 		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
 	]);
+	this.assert(JDB.treeToArray(tree, "children", "e|e.nm"), [
+		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
+	], "Error lambda");
 	this.assert(JDB.treeToArray(tree, "children", "nm"), [
 		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
 	]);
@@ -191,6 +210,11 @@ new JSUnit.Test("sort", "Simple Non-monadic").run = function(){
 		{salary:100, nm:"John"},
 		{salary:200, nm:"Phill"}
 	]);
+	this.assert(JDB.sort(coll, "a,b|a.salary>b.salary?1:a.salary<b.salary?-1:0"), [
+		{salary:80, nm:"James"},
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"}
+	], "Error lambda");
 	this.assert(JDB.sort(coll, "salary"), [
 		{salary:80, nm:"James"},
 		{salary:100, nm:"John"},

@@ -1,4 +1,13 @@
 var JDB = (function(){
+	function lambda(str){
+		if(!str) return;
+		if(typeof(str)=="function") return str;
+		if(str.indexOf("|")<0) return str;
+		var arr = str.split("|");
+		if(arr.length!=2) return str;
+		return new Function(arr[0], "return "+arr[1]);
+	}
+	
 	function each(coll, F){
 		if(coll instanceof Array){
 			for(var i=0,e; e=coll[i],i<coll.length; i++){
@@ -11,6 +20,7 @@ var JDB = (function(){
 	}
 	
 	function aggregate(coll, initial, F){
+		F = lambda(F);
 		var res = initial;
 		each(coll, function(e){
 			res = F(e, res);
@@ -30,6 +40,7 @@ var JDB = (function(){
 	}
 	
 	function map(coll, F){
+		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
 			res = [];
@@ -47,6 +58,7 @@ var JDB = (function(){
 	}
 	
 	function select(coll, F){
+		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
 			res = [];
@@ -87,6 +99,8 @@ var JDB = (function(){
 	}
 	
 	function index(coll, F, Fobj){
+		F = lambda(F);
+		Fobj = lambda(Fobj);
 		var res;
 		if(typeof(F)=="string"){
 			res = {};
@@ -110,6 +124,7 @@ var JDB = (function(){
 	}
 	
 	function groupBy(coll, F){
+		F = lambda(F);
 		var res;
 		if(typeof(F)=="string"){
 			res = {};
@@ -141,6 +156,7 @@ var JDB = (function(){
 	}
 	
 	function toArray(coll, F){
+		F = lambda(F);
 		if(coll instanceof Array) return coll;
 		res = [];
 		var mapMode = typeof(F)=="function";
@@ -151,6 +167,7 @@ var JDB = (function(){
 	}
 	
 	function treeToArray(coll, childField, F){
+		F = lambda(F);
 		res = [];
 		function tree(nd){
 			var v = typeof(F)=="function"?F(nd):nd[F];
@@ -162,6 +179,7 @@ var JDB = (function(){
 	}
 	
 	function sort(coll, F){
+		F = lambda(F);
 		if(!F){
 			return coll.sort();
 		}
@@ -250,7 +268,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.4",
+		version: "2.0.5",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
