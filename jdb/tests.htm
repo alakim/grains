@@ -21,6 +21,12 @@ new JSUnit.Test("each", "Simple Non-monadic").run = function(){
 	JDB.each(coll, function(e, i){log.push(i+":"+e);});
 	this.assert(log, ["0:1", "1:2", "2:3"]);
 }
+new JSUnit.Test("each on object", "Simple Non-monadic").run = function(){
+	var coll = {a:10, b:20, c:30};
+	var log = [];
+	JDB.each(coll, function(v, k, idx){log.push(idx+":"+k+"="+v);});
+	this.assert(log, ["0:a=10", "1:b=20", "2:c=30"]);
+}
 
 new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 	var coll = [{x:1}, {x:2}, {x:3}];
@@ -291,6 +297,12 @@ new JSUnit.Test("each", "Basic Monadic").run = function(){
 	log = [];
 	this.assert(JDB({x:1, y:2, z:3}).each(function(x, n){log.push(n+":"+x);}).raw(), {x:1, y:2, z:3});
 	this.assert(log, ["x:1", "y:2", "z:3"]);
+}
+new JSUnit.Test("each on object", "Basic Monadic").run = function(){
+	var coll = {a:10, b:20, c:30};
+	var log = [];
+	this.assert(JDB(coll).each(function(v, k, idx){log.push(idx+":"+k+"="+v);}).raw(), coll);
+	this.assert(log, ["0:a=10", "1:b=20", "2:c=30"]);
 }
 
 new JSUnit.Test("aggregate", "Basic Monadic").run = function(){

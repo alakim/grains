@@ -15,7 +15,8 @@ var JDB = (function(){
 			}
 		}
 		else{
-			for(var k in coll) F(coll[k], k);
+			var idx = 0;
+			for(var k in coll) F(coll[k], k, idx++);
 		}
 	}
 	
@@ -280,7 +281,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.6",
+		version: "2.0.7",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
