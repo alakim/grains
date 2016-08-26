@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="../html/html.js"></script>
+	<script type="text/javascript" src="../coollab/lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="jdb.js"></script>
+	<script type="text/javascript">
+		var px = Html.unit("px");
+		Html.writeStylesheet({
+			body:{
+				"font-family":"Verdana, Arial, Sans-Serif",
+				"font-size":px(14),
+				" .propList":{
+					"text-indent":px(0),
+					padding:px(0, 0, 0, 20),
+					" .type":{"font-style":"italic"},
+					" .name":{
+						"font-weight":"bold"
+					},
+					" p":{margin:0, padding:0, "text-indent":px(20)},
+					" ol":{padding:px(0, 0, 0, 35)}
+				},
+				" span.code":{
+					"font-family":"Courier New, Monospace",
+					background:"#fff",
+					padding:px(2)
+				}
+			}
+		});
+		$(function(){
+			function lambdaAvailable(){with(Html){
+				return p("Функция может быть задана ",  a({href:"#lambda"}, "лямбда-выражением"), ".");
+			}}
+			function code(cc){with(Html){
+				return span({"class":"code"}, cc);
+			}}
+			function param(nm, dsc){with(Html){
+				return li(span({"class":"name"}, nm), " - ", dsc)
+			}}
+			$("body").html((function(){with(Html){
+				return div(
+					h1("Руководство по использованию скриптового модуля JDB"),
+					p("Библиотека JDB (JSON Data Base) предназначена для выполнения операций поиска, сортировки, и различных преобразований над структурами данных в формате JSON."),
+					p("Текущая версия библиотеки JDB v.", JDB.version),
+					p("Основные свойства и методы: "),
+					ul({"class":"propList"},
+						apply(JDB, function(m, nm){
+							return li(
+								span({"class":"type"}, typeof(m)), " ",
+								span({"class":"name"}, nm),
+								{
+									version:" - текущий номер версии",
+									extend:"(o, s, deep) - копирует свойства структуры s в объект o. Если указан deep=true (по умолчанию false), то производится глубокое копирование"
+								}[nm]
+							);
+						})
+					),
+					p("Библиотека допускает работу в монадном стиле. Для этого следует обернуть исходную JSON-структуру функцией ", code("JDB"),", например: ", code("JDB({x:1, y:2, name:\"item#2\"})"),", в результате чего получим объект (\"монаду\"), имеющий следующие методы, каждый из которых возвращает объект, являющийся оберткой новой структуры данных, имеющей тот же самый набор методов. В результате, над исходной структурой данных можно производить последовательные действия, например: ", code("JDB([{x:1}, {x:3}]).select(\"x|x<2\").map(\"x|x*10\").raw()"), ", в результате чего получим массив ", code("[{x:10}]"),"."),
+					p("Доступные методы:"),
+					ul({"class":"propList"},
+						apply(JDB([]), function(m, nm){
+							return li(
+								span({"class":"type"}, typeof(m)), " ",
+								span({"class":"name"}, nm),
+								{
+									raw:"() - возвращает структуру данных без обертки (вызов этого метода завершает работу в монадном стиле)",
+									trace:"(msg) - трассировка, выводит текущее значение структуры данных на консоль, сопровождая сообщением msg (если указано)",
+									map:"(F) - модифицирует все элементы первого уровня структуры данных, применяя к ним функцию F."+p("В функцию F передаются следующие параметры:") + ol(
+										param("val", "значение элемента структуры"),
+										param("key", "ключ данного элемента")
+									) + lambdaAvailable(),
+									each:"(F) - для каждого элемента первого уровня структуры данных вызывает функцию F, получающую следующие параметры: " + ol(
+										param("val", "значение элемента структуры"),
+										param("key", "ключ данного элемента"),
+										param("i", "номер итерации при обходе элементов (если структура является массивом, этот номер совпадает со значением ключа)")
+									) + lambdaAvailable()
+								}[nm]
+							);
+						})
+					),
+					div(
+						a({name:"lambda"}),
+						h2("Использование лямбда-выражений")
+					)
+				);
+			}})());
+		});
+	</script>
+</head>
+<body>
+</body>
+</html> 
