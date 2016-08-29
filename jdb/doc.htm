@@ -40,14 +40,18 @@
 			}
 		});
 		$(function(){
-			function lambdaAvailable(){with(Html){
-				return p("Функция может быть задана ",  a({href:"#lambda"}, "лямбда-выражением"), ".");
+			function lambdaAvailable(fName){with(Html){
+				fName = fName || "F";
+				return p("Функция ", code(fName)," может быть задана ",  a({href:"#lambda"}, "лямбда-выражением"), ".");
 			}}
 			function code(cc){with(Html){
 				return span({"class":"code"}, cc);
 			}}
 			function param(nm, dsc){with(Html){
 				return li(span({"class":"name"}, nm), " - ", dsc)
+			}}
+			function fParams(str){with(Html){
+				return span({"class":"fName"}, "(", str, ")");
 			}}
 			var common = {
 				each: function(){with(Html){
@@ -62,6 +66,35 @@
 						param("val", "значение элемента структуры"),
 						param("key", "ключ данного элемента")
 					) + lambdaAvailable());
+				}},
+				aggregate: function(monadic){with(Html){
+					return markup(
+						" - возвращает агрегированное значение по всем элементам заданной коллекции ", monadic?"":code("coll"), ". Параметры",
+						ol(
+							monadic?null:param("coll", "исходная коллекция"),
+							param("initial", "задает начальное значения для вычисления агрегата"),
+							param("F", "функция, возвращающая агрегированное значение на каждой итерации. Получает следующие параметры:",
+								ol(
+									param("el", "очередной элемент коллекции"),
+									param("res", "текущее агрегированное значение")
+								)
+							)
+						),
+						p("Пример: ", 
+							monadic?code("JDB([{x:1}, {x:2}, {x:3}]).aggregate(0, function(e, aggr){return aggr + e.x;}")
+							:code("JDB.aggregate([{x:1}, {x:2}, {x:3}], 0, \"e,aggr|aggr+e.x\")")
+						),
+						lambdaAvailable()
+					);
+				}},
+				keys: function(monadic){with(Html){
+					return markup(" - Возвращает коллекцию ключей исходной коллекции ", monadic?"":code("coll"),".");
+				}},
+				groupBy: function(monadic){with(Html){
+					return markup(" - группирует элементы исходной коллекции ", monadic?"":code("coll"), ". Параметры:", ol(
+						monadic?null:param("coll", "исходная коллекция"),
+						param("F", "функция, возвращающая значение, по которому производится группировка")
+					), lambdaAvailable());
 				}}
 			};
 			$("body").html((function(){with(Html){
@@ -77,18 +110,23 @@
 								span({"class":"fName"}, nm),
 								{
 									version:" - текущий номер версии",
-									extend:span({"class":"fName"}, "(o, s, deep)") + " - копирует свойства структуры s в объект o. Если указан "+code("deep=true")+" (по умолчанию "+code("false")+"), то производится глубокое копирование",
-									each:span({"class":"fName"}, "(coll, F)")+ " - для каждого элемента первого уровня структуры данных "+code("coll")+" вызывает функцию "+code("F")+common.each(),
-									map:span({"class":"fName"}, "(coll, F)")+ " - модифицирует все элементы первого уровня структуры данных "+code("coll")+", применяя к ним функцию F."+common.map(),
-									select:span({"class":"fName"}, "(coll, F)")+ " - выбирает из первого уровня структуры данных "+code("coll")+" элементы, отвечающие условию, задаваемому функцией "+code("F")+"."+lambdaAvailable(),
-									first:span({"class":"fName"}, "(coll)")+ " - возвращает коллекцию, содержащую первый элемент верхнего уровня исходной структуры данных "+code("coll")+". "+ lambdaAvailable(),
-									flat:span({"class":"fName"}, "(coll)")+ " - преобразует структуру "+code("coll")+" вида \"массив массивов\" в \"плоский\" массив. "+ lambdaAvailable(),
-									page:span({"class":"fName"}, "(coll, size, nr)")+ " - постраничное отображение массива "+code("coll")+". Возвращает страницу размером "+code("size")+", заданную номером "+code("nr")+". "+ lambdaAvailable(),
-									index:span({"class":"fName"}, "(coll, cond, constr)")+ " - формирует индекс элементов исходной структуры данных. Параметры: "+ol(
+									extend:fParams("o, s, deep") + " - копирует свойства структуры s в объект o. Если указан "+code("deep=true")+" (по умолчанию "+code("false")+"), то производится глубокое копирование",
+									each:fParams("coll, F")+ " - для каждого элемента первого уровня структуры данных "+code("coll")+" вызывает функцию "+code("F")+common.each(),
+									map:fParams("coll, F")+ " - модифицирует все элементы первого уровня структуры данных "+code("coll")+", применяя к ним функцию F."+common.map(),
+									select:fParams("coll, F")+ " - выбирает из первого уровня структуры данных "+code("coll")+" элементы, отвечающие условию, задаваемому функцией "+code("F")+"."+lambdaAvailable(),
+									first:fParams("coll")+ " - возвращает коллекцию, содержащую первый элемент верхнего уровня исходной структуры данных "+code("coll")+". "+ lambdaAvailable(),
+									flat:fParams("coll")+ " - преобразует структуру "+code("coll")+" вида \"массив массивов\" в \"плоский\" массив. ",
+									page:fParams("coll, size, nr")+ " - постраничное отображение массива "+code("coll")+". Возвращает страницу размером "+code("size")+", заданную номером "+code("nr")+". ",
+									index:fParams("coll, cond, constr")+ " - формирует индекс элементов исходной структуры данных. Параметры: "+ol(
 										param("coll", "исходная структура данных"),
 										param("cond", "условие индексирования - имя поля, по которому производится индексирование, или функция, возвращающая индексируемое значение"),
 										param("constr", "необязательный конструктор элемента индекса. Если задан, преобразует элемент данных исходной структуры в элемент индекса.")
-									)+ lambdaAvailable()
+									)+ lambdaAvailable("cond"),
+									aggregate:fParams("coll, initial, F")+ common.aggregate(),
+									keys:fParams("coll")+common.keys(),
+									groupBy:fParams("coll")+common.groupBy(),
+									concat:fParams("coll, c2")+" - добавляет элементы массива "+code("c2")+" к исходной коллекции "+code("coll"),
+									toArray:fParams("coll")+" - преобразует исходную коллекцию-объект в коллекцию-массив"
 								}[nm]
 							);
 						})
@@ -101,18 +139,24 @@
 								span({"class":"type"}, typeof(m)), " ",
 								span({"class":"fName"}, nm),
 								{
-									raw:span({"class":"fName"}, "()")+ " - возвращает структуру данных без обертки (вызов этого метода завершает работу в монадном стиле)",
-									trace:span({"class":"fName"}, "(msg)")+ " - трассировка, выводит текущее значение структуры данных на консоль, сопровождая сообщением msg (если указано)",
-									map:span({"class":"fName"}, "(F)")+ " - модифицирует все элементы первого уровня структуры данных, применяя к ним функцию F."+common.map(),
-									each:span({"class":"fName"}, "(F)")+ " - для каждого элемента первого уровня структуры данных вызывает функцию "+code("F")+common.each(),
-									select:span({"class":"fName"}, "(F)")+ " - выбирает из первого уровня структуры данных элементы, отвечающие условию, задаваемому функцией "+code("F")+". "+lambdaAvailable(),
-									first:span({"class":"fName"}, "()")+ " - возвращает коллекцию, содержащую первый элемент верхнего уровня исходной структуры данных. "+ lambdaAvailable(),
-									flat:span({"class":"fName"}, "()")+ " - преобразует структуру вида \"массив массивов\" в \"плоский\" массив. "+ lambdaAvailable(),
-									page:span({"class":"fName"}, "(size, nr)")+ " - постраничное отображение массива. Возвращает страницу размером "+code("size")+", заданную номером "+code("nr")+". "+ lambdaAvailable(),
-									index:span({"class":"fName"}, "(cond, constr)")+ " - формирует индекс элементов исходной структуры данных. Параметры: "+ol(
+									raw:fParams()+ " - возвращает структуру данных без обертки (вызов этого метода завершает работу в монадном стиле)",
+									extend:fParams("s, deep") + " - расширяет исходную коллекцию, копируя в нее свойства структуры s. Если указан "+code("deep=true")+" (по умолчанию "+code("false")+"), то производится глубокое копирование",
+									trace:fParams("msg")+ " - трассировка, выводит текущее значение структуры данных на консоль, сопровождая сообщением msg (если указано)",
+									map:fParams("F")+ " - модифицирует все элементы первого уровня структуры данных, применяя к ним функцию F."+common.map(),
+									each:fParams("F")+ " - для каждого элемента первого уровня структуры данных вызывает функцию "+code("F")+common.each(),
+									select:fParams("F")+ " - выбирает из первого уровня структуры данных элементы, отвечающие условию, задаваемому функцией "+code("F")+". "+lambdaAvailable(),
+									first:fParams()+ " - возвращает коллекцию, содержащую первый элемент верхнего уровня исходной структуры данных. "+ lambdaAvailable(),
+									flat:fParams()+ " - преобразует структуру вида \"массив массивов\" в \"плоский\" массив. ",
+									page:fParams("size, nr")+ " - постраничное отображение массива. Возвращает страницу размером "+code("size")+", заданную номером "+code("nr")+". ",
+									index:fParams("cond, constr")+ " - формирует индекс элементов исходной структуры данных. Параметры: "+ol(
 										param("cond", "условие индексирования - имя поля, по которому производится индексирование, или функция, возвращающая индексируемое значение"),
 										param("constr", "необязательный конструктор элемента индекса. Если задан, преобразует элемент данных исходной структуры в элемент индекса.")
-									)+ lambdaAvailable()
+									)+ lambdaAvailable("cond"),
+									aggregate:fParams("coll, initial, F")+ common.aggregate(true),
+									keys:fParams()+common.keys(true),
+									groupBy:fParams()+common.groupBy(true),
+									concat:fParams("c2")+" - добавляет элементы массива "+code("c2")+" к исходной коллекции.",
+									toArray:fParams()+" - преобразует исходную коллекцию-объект в коллекцию-массив"
 								}[nm]
 							);
 						})

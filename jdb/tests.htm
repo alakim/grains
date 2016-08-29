@@ -31,8 +31,8 @@ new JSUnit.Test("each on object", "Simple Non-monadic").run = function(){
 new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 	var coll = [{x:1}, {x:2}, {x:3}];
 	var aggr = JDB.aggregate(coll, 0, function(e, aggr){return aggr + e.x;});
-	var aggr = JDB.aggregate(coll, 0, "e,aggr|aggr+e.x", "Error lambda");
-	this.assert(aggr, 6);
+	var aggr = JDB.aggregate(coll, 0, "e,aggr|aggr+e.x");
+	this.assert(aggr, 6, "Error lambda");
 }
 
 
