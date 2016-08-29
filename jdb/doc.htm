@@ -93,7 +93,20 @@
 				groupBy: function(monadic){with(Html){
 					return markup(" - группирует элементы исходной коллекции ", monadic?"":code("coll"), ". Параметры:", ol(
 						monadic?null:param("coll", "исходная коллекция"),
-						param("F", "функция, возвращающая значение, по которому производится группировка")
+						param("F", "функция, возвращающая значение, по которому производится группировка. Вместо функции может быть передано имя поля элемента исходной коллекции, из которого выбирается значение для группировки.")
+					), lambdaAvailable());
+				}},
+				sort: function(monadic){with(Html){
+					return markup(" - сортирует элементы исходной коллекции "+(monadic?"":code("coll"))+" по условию, заданному функцией "+code("F")+". Вместо функции может быть передано имя поля элемента коллекции, из которого выбирается значение для сортировки.", lambdaAvailable());
+				}},
+				reverse: function(monadic){with(Html){
+					return markup(" - изменяет порядок элементов исходной коллекции ", (monadic?"":code("coll"))," на обратный");
+				}},
+				treeToArray: function(monadic){with(Html){
+					return markup(" - преобразует исходную иерархическую структуру "+(monadic?"":code("coll"))+" в массив. Параметры:", ol(
+						monadic?null:param("coll", "исходная структура"),
+						param("childField", "имя поля, содержащего список дочерних элементов, данного узла"),
+						param("F", "функция, возвращающая данные, помещаемые в целевой массив. Вместо функции может быть передано имя поля элемента исходной структуры, содержащего необходимые данные")
 					), lambdaAvailable());
 				}}
 			};
@@ -126,7 +139,17 @@
 									keys:fParams("coll")+common.keys(),
 									groupBy:fParams("coll")+common.groupBy(),
 									concat:fParams("coll, c2")+" - добавляет элементы массива "+code("c2")+" к исходной коллекции "+code("coll"),
-									toArray:fParams("coll")+" - преобразует исходную коллекцию-объект в коллекцию-массив"
+									toArray:fParams("coll")+" - преобразует исходную коллекцию-объект в коллекцию-массив",
+									sort:fParams("coll, F")+common.sort(),
+									reverse:fParams("coll")+common.reverse(),
+									treeToArray:fParams("coll, childField, F")+common.treeToArray(),
+									Dictionary: fParams()+" - создает контейнерный объект типа \"словарь\", имеющий следующие методы:"+ol(
+										li(span({"class":"fName"}, "empty()"), " - возвращает признак отсутствия содержимого словаря"),
+										li(span({"class":"fName"}, "set(name, val)"), " - записывает значение "+code("val")+" под ключом "+code("name")),
+										li(span({"class":"fName"}, "get(name)"), " - возвращает значение, записанное под ключом "+code("name")),
+										li(span({"class":"fName"}, "count()"), " - возвращает количество записанных значений"),
+										li(span({"class":"fName"}, "data()"), " - возвращает данные словаря в виде JSON-объекта")
+									)
 								}[nm]
 							);
 						})
@@ -156,7 +179,10 @@
 									keys:fParams()+common.keys(true),
 									groupBy:fParams()+common.groupBy(true),
 									concat:fParams("c2")+" - добавляет элементы массива "+code("c2")+" к исходной коллекции.",
-									toArray:fParams()+" - преобразует исходную коллекцию-объект в коллекцию-массив"
+									toArray:fParams()+" - преобразует исходную коллекцию-объект в коллекцию-массив",
+									sort:fParams("F")+common.sort(true),
+									reverse:fParams()+common.reverse(true),
+									treeToArray:fParams("childField, F")+common.treeToArray(true)
 								}[nm]
 							);
 						})
