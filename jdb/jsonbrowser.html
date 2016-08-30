@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>JSON Data Browser</title>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="jdb.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="lib/jsonbrowser.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			//JsonBrowser.init(".browser", DB.prototype.jsondata);
+			$("#btLoadUrl").click(function(){
+				var url = $("#tbUrl").val();
+				console.log("loading from ", url);
+				$.get(url, {}, function(data){
+					console.log(data);
+				});
+			});
+			$("#btLoadJSON").click(function(){
+				var json = $("#tbJson").val();
+				JsonBrowser.init(".browser", JSON.parse(json));
+			});
+			
+		});
+	</script>
+
+</head>
+<body>
+	<h1>JSON Data Browser</h1>
+	<!--div>
+		URL:
+		<input type="text" id="tbUrl"/> 
+		<input type="button" id="btLoadUrl" value="Load"/>
+	</div-->
+	<div>
+		JSON: data = 
+		<textarea id="tbJson" style="width:500px; height:30px;"></textarea>
+		<input type="button" id="btLoadJSON" value="Load"/>
+	</div>
+	<div>
+		JDB Query: 
+		<textarea id="tbQuery" style="width:500px; height:30px;"></textarea>
+		<input type="button" class="btExecQuery" value="Exec"/>
+	</div>
+	<div class="browser"></div>
+</body>
+</html>
