@@ -15,7 +15,8 @@ var JsonBrowser = (function($, $D, $H){
 			" .nodeName":{"font-weight":"bold"},
 			" div.nodeName":{
 				"float":"left"
-			}
+			},
+			" span.name":{"font-weight":"bold"}
 		}
 	});
 		
