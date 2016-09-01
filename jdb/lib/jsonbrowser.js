@@ -63,14 +63,16 @@ var JsonBrowser = (function($, $D, $H){
 	return {
 		init: function(pnl, data){pnl=$(pnl);
 			levelView(pnl, data)
-		
+			$(".btExecQuery").prop("disabled", false);
 			$(".btExecQuery").click(function(){
 				var query = $("#tbQuery").val();
 				//var data = DB.prototype.jsondata;
 				if(query || query.length){
 					var F = new Function("data", "return "+query+";");
+					var res = F(data);
 					//data = F(data);
-					levelView(pnl, F(data));
+					levelView(pnl, res);
+					$("#tbJsonRes").val(JSON.stringify(res));
 				}
 			});
 		}

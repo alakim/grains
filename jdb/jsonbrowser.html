@@ -29,21 +29,33 @@
 </head>
 <body>
 	<h1>JSON Data Browser</h1>
-	<!--div>
-		URL:
-		<input type="text" id="tbUrl"/> 
-		<input type="button" id="btLoadUrl" value="Load"/>
-	</div-->
-	<div>
-		JSON: data = 
-		<textarea id="tbJson" style="width:500px; height:30px;"></textarea>
-		<input type="button" id="btLoadJSON" value="Load"/>
-	</div>
-	<div>
-		JDB Query: 
-		<textarea id="tbQuery" style="width:500px; height:30px;"></textarea>
-		<input type="button" class="btExecQuery" value="Exec"/>
-	</div>
+	<table>
+		<!--tr>
+			URL:
+			<input type="text" id="tbUrl"/> 
+			<input type="button" id="btLoadUrl" value="Load"/>
+		</tr-->
+		<tr>
+			<td>JSON data</td> 
+			<td>
+				<textarea id="tbJson" style="width:500px; height:30px;"></textarea>
+				<input type="button" id="btLoadJSON" value="Load"/>
+			</td>
+		</tr>
+		<tr>
+			<td>JDB Query</td>
+			<td>
+				<textarea id="tbQuery" style="width:500px; height:30px;"></textarea>
+				<input type="button" class="btExecQuery" disabled="true" value="Exec"/>
+			</td>
+		</tr>
+		<tr>
+			<td>Result</td>
+			<td>
+				<textarea id="tbJsonRes" readonly="true" style="width:500px; height:30px;"></textarea>
+			</td>
+		</tr>
+	</table>
 	<div class="browser"></div>
 </body>
 </html>
