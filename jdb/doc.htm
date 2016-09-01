@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Руководство по использованию скриптового модуля JDB</title>
+	<title>JDB - руководство</title>
 	<script type="text/javascript" src="lib/html.js"></script>
 	<script type="text/javascript" src="lib/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="jdb.js"></script>
@@ -64,7 +64,8 @@
 				map: function(){with(Html){
 					return markup(p("В функцию F передаются следующие параметры:") + ol(
 						param("val", "значение элемента структуры"),
-						param("key", "ключ данного элемента")
+						param("key", "ключ данного элемента"),
+						param("i", "номер итерации при обходе элементов (если структура является массивом, этот номер совпадает со значением ключа)")
 					) + lambdaAvailable());
 				}},
 				aggregate: function(monadic){with(Html){
@@ -112,7 +113,7 @@
 			};
 			$("body").html((function(){with(Html){
 				return div(
-					h1("Руководство по использованию скриптового модуля JDB"),
+					h1("Руководство по использованию скриптового модуля JDB v.", JDB.version),
 					p("Библиотека JDB (JSON Data Base) предназначена для выполнения операций поиска, сортировки, и различных преобразований над структурами данных в формате JSON."),
 					p("Текущая версия библиотеки JDB v.", JDB.version),
 					p("Основные свойства и методы: "),

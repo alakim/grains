@@ -13,6 +13,10 @@ new JSUnit.Test("map", "Simple Non-monadic").run = function(){
 	this.assert(JDB.map([1, 2, 3], function(x){return x*2;}), [2, 4, 6]);
 	this.assert(JDB.map({x:1, y:2, z:3}, function(x){return x*2;}), {x:2, y:4, z:6});
 	this.assert(JDB.map({x:1, y:2, z:3}, "x|x*2"), {x:2, y:4, z:6}, "Error lambda");
+	this.assert(
+		JDB.map({a:5, b:4, c:3}, "x,nm,idx|{v:x,id:idx}"),
+		{a:{v:5, id:0}, b:{v:4, id:1}, c:{v:3, id:2}}
+	);
 }
 
 new JSUnit.Test("each", "Simple Non-monadic").run = function(){
@@ -288,6 +292,10 @@ new JSUnit.Test("map", "Basic Monadic").run = function(){
 			p2:{nm:"p22"}
 		}
 	}, "Error lambda 2");
+	this.assert(
+		JDB({a:5, b:4, c:3}).map("x,nm,idx|{v:x,id:idx}").raw(),
+		{a:{v:5, id:0}, b:{v:4, id:1}, c:{v:3, id:2}}
+	);
 }
 
 new JSUnit.Test("each", "Basic Monadic").run = function(){

@@ -46,13 +46,14 @@ var JDB = (function(){
 		if(coll instanceof Array){
 			res = [];
 			each(coll, function(e, i){
-				res.push(F(e, i));
+				res.push(F(e, i, i));
 			});
 		}
 		else{
 			res = {};
+			var idx = 0;
 			each(coll, function(e, k){
-				res[k] = (F(e, k));
+				res[k] = (F(e, k, idx++));
 			});
 		}
 		return res;
@@ -281,7 +282,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.7",
+		version: "2.0.8",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
