@@ -16,7 +16,8 @@ var JsonBrowser = (function($, $D, $H){
 			" div.nodeName":{
 				"float":"left"
 			},
-			" span.name":{"font-weight":"bold"}
+			" span.name":{"font-weight":"bold"},
+			" .hint":{"font-size":"70%", color:"#ccc"}
 		}
 	});
 		
@@ -64,8 +65,7 @@ var JsonBrowser = (function($, $D, $H){
 	return {
 		init: function(pnl, data){pnl=$(pnl);
 			levelView(pnl, data)
-			$(".btExecQuery").prop("disabled", false);
-			$(".btExecQuery").click(function(){
+			$(".btExecQuery").prop("disabled", false).click(function(){
 				var query = $("#tbQuery").val();
 				//var data = DB.prototype.jsondata;
 				if(query || query.length){
@@ -75,6 +75,18 @@ var JsonBrowser = (function($, $D, $H){
 					levelView(pnl, res);
 					$("#tbJsonRes").val(JSON.stringify(res));
 				}
+			});
+			$(".btTransform").prop("disabled", false).click(function(){
+				var json = $("#tbJsonRes").val();
+				if(!json && !json.length) json = $("#tbJson").val();
+				var data = JSON.parse(json);
+				var rule = $("#tbTransformRule").val();
+				//rule = eval(rule);
+				rule = new Function("", "return "+rule+";");
+				rule = rule();
+				var res = rule(data);
+				$("#tbTransformRes").val(res);
+				
 			});
 		}
 	};

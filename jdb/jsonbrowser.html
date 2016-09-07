@@ -43,7 +43,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td><span class="name">JDB Query</span></td>
+			<td>
+				<span class="name">JDB Query</span>
+				<div class="hint">e.g. JDB(data).map("x|x*2").raw()</div>
+			</td>
 			<td>
 				<textarea id="tbQuery" style="width:500px; height:30px;"></textarea>
 				<input type="button" class="btExecQuery" disabled="true" value="Exec"/>
@@ -55,6 +58,17 @@
 				<textarea id="tbJsonRes" readonly="true" style="width:500px; height:30px;"></textarea>
 			</td>
 		</tr>
+		<tr>
+			<td width="250">
+				<span class="name">Transformation Rule</span>
+				<div class="hint">e.g. function(data){with(Html){return div(apply(data, function(v){return p("v: ", v.v);}));}}</div>
+			</td>
+			<td>
+				<textarea id="tbTransformRule" style="width:500px; height:30px;"></textarea>
+				<input type="button" class="btTransform" disabled="true" value="Apply"/>
+			</td>
+		</tr>
+		<tr><td colspan="2"><textarea id="tbTransformRes" style="width:100%; height:30px;"></textarea></td></tr>
 	</table>
 	<div class="browser"></div>
 </body>
