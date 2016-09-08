@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Parser Demo Page</title>
+	<script type="text/javascript" src="html.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="parser.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		var source = [
+			"guitar 24 16000 rub",
+			"clarinet 24000 rub",
+			"trumpet 19000 rub"
+		].join("");
+
+		var res = Parser(source)
+			.line()
+			.string("guitar", function(){this.data.current = new Guitar()}).spaces()
+			.number(function(){this.data.current.frets = parseInt(this.match)}).spaces()
+			.number(function(){this.data.current.price = parseInt(this.match)}).spaces()
+			.string(rub)
+	})
+
+	</script>
+</head>
+<body>
+	<h1>Parser Demo Page</h1>
+
+</body>
+</html>
