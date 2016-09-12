@@ -215,6 +215,7 @@ var JDB = (function(){
 	}
 	
 	function JDB(coll){
+		if(!coll) coll = [];
 		if(typeof(coll.raw)=="function") coll = coll.raw();
 		var mon = (function(){
 			return {
@@ -282,7 +283,7 @@ var JDB = (function(){
 	}
 	
 	extend(JDB, {
-		version: "2.0.8",
+		version: "2.0.9",
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
