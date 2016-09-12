@@ -281,9 +281,33 @@ var JDB = (function(){
 			return data;
 		}
 	}
+		
+	function compareVersions(v1, v2){
+		if(v1==v2) return 0;
+		v1 = v1.split(".");
+		v2 = v2.split(".");
+		for(var i=0; i<3; i++){
+			var a = parseInt(v1[i], 10),
+				b = parseInt(v2[i], 10);
+			
+			if(a<b) return -1;
+			if(a>b) return 1;
+		}
+		return 0;
+	}
 	
-	extend(JDB, {
-		version: "2.0.9",
+	function version(num){
+		if(!num) return topVersion;
+		for(var k in interfaces){
+			if(compareVersions(num, k)<=0) return interfaces[k];
+		}
+		alert("JDB version "+num+" not supported");
+	}
+	
+	var topVersion = "2.0.10"
+	
+	var intrf = {
+		version: version,
 		extend: extend,
 		each: each,
 		aggregate: aggregate,
@@ -301,6 +325,14 @@ var JDB = (function(){
 		sort: sort,
 		reverse: reverse,
 		Dictionary: Dictionary
-	});
+	};
+	
+	if(typeof(JSUnit)=="object") intrf.compareVersions = compareVersions;
+	
+	var interfaces = {};
+	interfaces[topVersion] = intrf;
+	
+	extend(JDB, intrf);
+	
 	return JDB;
 })();
