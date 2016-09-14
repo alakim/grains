@@ -112,6 +112,7 @@ var JDB = (function(){
 	}
 	
 	function index(coll, F, Fobj){
+		if(!F) F = function(x){return x;};
 		F = lambda(F);
 		Fobj = lambda(Fobj);
 		var res;
@@ -304,7 +305,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "2.0.10"
+	var topVersion = "3.0.0"
 	
 	var intrf = {
 		version: version,

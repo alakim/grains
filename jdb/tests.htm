@@ -1,11 +1,11 @@
 <html>
 <head>
-<meta charset="windows-1251"/>
+<meta charset="utf-8"/>
 <title>JDB Unit Tests</title>
 <script type="text/javascript" src="../tools/jsUnit.js"></script>
 <script type="text/javascript" src="jdb.js"></script>
 <script type="text/javascript">
-new JSUnit.Test("Подключение модуля JDB", "Configuration").run = function(){
+new JSUnit.Test("РџРѕРґРєР»СЋС‡РµРЅРёРµ РјРѕРґСѓР»СЏ JDB", "Configuration").run = function(){
 	this.assert(typeof(JDB), "function");
 }
 
@@ -115,6 +115,7 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 	}, "Error lambda 1");
 	this.assert(JDB.index("a;b;c".split(";"), function(x){return x;}, function(x, i){return i;}), {a:0, b:1, c:2});
 	this.assert(JDB.index("a;b;c".split(";"), "x|x", "x,i|i"), {a:0, b:1, c:2}, "Error lambda 2");
+	this.assert(JDB.index(["a", "b", "c", "a"]), {a:"a", b:"b", c:"c"});
 }
 
 new JSUnit.Test("keys", "Simple Non-monadic").run = function(){
@@ -270,13 +271,13 @@ new JSUnit.Test("raw", "Basic Monadic").run = function(){
 	var coll = [1, 2, 3];
 	var d = JDB(coll);
 	this.assert(d.raw(), coll);
-	this.assert(JDB(d).raw(), coll); // повторная обертка не приводит к ошибкам
+	this.assert(JDB(d).raw(), coll); // РїРѕРІС‚РѕСЂРЅР°СЏ РѕР±РµСЂС‚РєР° РЅРµ РїСЂРёРІРѕРґРёС‚ Рє РѕС€РёР±РєР°Рј
 }
 
 new JSUnit.Test("trace", "Basic Monadic").run = function(){
-	alert("Проверь вывод в консоли массива [1, 2, 3]!");
+	alert("РџСЂРѕРІРµСЂСЊ РІС‹РІРѕРґ РІ РєРѕРЅСЃРѕР»Рё РјР°СЃСЃРёРІР° [1, 2, 3]!");
 	var coll = [1, 2, 3];
-	this.assert(JDB(coll).trace("Тестовый вывод").raw(), coll);
+	this.assert(JDB(coll).trace("РўРµСЃС‚РѕРІС‹Р№ РІС‹РІРѕРґ").raw(), coll);
 }
 
 new JSUnit.Test("map", "Basic Monadic").run = function(){
@@ -385,6 +386,7 @@ new JSUnit.Test("index", "Basic Monadic").run = function(){
 		3:{id:3, nm:"James"}
 	});
 	this.assert(JDB("a;b;c".split(";")).index(function(x){return x;}, function(x, i){return i;}).raw(), {a:0, b:1, c:2});
+	this.assert(JDB(["a", "b", "c", "a"]).index().raw(), {a:"a", b:"b", c:"c"});
 }
 
 new JSUnit.Test("keys", "Basic Monadic").run = function(){
@@ -547,7 +549,7 @@ function init(){
 </head>
 <body onload="init()">
 	<h1>JDB Unit Tests</h1>
-	<p>JDB - модуль для операций над коллекциями в формате JSON</p>
+	<p>JDB - РјРѕРґСѓР»СЊ РґР»СЏ РѕРїРµСЂР°С†РёР№ РЅР°Рґ РєРѕР»Р»РµРєС†РёСЏРјРё РІ С„РѕСЂРјР°С‚Рµ JSON</p>
 	<p>JDB v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>
 	<div id="out"></div>
