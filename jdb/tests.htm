@@ -83,6 +83,18 @@ new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
 	), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 }
 
+new JSUnit.Test("flat 2", "Simple Non-monadic").run = function(){
+	this.assert(JDB.flat(
+		{
+			a:{x:2, y:{n:"abc", m:"zyx"}},
+			b:{x:4, y:{n:"def", m:"str"}}
+		},
+		function(x){
+			return JDB.toArray(x.y);
+		}	
+	), ["abc", "zyx", "def", "str"]);
+}
+
 new JSUnit.Test("page", "Simple Non-monadic").run = function(){
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 0), []);
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 1), [1, 2, 3]);
