@@ -313,7 +313,11 @@ var JDB = (function(){
 	function version(num){
 		if(!num) return topVersion;
 		for(var k in interfaces){
-			if(compareVersions(num, k)<=0) return interfaces[k];
+			if(compareVersions(num, k)<=0){
+				var $D = function(x){return JDB(x);}
+				extend($D, interfaces[k]);
+				return $D;
+			}
 		}
 		alert("JDB version "+num+" not supported");
 	}
