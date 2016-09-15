@@ -88,13 +88,26 @@ var JDB = (function(){
 		return res;
 	}
 	
-	function flat(arr){
-		if(!arr instanceof Array) return arr;
-		var res = []
-		for(var i=0,el; el=arr[i],i<arr.length; i++){
-			if(el instanceof Array) res = res.concat(el);
-			else res.push(el);
+	function flat(arr, F, recursive){
+		//console.log("in: ", arr, F, recursive);
+		if(typeof(arr)!="object") return arr;
+		if(!F){
+			var res = [];
+			each(arr, function(e){
+				var ee = flat(e);
+				res = res.concat(ee);
+			});
+			return res;
 		}
+		var res = [];
+		each(arr, function(el){
+			el = F(el);
+			//console.log("a: ", el);
+			if(recursive) el = flat(el, F, true);
+			else el = flat(el);
+			//console.log("b: ", el);
+			res = res.concat(el);
+		});
 		return res;
 	}
 	
@@ -305,7 +318,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "3.0.0"
+	var topVersion = "3.0.1"
 	
 	var intrf = {
 		version: version,

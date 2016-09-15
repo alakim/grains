@@ -2,7 +2,7 @@
 <head>
 <meta charset="utf-8"/>
 <title>JDB Unit Tests</title>
-<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../tools/jsUnit_utf8.js"></script>
 <script type="text/javascript" src="jdb.js"></script>
 <script type="text/javascript">
 new JSUnit.Test("Подключение модуля JDB", "Configuration").run = function(){
@@ -83,6 +83,12 @@ new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
 	), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 }
 
+new JSUnit.Test("flat 1", "Simple Non-monadic").run = function(){
+	this.assert(JDB.flat(3), 3, "Err 1");
+	this.assert(JDB.flat([1, 2, 3]), [1, 2, 3], "Err 2");
+	this.assert(JDB.flat({a:1, b:2, c:3}), [1, 2, 3], "Err 3");
+}
+
 new JSUnit.Test("flat 2", "Simple Non-monadic").run = function(){
 	this.assert(JDB.flat(
 		{
@@ -90,9 +96,23 @@ new JSUnit.Test("flat 2", "Simple Non-monadic").run = function(){
 			b:{x:4, y:{n:"def", m:"str"}}
 		},
 		function(x){
-			return JDB.toArray(x.y);
+			return x.y;
 		}	
 	), ["abc", "zyx", "def", "str"]);
+}
+
+new JSUnit.Test("flat 3", "Simple Non-monadic", false).run = function(){
+	this.assert(JDB.flat(
+		{
+			a:{x:2, y:{n:"abc", m:"zyx", y:[1, 2, 3]}},
+			b:{x:4, y:{n:"def", m:"str", y:[4, 5, 6]}},
+			y:22
+		},
+		function(x){
+			return x.y;
+		},
+		true
+	), ["abc", "zyx", "def", "str", 1, 2, 3, 4, 5, 6, 22]);
 }
 
 new JSUnit.Test("page", "Simple Non-monadic").run = function(){
@@ -372,6 +392,25 @@ new JSUnit.Test("flat", "Basic Monadic").run = function(){
 		]
 	).flat().raw(), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 }
+
+new JSUnit.Test("flat 1", "Basic Monadic").run = function(){
+	this.assert(JDB(3).flat().raw(), 3, "Err 1");
+	this.assert(JDB([1, 2, 3]).flat().raw(), [1, 2, 3], "Err 2");
+	this.assert(JDB({a:1, b:2, c:3}).flat().raw(), [1, 2, 3], "Err 3");
+}
+
+new JSUnit.Test("flat 2", "Basic Monadic", false).run = function(){
+	this.assert(
+		JDB({
+				a:{x:2, y:{n:"abc", m:"zyx"}},
+				b:{x:4, y:{n:"def", m:"str"}}
+			})
+			.flat(function(x){return x.y;})
+			.raw(), 
+		["abc", "zyx", "def", "str"]
+	);
+}
+
 new JSUnit.Test("page", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 0).raw(), []);
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 1).raw(), [1, 2, 3]);
