@@ -88,16 +88,31 @@ new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
 			8,
 			[9]
 		]
-	), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+	), [1, 2, 3, 4, 5, 6, 7, 8, 9], "Error 1");
+	this.assert(JDB.flat([
+		[
+			{x:21, y:31},
+			{x:22, y:33}
+		],
+		[
+			{x:41, y:41},
+			{x:42, y:43}
+		]
+	]), [
+			{x:21, y:31},
+			{x:22, y:33},
+			{x:41, y:41},
+			{x:42, y:43}
+	], "Error 2");
 }
 
-new JSUnit.Test("flat 1", "Simple Non-monadic").run = function(){
+new JSUnit.Test("flat 1", "Simple Non-monadic", false).run = function(){
 	this.assert(JDB.flat(3), 3, "Err 1");
 	this.assert(JDB.flat([1, 2, 3]), [1, 2, 3], "Err 2");
 	this.assert(JDB.flat({a:1, b:2, c:3}), [1, 2, 3], "Err 3");
 }
 
-new JSUnit.Test("flat 2", "Simple Non-monadic").run = function(){
+new JSUnit.Test("flat 2", "Simple Non-monadic", false).run = function(){
 	this.assert(JDB.flat(
 		{
 			a:{x:2, y:{n:"abc", m:"zyx"}},
@@ -398,10 +413,25 @@ new JSUnit.Test("flat", "Basic Monadic").run = function(){
 			8,
 			[9]
 		]
-	).flat().raw(), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+	).flat().raw(), [1, 2, 3, 4, 5, 6, 7, 8, 9], "Error 1");
+	this.assert(JDB([
+		[
+			{x:21, y:31},
+			{x:22, y:33}
+		],
+		[
+			{x:41, y:41},
+			{x:42, y:43}
+		]
+	]).flat().raw(),[
+			{x:21, y:31},
+			{x:22, y:33},
+			{x:41, y:41},
+			{x:42, y:43}
+	], "Error 2");
 }
 
-new JSUnit.Test("flat 1", "Basic Monadic").run = function(){
+new JSUnit.Test("flat 1", "Basic Monadic", false).run = function(){
 	this.assert(JDB(3).flat().raw(), 3, "Err 1");
 	this.assert(JDB([1, 2, 3]).flat().raw(), [1, 2, 3], "Err 2");
 	this.assert(JDB({a:1, b:2, c:3}).flat().raw(), [1, 2, 3], "Err 3");

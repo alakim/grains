@@ -93,10 +93,13 @@ var JDB = (function(){
 		if(typeof(arr)!="object") return arr;
 		if(!F){
 			var res = [];
-			each(arr, function(e){
+			/*each(arr, function(e){
 				var ee = flat(e);
 				res = res.concat(ee);
-			});
+			});*/
+			for(var el,i=0; el=arr[i],i<arr.length; i++){
+				res = res.concat(el);
+			}
 			return res;
 		}
 		var res = [];
