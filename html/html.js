@@ -1,9 +1,8 @@
-var Html = {
-	version: "3.3.850",
-	xhtmlMode: true	
-};
-
-(function(){
+var Html = (function(){
+	var Html = {
+		xhtmlMode: true	
+	};
+	
 	function extend(o,s){for(var k in s){o[k] = s[k];}}
 	
 	function each(coll, F){
@@ -15,6 +14,7 @@ var Html = {
 	}
 	
 	function defineTags(tags, selfClosing, notEmpty){
+		if(!(tags instanceof Array)) tags = tags.split(";");
 		each(tags, function(t){
 			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments,"+(selfClosing?"true":"false")+","+(notEmpty?"true":"false")+");");
 		});
@@ -149,9 +149,10 @@ var Html = {
 		}
 	});
 	
-	defineTags(["div", "a", "p", "span", "nobr", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "optgroup", "h1", "h2", "h3", "h4", "h5", "h6", "button", "form","dl", "dt","dd"]);
-	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
-	defineNotEmptyTags(["th", "td"]);
+	defineTags("div;a;p;span;nobr;ul;ol;li;table;tbody;thead;tr;input;label;textarea;pre;select;option;optgroup;h1;h2;h3;h4;h5;h6;button;form;dl;dt;dd;svg");
+	
+	defineSelfClosingTags("img;hr;br;iframe");
+	defineNotEmptyTags("th;td");
 	
 	
 	
@@ -201,4 +202,45 @@ var Html = {
 			return res.join(name+" ")+name;
 		}
 	}
+	
+	function compareVersions(v1, v2){
+		if(v1==v2) return 0;
+		v1 = v1.split(".");
+		v2 = v2.split(".");
+		for(var i=0; i<3; i++){
+			var a = parseInt(v1[i], 10),
+				b = parseInt(v2[i], 10);
+			
+			if(a<b) return -1;
+			if(a>b) return 1;
+		}
+		return 0;
+	}
+	
+	function version(num){
+		if(!num) return topVersion;
+		for(var k in interfaces){
+			if(compareVersions(num, k)<=0){
+				var $H = {};
+				extend($H, interfaces[k]);
+				return $H;
+			}
+		}
+		alert("Html version "+num+" not supported");
+	}
+	
+	var topVersion = "4.0.1"
+	
+	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
+	
+	var interfaces = {};
+	interfaces[topVersion] = Html;
+	
+	var intf = {
+		version: version
+	};
+	
+	extend(Html, intf);
+	
+	return Html;
 })();
