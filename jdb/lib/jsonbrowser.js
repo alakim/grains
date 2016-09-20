@@ -40,10 +40,11 @@ var JsonBrowser = (function($, $D, $H){
 							span({"class":"link lnkObj", "data-name":nm}, format("[object with {0} fields]", JDB.keys(el).length)),
 							div({"class":"pnlLevel", style:"display:none"})
 						)
-						:el.toString()
+						:el?el.toString()
 							.replace(/&/ig, "&amp;")
 							.replace(/</ig, "&lt;")
 							.replace(/>/ig, "&gt;")
+							:"[null]"
 					);
 				})
 			);
