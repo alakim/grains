@@ -16,7 +16,8 @@ var Html = (function(){
 	function defineTags(tags, selfClosing, notEmpty){
 		if(!(tags instanceof Array)) tags = tags.split(";");
 		each(tags, function(t){
-			Html[t] = new Function("content", "return Html.tag(\""+t+"\", arguments,"+(selfClosing?"true":"false")+","+(notEmpty?"true":"false")+");");
+			var tN = t.indexOf("_")==0?t.slice(1):t;
+			Html[t] = new Function("content", "return Html.tag(\""+tN+"\", arguments,"+(selfClosing?"true":"false")+","+(notEmpty?"true":"false")+");");
 		});
 	}
 	
@@ -160,12 +161,21 @@ var Html = (function(){
 		if(typeof(defs)=="function") defs = defs();
 		var children = {};
 		
+		function insertHyphens(nm){
+			nm = nm.replace(/([A-Z])/g, function(m){
+				return "-"+m.toLowerCase();
+			});
+			return nm;
+		}
+		
 		stylesheet.push(sel+"{");
 		each(defs, function(v, nm){
 			if(typeof(v)=="function") v = v();
-			if(typeof(v)!="object")
-				stylesheet.push([Html.cssAttributes[nm] || nm, ":", v, ";"].join(" "));
-			else{
+			if(typeof(v)!="object"){
+				var attNm = Html.cssAttributes[nm] || nm;
+				attNm = insertHyphens(attNm);
+				stylesheet.push([attNm, ":", v, ";"].join(" "));
+			}else{
 				children[nm] = v;
 			}
 		});
@@ -229,7 +239,7 @@ var Html = (function(){
 		alert("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.0.1"
+	var topVersion = "4.1.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	

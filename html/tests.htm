@@ -358,17 +358,31 @@ new JSUnit.Test("Tag Definitions", "Extensions").run = function(){ with(Html){
 	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p></ss>");
 }}
 new JSUnit.Test("Tag Definitions 2", "Extensions").run = function(){ with(Html){
-	Html.defineTags(["ss", "ssl"]);
+	Html.defineTags(["ss", "ssl", "_interface"]);
 	var html = (function(){with(Html){
 		return ss(
 			ssl("abc"),
 			ssl("def"),
-			p("ghi")
+			p("ghi"),
+			_interface("zz")
 		);
 	}})();
-	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p></ss>");
+	this.assert(html, "<ss><ssl>abc</ssl><ssl>def</ssl><p>ghi</p><interface>zz</interface></ss>");
 }}
 
+
+new JSUnit.Test("Stylesheet", "Extensions").run = function(){
+	var sst = Html.stylesheet({
+		"body":{
+			"font-family":"Verdana",
+			fontSize:"12px",
+			" p":{
+				margin:0
+			}
+		}
+	});
+	this.assert(sst, "body{\nfont-family : Verdana ;\nfont-size : 12px ;\n}\nbody p{\nmargin : 0 ;\n}");
+}
 
 new JSUnit.Test("Units", "Extensions").run = function(){
 	var px = Html.unit("px");
