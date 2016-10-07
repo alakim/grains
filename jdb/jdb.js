@@ -93,6 +93,7 @@ var JDB = (function(){
 		F = lambda(F);
 		var res = [];
 		if(typeof(arr)!="object") return arr;
+		if(!arr) return res;
 		for(var el,i=0; el=arr[i],i<arr.length; i++){
 			res = res.concat(el);
 			if(F){
