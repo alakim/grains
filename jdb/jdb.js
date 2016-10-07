@@ -88,29 +88,18 @@ var JDB = (function(){
 		return res;
 	}
 	
-	function flat(arr, F, recursive){
-		//console.log("in: ", arr, F, recursive);
-		if(typeof(arr)!="object") return arr;
-		if(!F){
-			var res = [];
-			/*each(arr, function(e){
-				var ee = flat(e);
-				res = res.concat(ee);
-			});*/
-			for(var el,i=0; el=arr[i],i<arr.length; i++){
-				res = res.concat(el);
-			}
-			return res;
-		}
+	
+	function flat(arr, F){
+		F = lambda(F);
 		var res = [];
-		each(arr, function(el){
-			el = F(el);
-			//console.log("a: ", el);
-			if(recursive) el = flat(el, F, true);
-			else el = flat(el);
-			//console.log("b: ", el);
+		if(typeof(arr)!="object") return arr;
+		for(var el,i=0; el=arr[i],i<arr.length; i++){
 			res = res.concat(el);
-		});
+			if(F){
+				var chColl = flat(F(el), F);
+				if(chColl) res = res.concat(chColl);
+			}
+		}
 		return res;
 	}
 	
@@ -247,7 +236,7 @@ var JDB = (function(){
 				aggregate: function(initial, F){return aggregate(coll, initial, F)},
 				select: function(F){return JDB(select(coll, F));},
 				first: function(count){return JDB(first(coll, count));},
-				flat: function(){return JDB(flat(coll))},
+				flat: function(F){return JDB(flat(coll, F))},
 				page: function(size, nr){return JDB(page(coll, size, nr));},
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				keys: function(){return JDB(keys(coll));},
@@ -325,7 +314,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "3.0.1"
+	var topVersion = "3.1.0"
 	
 	var intrf = {
 		version: version,

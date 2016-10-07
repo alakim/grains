@@ -8,6 +8,13 @@
 	<script type="text/javascript" src="lib/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="lib/jsonbrowser.js"></script>
 	
+	<style type="text/css">
+		.version{
+			color:#888;
+			font-size:80%;
+			
+		}
+	</style>
 	<script type="text/javascript">
 		$(function(){
 			//JsonBrowser.init(".browser", DB.prototype.jsondata);
@@ -33,13 +40,14 @@
 				}
 				JsonBrowser.init(".browser", json);
 			});
-			
+			$('#version').html(JDB.version());
 		});
 	</script>
 
 </head>
 <body>
 	<h1>JSON Data Browser</h1>
+	<p class="version">Powered by JDB v.<span id="version"></span></p>
 	<p><a href="doc.htm" target="_blank">JDB Reference</a></p>
 	<table>
 		<!--tr>

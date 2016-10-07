@@ -106,37 +106,53 @@ new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
 	], "Error 2");
 }
 
-new JSUnit.Test("flat 1", "Simple Non-monadic", false).run = function(){
-	this.assert(JDB.flat(3), 3, "Err 1");
-	this.assert(JDB.flat([1, 2, 3]), [1, 2, 3], "Err 2");
-	this.assert(JDB.flat({a:1, b:2, c:3}), [1, 2, 3], "Err 3");
+new JSUnit.Test('flat recursive', 'Simple Non-monadic').run = function(){
+	var coll = [
+		{nm:'n1'},
+		{nm:'n2', children:[
+			{nm:'n3'},
+			{nm:'n4', children:[
+				{nm:'n5'}
+			]}
+		]}
+	];
+	
+	var res = JDB.flat(coll, 'x|x.children');
+	res = JDB.map(res, 'x|x.nm').join(';');
+	this.assert(res, 'n1;n2;n3;n4;n5');
 }
 
-new JSUnit.Test("flat 2", "Simple Non-monadic", false).run = function(){
-	this.assert(JDB.flat(
-		{
-			a:{x:2, y:{n:"abc", m:"zyx"}},
-			b:{x:4, y:{n:"def", m:"str"}}
-		},
-		function(x){
-			return x.y;
-		}	
-	), ["abc", "zyx", "def", "str"]);
-}
+//  new JSUnit.Test("flat 1", "Simple Non-monadic", false).run = function(){
+//  	this.assert(JDB.flat(3), 3, "Err 1");
+//  	this.assert(JDB.flat([1, 2, 3]), [1, 2, 3], "Err 2");
+//  	this.assert(JDB.flat({a:1, b:2, c:3}), [1, 2, 3], "Err 3");
+//  }
+//  
+//  new JSUnit.Test("flat 2", "Simple Non-monadic", false).run = function(){
+//  	this.assert(JDB.flat(
+//  		{
+//  			a:{x:2, y:{n:"abc", m:"zyx"}},
+//  			b:{x:4, y:{n:"def", m:"str"}}
+//  		},
+//  		function(x){
+//  			return x.y;
+//  		}	
+//  	), ["abc", "zyx", "def", "str"]);
+//  }
 
-new JSUnit.Test("flat 3", "Simple Non-monadic", false).run = function(){
-	this.assert(JDB.flat(
-		{
-			a:{x:2, y:{n:"abc", m:"zyx", y:[1, 2, 3]}},
-			b:{x:4, y:{n:"def", m:"str", y:[4, 5, 6]}},
-			y:22
-		},
-		function(x){
-			return x.y;
-		},
-		true
-	), ["abc", "zyx", "def", "str", 1, 2, 3, 4, 5, 6, 22]);
-}
+// new JSUnit.Test("flat 3", "Simple Non-monadic", false).run = function(){
+// 	this.assert(JDB.flat(
+// 		{
+// 			a:{x:2, y:{n:"abc", m:"zyx", y:[1, 2, 3]}},
+// 			b:{x:4, y:{n:"def", m:"str", y:[4, 5, 6]}},
+// 			y:22
+// 		},
+// 		function(x){
+// 			return x.y;
+// 		},
+// 		true
+// 	), ["abc", "zyx", "def", "str", 1, 2, 3, 4, 5, 6, 22]);
+// }
 
 new JSUnit.Test("page", "Simple Non-monadic").run = function(){
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 0), []);
@@ -431,23 +447,47 @@ new JSUnit.Test("flat", "Basic Monadic").run = function(){
 	], "Error 2");
 }
 
-new JSUnit.Test("flat 1", "Basic Monadic", false).run = function(){
-	this.assert(JDB(3).flat().raw(), 3, "Err 1");
-	this.assert(JDB([1, 2, 3]).flat().raw(), [1, 2, 3], "Err 2");
-	this.assert(JDB({a:1, b:2, c:3}).flat().raw(), [1, 2, 3], "Err 3");
-}
-
-new JSUnit.Test("flat 2", "Basic Monadic", false).run = function(){
+new JSUnit.Test('flat recursive', 'Basic Monadic').run = function(){
+	var coll = [
+		{nm:'n1'},
+		{nm:'n2', children:[
+			{nm:'n3'},
+			{nm:'n4', children:[
+				{nm:'n5'}
+			]}
+		]}
+	];
+	
+	var res = JDB.flat(coll, 'x|x.children');
+	res = JDB.map(res, 'x|x.nm').join(';');
 	this.assert(
-		JDB({
-				a:{x:2, y:{n:"abc", m:"zyx"}},
-				b:{x:4, y:{n:"def", m:"str"}}
-			})
-			.flat(function(x){return x.y;})
-			.raw(), 
-		["abc", "zyx", "def", "str"]
+		JDB(coll)
+			.flat('x|x.children')
+			.map('x|x?x.nm:"NULL"')
+			.raw()
+			.join(';')
+		, 
+		'n1;n2;n3;n4;n5'
 	);
 }
+
+// new JSUnit.Test("flat 1", "Basic Monadic", false).run = function(){
+// 	this.assert(JDB(3).flat().raw(), 3, "Err 1");
+// 	this.assert(JDB([1, 2, 3]).flat().raw(), [1, 2, 3], "Err 2");
+// 	this.assert(JDB({a:1, b:2, c:3}).flat().raw(), [1, 2, 3], "Err 3");
+// }
+// 
+// new JSUnit.Test("flat 2", "Basic Monadic", false).run = function(){
+// 	this.assert(
+// 		JDB({
+// 				a:{x:2, y:{n:"abc", m:"zyx"}},
+// 				b:{x:4, y:{n:"def", m:"str"}}
+// 			})
+// 			.flat(function(x){return x.y;})
+// 			.raw(), 
+// 		["abc", "zyx", "def", "str"]
+// 	);
+// }
 
 new JSUnit.Test("page", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 0).raw(), []);
