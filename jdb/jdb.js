@@ -10,7 +10,9 @@ var JDB = (function(){
 	
 	function each(coll, F){
 		if(coll instanceof Array){
-			for(var i=0,e; e=coll[i],i<coll.length; i++){
+			if(coll.forEach)
+				coll.forEach(F);
+			else for(var i=0,e; e=coll[i],i<coll.length; i++){
 				F(e, i);
 			}
 		}
@@ -22,10 +24,15 @@ var JDB = (function(){
 	
 	function aggregate(coll, initial, F){
 		F = lambda(F);
-		var res = initial;
-		each(coll, function(e){
-			res = F(e, res);
-		});
+		if(coll instanceof Array && coll.reduce){
+			return coll.reduce(function(s,e){return F(e, s);}, initial);
+		}
+		else{
+			var res = initial;
+			each(coll, function(e){
+				res = F(e, res);
+			});
+		}
 		return res;
 	}
 	
@@ -44,6 +51,7 @@ var JDB = (function(){
 		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
+			if(coll.map) return coll.map(F);
 			res = [];
 			each(coll, function(e, i){
 				res.push(F(e, i, i));
@@ -63,6 +71,7 @@ var JDB = (function(){
 		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
+			if(coll.filter) return coll.filter(F);
 			res = [];
 			each(coll, function(e, i){
 				if(F(e, i)) res.push(e);
@@ -138,6 +147,7 @@ var JDB = (function(){
 	}
 	
 	function keys(obj){
+		if(Object.keys) return Object.keys(obj);
 		var res = [];
 		for(var k in obj) res.push(k);
 		return res;
@@ -214,6 +224,7 @@ var JDB = (function(){
 	}
 	
 	function reverse(coll){
+		if(coll instanceof Array && coll.reverse) return coll.reverse();
 		var res = [];
 		for(var i=coll.length-1; i>=0; i--){
 			res.push(coll[i]);
@@ -315,7 +326,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "3.1.0"
+	var topVersion = "3.1.1"
 	
 	var intrf = {
 		version: version,
