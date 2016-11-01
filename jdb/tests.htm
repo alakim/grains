@@ -656,7 +656,7 @@ new JSUnit.Test("reverse", "Basic Monadic").run = function(){
 	this.assert(JDB(coll).reverse().raw(), [4, 3, 2, 1]);
 }
 
-new JSUnit.Test("Dictionary", "Containers").run = function(){
+new JSUnit.Test("Dictionary", "Misc").run = function(){
 	var dict = new JDB.Dictionary();
 	this.assert(dict.empty(), true);
 	dict.set("x", 5);
@@ -668,6 +668,14 @@ new JSUnit.Test("Dictionary", "Containers").run = function(){
 	this.assert(dict.empty(), false);
 	this.assert(dict.count(), 3);
 	this.assert(dict.data(), {x:5, y:"abc", z:true});
+}
+
+
+new JSUnit.Test("range", "Misc").run = function(){
+	this.assert(JDB.range(3), [0, 1, 2], 'Error 1');
+	this.assert(JDB.range(1, 4), [1, 2, 3, 4], 'Error 2');
+	this.assert(JDB.range(0, 4, 2), [0, 2, 4, 6], 'Error 3');
+	this.assert(JDB.range(1, 4, .5), [1, 1.5, 2, 2.5], 'Error 4');
 }
 
 function init(){

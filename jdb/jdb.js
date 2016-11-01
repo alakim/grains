@@ -299,6 +299,19 @@ var JDB = (function(){
 			return data;
 		}
 	}
+	
+	function range(start, count, step){
+		step = step || 1;
+		if(count==null){
+			count = start;
+			start = 0;
+		}
+		var res = [];
+		for(var i=start; count>0; i+=step,count--){
+			res.push(i);
+		}
+		return res;
+	}
 		
 	function compareVersions(v1, v2){
 		if(v1==v2) return 0;
@@ -326,7 +339,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "3.1.1"
+	var topVersion = "3.2.1"
 	
 	var intrf = {
 		version: version,
@@ -346,7 +359,8 @@ var JDB = (function(){
 		treeToArray: treeToArray,
 		sort: sort,
 		reverse: reverse,
-		Dictionary: Dictionary
+		Dictionary: Dictionary,
+		range: range
 	};
 	
 	if(typeof(JSUnit)=="object") intrf.compareVersions = compareVersions;
