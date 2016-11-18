@@ -84,6 +84,7 @@
 			d2.setMonth(date.getMonth()+di);
 			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field, settings);
 			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field, settings);
+			$(".calendarDlg .header").calendControl(HeaderPanel, d2, field, settings);
 		}
 		pnl.html((function(){with($H){
 			var prevMonth = new Date(date); prevMonth.setMonth(date.getMonth()-1);
@@ -100,6 +101,31 @@
 		.find(".btnMonthBk").click(function(){incDate(-1);}).end()
 		.find(".btnMonthFr").click(function(){incDate(1);}).end();
 	}
+	
+	function HeaderPanel(pnl, date, field, settings){
+		function incDate(di){
+			var d2 = new Date(date);
+			d2.setMonth(date.getMonth()+di);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d2, field, settings);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d2, field, settings);
+		}
+		pnl.html((function(){with($H){
+			return div(
+				div({'class':'button btnYear'}, '&lt; ', date.getFullYear()-1),
+				div({"class":"button btHome"}, formatDate(date, false)),
+				div({'class':'button btnYear'}, date.getFullYear()+1, ' &gt;')
+			);
+		}})())
+		.find('.btnYear').click(function(){
+			var yr = parseInt($(this).html().match(/\d+/)[0]);
+			var d = new Date();
+			d.setFullYear(yr);
+			$(".calendarDlg .calendDaysTable").calendControl(DaysTable, d, field, settings);
+			$(".calendarDlg .monthPnl").calendControl(MonthPanel, d, field, settings);
+			$(".calendarDlg .header").calendControl(HeaderPanel, d, field, settings);
+		}).end();
+	}
+	
 	
 	function DaysPanel(pnl){
 		var days = "Пн,Вт,Ср,Чт,Пт,Сб,Вс".split(",");
@@ -120,7 +146,7 @@
 		
 		pnl.html((function(){with($H){
 			return div(
-				div({"class":"header", style:style({height:size.h*.1})}, div({"class":"button btHome"}, formatDate(date, false))),
+				div({"class":"header", style:style({height:size.h*.1})}),
 				div({"class":"monthPnl", style:style({height:size.h*.1})}),
 				div({"class":"daysPnl", style:style({height:size.h*.1})}),
 				div({"class":"calendDaysTable", style:style({height:size.h*.55, position:"relative"})}),
@@ -139,6 +165,7 @@
 			if(settings.onCancel) settings.onCancel(field);
 		}).end()
 		.find(".monthPnl").calendControl(MonthPanel, date, field, settings).end()
+		.find(".header").calendControl(HeaderPanel, date, field, settings).end()
 		.find(".calendDaysTable").calendControl(DaysTable, date, field, settings).end()
 		.find(".daysPnl").calendControl(DaysPanel).end()
 		.find(".btHome").click(function(){

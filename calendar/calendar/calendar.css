@@ -25,6 +25,20 @@
 	border-bottom:1px solid #ccc;
 	font-weight:bold;
 }
+.calendarDlg .header .btnYear{
+	font-weight:normal;
+	/*cursor:pointer;*/
+	font-size:80%;
+}
+.calendarDlg .header .btnYear:first-child {
+	float:left;
+	margin-top: 5px;
+}
+.calendarDlg .header .btnYear:last-child {
+	float:right;
+	margin-top: -15px;
+}
+
 .calendarDlg .btHome{
 	
 }
@@ -69,6 +83,9 @@
 .calendarDlg .monthBtn{
 	padding-top:4px;
 	font-size:80%;
+}
+.calendarDlg .monthBtn:last-child{
+	padding-top:0px;
 }
 .calendarDlg .button{
 	cursor:pointer;
