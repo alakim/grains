@@ -28,11 +28,17 @@
 			$("#btLoadJSON").click(function(){
 				var json = $("#tbJson").val();
 				var strict = $("#cbStrict")[0].checked;
+				var freeze = $('#cbFreeze')[0].checked;
 				try{
 					if(strict)
 						json = JSON.parse(json);
 					else
 						json = (new Function("return "+json+";"))();
+					
+					if(freeze){
+						json = Object.freeze(json);
+						console.log(json);
+					}
 					
 				} catch(e){
 					alert("Ошибка парсинга JSON: " + e);
@@ -59,8 +65,9 @@
 			<td><span class="name">JSON</span> data = </td> 
 			<td>
 				<textarea id="tbJson" style="width:500px; height:30px;"></textarea>
-				strict mode: <input type="checkbox" id="cbStrict"/>
+				strict mode: <input type="checkbox" id="cbStrict" />
 				<input type="button" id="btLoadJSON" value="Load"/>
+				freeze: <input type="checkbox" id="cbFreeze" checked/>
 			</td>
 		</tr>
 		<tr>
