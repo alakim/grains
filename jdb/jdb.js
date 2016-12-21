@@ -9,6 +9,7 @@ var JDB = (function(){
 	}
 	
 	function each(coll, F){
+		if(!coll || !F) return;
 		if(coll instanceof Array){
 			if(coll.forEach)
 				coll.forEach(F);
@@ -23,6 +24,9 @@ var JDB = (function(){
 	}
 	
 	function aggregate(coll, initial, F){
+		if(!coll || !F) return initial;
+		initial = initial||0;
+		
 		F = lambda(F);
 		if(coll instanceof Array && coll.reduce){
 			return coll.reduce(function(s,e){return F(e, s);}, initial);
@@ -37,6 +41,8 @@ var JDB = (function(){
 	}
 	
 	function extend(o, s, deep){
+		if(!s) return;
+		o = o||{};
 		deep = deep || false;
 		for(var k in s){
 			var el = o[k];
@@ -48,6 +54,8 @@ var JDB = (function(){
 	}
 	
 	function map(coll, F){
+		if(!coll) return [];
+		if(!F) return coll;
 		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
@@ -68,6 +76,8 @@ var JDB = (function(){
 	}
 	
 	function select(coll, F){
+		if(!coll) return [];
+		if(!F) return coll;
 		F = lambda(F);
 		var res;
 		if(coll instanceof Array){
@@ -87,6 +97,7 @@ var JDB = (function(){
 	}
 	
 	function first(coll, count){
+		if(!coll) return [];
 		count = count || 1;
 		var res = [];
 		if(coll instanceof Array){
@@ -99,6 +110,7 @@ var JDB = (function(){
 	
 	
 	function flat(arr, F){
+		if(!arr) return [];
 		F = lambda(F);
 		var res = [];
 		if(typeof(arr)!="object") return arr;
@@ -114,6 +126,7 @@ var JDB = (function(){
 	}
 	
 	function page(coll, size, nr){
+		if(!coll) return [];
 		if(nr<1) return [];
 		var res = [],
 		minIdx = size*(nr-1),
@@ -127,6 +140,7 @@ var JDB = (function(){
 	}
 	
 	function index(coll, F, Fobj){
+		if(!coll) return {};
 		if(!F) F = function(x){return x;};
 		F = lambda(F);
 		Fobj = lambda(Fobj);
@@ -147,6 +161,7 @@ var JDB = (function(){
 	}
 	
 	function keys(obj){
+		if(!obj) return [];
 		if(Object.keys) return Object.keys(obj);
 		var res = [];
 		for(var k in obj) res.push(k);
@@ -154,6 +169,7 @@ var JDB = (function(){
 	}
 	
 	function groupBy(coll, F){
+		if(!coll) return {};
 		F = lambda(F);
 		var res;
 		if(typeof(F)=="string"){
@@ -178,6 +194,9 @@ var JDB = (function(){
 	}
 	
 	function concat(coll, c2){
+		if(!coll && !c2) return [];
+		if(!coll) return c2;
+		if(!c2) return coll;
 		if(typeof(c2.raw)=="function") c2 = c2.raw();
 		res = [];
 		each(coll, function(e){res.push(e);});
@@ -186,6 +205,7 @@ var JDB = (function(){
 	}
 	
 	function toArray(coll, F){
+		if(!coll) return [];
 		F = lambda(F);
 		if(coll instanceof Array) return coll;
 		res = [];
@@ -197,6 +217,9 @@ var JDB = (function(){
 	}
 	
 	function treeToArray(coll, childField, F){
+		if(!coll) return [];
+		if(!childField) return [];
+		if(!F) return [];
 		F = lambda(F);
 		res = [];
 		function tree(nd){
@@ -209,14 +232,13 @@ var JDB = (function(){
 	}
 	
 	function sort(coll, F){
-		F = lambda(F);
-		if(!F){
-			return coll.sort();
-		}
+		if(!coll) return [];
+		if(!F){return coll.sort();}
 		else if(typeof(F)=="function"){
 			return coll.sort(F);
 		}
 		else if(typeof(F)=="string"){
+			// F = lambda(F);
 			return coll.sort(function(a,b){
 				return a[F]>b[F]?1:a[F]<b[F]?-1:0;
 			});
@@ -224,6 +246,7 @@ var JDB = (function(){
 	}
 	
 	function reverse(coll){
+		if(!coll) return [];
 		if(coll instanceof Array && coll.reverse) return coll.reverse();
 		var res = [];
 		for(var i=coll.length-1; i>=0; i--){
@@ -339,7 +362,7 @@ var JDB = (function(){
 		alert("JDB version "+num+" not supported");
 	}
 	
-	var topVersion = "3.2.1"
+	var topVersion = "3.2.2"
 	
 	var intrf = {
 		version: version,

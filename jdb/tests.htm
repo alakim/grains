@@ -34,6 +34,8 @@ new JSUnit.Test("interface", "Configuration").run = function(){
 }
 
 new JSUnit.Test("map", "Simple Non-monadic").run = function(){
+	this.assert(JDB.map([], null), []);
+	this.assert(JDB.map(null, function(x){return x;}), []);
 	this.assert(JDB.map([1, 2, 3], function(x){return x*2;}), [2, 4, 6]);
 	this.assert(JDB.map({x:1, y:2, z:3}, function(x){return x*2;}), {x:2, y:4, z:6});
 	this.assert(JDB.map({x:1, y:2, z:3}, "x|x*2"), {x:2, y:4, z:6}, "Error lambda");
@@ -44,6 +46,11 @@ new JSUnit.Test("map", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("each", "Simple Non-monadic").run = function(){
+	var c1 = null;
+	JDB.each(c1, null);
+	JDB.each(c1, function(){});
+	this.assert(c1, null);
+	
 	var coll = [1, 2, 3];
 	var log = [];
 	JDB.each(coll, function(e, i){log.push(i+":"+e);});
@@ -57,6 +64,8 @@ new JSUnit.Test("each on object", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
+	this.assert(JDB.aggregate(null, 0, function(e, aggr){return aggr+e;}), 0);
+	
 	var coll = [{x:1}, {x:2}, {x:3}];
 	var aggr = JDB.aggregate(coll, 0, function(e, aggr){return aggr + e.x;});
 	var aggr = JDB.aggregate(coll, 0, "e,aggr|aggr+e.x");
@@ -65,12 +74,14 @@ new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 
 
 new JSUnit.Test("select", "Simple Non-monadic").run = function(){
+	this.assert(JDB.select(null, function(x){return x!=0;}), []);
 	this.assert(JDB.select([1, 2, 3], function(x){return x<3;}), [1, 2]);
 	this.assert(JDB.select({x:1, y:2, z:3}, function(x){return x<3;}), {x:1, y:2});
 	this.assert(JDB.select({x:1, y:2, z:3}, "x|x<3"), {x:1, y:2}, "Error lambda");
 }
 
 new JSUnit.Test("first", "Simple Non-monadic").run = function(){
+	this.assert(JDB.first(null), []);
 	this.assert(JDB.first([1, 2, 3]), [1]);
 	this.assert(JDB.first([1, 2, 3], 0), [1]);
 	this.assert(JDB.first([1, 2, 3], 1), [1]);
@@ -80,6 +91,7 @@ new JSUnit.Test("first", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
+	this.assert(JDB.flat(null), []);
 	this.assert(JDB.flat(
 		[
 			[1, 2, 3],
@@ -155,6 +167,7 @@ new JSUnit.Test('flat recursive', 'Simple Non-monadic').run = function(){
 // }
 
 new JSUnit.Test("page", "Simple Non-monadic").run = function(){
+	this.assert(JDB.page(null), []);
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 0), []);
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 1), [1, 2, 3]);
 	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 2), [4, 5, 6]);
@@ -164,6 +177,7 @@ new JSUnit.Test("page", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("index", "Simple Non-monadic").run = function(){
+	this.assert(JDB.index(null, 'id'), {});
 	var coll = [
 		{id:1, nm:"John"},
 		{id:2, nm:"Phill"},
@@ -190,11 +204,13 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("keys", "Simple Non-monadic").run = function(){
+	this.assert(JDB.keys(null), []);
 	var obj = {x:3, y:5, z:'slls'};
 	this.assert(JDB.keys(obj), ["x", "y", "z"]);
 }
 
 new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
+	this.assert(JDB.groupBy(null, 'id'), {});
 	var coll = [
 		{salary:100, nm:"John"},
 		{salary:200, nm:"Phill"},
@@ -224,6 +240,13 @@ new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("extend", "Simple Non-monadic").run = function(){
+	var c1 = null;
+	JDB.extend(c1, {x:21});
+	this.assert(c1, null);
+	c1 = {x:22};
+	JDB.extend(c1, null);
+	this.assert(c1, {x:22});
+	
 	var coll = {
 		1:"John",
 		2:"Phill",
@@ -259,12 +282,18 @@ new JSUnit.Test("extend deep", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("concat", "Simple Non-monadic").run = function(){
+	this.assert(JDB.concat(null, [2]), [2], 'Error 1.1');
+	this.assert(JDB.concat(null, null), [], 'Error 1.2');
+	this.assert(JDB.concat([1], null), [1], 'Error 1.3');
+	
 	var coll = [1, 2, 3];
 	this.assert(JDB.concat(coll, [4, 5]), [1, 2, 3, 4, 5]);
 	this.assert(JDB.concat(coll, JDB([4, 5])), [1, 2, 3, 4, 5]);
 }
 
 new JSUnit.Test("toArray", "Simple Non-monadic").run = function(){
+	this.assert(JDB.toArray(null), []);
+	
 	this.assert(JDB.toArray({
 		1:{id:1, nm:"John"},
 		2:{id:2, nm:"Phill"},
@@ -287,6 +316,10 @@ new JSUnit.Test("toArray", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("treeToArray", "Simple Non-monadic").run = function(){
+	this.assert(JDB.treeToArray(null, 'cc', function(){}), []);
+	this.assert(JDB.treeToArray({}, null, function(){}), []);
+	this.assert(JDB.treeToArray({}, 'cc', null), []);
+	
 	var tree = {nm:"library", children:[
 		{nm:"scifi", children:[
 		]},
@@ -309,6 +342,8 @@ new JSUnit.Test("treeToArray", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("sort", "Simple Non-monadic").run = function(){
+	this.assert(JDB.sort(null), []);
+	
 	var coll = [1, 5, 3];
 	this.assert(JDB.sort(coll), [1, 3, 5]);
 	coll = [
@@ -334,11 +369,13 @@ new JSUnit.Test("sort", "Simple Non-monadic").run = function(){
 }
 
 new JSUnit.Test("reverse", "Simple Non-monadic").run = function(){
+	this.assert(JDB.reverse(null), []);
 	var coll = [1, 2, 3, 4];
 	this.assert(JDB.reverse(coll), [4, 3, 2, 1]);
 }
 
 new JSUnit.Test("raw", "Basic Monadic").run = function(){
+	this.assert(JDB(null).raw(), []);
 	var coll = [1, 2, 3];
 	var d = JDB(coll);
 	this.assert(d.raw(), coll);
