@@ -33,7 +33,7 @@
 <body>
 	<h1>Clef Demo Page</h1>
 	<p>Библиотека для отображения нотного текста</p>
-	<!--div class="staff">{"staffSize":{"w":800},"color":["#f00", "#080"]}!c'1 d'4@0 ees'4@1 f'1 g' g'' a'' b'' c''' cis''' d'''</div>
+	<div class="staff">{"staffSize":{"w":800},"color":["#f00", "#080"]}!c'1 d'4@0 ees'4@1 f'1 g' g'' a'' b'' c''' cis''' d'''</div>
 	<div class="staff">{"staffSize":{"w":500}}!d'1 es' fis' g' an' bes' cis''</div>
 	<div class="staff">{"color":["#f00"]}!&lt;c' en'@0 g'&gt;1 &lt;c' fis' aes'&gt;4 c''</div>
 	<div class="staff">c''4 b' a' g' | c''4 b' a' g' || </div>
@@ -41,7 +41,7 @@
 	<div class="staff">Cm: &lt;c' ees' g'&gt;1 | C9: &lt;c' e' g' bes' d''&gt;1 | Bm-5: &lt;b d' f'&gt;1</div>
 	<div class="staff">c'4 d' e'2 | f'4 a' g' b' | </div>
 	<div class="staff">Am: c'4 d' e'2 | Dm: f'4 a' G: g' b' | </div>
-	<div class="staff">Am: [c'8 d' e' f'] [g'8 f'16 d'] e'4  | Dm: [f'16 a'8 g'16] [a'8 f'] G: [g'16 f' e' d'] [b'16 a' g'8] | </div-->
+	<div class="staff">Am: [c'8 d' e' f'] [g'8 f'16 d'] e'4  | Dm: [f'16 a'8 g'16] [a'8 f'] G: [g'16 f' e' d'] [b'16 a' g'8] | </div>
 	<div class="staff">{"offset":{"y":28},"chordOffset":{"y":20}}!A: [cis'8 d' e' fis'] [gis'8 fis'16 d'] e'4  | D: [fis'16 a'8 gis'16] [a'8 fis'] G#m: [gis'16 fis' e' d'] [b'16 a' gis'8] | </div>
 	<div class="staff">$3# t4/4 A: [c'8 d' e' f'] [g'8 f'16 d'] e'4  | $4b || t2/4 t3/4 t4/4 t5/4 t6/8 t9/8 t7/4 |. </div>
 	<div class="staff">$3# t4/4 A: a'8 b' c'' b'16 d'' [c''8 b' a' g'] a'2 ||</div>
@@ -49,5 +49,7 @@
 	<p>Смещение ноты по горизонтали:</p>
 	<div class="staff">{"clef":"g"}!&lt;c' d'+7&gt;1 e'8-3</div>
 	<div class="staff">c'4 r d' r | r1 | r2 r | r4 r8 r r16 r r r r4 |</div>
+	<p>Акценты</p>
+	<div class="staff">{"clef":"g"}!$2# t4/4 D: [d'8^^ e' f' g'] a'4 f'^ d' |</div>
 </body>
 </html>

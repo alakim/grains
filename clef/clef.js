@@ -186,7 +186,7 @@
 				groupSize = [];
 			
 			
-			var reNote = /([a-gr])(((e?s)|(is)|n)?)('*)(\d+)?(@\d+)?([\+\-]\d+)?/i,
+			var reNote = /([a-gr])(((e?s)|(is)|n)?)('*)(\d+)?(\^*)(@\d+)?([\+\-]\d+)?/i,
 				reChord = /#CH(\d+)/,
 				reGroup = /#GRP(\d+)/,
 				reBar = /\s*\|[\|\.]?\s*/,
@@ -196,7 +196,7 @@
 				reTime = /t(\d)\/(\d)/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
-			function drawNote(paper, note, octave, alt, colorIdx, shift){
+			function drawNote(paper, note, octave, alt, colorIdx, shift, accent){
 				posX+=shift;
 				if(note=="r"){
 					signs["rest"+duration](paper, posX, colorIdx);
@@ -221,6 +221,11 @@
 				
 				var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat, "n":signs.natural}[alt];
 				if(altSign) altSign(paper, posX, posY, colorIdx);
+				
+				for(var i=0; i<accent; i++){
+					var accOffset = 28 + i*7;
+					paper.text(posX+5, posY - accOffset, '>').attr({fill:'#000', 'font-size':14});
+				}
 				
 				// if(groupMode)
 				// 	paper.path(["M", posX+3, posY, "L", posX+3, posY-beamSize]).attr({"stroke-width":1, stroke:settings.signColor});
@@ -331,15 +336,18 @@
 						alt = mt[2]
 						octave = mt[6],
 						shift = 0,
+						accent = 0,
 						colorIdx = -1;
 					if(mt[7])
 						duration = +mt[7];
 					if(mt[8])
-						colorIdx = parseInt(mt[8].substr(1));
+						accent = mt[8].length;
 					if(mt[9])
-						shift = parseInt(mt[9]);
+						colorIdx = parseInt(mt[9].substr(1));
+					if(mt[10])
+						shift = parseInt(mt[10]);
 					posX += alt?24:15;
-					drawNote(paper, note, octave, alt, colorIdx, shift);
+					drawNote(paper, note, octave, alt, colorIdx, shift, accent);
 				}
 			});
 			if(groupMode) drawBeam();
