@@ -186,7 +186,7 @@
 				groupSize = [];
 			
 			
-			var reNote = /([a-gr])(((e?s)|(is)|n)?)('*)(\d+)?(\^*)(@\d+)?([\+\-]\d+)?/i,
+			var reNote = /([a-gr])(((e?s)|(is)|n)?)('*)(\d+\.?)?(\^*)(@\d+)?([\+\-]\d+)?/i,
 				reChord = /#CH(\d+)/,
 				reGroup = /#GRP(\d+)/,
 				reBar = /\s*\|[\|\.]?\s*/,
@@ -196,7 +196,7 @@
 				reTime = /t(\d)\/(\d)/;
 			var notes = $D("c;d;e;f;g;a;b".split(";")).index(function(x, i){return x;}, function(x, i){return i;}).raw();
 
-			function drawNote(paper, note, octave, alt, colorIdx, shift, accent){
+			function drawNote(paper, note, octave, alt, colorIdx, shift, accent, dot){
 				posX+=shift;
 				if(note=="r"){
 					signs["rest"+duration](paper, posX, colorIdx);
@@ -221,6 +221,10 @@
 				
 				var altSign = {"is":signs.sharp, "s":signs.flat, "es":signs.flat, "n":signs.natural}[alt];
 				if(altSign) altSign(paper, posX, posY, colorIdx);
+				
+				if(dot) paper.circle(posX + 10, posY+3, 2).attr({'stroke-width':0, 
+					fill:colorIdx<0?settings.signColor:settings.color[colorIdx]
+				});
 				
 				for(var i=0; i<accent; i++){
 					var accOffset = 28 + i*7;
@@ -304,8 +308,9 @@
 					$D.each(s.split(" "), function(n){
 						var cIdx = +n.match(/\d+/);
 						var chrd = chords[cIdx];
-						var dur = chrd.match(/\d+$/);
+						var dur = chrd.match(/\d+\.?$/);
 						if(dur) duration = +dur;
+						var dot = dur && dur.indexOf('.')>=0;
 						chrd = chrd.replace(/^&lt;/, "").replace(/&gt;\d$/, "");
 						$D.each(chrd.split(" "), function(nn){
 							var mmt = nn.match(/([a-gr])((is)|(es)|n)?('*)(@\d+)?([\+\-]\d+)?/i);
@@ -318,7 +323,7 @@
 								colorIdx = parseInt(mmt[6].substr(1));
 							if(mmt[7])
 								shift = parseInt(mmt[7]);
-							drawNote(paper, note, octave, alt, colorIdx, shift);
+							drawNote(paper, note, octave, alt, colorIdx, shift, dot);
 						});
 						
 					});
@@ -340,6 +345,7 @@
 						colorIdx = -1;
 					if(mt[7])
 						duration = +mt[7];
+					var dot = mt[7] && mt[7].indexOf('.')>=0;
 					if(mt[8])
 						accent = mt[8].length;
 					if(mt[9])
@@ -347,7 +353,7 @@
 					if(mt[10])
 						shift = parseInt(mt[10]);
 					posX += alt?24:15;
-					drawNote(paper, note, octave, alt, colorIdx, shift, accent);
+					drawNote(paper, note, octave, alt, colorIdx, shift, accent, dot);
 				}
 			});
 			if(groupMode) drawBeam();
