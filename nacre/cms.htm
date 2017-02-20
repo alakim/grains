@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=windows-1251"/>
+<title>Nacre: CMS</title>
+<link rel="stylesheet" type="text/css" href="lib/nacre/kb.css"/>
+<script type="text/javascript" src="lib/html.js"></script>
+<script type="text/javascript" src="lib/nacre/kb.js"></script>
+<script type="text/javascript" src="lib/nacre/kbView.js"></script>
+<script type="text/javascript">
+
+with(KB.markup){
+var kb = new KB({
+	name:"CMS",
+	
+	relationTypes:{
+		writtenOn:{name:"написан на", inversion:"язык реализации"},
+		developedBy:{name:"разработано", inversion:"разработчик", description:"Устанавливает связь между разработчиком и программным продуктом"}
+	},
+	
+	items:{
+		CMS:{docs:[
+			{url:"http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F_%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%BC%D1%8B%D0%BC", title:"Система управления содержимым — Википедия"},
+			{url:"http://www.cmsmagazine.ru/catalogue/", title:"Каталог CMS"},
+			{url:"http://cmslist.ru/", title:"CMSList.ru | Обзор CMS. Сайт о системах управления сайтом. Сравнения CMS, мнения специалистов о движках для сайта, системах управления контентом."},
+			{url:"http://php.opensourcecms.com/", title:"Open Source CMS Demos & Information - opensourceCMS"}
+		]},
+		advisedSystem:{name:"Система, рекомендованная руководством"},
+		likedSystem:{name:"Система, которая понравилась лично мне"},
+		software:{},
+		freeSoft:{relations:{is:"software"}},
+		proprietarySoft:{relations:{is:"software"}},
+		developer:{description:"Организация - разработчик"},
+		webServer:{},
+		dataBase:{},
+		
+		MySQL:{relations:{is:"dataBase"}},
+		MSSQL:{relations:{is:"dataBase"}},
+		PostgreSQL:{relations:{is:"dataBase"}},
+		Oracle:{relations:{is:"dataBase"}},
+		
+		platform:{description:"Программная платформа"},
+		PHP:{relations:{is:"platform"}, docs:[
+			{url:"http://ru.wikipedia.org/wiki/PHP", title:"Википедия: PHP"},
+			{url:"http://www.php.net/", title:"PHP: Hypertext Preprocessor (официальный сайт PHP)"},
+			{url:"http://php.net/manual/ru/", title:"Руководство по PHP (рус)."},
+			{url:"http://www.php.net/manual/ru/langref.php", title:"Справочник языка"}
+		]},
+		AspNet:{relations:{is:"platform"}},
+		
+		"1С":{relations:{is:"developer"}},
+		Bitrix:{relations:{is:"developer"}},
+		
+		
+		"1С-Битрикс":{relations:{is:"developer", refTo:"1С;Bitrix"}, description:"Совместное предприятие 1C и Bitrix.",
+			docs:[
+				{url:"http://www.1c-bitrix.ru/", title:"1С-Битрикс"},
+				{url:"bitrix.htm", title:"Nacre: Bitrix"}
+			]
+		},
+		IcbProduct:{name:"Продукт 1С-Битрикс", relations:{is:"proprietarySoft;advisedSystem;likedSystem(0.6)", developedBy:"1С-Битрикс"}},
+		
+		
+		IcbCms:{name:"1С-Битрикс: Управление сайтом", relations:{is:"IcbProduct;CMS"}},
+		IcbCmsAspNet:{name:"1С-Битрикс: Управление сайтом ASP.NET", 
+			relations:{is:"IcbProduct;CMS", writtenOn:"AspNet", uses:"MSSQL"},
+			docs:[
+				{url:"http://dev.1c-bitrix.ru/net_user_help/", title:"Пользовательская документация"}
+			]
+		},
+		IcbPortal:{name:"1С-Битрикс: Корпоративный портал", relations:{is:"IcbProduct;CMS"}},
+		IcbSaaS:{name:"1С-Битрикс: Аренда приложений", relations:{is:"IcbProduct"}},
+		
+		IIS:{relations:{is:"webServer"}},
+		Apache:{relations:{is:"webServer"}},
+		
+		
+		NetCat:{relations:{is:"CMS;proprietarySoft;advisedSystem;likedSystem(0.3)", writtenOn:"PHP", uses:"MySQL"}, docs:[
+			{url:"http://www.netcat.ru/", title:"NetCat - система управления сайтами, CMS"}
+		]},
+		
+		Joomla:{relations:{is:"CMS;freeSoft", uses:"MySQL;Apache;IIS", writtenOn:"PHP"}, docs:[
+			{url:"joomla.htm", title:"Nacre - Joomla!"},
+			{url:"http://www.joomla.org/", title:"Joomla!"},
+			{url:"http://www.joomla.org/core-features.html", title:"Joomla Features"},
+			{url:"http://extensions.joomla.org/", title:"Joomla Extensions"}
+		]},
+		
+		Drupal:{relations:{is:"CMS;freeSoft"}, docs:[
+			{url:"http://drupal.org/", title:"Drupal - Open Source CMS"}
+		]},
+		
+		TYPO3:{relations:{is:"CMS;freeSoft", uses:"MySQL;Oracle;MSSQL;PostgreSQL;Apache;IIS", writtenOn:"PHP"}, docs:[
+			{url:"http://typo3.com/", title:"TYPO3 CMS"},
+			{url:"http://typo3.org/", title:"TYPO3 - the Enterprise Open Source CMS: Home"},
+			{url:"http://www.typo3.ru/", title:"TYPO3.RU"},
+			{url:"http://association.typo3.org/", title:"TYPO3 Association"},
+			{url:"http://www.typo3lab.ru/", title:"TYPO3 Лаборатория"},
+			{url:"http://typo3.com/Feature-list.1243.0.html", title:"TYPO3 Features"}
+		]}
+		
+	}
+});
+}
+
+new KbView(kb, "kbOut");
+
+</script>
+</head>
+<body>
+	<div id="kbOut">
+	</div>
+</body>
+</html>

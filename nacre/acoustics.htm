@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Nacre: Acoustics</title>
+<meta http-equiv="Content-type" content="text/html; charset=windows-1251"/>
+<link rel="stylesheet" type="text/css" href="lib/nacre/kb.css"/>
+<script type="text/javascript" src="lib/html.js"></script>
+<script type="text/javascript" src="lib/nacre/kb.js"></script>
+<script type="text/javascript" src="lib/nacre/kbView.js"></script>
+<script type="text/javascript">
+with(KB){
+	Article("acousticResonators", "Акустические резонаторы", "http://www.bluesmobil.ru/shikhman/arts/helmhlz.htm"),
+	Article("clarinetAcoustics", "Clarinet Acoustics", "http://www.phys.unsw.edu.au/music/clarinet/")
+}
+with(KB.markup){
+var kb = new KB({
+	name:"Acoustics",
+	
+	relationTypes:{
+	},
+	
+	items:{
+		acoustics:{docs:[
+			{url:"http://en.wikipedia.org/wiki/Acoustics", title:"Acoustics"},
+			{url:"http://en.wikipedia.org/wiki/Musical_acoustics", title:"Musical acoustics"},
+			"clarinetAcoustics"
+		]},
+		resonator:{relations:{refTo:"acoustics"}, docs:[
+			"acousticResonators",
+			{url:"http://www.femto.com.ua/articles/part_2/3363.html", title:"Резонатор акустический"}
+		]},
+		helmholzResonator:{name:"Резонатор Гельмгольца", relations:{is:"resonator"}, docs:[
+			"acousticResonators",
+			{url:"http://www.phys.unsw.edu.au/jw/Helmholtz.html", title:"Helmholtz Resonance"}
+		]},
+		tubeResonator:{name:"Резонатор типа Труба", relations:{is:"resonator"}, docs:[
+			"acousticResonators",
+			{url:"http://www.phys.unsw.edu.au/music/flute/", title:"Flute Acoustics"},
+			"clarinetAcoustics"
+		]},
+		oscillator:{relations:{refTo:"acoustics"}},
+		string:{relations:{is:"oscillator"}, docs:[
+			{url:"http://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%BE%D1%80_%D0%BE_%D1%81%D1%82%D1%80%D1%83%D0%BD%D0%B5", title:"Спор о струне — Википедия"}
+		]},
+		impedance:{relations:{refTo:"acoustics"}, docs:[
+			{url:"http://www.phys.unsw.edu.au/jw/z.html", title:"What is acoustic impedance?"},
+			{url:"http://www.animations.physics.unsw.edu.au/jw/sound-impedance-intensity.htm", title:"Acoustic impedance and intensity: From Physclips Waves and Sound"}
+		]},
+		"мензура":{relations:{refTo:"acoustics"},
+			description:[
+				p("В духовых инструментах Мензура - отношение среднего диаметра канала к его длине (отсюда широкая и узкая Мензура) [БСЭ]")
+			],
+			docs:[
+				{url:"http://corpuscul.net/teoriya-zvuka-2/akusticheskie-xarakteristiki-orkestra/duxovye-akustika/menzura-mednyx-instrumentov/", title:"Мензура медных инструментов"},
+				{url:"http://corpuscul.net/teoriya-zvuka-2/akusticheskie-xarakteristiki-orkestra/duxovye-akustika/menzura-derevyannyx-instrumentov/", title:"Мензура деревянных инструментов "}
+			]
+		}
+	}
+});
+}
+
+new KbView(kb, "kbOut");
+
+</script>
+</head>
+<body>
+	<div id="kbOut">
+	</div>
+</body>
+</html>
