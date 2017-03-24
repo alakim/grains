@@ -1087,4 +1087,4 @@
 	});
 	
 	return XEdit;
-})(jQuery, Html);
+})(jQuery, Html.version('4.1.0'));
