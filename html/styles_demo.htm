@@ -7,6 +7,8 @@
 	<script type="text/javascript" src="../jstyles/lib/tinycolor-min.js"></script>
 	<script type="text/javascript" src="html.js"></script>
 	<script type="text/javascript">
+		var px = Html.unit('px');
+		
 		var color = "#068",
 			linkColor = "#800",
 			buttonColor = "#eef";
@@ -60,6 +62,20 @@
 				"font-size":"80%",
 				color:"#aaa",
 				"font-style":"italic"
+			},
+			'.multiple p':{
+				width: px(180),
+				padding: px(10, 20),
+				fontWeight: 'bold',
+				textTransform: 'uppercase',
+				color: '#ffa',
+				backgroundColor: '#008',
+				background: [
+					'-webkit-linear-gradient(left top, #08a, #008)',
+					'-o-linear-gradient(bottom right, #08a, #008)',
+					'-moz-linear-gradient(bottom right, #08a, #008)',
+					'linear-gradient(to bottom right, #08a, #008)'
+				]
 			}
 		});
 		
@@ -81,6 +97,9 @@
 	<div class="fine">
 		<p>abcdefg</p>
 		<input type="button" value="Start"/>
+	</div>
+	<div class="multiple">
+		<p>abc</p>
 	</div>
 </body>
 </html>

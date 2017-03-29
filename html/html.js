@@ -168,14 +168,24 @@ var Html = (function(){
 			return nm;
 		}
 		
+		function attrName(nm){
+			var attNm = Html.cssAttributes[nm] || nm;
+			return insertHyphens(attNm);
+		}
+		
 		stylesheet.push(sel+"{");
 		each(defs, function(v, nm){
+			//console.log(v);
 			if(typeof(v)=="function") v = v();
 			if(typeof(v)!="object"){
-				var attNm = Html.cssAttributes[nm] || nm;
-				attNm = insertHyphens(attNm);
-				stylesheet.push([attNm, ":", v, ";"].join(" "));
-			}else{
+				stylesheet.push([attrName(nm), ":", v, ";"].join(" "));
+			}
+			else if(v instanceof Array){
+				for(var el,i=0; el=v[i],i<v.length; i++){
+					stylesheet.push([attrName(nm), ":", el, ";"].join(" "));
+				}
+			}
+			else{
 				children[nm] = v;
 			}
 		});
@@ -239,7 +249,7 @@ var Html = (function(){
 		alert("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.1.0"
+	var topVersion = "4.2.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	
