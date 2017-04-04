@@ -42,6 +42,7 @@
 				}
 			},
 			".fine":{
+				padding: px(10, 5),
 				" p": function(){ // можно использовать функции, возвращающие соответствующие стили и значения атрибутов
 					return {color:"#0a0", "text-transform":function(){return "uppercase"}};
 				},
@@ -65,7 +66,7 @@
 			},
 			'.multiple p':{
 				width: px(180),
-				padding: px(10, 20),
+				padding: px([10, 20]), // то же, что и px(10, 20)
 				fontWeight: 'bold',
 				textTransform: 'uppercase',
 				color: '#ffa',
@@ -80,7 +81,7 @@
 		});
 		
 		$(function(){
-			$("#version").html("Powered by Html v."+Html.version);
+			$("#version").html("Powered by Html v."+Html.version());
 		});
 	</script>
 </head>

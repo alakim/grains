@@ -213,13 +213,17 @@ var Html = (function(){
 	}
 	
 	Html.unit = function(name){
+		function format(v){
+			if(v instanceof Array) return v.join(name+' ')+name;
+			return v+name;
+		}
 		return 	function(v){
-			if(arguments.length==1) return v+name;
+			if(arguments.length==1) return format(v);
 			var res = [];
 			for(var i=0,a; a=arguments[i],i<arguments.length; i++){
-				res.push(a);
+				res.push(format(a));
 			}
-			return res.join(name+" ")+name;
+			return res.join(' ');
 		}
 	}
 	
@@ -249,7 +253,7 @@ var Html = (function(){
 		alert("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.2.0"
+	var topVersion = "4.3.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	
