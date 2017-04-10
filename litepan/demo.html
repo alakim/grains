@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>LitePan Demo Page</title>
+
+
+	<script src="lib/html.js"></script>
+	<script src="lib/jquery-3.2.0.min.js"></script>
+	<script src="lib/snap.svg-min.js"></script>
+	<script src="litepan.js"></script>
+	<script>
+		var size = {w: 600, h: 204};
+		var px = Html.unit('px');
+		Html.writeStylesheet({
+			body:{
+				fontFamily: 'Verdana, Arial, Sans-Serif',
+				fontSize: px(14)
+			},
+			'#pan':{
+				padding: px(3),
+				width: px(size.w),
+				height: px(size.h),
+				' svg':{
+					width: px(size.w),
+					height: px(size.h)
+				}
+			}
+		});
+
+		$(function(){
+			LitePan('#pan', 'pan_view_1200w.jpg', size.w, size.h);
+		});
+
+
+
+	</script>
+
+</head>
+<body>
+	<h1>LitePan Demo Page</h1>
+	<div id="pan"></div>
+</body>
+</html>
