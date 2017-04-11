@@ -6,7 +6,7 @@ var LitePan = (function($, $H, $S){
 	}
 
 	var panGroup = null;
-	var size = {w:100, h:100};
+	var size = {img:{}, frm:{}};
 	var paper = null;
 
 	var px = $H.unit('px');
@@ -15,7 +15,7 @@ var LitePan = (function($, $H, $S){
 		frmSize = frmSize || imgSize;
 		pnl.css({width:px(frmSize.w), height: px(frmSize.h), overflow:'hidden', cursor:'move'});
 		var snp = $($H.svg({width:frmSize.w, height:frmSize.h, version:'1.1', xmlns:'http://w3.org/2000/svg'}));
-		size = imgSize;
+		size = {img:imgSize, frm:frmSize};
 		pnl.append(snp);
 		paper = Snap(snp[0]);
 		paper.rect(0, 0, imgSize.w, imgSize.h).attr({
@@ -53,11 +53,11 @@ var LitePan = (function($, $H, $S){
 		t0 = t0 || {x:0, y:0};
 		var x = t0.x + dx,
 			y = t0.y + dy;
-		if(x<-size.w) x = x+size.w;
-		else if(x>size.w) x = x-size.w;
+		if(x<-size.img.w) x = x+size.img.w;
+		else if(x>size.img.w) x = x-size.img.w;
 
 		if(y>0) y = 0;
-		else if(y<(frmSize.h - imgSize.h)) y = frmSize.h - imgSize.h;
+		else if(y<(size.frm.h - size.img.h)) y = size.frm.h - size.img.h;
 		
 		if(fixY) panGroup.transform('T'+x+',0');
 		else panGroup.transform('T'+x+','+y);
