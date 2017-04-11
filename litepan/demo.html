@@ -10,7 +10,8 @@
 	<script src="lib/snap.svg-min.js"></script>
 	<script src="litepan.js"></script>
 	<script>
-		var size = {w: 600, h: 204};
+		var imgSize = {w: 600, h: 204},
+			frmSize = {w:imgSize.w/2, h:imgSize.h/2};
 		var px = Html.unit('px');
 		Html.writeStylesheet({
 			body:{
@@ -19,17 +20,17 @@
 			},
 			'#pan':{
 				padding: px(3),
-				width: px(size.w),
-				height: px(size.h),
+				width: px(imgSize.w),
+				height: px(imgSize.h),
 				' svg':{
-					width: px(size.w),
-					height: px(size.h)
+					width: px(imgSize.w),
+					height: px(imgSize.h)
 				}
 			}
 		});
 
 		$(function(){
-			LitePan('#pan', 'pan_view_1200w.jpg', size.w, size.h);
+			LitePan('#pan', 'pan_view_1200w.jpg', imgSize, frmSize);
 		});
 
 
