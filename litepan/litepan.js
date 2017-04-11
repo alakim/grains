@@ -11,7 +11,8 @@ var LitePan = (function($, $H, $S){
 
 	var px = $H.unit('px');
 
-	function LitePan(pnl, imgRef, imgSize, frmSize){pnl=$(pnl);
+	function LitePan(pnl, imgRef, fixY, imgSize, frmSize){pnl=$(pnl);
+		frmSize = frmSize || imgSize;
 		pnl.css({width:px(frmSize.w), height: px(frmSize.h), overflow:'hidden', cursor:'move'});
 		var snp = $($H.svg({width:frmSize.w, height:frmSize.h, version:'1.1', xmlns:'http://w3.org/2000/svg'}));
 		size = imgSize;
