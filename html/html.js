@@ -226,6 +226,19 @@ var Html = (function(){
 			return res.join(' ');
 		}
 	}
+
+	Html.units = {
+		px: Html.unit('px'),
+		pc: Html.unit('%')
+	};
+
+	Html.symbols = function(str){
+		var res = {}, c=str.split(';');
+		for(var s,i=0; s=c[i],i<c.length; i++) res[s] = s;
+		return res;
+	};
+
+	Html.cssKeywords = Html.symbols('block;none;flex;row;column;left;right;center;hidden;pointer;bold;normal;uppercase;lowercase;absolute;relative;underline');
 	
 	function compareVersions(v1, v2){
 		if(v1==v2) return 0;
@@ -253,7 +266,7 @@ var Html = (function(){
 		alert("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.3.0"
+	var topVersion = "4.4.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	
