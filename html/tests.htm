@@ -397,6 +397,15 @@ new JSUnit.Test("CSS Keywords", "Extensions").run = function(){
 	this.assert(Html.cssKeywords.absolute, 'absolute');
 }
 
+new JSUnit.Test("CSS Rules", "Extensions").run = function(){
+	var anm = Html.cssRules('@keyframes example', {
+		from:{backgroundColor:'red'},
+		to:{backgroundColor:'green'}
+	});
+	
+	this.assert(anm, '@keyframes example{\nfrom{\nbackground-color : red ;\n}\nto{\nbackground-color : green ;\n}\n}');
+}
+
 function init(){
 	document.getElementById("versionPanel").innerHTML = Html.version();
 	JSUnit.init();

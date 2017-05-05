@@ -196,6 +196,12 @@ var Html = (function(){
 		});
 	}
 
+	Html.cssRules = function(title, styles){
+		return title+'{\n'
+			+ Html.stylesheet(styles)
+			+'\n}';
+	}
+
 	Html.cssAttributes = {};
 	
 	Html.stylesheet = function(css){
@@ -263,10 +269,10 @@ var Html = (function(){
 				return $H;
 			}
 		}
-		alert("Html version "+num+" not supported");
+		console.error("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.4.0"
+	var topVersion = "4.5.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	
