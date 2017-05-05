@@ -201,6 +201,12 @@ var Html = (function(){
 			+ Html.stylesheet(styles)
 			+'\n}';
 	}
+	
+	Html.writeCssRules = function(title, styles){
+		document.write('<style type="text/css">\n');
+		document.write(Html.cssRules(title, styles));
+		document.write('\n</style>\n');
+	}
 
 	Html.cssAttributes = {};
 	
