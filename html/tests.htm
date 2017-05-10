@@ -388,8 +388,8 @@ new JSUnit.Test("Units", "Extensions").run = function(){
 	var px = Html.unit("px");
 	this.assert(px(22), "22px");
 	this.assert(px(3, 5, 10), "3px 5px 10px");
-	this.assert(Html.units.px(22), '22px');
-	this.assert(Html.units.pc(100), '100%');
+	this.assert(Html.unit.px(22), '22px');
+	this.assert(Html.unit.pc(100), '100%');
 }
 
 new JSUnit.Test("CSS Keywords", "Extensions").run = function(){

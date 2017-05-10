@@ -239,10 +239,10 @@ var Html = (function(){
 		}
 	}
 
-	Html.units = {
+	extend(Html.unit, {
 		px: Html.unit('px'),
 		pc: Html.unit('%')
-	};
+	});
 
 	Html.symbols = function(str){
 		var res = {}, c=str.split(';');
@@ -278,7 +278,7 @@ var Html = (function(){
 		console.error("Html version "+num+" not supported");
 	}
 	
-	var topVersion = "4.5.0"
+	var topVersion = "4.6.0"
 	
 	if(typeof(JSUnit)=="object") Html.compareVersions = compareVersions;
 	
