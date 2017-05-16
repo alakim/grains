@@ -1,0 +1,341 @@
+.block-left-index {width: 800px; float: left; background: #fff;}
+.block-right-index {width: 400px; float: right; position: relative;}
+.block-right-index:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+.block-right-responsive-index {display: none; width: 33%; float: right; position: relative; z-index: 2;}
+.block-right-responsive-index .block-monitoring,
+.block-right-responsive-index .block-right-common,
+.block-right-responsive-index .block-themes-right,
+.block-right-responsive-index .block-banner {margin-left: 20px;}
+
+/* Вертушка */
+.vertushka {width: 800px; height: 400px; overflow: hidden; position: relative; margin: 0 0 20px; background: #000; font-family: Helvetica, Arial, sans-serif;}
+.vertushka:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+.vertushka__inner {width: 800px; height: 400px;}
+.vertushka__item {width: 200px; height: 200px; overflow: hidden; position: absolute; top: 0; left: 0;}
+.vertushka__item_big {width: 400px; height: 400px; position: absolute; left: 400px; top: 0;}
+.vertushka__inner a {display: block; color: #fff;}
+.vertushka__s-title {display: block; font-size: 1.1667rem; line-height: 18px; padding: 0 16px; color: #fff;}
+.vertushka__s-subtitle {display: block; font-size: 1rem; line-height: 1.333rem; padding: 4px 16px 0; color: #b7d167;}
+.vertushka__b-title {display: none; font-size: 1.5rem; line-height: 22px; padding: 0 16px; color: #fff;}
+.vertushka__b-subtitle {display: none; font-size: 1rem; line-height: 1.333rem; padding: 4px 16px 0; color: #b7d167;}
+.vertushka__b-author {display: none; font-size: 1.0833rem; line-height: 20px; padding: 3px 16px 0; color: #b7d167;}
+.vertushka__b-anons {display: none; font-size: 1.0833rem; line-height: 18px; padding: 3px 16px 0; color: #fff !important;}
+.vertushka__overlay {display: none; position: absolute; bottom: 0; left: 0; width: 100%; height: 45px; background: url(/media/pics/spinner_bg_big.png) no-repeat left top; z-index: 2;}
+.vertushka__text_big .vertushka__b-title {display: block;}
+.vertushka__text_big .vertushka__b-subtitle  {display: block;}
+.vertushka__text_big .vertushka__b-author {display: block;}
+.vertushka__text_big .vertushka__b-anons {display: block;}
+.vertushka__text_big .vertushka__s-title {display: none;}
+.vertushka__text_big .vertushka__s-subtitle {display: none;}
+.vertushka__text {display: block; position: absolute; bottom: 0;width: 100%; padding: 30px 0 20px; line-height: 20px; z-index: 2; overflow: hidden; background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.38) 40%,rgba(0,0,0,1) 100%); /* FF3.6-15 */ background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.38) 40%,rgba(0,0,0,1) 100%); /* Chrome10-25,Safari5.1-6 */ background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.38) 40%,rgba(0,0,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */}
+.vertushka__text_big {padding: 30px 0 20px;}
+.vertushka__text span:nth-child(odd) {color: #fff;}
+.vertushka__text span:nth-child(even) {color: #b7d167;}
+.vertushka__banner {width: 200px; height: 150px; float: left;}
+.vertushka__image {width: 100%; height: 100%;}
+.vertushka__image_big, .vertushka__item_big .vertushka__image  {width: 400px; height: 400px;}
+.vertushka__item_big .vertushka__overlay {display: block;}
+.vertushka__inner div.vertushka__item#nav-fragment-0 {top: 0; left: 0;}
+.vertushka__inner div.vertushka__item#nav-fragment-1 {top: 200px; left: 0;}
+.vertushka__inner div.vertushka__item#nav-fragment-2 {top: 0; left: 200px;}
+.vertushka__inner div.vertushka__item#nav-fragment-3 {top: 200px; left: 200px;}
+.vertushka__inner div.vertushka__item#nav-fragment-4 {top: 0; left: 400px;}
+
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__title_small,
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__subtitle_small,
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__author_small  {display: none;}
+
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__title_big,
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__subtitle_big,
+.vertushka__inner div.vertushka__item#nav-fragment-4 .vertushka__author_big  {display: block;}
+
+/* Поиск */
+.block-search {height: 50px; background: #fff url(/media/pics/search_shadow.png) no-repeat right top;}
+.block-search__inner {height: 50px; padding: 0 0 0 26px; margin-left: 20px; background: url(/media/pics/search_icon.png) no-repeat left 17px;}
+.block-search form {display: block; padding-right: 140px; position: relative;}
+.block-search input[type="search"] {border: 0; width: 100%; background: transparent; height: 50px; line-height: 50px; color: #000; font-size: 1.0833rem;}
+.block-search input[type="submit"] {width: 100px; height: 32px; position: absolute; right: 20px; top: 7px; border: 2px solid #697c80; cursor: pointer; font-size: 1.1667rem; color: #697c80; -moz-border-radius: 60px / 60px; -webkit-border-radius: 60px / 60px; border-radius: 60px / 60px; background: #fff; text-align: center; display: block; font-weight: bold; line-height: 32px;}
+
+/* Блок сюжета (под вертушкой) */
+.block-theme {margin: 0 20px; position: relative; font-family: Helvetica, Arial, sans-serif;}
+.block-theme__block {width: 100%; position: relative; margin: 0 0 20px;}
+
+.block-theme__banner {display: none; text-align: center; float: left; width: 150px;}
+.block-theme__banner img {width: 100%; height: auto; margin-left: 20px;}
+
+.block-theme__pic {display: block; width: 100%; height: auto;}
+.block-theme__pic img {display: block; width: 100%; height: auto;}
+
+.block-theme__text {position: absolute; top: 0; right: 2%; width: 60%; height: 100%;}
+.block-theme__table {display: table; height: 100%;}
+.block-theme__cell {display: table-cell; vertical-align: middle; padding-bottom: 30px;}
+.block-theme__title {font-size: 1.3333rem; font-weight: bold; text-transform: uppercase; margin: 5px 0; line-height: 1.4;}
+.block-theme__title a {color: #000; text-decoration: none;}
+.block-theme__items {display: block; margin: 0 0 0 10px;}
+.block-theme__item {font-size: 1.1667rem; display: block; line-height: 1.3; margin: 0 0 5px; position: relative;}
+.block-theme__link {color: #000; text-decoration: none;}
+.block-theme__name {font-weight: bold;}
+.block-theme__link:hover .block-theme__name {text-decoration: underline;}
+.block-theme__arrow {display: block; font-weight: bold; position: absolute; left: -10px; top: -1px;}
+.block-theme__author {font-size: 1rem; color: #000;}
+.block-theme__all {display: block; text-decoration: none; text-align: right; position: absolute; background: #2e0d00; background: linear-gradient(to left, rgba(0, 0, 0, 0.5) 50%, transparent 70%); height: 30px; width: 100%; padding-right: 20px; left: -20px; bottom: 0; color: #fff;font-size: 1.1667rem; font-weight: bold; text-transform: uppercase; line-height: 30px;}
+
+/* Блок новостей */
+.block-news {margin: 0 20px 24px 20px; position: relative; font-family: Helvetica, Arial, sans-serif;}
+.block-news__heading {color: #333; letter-spacing: -0.03em; padding: 0; font-size: 1.8333rem; font-weight: bold; background: url(/media/pics/news_heading2.png) no-repeat left center; text-indent: 36px; margin-bottom: 20px; margin-right: 7px; float: left;}
+.block-news__heading a {color: #333; text-decoration: none;}
+.block-news__date {display: block; text-decoration: none; height: 22px; line-height: 20px; overflow: hidden; padding: 0 8px; background: #007c5b; border: 0px solid #007c5b; border-radius: 3px; color: #fff; text-align: center; font-size: 1.0833rem; float: left; position: relative; top: -2px;}
+.block-news__date:hover {background: #00986d;}
+.block-news__inner {clear: both; margin: 0; overflow: hidden;}
+.block-news__items {clear: both; height: 270px; overflow: hidden; width: 772px;}
+.block-news__items li {display: block; width: 180px; float: left; margin: 0 13px 5px 0; height: 270px;}
+.block-news__items a {display: block; width: 180px; text-decoration: none; font-size: 1rem; line-height: 1.5em; position: relative;}
+.block-news__items a:hover {border: 0;}
+.block-news__items img {display: block; width: 180px; height: 135px; background: #dadde0;}
+.block-news__items a:hover .block-news__border {display: block;}
+.block-news__text {display: block; color: #333; padding: 10px; overflow: hidden; border-bottom: 1px solid #dadde0; border-left: 1px solid #dadde0; border-right: 1px solid #dadde0;}
+
+.block-news__border {display: none; width: 180px;
+height: calc(100% - 2px); 
+height: -moz-calc: calc(100% - 2px); 
+height: -webkit-calc: calc(100% - 2px); 
+height: -webkit-calc: calc(100% - 2px);
+position: absolute; top: 0; left: 0; border-top: 2px solid #007c5b; border-bottom: 2px solid #aacf00; background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#007c5b), to(#aacf00)); background-image: -webkit-linear-gradient(#007c5b, #aacf00); background-image: -moz-linear-gradient(#007c5b, #aacf00), -moz-linear-gradient(#007c5b, #aacf00); background-image: -o-linear-gradient(#007c5b, #aacf00), -o-linear-gradient(#007c5b, #aacf00); background-image: linear-gradient(#007c5b, #aacf00), linear-gradient(#007c5b, #aacf00); -moz-background-size:5px 100%; background-size:2px 100%; background-position:0 0, 100% 0; background-repeat:no-repeat;}
+
+.block-news__arrows {width: 73px; height: 24px; position: absolute; right: 0; top: 0;}
+.block-news__arrows span {display: block; float: left; width: 36px; height: 24px; line-height: 20px; background: #292a2f; border: 0px solid #007c5b; cursor: pointer; color: #fff; text-align: center; font-size: 1.6667rem;}
+.block-news__arrows span:hover {background: #41424a;}
+.block-news__back {border-radius: 3px 0 0 3px;}
+.block-news__forward {border-radius: 0 3px 3px 0; border-left: 1px solid #3f4044 !important;}
+.block-news__more {display: block; text-align: right; margin: 1em 0; font-size: 14px;}
+.block-news__more a {color: #007c5b;}
+
+/* Блок медиа */
+.block-media {height: 380px; margin: 0 0 20px; background: url(/media/pics/prima_block_bg.jpg) no-repeat left top; clear: both;}
+.block-media__heading {line-height: 33px; font-size: 1.5rem; color: #fff; margin: 0 0 10px -10px; padding: 24px 0 0; text-align: center;}
+.block-media__heading a {color: #fff; text-decoration: none; display: inline-block;}
+.block-media__heading a:hover {text-decoration: underline;}
+.block-media__heading_video a {background: url(/media/pics/video_header.png) no-repeat left -2px; padding-left: 34px;}
+.block-media__heading_photo a {background: url(/media/pics/photo_header.png) no-repeat left -2px; padding-left: 34px;}
+.block-media__heading_audio a {background: url(/media/pics/audio_header.png) no-repeat left -2px; padding-left: 34px;}
+.block-media__more {text-align: right; position: absolute; right: 20px; bottom: 10px;}
+.block-media__more a {color: #fff; text-decoration: none;}
+.block-video {height: 380px; width: 393px; float: left; border-right: 1px solid #86989c; position: relative;}
+.block-video__inner {padding: 0 20px 20px;}
+.block-video__player {margin: 0 0 12px;}
+.block-video__player iframe {width: 100%;}
+.block-video__title {font-size: 1.1667rem;}
+.block-video__title a {color: #fff; text-decoration: none;}
+.block-video__title a:hover {text-decoration: underline;}
+.block-photo {height: 380px; width: 300px; padding: 0 35px; float: left; border-left: 1px solid #424b4d; border-right: 1px solid #86989c; position: relative;}
+.block-photo__inner {position: relative; margin: 0 auto; width: 300px;}
+.block-photo__pics {display: inline-block; margin: 0 0 12px; height: 225px; width: 300px; overflow: hidden;}
+.block-photo__pics ul {height: 225px;}
+.block-photo__pics li {display: inline-block; float: left; width: 300px;}
+.block-photo__pics a {display: block; overflow: hidden; width: 300px; height: 225px;}
+.block-photo__pics img {width: 300px; height: 225px;}
+.block-photo__titles {}
+.block-photo__titles li {display: none; color: #fff; font-size: 1.1667rem; line-height: 18px; margin: 0 5px;}
+.block-photo__titles li:first-child {display: block;}
+.block-photo__titles a {color: #fff; text-decoration: none;}
+.block-photo__titles a:hover {text-decoration: underline;}
+.block-photo__titles span {font-size: 1rem;}
+.block-photo__arrows span:nth-child(1) {background: url(/media/pics/photo_arrows.png) no-repeat 0 0; width: 40px; height: 55px; display: block; position: absolute; top: 90px; left: -15px; cursor: pointer;}
+.block-photo__arrows span:nth-child(1):hover {background: url(/media/pics/photo_arrows.png) no-repeat 0 -55px;}
+.block-photo__arrows span:nth-child(2) {background: url(/media/pics/photo_arrows.png) no-repeat -41px 0; width: 40px; height: 55px; display: block; position: absolute; top: 90px; right: -15px; cursor: pointer;}
+.block-photo__arrows span:nth-child(2):hover {background: url(/media/pics/photo_arrows.png) no-repeat -41px -55px;}
+.block-audio {width: 390px; padding: 0 20px; height: 380px; float: left; border-left: 1px solid #424b4d; position: relative;}
+.block-audio .audioplayer {width: 320px; margin: 0 0 2em;}
+.block-audio__inner {padding: 0 0 20px; margin: 0 auto;}
+.block-audio__title {color: #fff; font-size: 1rem; line-height: 18px; margin: 0 0 1em;}
+.block-audio__title a {color: #fff; text-decoration: none;}
+.block-audio__title a:hover {text-decoration: underline;}
+.block-audio__subtitle {font-style: italic;}
+.block-audio__player {position: relative; height: 22px;}
+.block-audio__play {display: block; width: 18px; height: 18px; background: url(/media/pics/audio_player.png) no-repeat -15px -3px; float: left; margin: 3px 0 0;}
+.block-audio__time {float: left; width: 36px; text-align: center; color: #a6a7a8; font-size: 0.9167rem; height: 18px; line-height: 18px; margin: 3px 0 0;}
+.block-audio__bar {display: block; width: 225px; height: 7px; background: url(/media/pics/audio_player.png) no-repeat -36px -9px; float: left; position: relative; margin-top: 9px;}
+.block-audio__passed {display: block; width: 50px; height: 7px; background: url(/media/pics/audio_player.png) no-repeat -36px -18px;}
+.block-audio__point {display: block; width: 14px; height: 13px; background: url(/media/pics/audio_player.png) no-repeat 0 -6px; position: absolute; top: -4px; left: 45px;}
+.block-audio__volume {display: block; width: 24px; height: 17px; background: url(/media/pics/audio_player.png) no-repeat -262px 0; float: left; margin-left: 14px;}
+.block-audio__volume:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+
+/* Блок авторов */
+.block-authors {background: url(/media/pics/prima_block_bg.jpg) no-repeat left top; margin: 0 0 20px; padding: 26px 0; position: relative; clear: both;}
+.block-authors__heading {color: #fff; text-align: center; font-size: 1.5rem; height: 33px; line-height: 33px;}
+.block-authors__heading a {color: #fff; text-decoration: none; display: inline-block; background: url(/media/pics/authors_header.png) no-repeat left -2px; padding-left: 40px;}
+.block-authors__heading a:hover {text-decoration: underline;}
+.block-authors__inner {width: 1050px; margin: 0 75px; overflow: hidden;}
+.block-authors__inner ul {display: block; margin: 0;}
+.block-authors__inner li {text-align: center; float: left; width: 150px; position: relative;}
+.block-authors__inner img {display: block; width: 128px; height: 128px; background: url(/media/pics/authors.png) no-repeat left top; margin-bottom: 5px;}
+.block-authors__inner img.block-authors__bpic {display: none; position: absolute; top: 13px; left: 11px;}
+.block-authors__link {text-decoration: none; color: #fff; display: block; width: 128px; padding: 13px 11px 0;}
+.block-authors__link:hover .block-authors__bpic {display: block;}
+.block-authors__list {clear: both; position: relative;}
+.block-authors__title {color: #fff; font-size: 1.0833rem; text-align: center; line-height: 17px;}
+.block-authors__arrows {}
+.block-authors__arrows span {display: block; background: url(/media/pics/authors_arrows.png) no-repeat 0 0; width: 50px; height: 110px; display: block; position: absolute; top: 40px; cursor: pointer;}
+.block-authors__arrows span:nth-child(1) {position: absolute; left: 0;}
+.block-authors__arrows span:nth-child(1):hover {background-position: 0 -110px;}
+.block-authors__arrows span:nth-child(2) {background-position: -51px 0; right: 0;}
+.block-authors__arrows span:nth-child(2):hover {background-position: -51px -110px;}
+
+/* Блок книг */
+.block-books {height: 340px; text-align: center; background: url(/media/pics/prima_block_bg.jpg) no-repeat left top; margin: 0 0 20px; position: relative; clear: both;}
+.block-books__heading {color: #fff; font-size: 1.5rem; height: 22px; line-height: 22px; padding-left: 0; top: 26px; position: relative; margin: 0 0 30px; text-align: center;}
+.block-books__heading a {color: #fff; text-decoration: none; display: inline-block; background: url(/media/pics/publishing_header.png) no-repeat left -5px; padding-left: 40px;}
+.block-books__heading a:hover {text-decoration: underline;}
+.block-books__bookshelf {display: block; background: url(/media/pics/publishing_bookshelf.png) no-repeat center 142px; padding-bottom: 35px;}
+.block-books__inner {clear: both; margin-bottom: 48px; width: 780px; max-width: 780px; height: 155px; margin: 58px 205px 0; padding: 0 5px; overflow: hidden;}
+.block-books__books {margin: 0 auto; height: 155px; overflow: hidden;}
+.block-books__items {display: block; height: 155px; width: 780px;}
+.block-books__item {float: left; display: block; height: 170px; padding: 0 15px; text-align: center; margin-bottom: 20px; position: relative; width: 100px !important; overflow: hidden;}
+.block-books__pic {box-shadow: 0px 1px 5px rgba(0, 0, 0, 1); margin-bottom: 5px; margin: 0 auto;}
+.block-books__for-popup {display: none;}
+.block-books__popup {text-align: left; display: block; position: absolute; top: 210px; left: 0; background: url(/media/pics/publishing_popup-left.png); width: 486px; z-index: 2;}
+.block-books__popup_right {background: url(/media/pics/publishing_popup-right.png);}
+.block-books__popup-inner {padding: 0 35px 0 40px; margin: -35px 0 0;}
+.block-books__popup-top{height: 55px; width: 486px; background: url(/media/pics/publishing_popup.png); margin: -55px 0 0;}
+.block-books__popup-bottom {height: 16px; width: 486px; background: url(/media/pics/publishing_popup.png) 0 -55px; position: relative; bottom: -16px;}
+.block-books__popup-title {font-size: 1.1667rem; font-weight: bold; color: #333; margin: 0 0 14px;}
+.block-books__popup-subtitle {font-size: 1rem; color: #007c5b; margin: 0 0 20px;}
+.block-books__popup-text {font-size: 1.0833rem; color: #555; margin: 0 0 20px; line-height: 20px;}
+.block-books__popup-button {background: #007c5b; width: 112px; height: 30px; line-height: 30px; border: 1px solid #007c5b; border-radius: 3px; color: #fff; text-align: center; display: block; text-decoration: none;}
+.block-books__popup_right {background: url(/media/pics/publishing_popup-right.png);}
+.block-books__popup_right .block-books__popup-inner {padding: 0 40px 0 35px;}
+.block-books__popup_right .block-books__popup-top {background-position: 0 -71px;}
+.block-books__popup_right .block-books__popup-bottom {background-position: 0 -126px;}
+.block-books__arrows {}
+.block-books__arrows span {}
+.block-books__arrows span:nth-child(1) {background: url(/media/pics/publishing_arrows.png) no-repeat 0 0; display: block; width: 40px; height: 40px; position: absolute; top: 135px; left: 80px; cursor: pointer;}
+.block-books__arrows span:nth-child(1):hover {background-position: 0 -40px;}
+.block-books__arrows span:nth-child(2) {background: url(/media/pics/publishing_arrows.png) no-repeat -40px 0; display: block; width: 40px; height: 40px; position: absolute; top: 135px; right: 80px; cursor: pointer;}
+.block-books__arrows span:nth-child(2):hover {background-position: -40px -40px;}
+.block-books__shop {clear: both; margin: 0 auto; padding: 0 20px; margin: 0 5px; height: 32px; line-height: 32px; display: inline-block; white-space: nowrap; background: #007d59; border: 0 solid; font-size: 1.0833rem; color: #fff; text-align: center; text-decoration: none; -moz-border-radius: 60px / 60px; -webkit-border-radius: 60px / 60px; border-radius: 60px / 60px;}
+.block-books__shop:hover {background: #00986d;}
+
+/* Блок пожертвований */
+.block-donation-prima {position: relative; background: url(/media/pics/donation-site-prima_bg.jpg) no-repeat center top; padding: 40px 20px 0; height: 340px;}
+.block-donation-prima__bg {max-width: 733px; max-height: 257px; width: 100%; height: auto;}
+.block-donation-prima__logo {display: block; margin: 0 auto 5px; max-width: 82px; max-height: 82px; width: 100%; height: auto;}
+.block-donation-prima__text {display: block; margin: 0 auto 60px; max-width: 254px; max-height: 107px; width: 100%; height: auto;}
+.block-donation-prima__money {display: block; margin: 0 auto; text-align: center;}
+.block-donation-prima__form {display: block;}
+.block-donation-prima__input {width: 70px; height: 25px; border: 0; line-height: 25px; color: #000; font-weight: bold; padding: 0 5px; text-align: right; font-size: 16px; display: inline-block; border: 1px solid #9b9b9b; vertical-align: top; margin-bottom: 8px;}
+.block-donation-prima__rub {max-width: 43px; max-height: 27px; width: 100%; height: auto; display: inline-block; vertical-align: top; margin-bottom: 8px;}
+.block-donation-prima__submit  {background: url(/media/pics/donation-site-prima_button.png); width: 134px; height: 27px; cursor: pointer; position: relative; vertical-align: top; margin-bottom: 8px;}
+input.block-donation-prima__submit {display: inline-block;}
+span.block-donation-prima__submit {display: none;}
+/*
+.block-donations-site-prima-methods {text-align: left; background: #fff; position: absolute; z-index: 2; padding: 20px 0 20px; right: 0; width: 380px; display: none;}
+.block-donations-site-prima-methods__item {display: inline-block; margin: 0 10px 10px 0; width: 160px; vertical-align: top; text-align: center; font-size: 14px; line-height: 1.2;}
+.block-donations-site-prima-methods a {text-decoration: none; color: #007c5b;}
+.block-donations-site-prima-methods img {width: 150px; height: 100px; background: #fff; border: 1px solid #dadde0;}
+.block-donations-site-prima-methods__close {text-align: right;padding: 0 10px;}
+.block-donations-site-prima-methods__close span {color: #730000; border-bottom: 1px dashed #730000; cursor: pointer;}
+*/
+
+.block-donations-site-methods {text-align: left; background: #fff; position: absolute; z-index: 2; padding: 20px 0 20px; right: 0; width: 380px; display: none;}
+.block-right-responsive-index .block-donations-site-methods {width: auto; background: #fff; padding: 5px;}
+.block-donations-site-methods__item {display: inline-block; margin: 0 10px 10px 0; width: 160px; vertical-align: top; text-align: center; font-size: 14px; line-height: 1.2;}
+.block-donations-site-methods__item a {text-decoration: none; color: #007c5b;}
+.block-donations-site-methods__item img {width: 150px; height: 100px; background: #fff; border: 1px solid #dadde0;}
+.block-donations-site-methods__close {text-align: right;padding: 0 10px;}
+.block-donations-site-methods__close span {color: #730000; border-bottom: 1px dashed #730000; cursor: pointer;}
+
+/* Блок календаря */
+.block-calendar {min-height: 450px;}
+.block-calendar__schedule {display: block; height: 50px; background: #00433f url(/media/pics/calendar_header.jpg) center top; color: #fff0d3; font-size: 1rem; text-decoration: none; overflow: hidden; text-shadow: 0px 1px 2px rgba(43, 33, 0, 1); text-align: center;}
+.block-calendar__schedule:hover {text-decoration: underline;}
+.block-calendar__schedule span {text-align: left; display: inline-block; height: 43px; line-height: 1.4; margin-top: 9px; padding-left: 40px; background: url(/media/pics/calendar_cross.png) no-repeat left 2px;}
+.block-calendar__inner {background: #fff; padding: 20px 20px 6px;}
+.block-calendar__icon {font-family: Helvetica, Arial, sans-serif; float: right; border: 1px solid #dadde0; padding: 5px; margin: 0 0 5px 10px; display: block; text-align: center; text-decoration: none; color: #333; max-width: 164px; line-height: 1rem; line-height: 1.5em; overflow: hidden; background: #fff;}
+.block-calendar__pic {display: block; margin: 0 auto 5px;}
+.block-calendar__heading {color: #333; font-size: 1.1667rem; text-decoration: none; display: block; font-weight: bold; line-height: 1.3em; margin-bottom: 5px;}
+.block-calendar__text {color: #333; margin-bottom: 20px; text-decoration: none; line-height: 1.5em;}
+.block-calendar__read {margin-bottom: 14px;}
+.block-calendar__title {color: #333; background: #f4f5f6; border: 0px solid #f4f5f6; border-radius: 3px; font-size: 1.0833rem; font-weight: bold; margin: 0 0 8px; line-height: 24px; height: 24px; padding: 0 8px 0 0; display: inline-block;  text-decoration: none;}
+.block-calendar__title:hover .block-calendar__read-arrow {background: #00986d;}
+.block-calendar__title span {background: #007c5b; border: 0px solid #007c5b; border-radius: 3px; color: #fff; display: block; float: left; width: 24px; height: 24px; line-height: 20px; text-indent: 2px; font-size: 1.6667rem; font-weight: normal; text-decoration: none; text-align: center; margin-right: 10px;}
+.block-calendar__reading {color: #333; font-size: 1.0833rem; line-height: 18px; text-decoration: none;}
+
+/* Мониторинг СМИ */
+.block-monitoring {margin: 0 0 20px; max-width: 380px;}
+.block-monitoring__header {display: block; text-decoration: none; height: 36px; line-height: 1.2; background: #205e5e url(/media/pics/block_header.png) center top; font-size: 1.3333rem; color: #fff0d3; text-align: center;}
+.block-monitoring__icon {display: inline-block; height: 25px; background: url(/media/pics/monitoring_header.png) no-repeat left center; padding-left: 34px; padding-top: 8px; margin-left: -7px;}
+.block-monitoring ul {background: #f4f5f6; padding: 20px;}
+.block-monitoring li {border-top: 1px solid #dadde0; clear: both; padding: 18px 0;}
+.block-monitoring li:first-child {border: 0; padding-top: 0;}
+.block-monitoring li:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+.block-monitoring a {text-decoration: none;}
+.block-monitoring__banner {display: none; float: none; width: 100%; max-width: 400px; margin: 0 0 10px;}
+.block-monitoring__pic {display: block; float: left; width: 140px; height: 105px; display: block;}
+.block-monitoring__smi {color: #007c5b; font-size: 1rem; display: block; margin: 0 0 0.7em 154px;}
+.block-monitoring__title {font-size: 1.1667rem; color: #333; font-weight: bold; line-height: 1.4em; margin: 0 0 0 154px; display: block;}
+.block-monitoring__subtitle {font-size: 1rem; color: #555; line-height: 18px; display: block; margin: 0.7em 0 0 154px; font-style: italic; font-weight: bold;}
+.block-monitoring__text {font-size: 1rem; color: #555; line-height: 18px; display: block; margin: 0.7em 0 0 154px;}
+
+/* Стандартные блоки справа */
+.block-right-common {margin: 0 0 20px; max-width: 380px; position: relative;}
+.block-right-common__header {display: block; text-decoration: none; max-height: 72px; line-height: 1.2; background: #205e5e url(/media/pics/block_header.png) center top; font-size: 1.3333rem; color: #fff0d3; text-align: center;}
+.block-right-common__icon {display: inline-block; height: 25px; background: repeat-y left 1px; padding-left: 34px; padding-top: 8px;}
+.block-right-common_question .block-right-common__icon {background-image: url(/media/pics/question_header.png);}
+.block-right-common_sayings .block-right-common__icon {background-image: url(/media/pics/sayings_header.png);}
+/*.block-right-common_patriarch .block-right-common__icon {background-image: url(/media/pics/patriarch_header.png);}*/
+.block-right-common_patriarch .block-right-common__icon {height: auto; padding: 8px 0;}
+.block-right-common__inner {background: #f4f5f6; padding: 20px;}
+.block-right-common__pic {margin: 0 0 10px; width: 340px; height: 255px;}
+.block-right-common__title {display: block; font-size: 1.1667rem; color: #333; font-weight: bold; line-height: 18px; margin: 0 0 4px;}
+.block-right-common__title a {color: #333; text-decoration: none;}
+.block-right-common__text {display: block; font-size: 1rem; color: #555; line-height: 18px;}
+.block-right-common__text a {color: #555; text-decoration: none;}
+
+/* Блок сюжетов справа в столбик */
+.block-themes-right {margin: 0 0 20px; overflow: hidden; max-width: 380px;}
+.block-themes-right ul {display: block; margin: 0 auto; max-width: 340px;}
+.block-themes-right li {display: block; height: auto; overflow: hidden; position: relative; text-align: center; margin: 0 0 20px; padding: 0 0 12px; border-bottom: 1px solid #dadde0;}
+.block-themes-right li:last-child {border: 0;}
+.block-themes-right a {text-decoration: none; color: #333; text-decoration: none;}
+.block-themes-right img {width: 340px; height: auto;}
+.block-themes-right__title {display: block; line-height: 1.5; font-size: 1.1667rem; font-weight: bold; margin: 14px 0 0;}
+.block-themes-right__subtitle {display: block; line-height: 1.5; font-size: 1.0833rem;}
+.block-themes-right a:hover .block-themes-right__title {text-decoration: underline;}
+.block-banner {max-width: 380px; width: 100%; margin: 0 0 12px; display: block;}
+
+.block-subscription {margin: 0 0 20px; max-width: 380px;}
+.block-subscription__header {display: block; text-decoration: none; height: 36px; line-height: 1.2; background: #205e5e url(/media/pics/block_header.png) center top; font-size: 1.3333rem; color: #fff0d3; text-align: center;}
+.block-subscription__icon {display: inline-block; height: 25px; background: url(/media/pics/subscription_header.png) no-repeat left center; padding-left: 34px; padding-top: 8px; margin-left: -7px;}
+.block-subscription__inner {background: #f4f5f6; padding: 20px;}
+.block-subscription__inner ul {display: block; margin: 0 0 10px;}
+.block-subscription__inner li {display: block; color: #555; font-size: 1rem; margin: 0 0 5px; background: url(/media/pics/subscription_arrow.png) no-repeat left 4px; padding-left: 14px;}
+.block-subscription__inner span {font-size: 1.3333rem; color: #007c5b; display: none;}
+.block-subscription__text {display: block; color: #555; font-size: 1rem; margin: 0 0 5px;}
+.block-subscription__inner form {display: block; margin: 10px auto 0; width: 240px; overflow: hidden;}
+.block-subscription__inner input[type="text"] {border: 1px solid #dadde0; width: 228px; padding: 5px; border-radius: 3px; box-shadow: inset 0px 1px 2px 1px rgba(234,234,234,0.45); margin: 0 0 14px;}
+.block-subscription__inner input[type="submit"] {background: #007c5b url(/media/pics/subscription_submit-icon.png) no-repeat 61px center; border: 0px solid #007c5b; border-radius: 3px; height: 30px; width: 240px; cursor: pointer; display: block; color: #fff; font-weight: bold; text-align: left; text-indent: 84px; font-size: 1.1667rem;}
+
+.block-christmas {margin: 0 0 20px; width: 100%; background: url(http://www.pravoslavie.ru/img/nativity_ptrn.jpg) center top repeat-x; display: none;}
+.block-christmas__header {background: url(http://www.pravoslavie.ru/img/rojdestvo2010.jpg) center top; height: 200px; display: block; text-align: center; margin: 0 0 20px;}
+.block-christmas__header img {display: none; margin: 0 auto;}
+.block-christmas__col {width: 46%; margin: 0 2%; float: left; font-size: 1.0833rem; line-height: 18px;}
+.block-christmas__col_1 {}
+.block-christmas__col_2 {}
+.block-christmas__col strong {}
+.block-christmas__col p {margin: 0 0 1em;}
+.block-christmas__col ul {padding: 0 0 1em 20px;}
+.block-christmas__col li {margin: 0 0 0.5em; list-style-type: disc;}
+.block-christmas__col a{color: #007c5b; text-decoration: underline;}
+.block-christmas:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+
+.pasha__title {display:block; background:#9a0003; padding:10px; margin:0px; text-align:center; color:white; font-size:13px; text-decoration:none; font-size:18px; letter-spacing:2px;}
+.pasha__pic {display:block; height:253px; background:url('http://www.pravoslavie.ru/img/pasha/pasha2013.jpg') top center no-repeat;}
+.pasha__short {display:block; padding:15px; text-decoration:none; color:#000000;  line-height:150%; font-family:arial;}
+.pasha__list {width:50%; background:#fff3de; line-height:150%; font-family:arial; float: left;}
+.pasha__items {background:#fff3de; margin: 0 20px 20px;}
+.pasha__items:after {content: "."; clear: both; display: block; visibility: hidden; height: 0px;}
+
+.pasha__list ul {margin: 20px;}
+.pasha__list p {padding: 20px 20px 0; margin: 0;}
+.pasha__list ul li {margin-left:30px; list-style-type: disc;}
+.pasha__list a {color:#8c321b;}
