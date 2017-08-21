@@ -8,13 +8,14 @@
 
 	var $H = $C.simple;
 	var px = $C.css.unit.px,
-		pc = $C.css.unit.pc;
+		pc = $C.css.unit.pc,
+		css = $C.css.keywords;
 
 
 	$C.css.writeStylesheet({
 		'.vedit':{
 			width: px(Settings.size.w),
-			height: px(Settings.size.h),
+			// height: px(Settings.size.h),
 			' .veditButtonsPanel':{
 				width: pc(100),
 				background: '#eee',
@@ -33,31 +34,71 @@
 				padding:px(5),
 				border:px(1)+' solid #ccc',
 				width: pc(100),
-				height:px(Settings.size.h - Settings.button.size)
+				height:px(Settings.size.h - Settings.button.size),
+				' .veditMarker':{
+					backgroundColor: '#222',
+					fontWeight: css.bold,
+					padding: px(1, 5),
+					'.start':{color: '#0f0'},
+					'.end':{color: '#0f0'}
+				}
 			}
 		}
 	});
 
 	var log = console.log;
 
-	function getSelection(){
+	// function getSelection(){
+	// 	var selection = window.getSelection();
+	// 	console.log(selection);
+	// 	if(selection.anchorNode.parentNode!=selection.focusNode.parentNode){
+	// 		log('Выделение через границы элементов недопустимо');
+	// 		return;
+	// 	}
+	// 	var val = selection.anchorNode.nodeValue;
+	// 	var range = {
+	// 		from: selection.anchorOffset,
+	// 		to: selection.focusOffset
+	// 	};
+	// 	var selVal = val?val.slice(range.from, range.to):null;
+	// 	log('selection from '+range.from+' to '+range.to+': "'+selVal+'"');
+	// 	return range;
+	// }
+
+	function selectWith(tagName){
 		var selection = window.getSelection();
 		console.log(selection);
-		if(selection.anchorNode.parentNode!=selection.focusNode.parentNode){
-			log('Выделение через границы элементов недопустимо');
-			return;
-		}
-		var val = selection.anchorNode.nodeValue;
-		var range = {
-			from: selection.anchorOffset,
-			to: selection.focusOffset
-		};
-		var selVal = val?val.slice(range.from, range.to):null;
-		log('selection from '+range.from+' to '+range.to+': "'+selVal+'"');
-		return range;
+		selection.anchorNode.nodeValue = 'XXX';
 	}
 
-	function init(el){
+	// function insertMarkers(node, rootMode){
+	// 	console.log(node);
+	// 	if(!rootMode){
+	// 		// change node name
+	// 		node.nodeName = 'XXX';
+	// 		node.localName = 'XXX';
+	// 		console.log(33, node);
+	// 	}
+	// 	for(var i=0; i<node.childNodes.length; i++){
+	// 		insertMarkers(node.childNodes[i]);
+	// 	}
+	// }
+
+	function insertMarkers(docText){
+		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
+			// console.log(name, closing?'end':'start')
+			
+			return $H.span({
+				'class':'veditMarker '+(closing?'end':'start'),
+				'data-name':name
+			}, 
+				// $H.format('[{0}]', name)
+				closing?('&lt;'+name):(name+'&gt;')
+			);
+		});
+	}
+
+	function init(el, config, docText){
 		el.addClass('vedit');
 		el.html((function(){with($H){
 			return markup(
@@ -65,22 +106,37 @@
 					button({'class':'btSelI'}, 'I'),
 					button({'class':'btSelB'}, 'B'),
 				),
-				div({'class':'veditEditor', contenteditable:true})
+				div({'class':'veditEditor', contenteditable:true}, insertMarkers(docText))
 			);
 		}})())
 		.find('.btSelI').click(function(){
-			// alert('I');
-			console.log(getSelection());
+			selectWith('I');
 		}).end()
 		.find('.btSelB').click(function(){
-			// alert('B');
-			console.log(getSelection());
+			selectWith('B');
 		}).end();
+		// insertMarkers(el.find('.veditEditor')[0], true);
+		
+		// if(config.onchange){
+		// 	el.find('.veditEditor').change(function(){
+		// 		config.onchange('XXXXXXXXXXXX');
+		// 	});
+		// }
+
+		function harvest(){
+				return 'xxxx Result xxxx';
+		}
+
+		return {
+			harvest: harvest
+		}
 	}
 
-	$.fn.vedit = function(){
-		$(this).each(function(i, el){
-			init($(el));
-		});
+	$.fn.vedit = function(config, docText){
+		// $(this).each(function(i, el){
+		// 	init($(el), config, docText);
+		// });
+		var el = $(this)[0];
+		return init($(el), config, docText); 
 	}
 })(jQuery, Clarino.version('0.0.0'));

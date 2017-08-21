@@ -11,18 +11,41 @@
 		body{
 			font-family: Verdana, Arial, Sans-Serif;
 		}
+		#result{
+			width: 800px;
+			height: 200px;
+		}
 	</style>
 	<script>
 	(function($){
 		$(function(){
-			$('#vedit').vedit();
+			var config = {
+				// onchange: function(res){
+				// 	console.log(res);
+				// }
+			};
+			var editor = $('#vedit').vedit(
+				config,
+				$('#sourceDoc').html()
+			);
+			$('#btSave').click(function(){
+				var res = editor.harvest();
+				$('#result').html(res);
+			});
 		});
 	})(jQuery);
 	</script>
 </head>
 <body>
 	<h1>Visual Content Editor</h1>
+	<div>
+		Source: <span id="sourceDoc">Lorem ipsum <i>dolor</i> <b>sit</b> amet</span>
+	</div>
 	<div id="vedit"></div>
+	<div>
+		<button id="btSave">Save</button>
+	</div>
+	<textarea id="result" readonly></textarea>
 </body>
 </html>
 
