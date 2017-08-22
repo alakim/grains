@@ -3,6 +3,11 @@
 		size: {w: 800, h:200},
 		button:{
 			size:30
+		},
+		marker:{
+			size:{w:20, h:12},
+			bgColor:'#ff0000',
+			color: '#ffff00'
 		}
 	};
 
@@ -85,16 +90,40 @@
 	// }
 
 	function insertMarkers(docText){
+		var svg = $C.getTagDefinitions('path;text;tspan'),
+			sz = Settings.marker.size;
+		function pair(x, y){
+			return [x, y].join(',');
+		}
+
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
-			// console.log(name, closing?'end':'start')
-			
-			return $H.span({
-				'class':'veditMarker '+(closing?'end':'start'),
-				'data-name':name
-			}, 
-				// $H.format('[{0}]', name)
-				closing?('&lt;'+name):(name+'&gt;')
-			);
+			return $C.html.svg({width:sz.w, height: sz.h},
+				svg.path({
+					style:'fill:'+Settings.marker.bgColor+';stroke:none;',
+					d:[
+						'M',
+						pair(closing?sz.w:0, 0),
+						pair(sz.w/2, 0),
+						pair(closing?0:sz.w, sz.h/2),
+						pair(sz.w/2, sz.h),
+						pair(closing?sz.w:0, sz.h),
+						'Z'
+					].join(' ')
+				}),
+				svg.text({
+					//style:'font-size:'+px(sz.h*.7)+';fill:'+Settings.marker.color,
+					style:$C.formatStyle({
+						'font-size': px(sz.h*.8),
+						'font-weight':$C.css.keywords.bold,
+						'text-anchor':'middle',
+						fill: Settings.marker.color
+					}),
+					x:closing?sz.w*.7 :sz.w*.4,
+					y:sz.h*.8
+				},
+					svg.tspan(name)
+				)
+			)
 		});
 	}
 
