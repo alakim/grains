@@ -30,6 +30,7 @@
 			);
 			$('#btSave').click(function(){
 				var res = editor.harvest();
+				console.log('Harvest: %s', res);
 				$('#result').html(res);
 			});
 		});

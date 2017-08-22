@@ -51,43 +51,11 @@
 		}
 	});
 
-	var log = console.log;
-
-	// function getSelection(){
-	// 	var selection = window.getSelection();
-	// 	console.log(selection);
-	// 	if(selection.anchorNode.parentNode!=selection.focusNode.parentNode){
-	// 		log('Выделение через границы элементов недопустимо');
-	// 		return;
-	// 	}
-	// 	var val = selection.anchorNode.nodeValue;
-	// 	var range = {
-	// 		from: selection.anchorOffset,
-	// 		to: selection.focusOffset
-	// 	};
-	// 	var selVal = val?val.slice(range.from, range.to):null;
-	// 	log('selection from '+range.from+' to '+range.to+': "'+selVal+'"');
-	// 	return range;
-	// }
-
 	function selectWith(tagName){
 		var selection = window.getSelection();
 		console.log(selection);
 		selection.anchorNode.nodeValue = 'XXX';
 	}
-
-	// function insertMarkers(node, rootMode){
-	// 	console.log(node);
-	// 	if(!rootMode){
-	// 		// change node name
-	// 		node.nodeName = 'XXX';
-	// 		node.localName = 'XXX';
-	// 		console.log(33, node);
-	// 	}
-	// 	for(var i=0; i<node.childNodes.length; i++){
-	// 		insertMarkers(node.childNodes[i]);
-	// 	}
-	// }
 
 	function insertMarkers(docText){
 		var svg = $C.getTagDefinitions('path;text;tspan'),
@@ -97,7 +65,11 @@
 		}
 
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
-			return $C.html.svg({width:sz.w, height: sz.h},
+			return $C.html.svg({
+					width:sz.w, height: sz.h,
+					'data-name':name,
+					'data-closing':closing?true:false
+				},
 				svg.path({
 					style:'fill:'+Settings.marker.bgColor+';stroke:none;',
 					d:[
@@ -144,16 +116,30 @@
 		.find('.btSelB').click(function(){
 			selectWith('B');
 		}).end();
-		// insertMarkers(el.find('.veditEditor')[0], true);
-		
-		// if(config.onchange){
-		// 	el.find('.veditEditor').change(function(){
-		// 		config.onchange('XXXXXXXXXXXX');
-		// 	});
-		// }
 
-		function harvest(){
-				return 'xxxx Result xxxx';
+		function harvest(node){
+			node = node || el.find('.veditEditor')[0];
+
+			if(node.nodeName=='svg'){
+				var nd = $(node),
+					nm = nd.attr('data-name'),
+					cls = nd.attr('data-closing')=='true';
+				return [
+					'<',
+					cls?'/':'',
+					,nm,
+					'>'
+				].join('');
+			}
+
+			if(!node.childNodes.length) return node.nodeValue;
+			
+			var res = [];
+			for(var n,i=0; n=node.childNodes[i],i<node.childNodes.length; i++){
+				res.push(harvest(n));
+			}
+
+			return res.join('');
 		}
 
 		return {
