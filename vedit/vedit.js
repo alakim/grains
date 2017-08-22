@@ -65,7 +65,9 @@
 		}
 
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
+			var textLabels = true;
 			return $C.html.svg({
+					'class':'marker',
 					width:sz.w, height: sz.h,
 					'data-name':name,
 					'data-closing':closing?true:false
@@ -82,7 +84,7 @@
 						'Z'
 					].join(' ')
 				}),
-				svg.text({
+				textLabels?svg.text({
 					//style:'font-size:'+px(sz.h*.7)+';fill:'+Settings.marker.color,
 					style:$C.formatStyle({
 						'font-size': px(sz.h*.8),
@@ -94,7 +96,7 @@
 					y:sz.h*.8
 				},
 					svg.tspan(name)
-				)
+				):null
 			)
 		});
 	}
@@ -115,6 +117,12 @@
 		}).end()
 		.find('.btSelB').click(function(){
 			selectWith('B');
+		}).end()
+		.find('.marker').mouseover(function(){
+			var title = $(this).attr('data-name');
+			console.log('Tag: ', title);
+		}).mouseout(function(){
+			console.log('leave');
 		}).end();
 
 		function harvest(node){
