@@ -1,4 +1,5 @@
 (function($, $C){
+
 	var Settings = {
 		size: {w: 800, h:200},
 		button:{
@@ -6,8 +7,10 @@
 		},
 		marker:{
 			size:{w:20, h:12},
-			bgColor:'#ff0000',
-			color: '#ffff00'
+			bgColor:{lo:'#ff0000', hi:'#ffff00'},
+			color: '#ffff00',
+			textLabels: true,
+			highlightOpposite: true
 		}
 	};
 
@@ -40,16 +43,19 @@
 				border:px(1)+' solid #ccc',
 				width: pc(100),
 				height:px(Settings.size.h - Settings.button.size),
-				' .veditMarker':{
-					backgroundColor: '#222',
-					fontWeight: css.bold,
-					padding: px(1, 5),
-					'.start':{color: '#0f0'},
-					'.end':{color: '#0f0'}
+				' .marker':{
+					cursor: css.default
 				}
 			}
 		}
 	});
+
+	var uid = (function(){
+		var counter = 1;
+		return function(){
+			return counter++;
+		};
+	})();
 
 	function selectWith(tagName){
 		var selection = window.getSelection();
@@ -57,15 +63,15 @@
 		selection.anchorNode.nodeValue = 'XXX';
 	}
 
-	function insertMarkers(docText){
-		var svg = $C.getTagDefinitions('path;text;tspan'),
-			sz = Settings.marker.size;
-		function pair(x, y){
-			return [x, y].join(',');
-		}
+	var templates = {
+		marker: function(name, closing){
+			var svg = $C.getTagDefinitions('path;text;tspan'),
+				sz = Settings.marker.size;
 
-		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
-			var textLabels = true;
+			function pair(x, y){
+				return [x, y].join(',');
+			}
+
 			return $C.html.svg({
 					'class':'marker',
 					width:sz.w, height: sz.h,
@@ -73,7 +79,7 @@
 					'data-closing':closing?true:false
 				},
 				svg.path({
-					style:'fill:'+Settings.marker.bgColor+';stroke:none;',
+					style:'fill:'+Settings.marker.bgColor.lo+';stroke:none;',
 					d:[
 						'M',
 						pair(closing?sz.w:0, 0),
@@ -84,7 +90,7 @@
 						'Z'
 					].join(' ')
 				}),
-				textLabels?svg.text({
+				Settings.marker.textLabels?svg.text({
 					//style:'font-size:'+px(sz.h*.7)+';fill:'+Settings.marker.color,
 					style:$C.formatStyle({
 						'font-size': px(sz.h*.8),
@@ -97,7 +103,81 @@
 				},
 					svg.tspan(name)
 				):null
-			)
+			);
+		}
+	};
+
+	function insertMarkers(docText){
+		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
+			return templates.marker(name, closing);
+		});
+	}
+
+	function highlightOpposite(marker, hide){
+		if(!Settings.marker.highlightOpposite) return;
+		var opposite = marker[0].opposite;
+		
+		if(hide){
+			var oSt = marker[0].oldStyle;
+			if(oSt) marker.find('path').attr({style: oSt});
+			if(opposite) $(opposite).find('path').attr({style:oSt});
+			return;
+		}
+
+		var path = marker.find('path');
+		marker[0].oldStyle = path.attr('style');
+		var st = getStyle(marker[0].oldStyle);
+		st.fill = Settings.marker.bgColor.hi;
+		setStyle(path, st);
+
+		if(opposite){
+			setStyle($(opposite).find('path'), st);
+		}
+
+	}
+
+	function getStyle(str){
+		var res = {};
+		var pairs = str.split(';');
+		for(var p,i=0; p=pairs[i],i<pairs.length; i++){
+			var v = p.split(':');
+			if(v[0].length){
+				res[v[0]] = v[1];
+			}
+		}
+		return res;
+	}
+	function setStyle(el, style){
+		var res = [];
+		for(var k in style){
+			res.push([k, style[k]].join(':'));
+		}
+		$(el).attr({style: res.join(';')});
+	}
+
+	function setOpposites(el){
+		var path = [];
+		el.find('.marker').each(function(i, mrk){mrk=$(mrk);
+			var closed = mrk.attr('data-closed')=='true';
+			if(closed) return;
+
+			var nm = mrk.attr('data-name'),
+				closing = mrk.attr('data-closing')=='true';
+
+			if(closing){
+				var opened = path[path.length-1],
+					oNm = opened.attr('data-name');
+				if(oNm!=nm){
+					console.error('Unclosed tag %s', oNm);
+					return;
+				}
+				opened[0].opposite = mrk[0];
+				mrk[0].opposite = opened[0];
+				path.splice(path.length-1, 1);
+			}
+			else{
+				path.push(mrk);
+			}
 		});
 	}
 
@@ -119,11 +199,13 @@
 			selectWith('B');
 		}).end()
 		.find('.marker').mouseover(function(){
-			var title = $(this).attr('data-name');
-			console.log('Tag: ', title);
+			//var title = $(this).attr('data-name');
+			highlightOpposite($(this));
 		}).mouseout(function(){
-			console.log('leave');
+			highlightOpposite($(this), true);
 		}).end();
+
+		setOpposites(el);
 
 		function harvest(node){
 			node = node || el.find('.veditEditor')[0];
