@@ -7,8 +7,8 @@
 		},
 		marker:{
 			size:{w:20, h:12},
-			bgColor:{lo:'#ff0000', hi:'#ffff00'},
-			color: '#ffff00',
+			bgColor:{lo:'#4444ff', hi:'#ff0000'},
+			color: {lo:'#ffff00', hi:'#ffff00'},
 			textLabels: true,
 			highlightOpposite: true
 		}
@@ -91,12 +91,11 @@
 					].join(' ')
 				}),
 				Settings.marker.textLabels?svg.text({
-					//style:'font-size:'+px(sz.h*.7)+';fill:'+Settings.marker.color,
 					style:$C.formatStyle({
 						'font-size': px(sz.h*.8),
 						'font-weight':$C.css.keywords.bold,
 						'text-anchor':'middle',
-						fill: Settings.marker.color
+						fill: Settings.marker.color.lo
 					}),
 					x:closing?sz.w*.7 :sz.w*.4,
 					y:sz.h*.8
@@ -119,8 +118,15 @@
 		
 		if(hide){
 			var oSt = marker[0].oldStyle;
-			if(oSt) marker.find('path').attr({style: oSt});
-			if(opposite) $(opposite).find('path').attr({style:oSt});
+			if(oSt){
+				marker.find('path').attr({style: oSt});
+				if(opposite) $(opposite).find('path').attr({style:oSt});
+			}
+			var oTs = marker[0].oldTxtStyle;
+			if(oTs){
+				marker.find('text').attr({style: oTs});
+				if(opposite) $(opposite).find('text').attr({style: oTs});
+			}
 			return;
 		}
 
@@ -130,8 +136,15 @@
 		st.fill = Settings.marker.bgColor.hi;
 		setStyle(path, st);
 
+		var txt = marker.find('text');
+		marker[0].oldTxtStyle = txt.attr('style');
+		var ts = getStyle(marker[0].oldTxtStyle);
+		ts.fill = Settings.marker.color.hi;
+		setStyle(txt, ts);
+
 		if(opposite){
 			setStyle($(opposite).find('path'), st);
+			setStyle($(opposite).find('text'), ts);
 		}
 
 	}
