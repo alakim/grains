@@ -10,7 +10,8 @@
 			bgColor:{lo:'#4444ff', hi:'#ff0000'},
 			color: {lo:'#ffff00', hi:'#ffff00'},
 			textLabels: true,
-			highlightOpposite: true
+			useCanvas: true,
+			highlightOpposite: false 
 		}
 	};
 
@@ -60,10 +61,30 @@
 	function selectWith(tagName){
 		var selection = window.getSelection();
 		console.log(selection);
-		selection.anchorNode.nodeValue = 'XXX';
+
+		function insertTag(node, pos, name, closing){
+			var txt = node.nodeValue;
+			var txtBefore = txt.slice(0, pos),
+				txtAfter = txt.slice(pos, txt.length);
+
+			// node.nodeValue = txtBefore + templates.marker(name, closing) + txtAfter;
+			$(node).parent().html(txtBefore + templates.marker(name, closing) + txtAfter);
+		}
+
+		insertTag(selection.anchorNode, selection.anchorOffset, tagName, false);
+		insertTag(selection.focusNode, selection.focusOffset, tagName, true);
 	}
 
 	var templates = {
+		canvasMarker: function(name, closing){
+			var sz = Settings.marker.size;
+			return $C.html.canvas({
+				'class':'marker',
+				width:px(sz.w), height: px(sz.h),
+				'data-name':name,
+				'data-closing':!!closing
+			});
+		},
 		marker: function(name, closing){
 			var svg = $C.getTagDefinitions('path;text;tspan'),
 				sz = Settings.marker.size;
@@ -108,7 +129,8 @@
 
 	function insertMarkers(docText){
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
-			return templates.marker(name, closing);
+			return Settings.marker.useCanvas?templates.canvasMarker(name, closing)
+				:templates.marker(name, closing);
 		});
 	}
 
@@ -194,13 +216,43 @@
 		});
 	}
 
+	function drawCanvasMarkers(pnl){
+		var sz = Settings.marker.size;
+		$(pnl).find('.marker').each(function(i, el){
+			var name = $(el).attr('data-name'),
+				closing = $(el).attr('data-closing')=='true';
+			var ctx = el.getContext('2d');
+			ctx.fillStyle = Settings.marker.bgColor.lo;
+			ctx.beginPath();
+			if(closing){
+				ctx.moveTo(sz.w/2, 0);
+				ctx.lineTo(sz.w, 0);
+				ctx.lineTo(sz.w, sz.h);
+				ctx.lineTo(sz.w/2, sz.h);
+				ctx.lineTo(0, sz.h/2);
+			}
+			else{
+				ctx.moveTo(0, 0);
+				ctx.lineTo(sz.w/2, 0);
+				ctx.lineTo(sz.w, sz.h/2);
+				ctx.lineTo(sz.w/2, sz.h);
+				ctx.lineTo(0, sz.h);
+			}
+			ctx.fill();
+
+			ctx.fillStyle = Settings.marker.color.lo;
+			ctx.font = '12px Arial';
+			ctx.fillText(name, closing?sz.w/2:sz.w*.2, sz.h*.8);
+		});
+	}
+
 	function init(el, config, docText){
 		el.addClass('vedit');
 		el.html((function(){with($H){
 			return markup(
 				div({'class':'veditButtonsPanel'},
 					button({'class':'btSelI'}, 'I'),
-					button({'class':'btSelB'}, 'B'),
+					button({'class':'btSelB'}, 'B')
 				),
 				div({'class':'veditEditor', contenteditable:true}, insertMarkers(docText))
 			);
@@ -218,12 +270,15 @@
 			highlightOpposite($(this), true);
 		}).end();
 
+		if(Settings.marker.useCanvas)
+			drawCanvasMarkers(el);
+
 		setOpposites(el);
 
 		function harvest(node){
 			node = node || el.find('.veditEditor')[0];
 
-			if(node.nodeName=='svg'){
+			if(node.nodeName==(Settings.marker.useCanvas?'CANVAS':'svg')){
 				var nd = $(node),
 					nm = nd.attr('data-name'),
 					cls = nd.attr('data-closing')=='true';
@@ -251,9 +306,6 @@
 	}
 
 	$.fn.vedit = function(config, docText){
-		// $(this).each(function(i, el){
-		// 	init($(el), config, docText);
-		// });
 		var el = $(this)[0];
 		return init($(el), config, docText); 
 	}
