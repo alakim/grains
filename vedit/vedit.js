@@ -11,7 +11,7 @@
 			color: {lo:'#ffff00', hi:'#ffff00'},
 			textLabels: true,
 			useCanvas: true,
-			highlightOpposite: false 
+			highlightOpposite: true 
 		}
 	};
 
@@ -85,6 +85,37 @@
 				'data-closing':!!closing
 			});
 		},
+		canvasMarkerDraw: function(el, highlight){
+			var sz = Settings.marker.size;
+			var name = $(el).attr('data-name'),
+				closing = $(el).attr('data-closing')=='true';
+			var ctx = el.getContext('2d');
+			ctx.clearRect(0, 0, sz.w, sz.h);
+			ctx.fillStyle = highlight?Settings.marker.bgColor.hi
+				:Settings.marker.bgColor.lo;
+			ctx.beginPath();
+			if(closing){
+				ctx.moveTo(sz.w/2, 0);
+				ctx.lineTo(sz.w, 0);
+				ctx.lineTo(sz.w, sz.h);
+				ctx.lineTo(sz.w/2, sz.h);
+				ctx.lineTo(0, sz.h/2);
+			}
+			else{
+				ctx.moveTo(0, 0);
+				ctx.lineTo(sz.w/2, 0);
+				ctx.lineTo(sz.w, sz.h/2);
+				ctx.lineTo(sz.w/2, sz.h);
+				ctx.lineTo(0, sz.h);
+			}
+			ctx.fill();
+
+			ctx.fillStyle = highlight?Settings.marker.color.hi
+				:Settings.marker.color.lo;
+			ctx.font = '12px Arial';
+			ctx.fillText(name, closing?sz.w/2:sz.w*.2, sz.h*.8);
+			
+		},
 		marker: function(name, closing){
 			var svg = $C.getTagDefinitions('path;text;tspan'),
 				sz = Settings.marker.size;
@@ -134,8 +165,18 @@
 		});
 	}
 
+	function highlightOppositeCanvas(marker, hide){
+		templates.canvasMarkerDraw(marker[0], !hide);
+		templates.canvasMarkerDraw(marker[0].opposite, !hide);
+		
+	}
+
 	function highlightOpposite(marker, hide){
 		if(!Settings.marker.highlightOpposite) return;
+		if(Settings.marker.useCanvas){
+			highlightOppositeCanvas(marker, hide);
+			return;
+		}
 		var opposite = marker[0].opposite;
 		
 		if(hide){
@@ -217,32 +258,8 @@
 	}
 
 	function drawCanvasMarkers(pnl){
-		var sz = Settings.marker.size;
 		$(pnl).find('.marker').each(function(i, el){
-			var name = $(el).attr('data-name'),
-				closing = $(el).attr('data-closing')=='true';
-			var ctx = el.getContext('2d');
-			ctx.fillStyle = Settings.marker.bgColor.lo;
-			ctx.beginPath();
-			if(closing){
-				ctx.moveTo(sz.w/2, 0);
-				ctx.lineTo(sz.w, 0);
-				ctx.lineTo(sz.w, sz.h);
-				ctx.lineTo(sz.w/2, sz.h);
-				ctx.lineTo(0, sz.h/2);
-			}
-			else{
-				ctx.moveTo(0, 0);
-				ctx.lineTo(sz.w/2, 0);
-				ctx.lineTo(sz.w, sz.h/2);
-				ctx.lineTo(sz.w/2, sz.h);
-				ctx.lineTo(0, sz.h);
-			}
-			ctx.fill();
-
-			ctx.fillStyle = Settings.marker.color.lo;
-			ctx.font = '12px Arial';
-			ctx.fillText(name, closing?sz.w/2:sz.w*.2, sz.h*.8);
+			templates.canvasMarkerDraw(el);
 		});
 	}
 
