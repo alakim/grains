@@ -7,10 +7,15 @@
 		},
 		marker:{
 			size:{w:20, h:12},
-			bgColor:{lo:'#4444ff', hi:'#ff0000'},
-			color: {lo:'#ffff00', hi:'#ffff00'},
+			bgColor:{lo:'#4444ff', hi:'#00ff00'},
+			color: {lo:'#ffff00', hi:'#000044'},
 			textLabels: true,
-			useCanvas: true,
+			useCanvas: true, // при отрисовке маркеров через canvas лучше отрабатываются
+				// перемещения по тексту с помощью клавиатуры, однако при попытке выделения текста через границы маркеров в Selection попадает только последний текстовый фрагмент (в Firefox, в Google Chrome и IE все нормально).
+				// При другом способе отрисовки (через SVG) выделение через границы маркеров проходит успешно, но при перемещении по тексту с помощью клавиатуры курсор упирается в маркер, и дальше не движется (в Firefox, в Google Chrome нормально, но можно редактировать имя маркера, что не хорошо. В IE тоже перемещения происходят нормально, но можно удалить маркер клавишей Del).
+				// Вообще, в IE выделять как-то неудобно - трудно выделить с середины фрагмента текста, почему-то стремится захватить от границы ближайшего маркера
+				// В режиме Canvas в любом браузере можно удалить с клавиатуры маркер (в Firefox и Google Chrome только клавишей Backspace, а в IE как через Backspace, так и через Delete)
+				// В режиме SVG маркеры удаляются полностью в IE, а в Firefox и Google Chrome удаляются имена маркеров, сами же маркеры остаются
 			highlightOpposite: true 
 		}
 	};
@@ -68,6 +73,9 @@
 				txtAfter = txt.slice(pos, txt.length);
 
 			// node.nodeValue = txtBefore + templates.marker(name, closing) + txtAfter;
+
+			console.log(txt, txtBefore, txtAfter);
+			return;
 			$(node).parent().html(txtBefore + templates.marker(name, closing) + txtAfter);
 		}
 
@@ -159,6 +167,7 @@
 	};
 
 	function insertMarkers(docText){
+		//return docText;
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
 			return Settings.marker.useCanvas?templates.canvasMarker(name, closing)
 				:templates.marker(name, closing);
