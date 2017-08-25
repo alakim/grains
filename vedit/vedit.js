@@ -70,23 +70,40 @@
 	})();
 
 	function selectWith(tagName){
-		var selection = window.getSelection();
-		console.log(selection);
+		var selection = window.getSelection(),
+			bgn = selection.getRangeAt(0),
+			end = selection.getRangeAt(selection.rangeCount-1);
+		console.log(selection, bgn, end);
+		console.log(bgn.startContainer.nodeValue, bgn.startOffset, ' to ', end.endContainer.nodeValue, end.endOffset);
+
 
 		function insertTag(node, pos, name, closing){
-			var txt = node.nodeValue;
-			var txtBefore = txt.slice(0, pos),
+			var txt = node.nodeValue,
+				txtBefore = txt.slice(0, pos),
 				txtAfter = txt.slice(pos, txt.length);
-
-			// node.nodeValue = txtBefore + templates.marker(name, closing) + txtAfter;
-
-			console.log(txt, txtBefore, txtAfter);
-			return;
-			$(node).parent().html(txtBefore + templates.marker(name, closing) + txtAfter);
+			var tNd = document.createTextNode(txtBefore+'<'+(closing?'/':'')+tagName+'>'+txtAfter);
+			node.parentNode.insertBefore(tNd, node);
+			node.parentNode.removeChild(node);
 		}
 
-		insertTag(selection.anchorNode, selection.anchorOffset, tagName, false);
-		insertTag(selection.focusNode, selection.focusOffset, tagName, true);
+
+		if(bgn.startContainer==bgn.endContainer){
+			alert('Эта ситуация пока не поддерживается! Начало и конец выделения должны быть в разных элементах');
+		}
+
+		insertTag(bgn.startContainer, bgn.startOffset, tagName, false);
+		insertTag(end.endContainer, end.endOffset, tagName, true);
+
+		if (window.getSelection) {
+			if (window.getSelection().empty) {  // Chrome
+				window.getSelection().empty();
+			} else if (window.getSelection().removeAllRanges) {  // Firefox
+				window.getSelection().removeAllRanges();
+			}
+		} else if (document.selection) {  // IE?
+			document.selection.empty();
+		}
+
 	}
 
 	var templates = {
