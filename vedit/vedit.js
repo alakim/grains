@@ -7,7 +7,7 @@
 		},
 		marker:{
 			size:{w:20, h:12},
-			bgColor:{lo:'#4444ff', hi:'#00ff00'},
+			bgColor:{lo:'#4444ff', hi:'#00ff00', error:'#ff0000'},
 			color: {lo:'#ffff00', hi:'#000044'},
 			textLabels: true,
 			useCanvas: true, // при отрисовке маркеров через canvas лучше отрабатываются
@@ -81,18 +81,57 @@
 			var txt = node.nodeValue,
 				txtBefore = txt.slice(0, pos),
 				txtAfter = txt.slice(pos, txt.length);
-			var tNd = document.createTextNode(txtBefore+'<'+(closing?'/':'')+tagName+'>'+txtAfter);
-			node.parentNode.insertBefore(tNd, node);
+			// var tNd = document.createTextNode(txtBefore+'<'+(closing?'/':'')+tagName+'>'+txtAfter);
+
+
+			node.parentNode.insertBefore(document.createTextNode(txtBefore), node);
+			insertMarker(node, name, closing)
+			node.parentNode.insertBefore(document.createTextNode(txtAfter), node);
+			// node.parentNode.insertBefore(tNd, node);
 			node.parentNode.removeChild(node);
+		}
+
+		function insertTagsPair(node, pos1, pos2, name){
+			var txt = node.nodeValue,
+				t1 = txt.slice(0, pos1),
+				t2 = txt.slice(pos1, pos2),
+				t3 = txt.slice(pos2, txt.length);
+			//console.log(t1, t2, t3);
+			node.parentNode.insertBefore(document.createTextNode(t1), node);
+			insertMarker(node, name)
+			node.parentNode.insertBefore(document.createTextNode(t2), node);
+			insertMarker(node, name, true)
+			node.parentNode.insertBefore(document.createTextNode(t3), node);
+			node.parentNode.removeChild(node);
+			// setOpposites(node);
+		}
+
+		function insertMarker(node, name, closing){
+			var cnv = document.createElement('canvas');
+			var sz = Settings.marker.size;
+			cnv.setAttribute('class', 'marker');
+			cnv.setAttribute('width', px(sz.w));
+			cnv.setAttribute('height', px(sz.h));
+			cnv.setAttribute('data-name', name);
+			cnv.setAttribute('data-closing', !!closing);
+			node.parentNode.insertBefore(cnv, node);
+			templates.canvasMarkerDraw(cnv, false);
+			$(cnv).mouseover(function(){
+				highlightOpposite($(this));
+			}).mouseout(function(){
+				highlightOpposite($(this), true);
+			});
 		}
 
 
 		if(bgn.startContainer==bgn.endContainer){
-			alert('Эта ситуация пока не поддерживается! Начало и конец выделения должны быть в разных элементах');
+			// alert('Эта ситуация пока не поддерживается! Начало и конец выделения должны быть в разных элементах');
+			insertTagsPair(bgn.startContainer, bgn.startOffset, bgn.endOffset, tagName);
 		}
-
-		insertTag(bgn.startContainer, bgn.startOffset, tagName, false);
-		insertTag(end.endContainer, end.endOffset, tagName, true);
+		else{
+			insertTag(bgn.startContainer, bgn.startOffset, tagName, false);
+			insertTag(end.endContainer, end.endOffset, tagName, true);
+		}
 
 		if (window.getSelection) {
 			if (window.getSelection().empty) {  // Chrome
@@ -104,6 +143,7 @@
 			document.selection.empty();
 		}
 
+		setOpposites($('.vedit'));
 	}
 
 	var templates = {
@@ -119,11 +159,14 @@
 		canvasMarkerDraw: function(el, highlight){
 			var sz = Settings.marker.size;
 			var name = $(el).attr('data-name'),
-				closing = $(el).attr('data-closing')=='true';
+				closing = $(el).attr('data-closing')=='true',
+				unclosed = $(el).attr('data-unclosed')=='true';
 			var ctx = el.getContext('2d');
 			ctx.clearRect(0, 0, sz.w, sz.h);
-			ctx.fillStyle = highlight?Settings.marker.bgColor.hi
-				:Settings.marker.bgColor.lo;
+			ctx.fillStyle = 
+				unclosed?Settings.marker.bgColor.error
+					:highlight?Settings.marker.bgColor.hi
+					:Settings.marker.bgColor.lo;
 			ctx.beginPath();
 			if(closing){
 				ctx.moveTo(sz.w/2, 0);
@@ -142,7 +185,7 @@
 			ctx.fill();
 
 			ctx.fillStyle = highlight?Settings.marker.color.hi
-				:Settings.marker.color.lo;
+					:Settings.marker.color.lo;
 			ctx.font = '12px Arial';
 			ctx.fillText(name, closing?sz.w/2:sz.w*.2, sz.h*.8);
 			
@@ -277,11 +320,13 @@
 					oNm = opened.attr('data-name');
 				if(oNm!=nm){
 					console.error('Unclosed tag %s', oNm);
+					mrk.attr('data-unclosed', true);
 					return;
 				}
 				opened[0].opposite = mrk[0];
 				mrk[0].opposite = opened[0];
 				path.splice(path.length-1, 1);
+				mrk.attr('data-unclosed', false);
 			}
 			else{
 				path.push(mrk);
@@ -307,10 +352,10 @@
 			);
 		}})())
 		.find('.btSelI').click(function(){
-			selectWith('I');
+			selectWith('i');
 		}).end()
 		.find('.btSelB').click(function(){
-			selectWith('B');
+			selectWith('b');
 		}).end()
 		.find('.marker').mouseover(function(){
 			//var title = $(this).attr('data-name');
