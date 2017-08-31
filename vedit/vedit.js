@@ -351,6 +351,33 @@
 				div({'class':'veditEditor', contenteditable:true}, insertMarkers(docText))
 			);
 		}})())
+		.bind('copy', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var copiedData = clipboardData.getData('Text');
+			console.log('text copied: ', copiedData, ev);
+		})
+		.bind('cut', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var cuttedData = clipboardData.getData('Text');
+			console.log('text cutted: ', cuttedData, ev);
+		})
+		.bind('paste', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var pastedData = clipboardData.getData('Text');
+			console.log('text pasted: ', pastedData, ev);
+		})
 		.find('.btSelI').click(function(){
 			selectWith('i');
 		}).end()
