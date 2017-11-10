@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>MapControl Demo Page</title>
+	<style>
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+		}
+	</style>
+	<script src="lib/jquery-1.11.0.min.js"></script>
+	<script src="lib/clarino.min.js"></script>
+	<script src="lib/snap.svg-min.js"></script>
+	<script src="mapcontrol.js"></script>
+	<script>
+		$(function(){
+			MapControl($('#pnlMap'), 'moscowmap.js');
+		});
+	</script>
+</head>
+<body>
+	<h1>MapControl Demo Page</h1>
+	<div id="pnlMap"></div>
+</body>
+</html>
