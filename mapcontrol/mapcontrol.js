@@ -9,22 +9,22 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 		};
 	})();
 	
-	function MapControl(pnl, mapImage){pnl=$(pnl);
+	function MapControl(pnl, w, h, mapImage){pnl=$(pnl);
 		var ctrlID = 'mapControl'+uid();
 		var control = $C.html.svg({
 			'class':'mapControl',
 			id:ctrlID,
 			style:$C.formatStyle({
-				width:600,
-				height:600,
+				width:w,
+				height:h,
 				border: $C.css.template.border(1, '#ccc')
 			})
 		});
 		pnl.append(control);
 		var s = $S('#'+ctrlID);
-		s.image(mapImage, 0, 0, pnl.width());
+		s.image(mapImage, 0, 0);
 		var pos = pnl.position();
-		var point = s.circle(100, 100, 5)
+		var point = s.circle(w/2, h/2, 5)
 			.attr({
 				fill:'#f00',
 				cursor:css.pointer
