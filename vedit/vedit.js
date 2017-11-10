@@ -7,10 +7,21 @@
 		},
 		marker:{
 			size:{w:20, h:12},
-			bgColor:{lo:'#4444ff', hi:'#ff0000'},
-			color: {lo:'#ffff00', hi:'#ffff00'},
+			bgColor:{lo:'#4444ff', hi:'#00ff00', error:'#ff0000'},
+			color: {lo:'#ffff00', hi:'#000044'},
 			textLabels: true,
-			useCanvas: true,
+			useCanvas: true, // при отрисовке маркеров через canvas лучше отрабатываются
+				// перемещения по тексту с помощью клавиатуры, однако при попытке выделения текста через границы маркеров в Selection попадает только последний текстовый фрагмент (в Firefox, в Google Chrome и IE все нормально).
+				// При другом способе отрисовки (через SVG) выделение через границы маркеров проходит успешно, но при перемещении по тексту с помощью клавиатуры курсор упирается в маркер, и дальше не движется (в Firefox, в Google Chrome нормально, но можно редактировать имя маркера, что не хорошо. В IE тоже перемещения происходят нормально, но можно удалить маркер клавишей Del).
+				// Вообще, в IE выделять как-то неудобно - трудно выделить с середины фрагмента текста, почему-то стремится захватить от границы ближайшего маркера
+				// В режиме Canvas в любом браузере можно удалить с клавиатуры маркер (в Firefox и Google Chrome только клавишей Backspace, а в IE как через Backspace, так и через Delete)
+				// В режиме SVG маркеры удаляются полностью в IE, а в Firefox и Google Chrome удаляются имена маркеров, сами же маркеры остаются
+
+				// ******** ВОЗМОЖНОЕ РЕШЕНИЕ ********
+				// Надо использовать window.getSelection(), 
+				// в полученном объекте есть свойство rangeCount,
+				// и метод getRangeAt(index), через который можно
+				// получать объекты Range при множественном выделении
 			highlightOpposite: true 
 		}
 	};
@@ -59,20 +70,80 @@
 	})();
 
 	function selectWith(tagName){
-		var selection = window.getSelection();
-		console.log(selection);
+		var selection = window.getSelection(),
+			bgn = selection.getRangeAt(0),
+			end = selection.getRangeAt(selection.rangeCount-1);
+		console.log(selection, bgn, end);
+		console.log(bgn.startContainer.nodeValue, bgn.startOffset, ' to ', end.endContainer.nodeValue, end.endOffset);
+
 
 		function insertTag(node, pos, name, closing){
-			var txt = node.nodeValue;
-			var txtBefore = txt.slice(0, pos),
+			var txt = node.nodeValue,
+				txtBefore = txt.slice(0, pos),
 				txtAfter = txt.slice(pos, txt.length);
+			// var tNd = document.createTextNode(txtBefore+'<'+(closing?'/':'')+tagName+'>'+txtAfter);
 
-			// node.nodeValue = txtBefore + templates.marker(name, closing) + txtAfter;
-			$(node).parent().html(txtBefore + templates.marker(name, closing) + txtAfter);
+
+			node.parentNode.insertBefore(document.createTextNode(txtBefore), node);
+			insertMarker(node, name, closing)
+			node.parentNode.insertBefore(document.createTextNode(txtAfter), node);
+			// node.parentNode.insertBefore(tNd, node);
+			node.parentNode.removeChild(node);
 		}
 
-		insertTag(selection.anchorNode, selection.anchorOffset, tagName, false);
-		insertTag(selection.focusNode, selection.focusOffset, tagName, true);
+		function insertTagsPair(node, pos1, pos2, name){
+			var txt = node.nodeValue,
+				t1 = txt.slice(0, pos1),
+				t2 = txt.slice(pos1, pos2),
+				t3 = txt.slice(pos2, txt.length);
+			//console.log(t1, t2, t3);
+			node.parentNode.insertBefore(document.createTextNode(t1), node);
+			insertMarker(node, name)
+			node.parentNode.insertBefore(document.createTextNode(t2), node);
+			insertMarker(node, name, true)
+			node.parentNode.insertBefore(document.createTextNode(t3), node);
+			node.parentNode.removeChild(node);
+			// setOpposites(node);
+		}
+
+		function insertMarker(node, name, closing){
+			var cnv = document.createElement('canvas');
+			var sz = Settings.marker.size;
+			cnv.setAttribute('class', 'marker');
+			cnv.setAttribute('width', px(sz.w));
+			cnv.setAttribute('height', px(sz.h));
+			cnv.setAttribute('data-name', name);
+			cnv.setAttribute('data-closing', !!closing);
+			node.parentNode.insertBefore(cnv, node);
+			templates.canvasMarkerDraw(cnv, false);
+			$(cnv).mouseover(function(){
+				highlightOpposite($(this));
+			}).mouseout(function(){
+				highlightOpposite($(this), true);
+			});
+		}
+
+
+		if(bgn.startContainer==bgn.endContainer){
+			// alert('Эта ситуация пока не поддерживается! Начало и конец выделения должны быть в разных элементах');
+			insertTagsPair(bgn.startContainer, bgn.startOffset, bgn.endOffset, tagName);
+		}
+		else{
+			insertTag(bgn.startContainer, bgn.startOffset, tagName, false);
+			insertTag(end.endContainer, end.endOffset, tagName, true);
+		}
+
+		if (window.getSelection) {
+			if (window.getSelection().empty) {  // Chrome
+				window.getSelection().empty();
+			} else if (window.getSelection().removeAllRanges) {  // Firefox
+				window.getSelection().removeAllRanges();
+			}
+		} else if (document.selection) {  // IE?
+			document.selection.empty();
+		}
+
+		setOpposites($('.vedit'));
 	}
 
 	var templates = {
@@ -88,11 +159,14 @@
 		canvasMarkerDraw: function(el, highlight){
 			var sz = Settings.marker.size;
 			var name = $(el).attr('data-name'),
-				closing = $(el).attr('data-closing')=='true';
+				closing = $(el).attr('data-closing')=='true',
+				unclosed = $(el).attr('data-unclosed')=='true';
 			var ctx = el.getContext('2d');
 			ctx.clearRect(0, 0, sz.w, sz.h);
-			ctx.fillStyle = highlight?Settings.marker.bgColor.hi
-				:Settings.marker.bgColor.lo;
+			ctx.fillStyle = 
+				unclosed?Settings.marker.bgColor.error
+					:highlight?Settings.marker.bgColor.hi
+					:Settings.marker.bgColor.lo;
 			ctx.beginPath();
 			if(closing){
 				ctx.moveTo(sz.w/2, 0);
@@ -111,7 +185,7 @@
 			ctx.fill();
 
 			ctx.fillStyle = highlight?Settings.marker.color.hi
-				:Settings.marker.color.lo;
+					:Settings.marker.color.lo;
 			ctx.font = '12px Arial';
 			ctx.fillText(name, closing?sz.w/2:sz.w*.2, sz.h*.8);
 			
@@ -159,6 +233,7 @@
 	};
 
 	function insertMarkers(docText){
+		//return docText;
 		return docText.replace(/<(\/)?([^>]+)>/gi, function(str, closing, name){
 			return Settings.marker.useCanvas?templates.canvasMarker(name, closing)
 				:templates.marker(name, closing);
@@ -245,11 +320,13 @@
 					oNm = opened.attr('data-name');
 				if(oNm!=nm){
 					console.error('Unclosed tag %s', oNm);
+					mrk.attr('data-unclosed', true);
 					return;
 				}
 				opened[0].opposite = mrk[0];
 				mrk[0].opposite = opened[0];
 				path.splice(path.length-1, 1);
+				mrk.attr('data-unclosed', false);
 			}
 			else{
 				path.push(mrk);
@@ -274,11 +351,38 @@
 				div({'class':'veditEditor', contenteditable:true}, insertMarkers(docText))
 			);
 		}})())
+		.bind('copy', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var copiedData = clipboardData.getData('Text');
+			console.log('text copied: ', copiedData, ev);
+		})
+		.bind('cut', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var cuttedData = clipboardData.getData('Text');
+			console.log('text cutted: ', cuttedData, ev);
+		})
+		.bind('paste', function(ev){
+			ev.stopPropagation();
+
+			var clipboardData = ev.clipboardData 
+				|| ev.originalEvent.clipboardData
+				|| window.clipboardData;
+			var pastedData = clipboardData.getData('Text');
+			console.log('text pasted: ', pastedData, ev);
+		})
 		.find('.btSelI').click(function(){
-			selectWith('I');
+			selectWith('i');
 		}).end()
 		.find('.btSelB').click(function(){
-			selectWith('B');
+			selectWith('b');
 		}).end()
 		.find('.marker').mouseover(function(){
 			//var title = $(this).attr('data-name');
