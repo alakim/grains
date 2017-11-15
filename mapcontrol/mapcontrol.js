@@ -7,7 +7,6 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 
 	$C.css.writeStylesheet({
 		'.mapControlFrame':{
-			border:$T.border(1, '#f00'),
 			width:px(size.w),
 			height:px(size.h)
 		}
@@ -47,48 +46,62 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 		
 		var s = $S('#'+ctrlID);
 		var map = options.maps[0];
-		var mapStartPos = {x:0, y:0};
-		var mapPos = {x:0, y:0};
-		var mapImage = s.image(map.image, 0, 0)
-			.drag(function(dx, dy, x, y){
-				// console.log('move %s, %s', x, y);
-				mapPos.x = x - mapStartPos.x;
-				mapPos.y = y - mapStartPos.y;
-				mapImage.attr(mapPos);
-			}, function(x, y){
-				//console.log('start %s, %s', x, y);
-				mapStartPos = {
-					x:x-mapPos.x, 
-					y:y-mapPos.y
-				};
-				
-			}, function(ev){
-				console.log('map end on %o', mapPos);
-			});
-		;
 
-		var pointPos = {x:0, y:0};
-		var point = s.circle(size.w/2, size.h/2, 5)
-			.attr({
-				fill:'#f00',
-				cursor:css.pointer
-			})
-			.drag(function(dx, dy, x, y){
-				// console.log('move %s, %s', x, y);
-				pointPos.x = x - pnlPos.left;
-				pointPos.y = y - pnlPos.top;
-				point.attr({
-					cx: pointPos.x,
-					cy: pointPos.y
+		var mapGrp = s.g();
+		var mapImage = s.image(map.image, 0, 0);
+		var point = s.circle(size.w/2, size.h/2, 5).attr({
+			fill:'#f00',
+			cursor:css.pointer
+		});
+		point.data("self", point);
+		mapGrp.add(mapImage, point);
+		mapGrp.data("self", mapGrp);
+		mapGrp.drag(
+			function(dx, dy, x, y, e) {//dragmove
+				var self = this.data("self");
+				var mtrx = this.data('trMatrix');
+				var trStr = 't'+[mtrx.e+dx, mtrx.f+dy].join(',');
+				self.transform(trStr);
+			},
+			function(x, y, e) {//dragstart
+				var self = this.data("self");
+				var mtrx = this.transform().globalMatrix;
+				self.data('trMatrix', mtrx);
+			},
+			function(e) {//dragend
+				var self = this.data("self");
+				var mtrx = this.transform().globalMatrix;
+				self.data('trMatrix', mtrx);
+			}
+		);
+		
+		point.drag(
+			function(dx, dy, x, y, e) {//dragmove
+				e.stopPropagation();
+				var self = this.data("self");
+				var pos = self.data('ptPos');
+				var mtrx = mapGrp.data('trMatrix');
+				if(!mtrx) mtrx = {e:0, f:0};
+				self.attr({
+					cx: pos.x + dx - pnlPos.left - mtrx.e,
+					cy: pos.y + dy - pnlPos.top - mtrx.f
 				});
-			}, function(x, y){
-				// console.log('start %s, %s', x, y);
-				
-			}, function(ev){
-				console.log('point end on %o', pointPos);
-				
-			});
-		;
+			},
+			function(x, y, e) {//dragstart
+				e.stopPropagation();
+				var self = this.data("self");
+				self.data('ptPos', {x:x, y:y});
+			},
+			function(e) {//dragend
+				e.stopPropagation();
+				var self = this.data("self");
+				var pos = {
+					x: +self.attr('cx'),
+					cy: +self.attr('cy')
+				};
+				console.log('point end on ', pos);
+			}
+		);
 	}
 
 
