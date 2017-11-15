@@ -18,6 +18,50 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 			return counter++;
 		};
 	})();
+
+	function getPointTable(points){
+		console.assert(points&&points.length, 'Missing points for map');
+		var byX = [];
+		points.sort(function(a,b){return a.x==b.x?0:a.x<b.x?-1:1;});
+		for(var e,i=0; e=points[i],i<points.length; i++){
+			byX.push(e);
+		}
+		var byY = [];
+		points.sort(function(a,b){return a.y==b.y?0:a.y<b.y?-1:1;});
+		for(var e,i=0; e=points[i],i<points.length; i++){
+			byY.push(e);
+		}
+		return {byX: byX, byY, byY};
+	}
+
+	function getGeoPoint(pos, pointTable){
+		var intX = {min:null, max:null};
+		for(var i=1; i<pointTable.byX.length; i++){
+			var ptMn = pointTable.byX[i-1];
+			var ptMx = pointTable.byX[i];
+			if(pos.x>ptMn.x && pos.x<=ptMx.x){
+				intX.min = ptMn;
+				intX.max = ptMx;
+			}
+		}
+		var intY = {min:null, max:null};
+		for(var i=1; i<pointTable.byY.length; i++){
+			var ptMn = pointTable.byY[i-1];
+			var ptMx = pointTable.byY[i];
+			if(pos.y>ptMn.y && pos.y<=ptMx.y){
+				intY.min = ptMn;
+				intY.max = ptMx;
+			}
+		}
+		return {
+			lo: (intX.max.lo - intX.min.lo)/
+				(intX.max.x - intX.min.x)
+				* pos.x + intX.min.lo,
+			la: (intY.max.la - intY.min.la)/
+				(intY.max.y - intY.min.y)
+				* pos.y + intY.min.la
+		};
+	}
 	
 	function MapControl(options){
 		console.assert(options.field&&options.field.length, 'Missing options.field value.');
@@ -46,6 +90,7 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 		
 		var s = $S('#'+ctrlID);
 		var map = options.maps[0];
+		var pointTable = getPointTable(map.points);
 
 		var mapGrp = s.g();
 		var mapImage = s.image(map.image, 0, 0);
@@ -97,9 +142,11 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 				var self = this.data("self");
 				var pos = {
 					x: +self.attr('cx'),
-					cy: +self.attr('cy')
+					y: +self.attr('cy')
 				};
-				console.log('point end on ', pos);
+				
+				var gPos = getGeoPoint(pos, pointTable);
+				console.log('point end on ', pos, gPos);
 			}
 		);
 	}
