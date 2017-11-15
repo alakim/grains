@@ -14,12 +14,28 @@
 	<script src="mapcontrol.js"></script>
 	<script>
 		$(function(){
-			MapControl($('#pnlMap'), 600, 600, 'moscowmap.jpg');
+			MapControl({
+				field: '.tbPoint',
+				size:{w:600, h:400},
+				maps:[
+					{
+						image:'moscowmap.jpg',
+						size:{w:920, h:1200},
+						points:[
+							{x:0, y:0, lon:0, lat:0},
+							{x:920, y:1200, lon:0, lat:0}
+						]
+					}
+				]
+			});
 		});
 	</script>
 </head>
 <body>
 	<h1>MapControl Demo Page</h1>
-	<div id="pnlMap"></div>
+	<div>
+		<input type="text" class="tbPoint" value="55.758586, 37.621338">
+		<p>Use this map to set point.</p>
+	</div>
 </body>
 </html>
