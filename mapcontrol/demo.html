@@ -7,6 +7,9 @@
 		body{
 			font-family: Verdana, Arial, Sans-Serif;
 		}
+		.tbPoint{
+			width:400px;
+		}
 	</style>
 	<script src="lib/jquery-1.11.0.min.js"></script>
 	<script src="lib/clarino.min.js"></script>
@@ -17,6 +20,17 @@
 			MapControl({
 				field: '.tbPoint',
 				size:{w:600, h:400},
+				format:function(lo, la){
+					return [la, lo].join(', ');
+				},
+				parse: function(str){
+					var arr = str.split(',');
+					console.assert(arr.length>=2);
+					return {
+						la: +arr[0],
+						lo: +arr[1]
+					};
+				},
 				maps:[
 					{
 						image:'moscowmap.jpg',

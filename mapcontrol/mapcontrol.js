@@ -19,22 +19,26 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 		};
 	})();
 
-	function getPointTable(points){
-		console.assert(points&&points.length, 'Missing points for map');
-		var byX = [];
-		points.sort(function(a,b){return a.x==b.x?0:a.x<b.x?-1:1;});
-		for(var e,i=0; e=points[i],i<points.length; i++){
-			byX.push(e);
-		}
-		var byY = [];
-		points.sort(function(a,b){return a.y==b.y?0:a.y<b.y?-1:1;});
-		for(var e,i=0; e=points[i],i<points.length; i++){
-			byY.push(e);
-		}
-		return {byX: byX, byY, byY};
-	}
+	function Pointer(points){
+		function getPointTable(points){
+			console.assert(points&&points.length, 'Missing points for map');
+			
+			function sort(coord){
+				var res = [];
+				points.sort(function(a,b){return a[coord]==b[coord]?0:a[coord]<b[coord]?-1:1;});
+				for(var e,i=0; e=points[i],i<points.length; i++){
+					res.push(e);
+				}
+				return res;
+			}
 
-	function getGeoPoint(pos, pointTable){
+			return {
+				byX: sort('x'),
+				byY: sort('y'),
+				byLo: sort('lo'),
+				byLa: sort('la')
+			};
+		}
 
 		function getInterval(order, coord, val){
 			var last = order.length-1;
@@ -65,26 +69,72 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 				(interval.max[coord.screen] - interval.min[coord.screen]);
 		}
 
-		var intX = getInterval(pointTable.byX, 'x', pos.x),
-			intY = getInterval(pointTable.byY, 'y', pos.y),
-			rate = {
-				x: getRate(intX, true),
-				y: getRate(intY, false)
+		function getGeoPoint(pos, pointTable){
+
+			var intX = getInterval(pointTable.byX, 'x', pos.x),
+				intY = getInterval(pointTable.byY, 'y', pos.y),
+				rate = {
+					x: getRate(intX, true),
+					y: getRate(intY, false)
+				};
+
+			function getGeo(intv, sc, gc){
+				return (intv.extra<=0?intv.min[gc]:intv.max[gc]) 
+					+ rate[sc] * (pos[sc] - intv.min[sc]);
+			}
+
+			return {
+				lo: getGeo(intX, 'x', 'lo'),
+				la: getGeo(intY, 'y', 'la')
 			};
+		}
 
-		var lo = intX.extra<=0?intX.min.lo + rate.x * (pos.x - intX.min.x)
-			:intX.max.lo + rate.x * (pos.x - intX.max.x);
+		function getScreenPoint(pos, pointTable){
+			var intLo = getInterval(pointTable.byLo, 'lo', pos.lo),
+				intLa = getInterval(pointTable.byLa, 'la', pos.la),
+				rate = {
+					lo: 1/getRate(intLo, true),
+					la: 1/getRate(intLa, false)
+				};
 
-		var la = intY.extra<=0?intY.min.la + rate.y * (pos.y - intY.min.y)
-			:intY.max.la + rate.y * (pos.y - intY.max.y);
+			function getScr(intv, sc, gc){
+				return (intv.extra<=0?intv.min[sc]:intv.max[sc]) 
+					+ rate[gc] * (pos[gc] - intv.min[gc]);
+			}
+			return {
+				x: getScr(intLo, 'x', 'lo'),
+				y: getScr(intLa, 'y', 'la')
+			};
+		}
 
-		return {lo:lo, la:la};
+		var pointTable = getPointTable(points);
+
+		return {
+			screenToGeo: function(pos){
+				return getGeoPoint(pos, pointTable);
+			},
+			geoToScreen: function(geoPos){
+				return getScreenPoint(geoPos, pointTable);
+			}
+		};
 	}
 	
 	function MapControl(options){
 		console.assert(options.field&&options.field.length, 'Missing options.field value.');
 		console.assert(options.maps&&options.maps.length, 'Missing options.map collection.');
 		var field = $(options.field);
+		var parseVal = options.parse||function(str){
+			var arr = str.split(',');
+			console.assert(arr.length>=2);
+			return {
+				lo: +arr[0],
+				la: +arr[1]
+			};
+		};
+		field.change(function(){
+			setPoint(parseVal($(this).val()));
+		});
+
 		var pnl = $($H.div({'class':'mapControlFrame'}));
 		field.after(pnl);
 		if(options.size) size = options.size;
@@ -108,7 +158,7 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 		
 		var s = $S('#'+ctrlID);
 		var map = options.maps[0];
-		var pointTable = getPointTable(map.points);
+		var pointer = Pointer(map.points);
 
 		var mapGrp = s.g();
 		var mapImage = s.image(map.image, 0, 0);
@@ -163,10 +213,21 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 					y: +self.attr('cy')
 				};
 				
-				var gPos = getGeoPoint(pos, pointTable);
-				console.log('point end on ', pos, gPos);
+				var gPos = pointer.screenToGeo(pos);
+				var strVal = (options.format || function(lo, la){return [lo, la].join();})(gPos.lo, gPos.la);
+				field.val(strVal);
 			}
 		);
+
+		function setPoint(geoPoint){
+			var pt = pointer.geoToScreen(geoPoint);
+			point.attr({cx:pt.x, cy:pt.y});
+			mapGrp.transform('t'+[size.w/2-pt.x, size.h/2-pt.y].join(','));
+			var mtrx = mapGrp.transform().globalMatrix;
+			mapGrp.data('trMatrix', mtrx);
+		}
+
+		setPoint(parseVal(field.val()));
 	}
 
 
