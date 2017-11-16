@@ -35,32 +35,50 @@ var MapControl = (function($, $C, $S){$H=$C.simple;
 	}
 
 	function getGeoPoint(pos, pointTable){
-		var intX = {min:null, max:null};
-		for(var i=1; i<pointTable.byX.length; i++){
-			var ptMn = pointTable.byX[i-1];
-			var ptMx = pointTable.byX[i];
-			if(pos.x>ptMn.x && pos.x<=ptMx.x){
-				intX.min = ptMn;
-				intX.max = ptMx;
+
+		function getInterval(order, coord, val){
+			var last = order.length-1;
+			if(val<order[0][coord]) return {
+				min:order[0],
+				max:order[1],
+				extra:-1
+			};
+			if(val>order[last][coord]) return{
+				min:order[last-1],
+				max:order[last],
+				extra:1
+			}
+			for(var i=1; i<order.length; i++){
+				var mn = order[i-1],
+					mx = order[i];
+				if(val>=mn[coord] && val<=mx[coord]) return{
+					min: mn,
+					max: mx,
+					extra: 0
+				};
 			}
 		}
-		var intY = {min:null, max:null};
-		for(var i=1; i<pointTable.byY.length; i++){
-			var ptMn = pointTable.byY[i-1];
-			var ptMx = pointTable.byY[i];
-			if(pos.y>ptMn.y && pos.y<=ptMx.y){
-				intY.min = ptMn;
-				intY.max = ptMx;
-			}
+
+		function getRate(interval, horizontal){
+			var coord = horizontal?{geo:'lo', screen:'x'}:{geo:'la', screen:'y'};
+			return (interval.max[coord.geo] - interval.min[coord.geo]) / 
+				(interval.max[coord.screen] - interval.min[coord.screen]);
 		}
-		return {
-			lo: (intX.max.lo - intX.min.lo)/
-				(intX.max.x - intX.min.x)
-				* pos.x + intX.min.lo,
-			la: (intY.max.la - intY.min.la)/
-				(intY.max.y - intY.min.y)
-				* pos.y + intY.min.la
-		};
+
+		var intX = getInterval(pointTable.byX, 'x', pos.x),
+			intY = getInterval(pointTable.byY, 'y', pos.y),
+			rate = {
+				x: getRate(intX, true),
+				y: getRate(intY, false)
+			};
+
+		var lo = intX.extra<=0?intX.min.lo + rate.x * (pos.x - intX.min.x)
+			:intX.max.lo + rate.x * (pos.x - intX.max.x);
+
+		var la = intY.extra<=0?intY.min.la + rate.y * (pos.y - intY.min.y)
+			:intY.max.la + rate.y * (pos.y - intY.max.y);
+
+		return {lo:lo, la:la};
 	}
 	
 	function MapControl(options){
