@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Snowflake drawing</title>
+	<style>
+		body{
+			font-family: Verdana, Arial, Sans-Serif;
+			font-size:14px;
+			background-color:#012;
+			color:#ffe;
+		}
+	</style>
+	<script src="js/lib/jquery-3.1.1.min.js"></script>
+	<script src="js/lib/clarino.min.js"></script>
+	<script src="js/lib/snap.svg-min.js"></script>
+	<script src="js/snowflake.js"></script>
+	<script>
+		$(Snowflake.draw);
+	</script>
+</head>
+<body>
+	<h1>Snowflake drawing</h1>
+	<svg id="main" width="300" height="300"></svg>
+</body>
+</html>
