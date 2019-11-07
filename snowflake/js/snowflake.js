@@ -5,12 +5,18 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 
 	let branchLevel = 2;
 
+	function randomLength(lng){
+		//return lng*.4;
+		return .6 * Math.random()*lng;
+	}
+
 	function branch(root, directions, size, level=0){
 		console.log(root, directions, size);
 		if(level>branchLevel) return;
 		if(size<1) return;
 
 		let path = [];
+		const subBranchSize = randomLength(size);
 		for(dir of directions){
 			const dR = dir*Math.PI/180;
 			[x, y] = root;
@@ -25,7 +31,7 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 			const node = ptAtLng(size*.7);
 			// paper.circle(...node, 5).attr({fill:'#00ff00'});
 			
-			if(branchLevel>0) path = path.concat(branch(node, [dir+60, dir-60], size*.4, level+1));
+			if(branchLevel>0) path = path.concat(branch(node, [dir+60, dir-60], subBranchSize, level+1));
 		}
 
 		return path;
