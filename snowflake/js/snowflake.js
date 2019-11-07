@@ -7,16 +7,30 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 
 	function randomLength(lng){
 		//return lng*.4;
-		return .6 * Math.random()*lng;
+		return .8 * (Math.random()+.1)*lng;
 	}
 
-	function branch(root, directions, size, level=0){
-		console.log(root, directions, size);
+	const levelSizes = [];
+	const levelNodes = [];
+
+	function branch(root, directions, level=0){
+		let size = levelSizes[level];
+		if(!size){
+			size = randomLength(levelSizes[level-1]);
+			levelSizes[level] = size;
+		}
+
+		let nodeLng = levelNodes[level];
+		if(!nodeLng){
+			nodeLng = randomLength(size);
+			levelNodes[level] = nodeLng;
+		}
+
+		// console.log(root, directions, size);
 		if(level>branchLevel) return;
 		if(size<1) return;
 
 		let path = [];
-		const subBranchSize = randomLength(size);
 		for(dir of directions){
 			const dR = dir*Math.PI/180;
 			[x, y] = root;
@@ -28,10 +42,10 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 			const pt = ptAtLng(size);
 			path = path.concat(['M', x, y, 'L', ...pt]);
 
-			const node = ptAtLng(size*.7);
+			const node = ptAtLng(nodeLng);
 			// paper.circle(...node, 5).attr({fill:'#00ff00'});
 			
-			if(branchLevel>0) path = path.concat(branch(node, [dir+60, dir-60], subBranchSize, level+1));
+			if(branchLevel>0) path = path.concat(branch(node, [dir+60, dir-60], level+1));
 		}
 
 		return path;
@@ -40,7 +54,9 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 	function draw(){
 		paper = $S('#main');
 		const shape = {x:130, y:130, size:80};
-		const path = branch([shape.x, shape.y], Array.from(hexRay()), shape.size);
+		levelSizes[0] = shape.size;
+		levelNodes[0] = 0;
+		const path = branch([shape.x, shape.y], Array.from(hexRay()));
 		paper.path(path.join(' ')).attr({stroke:color, strokeWidth:strokeWidth});
 	}
 
