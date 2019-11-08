@@ -10,17 +10,31 @@
 			background-color:#012;
 			color:#ffe;
 		}
+
+		#main{
+			background-color:#000;
+		}
 	</style>
 	<script src="js/lib/jquery-3.1.1.min.js"></script>
 	<script src="js/lib/clarino.min.js"></script>
 	<script src="js/lib/snap.svg-min.js"></script>
 	<script src="js/snowflake.js"></script>
 	<script>
-		$(Snowflake.draw);
+	$(function(){
+		const paper = Snap('#main');
+		const size = 25, step = 58;
+		for(let i=1; i<=20; i++){
+			for(let j=1; j<=10; j++){
+				setTimeout(function(){
+					Snowflake.draw(paper, [i*step, j*step], size);
+				}, (i+j)*5e2);
+			}
+		}
+	});
 	</script>
 </head>
 <body>
 	<h1>Snowflake drawing</h1>
-	<svg id="main" width="300" height="300"></svg>
+	<svg id="main" width="1250" height="800"></svg>
 </body>
 </html>

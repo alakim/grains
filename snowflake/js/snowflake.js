@@ -7,7 +7,9 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 
 	function randomLength(lng){
 		//return lng*.4;
-		return .8 * (Math.random()+.1)*lng;
+		// const ss = new Date().getTime();
+		const rr = Math.random();
+		return .8 * (rr+.1)*lng;
 	}
 
 	const levelSizes = [];
@@ -51,12 +53,11 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 		return path;
 	}
 
-	function draw(){
-		paper = $S('#main');
-		const shape = {x:130, y:130, size:80};
-		levelSizes[0] = shape.size;
+	function draw(snapPaper, pos, size){
+		paper = snapPaper;
+		levelSizes[0] = size;
 		levelNodes[0] = 0;
-		const path = branch([shape.x, shape.y], Array.from(hexRay()));
+		const path = branch(pos, Array.from(hexRay()));
 		paper.path(path.join(' ')).attr({stroke:color, strokeWidth:strokeWidth});
 	}
 
