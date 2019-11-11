@@ -71,6 +71,6 @@ const Snowflake = (function($, $C, $S){const $H = $C.simple;
 		return branch(pos, Array.from(hexRay())).join(' ');
 	}
 
-	return {draw};
+	return {draw, buildPath};
 
 })(jQuery, Clarino.version('1.4.0'), Snap);
