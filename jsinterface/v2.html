@@ -1,0 +1,87 @@
+//<style>body{background-color:#012; color:#ffe;}</style>
+//<meta charset="utf-8">
+//<script>
+
+
+// ******* СПЕЦИФИКАЦИЯ ИНТЕРФЕЙСА *********
+// Интерфейс публикуем в отдельном файле, чтобы был доступен как на проде,
+// так и для разработчиков отдельных модулей
+
+// interface for module B
+// задает спецификацию интерфейса модуля B
+// Возвращает объект, соответствующий данному интерфейсу
+const iModuleB = function(x){
+
+	// проверяет объект на соответствие данному интерфейсу
+	function check(x){
+		// проверяем наличие необходимых методов
+		if(typeof(x.init)!='function') console.error('Method init not implemented');
+		if(typeof(x.f1)!='function') console.error('Method f1 not implemented');
+		if(typeof(x.f2)!='function') console.error('Method f2 not implemented');
+		if(typeof(x.f3)!='function') console.error('Method f3 not implemented');
+
+		// можно также проверить некоторые методы на элементарное соответствие ТЗ
+		if(x.f2(2)!=4) console.error('Method f2 test failed');
+
+		x.init();
+		if(x.f3()!=1) console.error('Method f3 test failed');
+		if(x.f3()!=2) console.error('Method f3 test failed');
+		if(x.f3()!=3) console.error('Method f3 test failed');
+		return x;
+	}
+
+	check(x);
+	return {
+		f1: x.f1,
+		f2: x.f2,
+		f3: x.f3,
+		init: x.init
+	};
+};
+
+
+// *************** У РАЗРАБОТЧИКОВ ******************
+// При разработке модуля B проверяем его соответствие заданной в iModuleB спецификации
+function moduleB(){
+	let counter = 1;
+	return iModuleB({
+		name:'B',
+		f1(){
+			console.log('F1');
+		},
+		f2(x){
+			return x**2;
+		},
+		init(){
+			counter = 1;
+		},
+		f3(){
+			return counter++;
+		}
+	});
+}
+
+// при разработке модуля B создаем его экземпляр, 
+// и тот автоматически проверяется на соответствие интерфейсу
+const bb = moduleB();
+
+
+
+// **************************** НА ПРОДЕ ***************************
+// в клиентском модуле A получаем проверенный интерфейс модуля B
+function moduleA(){
+	return {
+		name:'A',
+		b: iModuleB(moduleB())
+	};
+}
+
+// создаем клиентский модуль, и используем его
+const A = moduleA();
+console.log(A);
+A.b.f1();
+console.log(A.b.f2(3));
+
+//</script>
+
+// See console output
