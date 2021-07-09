@@ -1,0 +1,52 @@
+//<style>body{background-color:#012; color:#ffe;}</style>
+//<meta charset="utf-8">
+//<script>
+
+const log = console.log;
+function test(v, st){
+	log('%o // %s', v, v==st?'OK':`Error. Expected ${st} instead of ${v}`);
+}
+
+const F = a=>b=>c=>a+b+c;
+log(
+	F(2)(3)(4) // 9
+);
+
+
+
+const FF = (function(){
+	function F(x){
+		if(F.k=='pow2') return x**2;
+		if(F.k=='log10') return Math.log10(x);
+		return x;
+	}
+
+	return new Proxy(F, {
+		get(v, k){
+			F.k = k;
+			return FF;
+		}
+	});
+})();
+
+test(
+	FF.pow2(2), 
+	4
+);
+
+test(
+	FF.log10(10),
+	1
+);
+
+// log( FF.log10);
+// log( FF.log10.pow2);
+
+test(
+	FF.log10.pow2(10), // log10(10**2) = 2
+	2
+);
+
+//</script>
+
+// See console output
