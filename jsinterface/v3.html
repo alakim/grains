@@ -1,0 +1,114 @@
+//<style>body{background-color:#012; color:#ffe;}</style>
+//<meta charset="utf-8">
+//<script>
+
+const iFace = (function(){
+	const field = Symbol('iFace');
+	const declared = {};
+
+	function error(msg){
+		console.error(msg);
+	}
+
+	function get(ifnm, obj){
+		if(arguments.length<2){
+			obj = ifnm;
+			ifnm = null;
+		}
+
+		if(!(field in obj)) error(`Interface "${ifnm}" is not implemented`);
+		const ifaces = obj[field];
+		if(ifnm){
+			if(!(ifnm in declared)) error(`Interface "${ifnm}" is not declared`);
+			const declaration = declared[ifnm];
+
+			if(!(ifnm in ifaces)) error(`Interface "${ifnm}" is not implemented`);
+			return ifaces[ifnm];
+		}
+		return ifaces;
+	}
+
+	function implement(ifnm, obj, implementation){
+		if(!(ifnm in declared)) error(`Interface "${ifnm}" is not declared`);
+		const declaration = declared[ifnm];
+
+		for(let k in declaration){
+			if(typeof(implementation[k])!='function') error(`Method "${k}" is not implemented`);
+			if(implementation[k].length!=declaration[k].length) error(`Method "${k}" requires ${declaration[k].length} arguments, but ${implementation[k].length} implemented`);
+		}
+
+		for(let k in implementation){
+			if(!(k in declaration)) error(`Method "${k}" is not declared for interface "${ifnm}"`);
+		}
+
+		if(!(field in obj)) obj[field] = {};
+		obj[field][ifnm] = implementation;
+		return obj;
+	}
+
+	function declare(ifnm, declaration){
+		if(ifnm in declared) error(`Interface "${ifnm}" is already declared`);
+		declared[ifnm] = declaration;
+	}
+
+	return {
+		declare,
+		get,
+		implement
+	};
+})();
+
+iFace.declare('IReader', {
+	read:[],
+	setTitle:['string']
+});
+
+iFace.declare('IWriter', {
+	write:null
+});
+
+
+const myComp = (function(){
+	let counter = 1;
+	let title = '';
+
+	function readNext(){
+		return title+': '+(counter++);
+	}
+
+	const comp = {};
+
+	iFace.implement('IReader', comp, {
+		setTitle(nm){
+			title = nm;
+		},
+		read(){
+			return readNext();
+		}
+	});
+
+	return comp;
+
+})();
+
+
+console.log('myComp: %o', myComp);
+
+
+const myClient = {
+	reader: iFace.get('IReader',  myComp)
+};
+
+
+myClient.reader.setTitle('My Reader');
+console.log(myClient.reader.read());
+console.log(myClient.reader.read());
+
+const writer = iFace.get('IWriter', myComp);
+writer.write('lslslslslslsl');
+
+
+
+//</script>
+
+// See console output
