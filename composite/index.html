@@ -1,0 +1,47 @@
+//<style>body{background-color:#012; color:#ffe;}</style>
+//<meta charset="utf-8">
+//<script>
+
+const log = console.log;
+function test(v, st){
+	log('%o // %c%s', v,  v==st?'color:#0f0':'color:#f00', v==st?'OK':`Error. Expected ${st} instead of ${v}`);
+}
+
+const Composite = (function(){
+
+	return function(functions){
+
+		function getNext(o,k){
+			const ff = (...x)=>o(functions[k](...x));
+			return new Proxy(ff, {
+				get: getNext
+			});
+		}
+
+		const prx = new Proxy(x=>x, {
+			get: getNext
+		});
+
+		return prx;
+	};
+})();
+
+
+
+const c1 = Composite({
+	quad: x=>x**2,
+	sqrt: x=>Math.sqrt(x),
+	dbl: x=>x*2,
+	add2: x=>x+2,
+	add: (x,y)=>x+y
+});
+
+test(c1.quad(2), 4);
+test(c1.add2.dbl(3), 8);
+test(c1.dbl.add2(3), 10);
+test(c1.dbl.add2.quad(5), 54);
+test(c1.dbl.add(3,2), 10);
+
+//</script>
+
+// See console output
